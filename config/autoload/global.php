@@ -14,18 +14,18 @@
 return array(
     // ...
     'db' => array(
-    		'driver'         => 'Pdo',
-    		'dsn'            => 'pgsql:dbname=psamment;host=localhost',
-            'driver_options' => array(
-                PDO::PGSQL_ATTR_DISABLE_NATIVE_PREPARED_STATEMENT => true,
-                PDO::ATTR_EMULATE_PREPARES => true
-            ),
+		'driver'         => 'Pdo',
+		'dsn'            => 'pgsql:dbname=psamment;host=localhost',
+        'driver_options' => array(
+            PDO::PGSQL_ATTR_DISABLE_NATIVE_PREPARED_STATEMENT => true,
+            PDO::ATTR_EMULATE_PREPARES => true
+        ),
     ),
     'service_manager' => array(
-    		'factories' => array(
-    				'Zend\Db\Adapter\Adapter'
-    				=> 'Zend\Db\Adapter\AdapterServiceFactory',
-    		),
+		'factories' => array(
+			'Zend\Db\Adapter\Adapter'
+			=> 'Zend\Db\Adapter\AdapterServiceFactory',
+		),
     ),
     'ldap_config' => array(
         'kolareal.com.do' => array(
@@ -34,29 +34,21 @@ return array(
             'password'               => 'pass1',
             'bindRequiresDn'         => true,
             'accountDomainName'      => 'kolareal.com.do',
-            //'accountDomainNameShort' => 'KOLAREAL',
-            'accountCanonicalForm'   => 4, // ACCT_FORM_PRINCIPAL
             'baseDn'                 => 'DC=kolareal,DC=com,DC=do',
         ),
         'kr.com.pe' => array(
             'host'                   => 'smtp.kr.com.pe',
             'useSsl'                 => true,
-            //'username'               => 'user1@w.net',
-            //'password'               => 'pass1',
             'accountDomainName'      => 'kr.com.pe',
-            //'accountDomainNameShort' => 'KR',
             'accountCanonicalForm'   => 4, // ACCT_FORM_PRINCIPAL
             'baseDn'                 => 'DC=kr,DC=com,DC=pe',
         ),
         'group-ism.com' => array(
-        		'host'                   => 'smtp.group-ism.com',
-        		'useSsl'                 => true,
-        		//'username'               => 'user1@w.net',
-        		//'password'               => 'pass1',
-        		'accountDomainName'      => 'group-ism.com',
-        		//'accountDomainNameShort' => 'KR',
-        		'accountCanonicalForm'   => 4, // ACCT_FORM_PRINCIPAL
-        		'baseDn'                 => 'DC=group-ism,DC=com',
+    		'host'                   => 'smtp.group-ism.com',
+    		'useSsl'                 => true,
+    		'accountDomainName'      => 'group-ism.com',
+    		'accountCanonicalForm'   => 4, // ACCT_FORM_PRINCIPAL
+    		'baseDn'                 => 'DC=group-ism,DC=com',
         ),
     ),
 
