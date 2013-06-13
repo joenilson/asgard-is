@@ -4,7 +4,9 @@ Ext.define('Asgard.controller.Menus', {
     stores: ['Menus', 'SearchSubmenus'],
     models: ['Menus','Submenus'],
     views: ['Menubar'],
-    requires: ['Asgard.lib.RTFPanel','Asgard.lib.RTFEditor','Asgard.lib.RTFViewer'],
+    requires: ['Asgard.lib.RTFPanel','Asgard.lib.RTFEditor','Asgard.lib.RTFViewer',
+                'Asgard.lib.toolbarViewer','Asgard.lib.toolbarEditor','Asgard.lib.toolbarKeyUser',
+                'Asgard.lib.toolbarAdmin','Asgard.lib.toolbarSpecial'],
     init: function() {
       var me = this;
       this.control({
@@ -44,7 +46,6 @@ Ext.define('Asgard.controller.Menus', {
       }
     },
     
-    
     createPanelContent: function(content){
       console.log(content.get('id_menu'));
       console.log(content.get('contentHeader'));
@@ -70,7 +71,10 @@ Ext.define('Asgard.controller.Menus', {
          {
            text: 'Save',
            frame: true,
-         }, 
+         },{
+           text: 'Edit',
+           frame: true,
+         },
          '->',
          {
            text: 'Dont Save',
