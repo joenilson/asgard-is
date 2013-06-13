@@ -15,11 +15,10 @@ Ext.application({
     models: ['Menus', 'Submenus'],
     stores: ['SearchSubmenus', 'Menus','UserPreferences'],
     requires : ['Asgard.view.Viewport'],
-    //requires : ['Ext.view.View'],
     // Define all the controllers that should initialize at boot up of your application
     controllers: [
-	'UserWorkspace',
-        'Menus',
+      'UserWorkspace',
+      'Menus',
     ],
     
     autoCreateViewport: false,

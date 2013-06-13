@@ -50,24 +50,16 @@ Ext.define('Asgard.controller.Menus', {
     
     
     createPanelContent: function(content){
-      /*
-      var configPanelContent = Ext.create('Asgard.store.contentPanel',{
-	params: {
-	  module: 'contentpanel',
-	  mid: content.get('id_menu')
-	}
-      });
-      */
       console.log(content.get('id_menu'));
       console.log(content.get('contentHeader'));
       console.log(content.get('contentBody'));
-      console.log(Asgard.userData.get('id'));
       iterItems = content.get('contentBody').split(',');
       this.innerItems = [];
       for (var i = 0; i < iterItems.length; i++)
       {
 	this.innerItems[i] = Ext.Object.merge({
 	  xtype: iterItems[i],
+	  value: 'Hello World'
         }, this.innerItems[i]);
       }
       console.log(this.innerItems);
@@ -89,37 +81,10 @@ Ext.define('Asgard.controller.Menus', {
            frame: true,
          }]
        },
+       
        items: this.innerItems,
-       /*
-       items: [{
-        xtype: record.get('contentBody'),
-       },{
-        xtype: 'datefield',
-       }]
-	*/
+
       }];
       return this.config;
     }
-    /*
-    onMenusStoreLoad: function(store, records) {
-       
-        var accordionItems = new Array();
-        
-        Ext.each(store.getGroups(), function(group) {
-        
-            var mStore = Ext.create('Asgard.store.Menus')
-            mStore.loadRecords(group.children);
-            var mPanel = Ext.create('Ext.panel.Panel', {
-                title: group.name,
-                collapsed: false,
-                flex:1,
-                items: mDataView
-            });
-            
-            accordionItems.push(mPanel);
-        });
-        
-        //this.getMenusList().add(accordionItems);
-    }
-    */
 });
