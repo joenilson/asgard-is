@@ -28,27 +28,14 @@ return array(
 		),
     ),
     'ldap_config' => array(
-        'kolareal.com.do' => array(
-            'host'                   => 'mail.kolareal.com.do',
-            'username'               => 'CN=user1,DC=foo,DC=net',
-            'password'               => 'pass1',
+        'server1' => array(
             'bindRequiresDn'         => true,
-            'accountDomainName'      => 'kolareal.com.do',
-            'baseDn'                 => 'DC=kolareal,DC=com,DC=do',
         ),
-        'kr.com.pe' => array(
-            'host'                   => 'smtp.kr.com.pe',
+        'server2' => array(
             'useSsl'                 => true,
-            'accountDomainName'      => 'kr.com.pe',
-            'accountCanonicalForm'   => 4, // ACCT_FORM_PRINCIPAL
-            'baseDn'                 => 'DC=kr,DC=com,DC=pe',
         ),
-        'group-ism.com' => array(
-    		'host'                   => 'smtp.group-ism.com',
+        'server3' => array(
     		'useSsl'                 => true,
-    		'accountDomainName'      => 'group-ism.com',
-    		'accountCanonicalForm'   => 4, // ACCT_FORM_PRINCIPAL
-    		'baseDn'                 => 'DC=group-ism,DC=com',
         ),
     ),
 
