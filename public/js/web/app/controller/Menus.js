@@ -4,7 +4,6 @@ Ext.define('Asgard.controller.Menus', {
     stores: ['Menus', 'SearchSubmenus'],
     models: ['Menus','Submenus'],
     views: ['Menubar'],
-    //requires: ['Asgard.lib.RTFEditor','Asgard.lib.RTFViewer','Asgard.lib.RTFPanel'],
     requires: ['Asgard.lib.RTFPanel','Asgard.lib.RTFEditor','Asgard.lib.RTFViewer'],
     init: function() {
       var me = this;
@@ -38,9 +37,6 @@ Ext.define('Asgard.controller.Menus', {
 	      AutoDestroy: true,
 	      xtype: record.get('contentHeader'),
               items: this.createPanelContent(record),
-	      //src: record.get('path')+'/'+record.get('id_menu'),
-	      //loadingText: 'Wait a moment please... Loading Data...',
-	      //hideMode: 'offsets',
 	      modal: true,
 	  }).show();
 	  tabsPanel.ownerCt.doLayout();                    			
