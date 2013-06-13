@@ -1,0 +1,47 @@
+<?php echo $this->doctype(); ?>
+<html>
+<head>
+  <meta charset="utf-8">
+  <?php echo $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0') ?>
+
+        <!-- Le styles -->
+        <?php 
+            echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'))
+        ?>
+    <?php
+        $appPath =  $this->basepath(dirname(dirname(dirname(dirname(dirname(__FILE__))))));
+        $url = $appPath . '/public/images/backgrounds/';
+        $counter=0;
+        foreach (new DirectoryIterator($url) as $fileInfo) {
+            if($fileInfo->isDot()) continue;
+            $counter++;
+            $backgroundFiles[$counter]=$fileInfo->getFilename();
+        }
+        $idxImage = rand(1, $counter);
+    ?>
+
+    <!--  <link rel="stylesheet" type="text/css" href="/js/extjs/resources/css/ext-all.css" /> -->
+    <link rel="stylesheet" type="text/css" href="/js/extjs/resources/css/ext-all-neptune.css" />
+    <link rel="stylesheet" type="text/css" href="/css/logindialog/flags.css" />
+    <link rel="stylesheet" type="text/css" href="/css/logindialog/IconCombo.css" />
+    <link rel="stylesheet" type="text/css" href="/css/logindialog/LoginDialog.css" />
+    <style type='text/css'>
+        .x-body {
+        	background: url('/images/backgrounds/<?php echo $backgroundFiles[$idxImage]; ?>');
+        	background-repeat:no-repeat;
+        	background-size: 100%;
+        	background-position:center; 
+        	background-attachment:fixed;
+        }
+    </style>
+    <script type="text/javascript" src="/js/jstz.js"></script>
+    <script type="text/javascript" src="/js/extjs/ext-all-dev.js"></script>
+    <script type="text/javascript" src="/js/web/logindialog/overrides.js"></script>
+    <script type="text/javascript" src="/js/web/logindialog/IconCombo.js"></script>
+    <script type="text/javascript" src="/js/commons/logindialog/LoginDialogLanguages.js"></script>
+    <script type="text/javascript" src="/js/web/logindialog/LoginDialog.js"></script>
+    <script type="text/javascript" src="/js/web/logindialog/LoginDialogInit.js"></script>
+</head>
+<body>
+</body>
+</html>
