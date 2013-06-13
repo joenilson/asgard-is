@@ -26,19 +26,19 @@ sudo touch /etc/apache2/sites-enabled/devapp
 
 sudo nano /etc/apache2/sites-enabled/devapp
 
-<VirtualHost *:80>
+	<VirtualHost *:80>
         ServerAdmin webmaster@localhost
         ServerName dev.localhost
         DocumentRoot /path/to/your/appfolder/public
         <Directory />
-                Options FollowSymLinks
-                AllowOverride All
+        Options FollowSymLinks
+        AllowOverride All
         </Directory>
         <Directory /path/to/your/appfolder/public>
-                Options Indexes FollowSymLinks MultiViews
-                AllowOverride All
-                Order allow,deny
-                allow from all
+        Options Indexes FollowSymLinks MultiViews
+        AllowOverride All
+        Order allow,deny
+        allow from all
         </Directory>
 
         ErrorLog ${APACHE_LOG_DIR}/error.log
@@ -48,8 +48,7 @@ sudo nano /etc/apache2/sites-enabled/devapp
         LogLevel warn
 
         CustomLog ${APACHE_LOG_DIR}/access.log combined
-
-</VirtualHost>
+	</VirtualHost>
 
 After this
 
