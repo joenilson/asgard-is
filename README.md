@@ -1,52 +1,98 @@
-ZendSkeletonApplication
-=======================
+Asgard Information System :: Devel branch
+=========================================
 
 Introduction
 ------------
-This is a simple, skeleton application using the ZF2 MVC layer and module
-systems. This application is meant to be used as a starting place for those
-looking to get their feet wet with ZF2.
+This is a system based on:
 
+- Zend Framework 2.2.0 (PHP 5.4.x)
+- ExtJS 4.2.0 GPL
+- TinyMCE Editor
+- Users Extensions from ExtJS Forums
+- PostgreSQL 9.1
+- Apache Web Server
+- Zend Server 6.0 (for devel purporses)
 
 Installation
 ------------
 
-Using Composer (recommended)
-----------------------------
-The recommended way to get a working copy of this project is to clone the repository
-and use `composer` to install dependencies using the `create-project` command:
 
-    curl -s https://getcomposer.org/installer | php --
-    php composer.phar create-project --repository-url="http://packages.zendframework.com" zendframework/skeleton-application path/to/install
-
-Alternately, clone the repository and manually invoke `composer` using the shipped
-`composer.phar`:
-
-    cd my/project/dir
-    git clone git://github.com/zendframework/ZendSkeletonApplication.git
-    cd ZendSkeletonApplication
-    php composer.phar self-update
-    php composer.phar install
-
-(The `self-update` directive is to ensure you have an up-to-date `composer.phar`
-available.)
-
-Another alternative for downloading the project is to grab it via `curl`, and
-then pass it to `tar`:
-
-    cd my/project/dir
-    curl -#L https://github.com/zendframework/ZendSkeletonApplication/tarball/master | tar xz --strip-components=1
-
-You would then invoke `composer` to install dependencies per the previous
-example.
-
-Using Git submodules
+VirtualHost Creation
 --------------------
-Alternatively, you can install using native git submodules:
 
-    git clone git://github.com/zendframework/ZendSkeletonApplication.git --recursive
+First we need to config a virtual host to point to the app in this way:
 
-Virtual Host
-------------
-Afterwards, set up a virtual host to point to the public/ directory of the
-project and you should be ready to go!
+sudo touch /etc/apache2/sites-enabled/devapp
+
+sudo nano /etc/apache2/sites-enabled/devapp
+
+<VirtualHost *:80>
+        ServerAdmin webmaster@localhost
+        ServerName dev.localhost
+        DocumentRoot /path/to/your/appfolder/public
+        <Directory />
+                Options FollowSymLinks
+                AllowOverride All
+        </Directory>
+        <Directory /path/to/your/appfolder/public>
+                Options Indexes FollowSymLinks MultiViews
+                AllowOverride All
+                Order allow,deny
+                allow from all
+        </Directory>
+
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+
+        # Possible values include: debug, info, notice, warn, error, crit,
+        # alert, emerg.
+        LogLevel warn
+
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+</VirtualHost>
+
+After this
+
+sudo service apache2 restart
+
+and test if http://dev.localhost/ load your app (with errors but load)
+
+Hostname Validation
+-------------------
+
+In your /etc/hosts file you need to point the dev.localhost or whatever that you set pointing to your local ip
+
+
+	127.0.0.1	localhost
+	127.0.0.1	dev.localhost
+
+There is how your /etc/hosts file must to be
+
+
+DB Creation
+-----------
+
+Later we need to create a database, the initial database name is psamment
+
+In postgresql trought the postgres user:
+
+	createuser -EP yourdbuser
+
+set a password for the user
+
+
+later:
+
+	createdb -U yourdbuser -W psamment 
+
+and in the dbscript folder yo will found the psamment.dmp file
+
+	psql -U yourdbuser -W psamment < psamment.dmp
+
+It will fill the database with the schemas and tables and initial data.
+
+at this point your app is running!.
+
+
+
+
