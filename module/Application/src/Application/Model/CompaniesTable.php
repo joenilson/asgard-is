@@ -3,7 +3,6 @@ namespace Application\Model;
 
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\TableGateway\AbstractTableGateway;
-use Zend\Db\TableGateway\Feature;
 use Zend\Db\Sql\TableIdentifier;
 use Zend\Db\Sql\Select;
 use Application\Model\Entity\Companies;
@@ -49,20 +48,20 @@ class CompaniesTable extends AbstractTableGateway {
 	public function save(Companies $company)
 	{
             $data = array(
-                'username' => $company->getUsername(),
-                'password' => $company->getPassword(),
-                'salt' => $company->getSalt(),
-                'realname' => $company->getRealname(),
-                'role' => $company->getRole(),
-                'date_created' => $company->getDate_created(),
-                'date_lastlogin' => $company->getDate_lastlogin(),
+                'id' => $company->getId(),
+                'legal_name' => $company->getLegal_name(),
+                'comercial_name' => $company->getComercial_name(),
+                'fiscal_id' => $company->getFiscal_id(),
+                'legal_address' => $company->getLegal_address(),
+                'comercial_address' => $company->getComercial_address(),
+                'phone_number' => $company->getPhone_number(),
                 'country' => $company->getCountry(),
-                'company' => $company->getCompany(),
-                'location' => $company->getLocation(),
-                'admin' => $company->getAdmin(),
+                'domain_name' => $company->getDomain_name(),
+                'primary_lang' => $company->getPrimary_lang(),
                 'status' => $company->getStatus(),
-                'type' => $company->getType(),
-                'account_type' => $company->getAccount_type(),
+                'is_cluster' => $company->getIs_cluster(),
+                'is_header' => $company->getIs_header(),
+                'cluster_id' => $company->getCluster_id(),
             );
 		
 		$id = (int) $company->id;
@@ -72,13 +71,13 @@ class CompaniesTable extends AbstractTableGateway {
                     return $this->getLastInsertValue();
                 //return $this->adapter->getDriver()->getLastGeneratedValue();
 		} elseif ($this->getUserById($id)) {
-			$this->update(
-					$data,
-					array('id' => $id,)
-			);
-			return $id;
+                    $this->update(
+                        $data,
+                        array('id' => $id,)
+                    );
+                    return $id;
 		} else {
-			throw new \Exception('id object does not exist');
+                    throw new \Exception('id object does not exist');
 		}
 	}
 	
