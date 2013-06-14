@@ -3,8 +3,9 @@
 ?>
 <center>
 <h1>INDUSTRIAS SAN MIGUEL</h1>
+<h1><? echo $this->companyName; ?></h1>
 <h2>Manual del Sistema de Gestión Integrado</h2>
-
+<h2><? echo $this->systemDescription; ?></h2>
 <div id='centered-box'>
 Manual del Sistema de Gestión Integrado
 <br />
@@ -12,4 +13,19 @@ Revisión 01
 <br />
 Aprobado el 20 de Abril del 2012
 </div>
+
+<div id='centered-box'>
+    <?php
+        if($this->defaultModule=='10'){
+            echo $this->presentationContentHeader;
+            echo "<br />";
+            echo $this->presentationContentRevision;
+            echo "<br />";
+            echo $this->presentationContentAproved; 
+        }else{
+            echo $this->presentationContent; 
+        }
+    ?>
+</div>
+
 </center>

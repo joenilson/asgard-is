@@ -82,12 +82,12 @@ set a password for the user
 
 later:
 
-	createdb -U yourdbuser -W psamment 
+    createdb -U yourdbuser -W psamment 
 
 and in the dbscripts folder yo will found the psamment.dmp file
 
-        $ cd dbscripts
-	psql -U yourdbuser -W psamment < psamment_structure.sql
+    $ cd dbscripts
+    psql -U yourdbuser -W psamment < psamment_structure.sql
 
 It will fill the database with the schemas and tables and initial data.
 

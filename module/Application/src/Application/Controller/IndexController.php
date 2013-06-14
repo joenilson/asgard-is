@@ -36,14 +36,13 @@ class IndexController extends AbstractActionController
         	$layout->setTemplate('layout/mobilecontentlayout');
         }
          */
-        
-        //print_r($this->getParam('modules'));
-        
        
         $userData = $this->getServiceLocator()->get('userSessionData');
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        //print_r($userData);
+        $idCompany=$userData->company;
         
-        return new ViewModel(array('lang'=>$userPrefs[0]['lang']));
+        return new ViewModel(array('lang'=>$userPrefs[0]['lang'], 'companyName'=>$idCompany));
     }
     
     protected function getViewHelper($helperName)
