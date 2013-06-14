@@ -2,9 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-Ext.define('Asgard.lib.toolbarViewer',{
-    extend: 'Ext.toolbar',
-    alias: 'widget.Viewer-toolbar',
+Ext.define('Asgard.lib.toolbarSpecial',{
+    extend: 'Ext.Toolbar',
+    alias: 'widget.Special-toolbar',
     dock: 'top',
     ui: 'footer',
     initComponent: function(){

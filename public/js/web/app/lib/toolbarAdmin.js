@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 Ext.define('Asgard.lib.toolbarAdmin',{
-    extend: 'Ext.toolbar',
+    extend: 'Ext.Toolbar',
     alias: 'widget.Admin-toolbar',
     dock: 'top',
     ui: 'footer',

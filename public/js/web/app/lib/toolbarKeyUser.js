@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 Ext.define('Asgard.lib.toolbarKeyUser',{
-    extend: 'Ext.toolbar',
+    extend: 'Ext.Toolbar',
     alias: 'widget.KeyUser-toolbar',
     dock: 'top',
     ui: 'footer',
