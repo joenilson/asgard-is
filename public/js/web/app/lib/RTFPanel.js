@@ -4,6 +4,7 @@ Ext.define('Asgard.lib.RTFPanel',{
   layout: 'fit',
   border: false,
   frame: false,
+  bodyPadding: 0,
   initComponent: function(){
     this.callParent(arguments);
   }

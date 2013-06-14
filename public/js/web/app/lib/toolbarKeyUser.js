@@ -1,7 +1,3 @@
-/* 
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 Ext.define('Asgard.lib.toolbarKeyUser',{
     extend: 'Ext.Toolbar',
     alias: 'widget.KeyUser-toolbar',

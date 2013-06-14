@@ -25,6 +25,27 @@ class IndexController extends AbstractActionController
         return new ViewModel(array('username'=>$userData->realname));
     }
     
+    public function presentationAction()
+    {
+        $layout = $this->layout();
+        $layout->setTemplate('layout/contentlayout');
+        /*
+        if($this->getServiceLocator()->get('layoutType') == 'web' ){
+        	$layout->setTemplate('layout/contentlayout');
+        }else{
+        	$layout->setTemplate('layout/mobilecontentlayout');
+        }
+         */
+        
+        //print_r($this->getParam('modules'));
+        
+       
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        
+        return new ViewModel(array('lang'=>$userPrefs[0]['lang']));
+    }
+    
     protected function getViewHelper($helperName)
     {
     	return $this->getServiceLocator()->get('viewhelpermanager')->get($helperName);

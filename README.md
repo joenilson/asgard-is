@@ -84,9 +84,10 @@ later:
 
 	createdb -U yourdbuser -W psamment 
 
-and in the dbscript folder yo will found the psamment.dmp file
+and in the dbscripts folder yo will found the psamment.dmp file
 
-	psql -U yourdbuser -W psamment < psamment.dmp
+        $ cd dbscripts
+	psql -U yourdbuser -W psamment < psamment_structure.sql
 
 It will fill the database with the schemas and tables and initial data.
 

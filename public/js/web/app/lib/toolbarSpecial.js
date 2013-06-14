@@ -1,7 +1,3 @@
-/* 
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 Ext.define('Asgard.lib.toolbarSpecial',{
     extend: 'Ext.Toolbar',
     alias: 'widget.Special-toolbar',
@@ -10,10 +6,10 @@ Ext.define('Asgard.lib.toolbarSpecial',{
     initComponent: function(){
         this.items = [{
           text: 'Search',
-          type: 'button',
+          type: 'button'
         },{
           text: 'Refresh',
-          type: 'button',
+          type: 'button'
         }];
         this.callParent(arguments);
     }

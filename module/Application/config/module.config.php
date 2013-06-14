@@ -50,112 +50,125 @@ return array(
                         ),
                     ),
                     */
+                    'presentation' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/presentation',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'presentation'
+                            ),
+                        ),
+                    ),
                 ),
             ),
             'commons' => array(
             		'type'    => 'Literal',
             		'options' => array(
-            				'route'    => '/commons',
-            				'defaults' => array(
-            						'__NAMESPACE__' => 'Application\Controller',
-            						'controller'    => 'Commons',
-            						'action'        => 'index',
-            				),
+                            'route'    => '/commons',
+                            'defaults' => array(
+                                '__NAMESPACE__' => 'Application\Controller',
+                                'controller'    => 'Commons',
+                                'action'        => 'index',
+                            ),
             		),
             		'may_terminate' => true,
             		'child_routes' => array(
             		    /*
-        				'default' => array(
-    						'type'    => 'Segment',
-    						'options' => array(
-								'route'    => '/[:controller[/:action]]',
-								'constraints' => array(
-									'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-									'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
-								),
-								'defaults' => array(
-								),
-    						),
-        				),
-        				*/
-        				'getmenus' => array(
-    						'type'    => 'Segment',
-    						'options' => array(
-								'route'    => '/getmenus',
-								'constraints' => array(
-									'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-									'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
-								),
-								'defaults' => array(
-									'action' => 'getmenus'
-								),
-    						),
-        				),
-        				'getsubmenus' => array(
-        						'type'    => 'Segment',
-        						'options' => array(
-        								'route'    => '/getsubmenus',
-        								'constraints' => array(
-        										'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-        										'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
-        								),
-        								'defaults' => array(
-        										'action' => 'getsubmenus'
-        								),
-        						),
-        				),
-        				'getusermenus' => array(
-        						'type'    => 'Segment',
-        						'options' => array(
-        								'route'    => '/getusermenus',
-        								'constraints' => array(
-        										'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-        										'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
-        								),
-        								'defaults' => array(
-        										'action' => 'getusermenus'
-        								),
-        						),
-        				),
-        				'getusersubmenus' => array(
-        						'type'    => 'Segment',
-        						'options' => array(
-        								'route'    => '/getusersubmenus',
-        								'constraints' => array(
-        										'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-        										'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
-        								),
-        								'defaults' => array(
-        										'action' => 'getusersubmenus'
-        								),
-        						),
-        				),
-        				'getuserpreferences' => array(
-        						'type'    => 'Segment',
-        						'options' => array(
-        								'route'    => '/getuserpreferences',
-        								'constraints' => array(
-        										'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-        										'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
-        								),
-        								'defaults' => array(
-        										'action' => 'getuserpreferences'
-        								),
-        						),
-        				),
-        				'getcontentpanel' => array(
-        						'type'    => 'Segment',
-        						'options' => array(
-        								'route'    => '/getcontentpanel',
-        								'constraints' => array(
-        										'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-        										'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
-        								),
-        								'defaults' => array(
-        										'action' => 'getcontentpanel'
-        								),
-        						),
-        				),
+                            'default' => array(
+                                'type'    => 'Segment',
+                                'options' => array(
+                                    'route'    => '/[:controller[/:action]]',
+                                    'constraints' => array(
+                                        'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                        'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                    ),
+                                    'defaults' => array(
+                                    ),
+                                ),
+                            ),
+                            */
+                            'getmenus' => array(
+                                'type'    => 'Segment',
+                                'options' => array(
+                                    'route'    => '/getmenus',
+                                    'constraints' => array(
+                                        'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                        'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                    ),
+                                    'defaults' => array(
+                                        'action' => 'getmenus'
+                                    ),
+                                ),
+                            ),
+                            'getsubmenus' => array(
+                                'type'    => 'Segment',
+                                'options' => array(
+                                    'route'    => '/getsubmenus',
+                                    'constraints' => array(
+                                        'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                        'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                    ),
+                                    'defaults' => array(
+                                        'action' => 'getsubmenus'
+                                    ),
+                                ),
+                            ),
+                            'getusermenus' => array(
+                                'type'    => 'Segment',
+                                'options' => array(
+                                    'route'    => '/getusermenus',
+                                    'constraints' => array(
+                                        'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                        'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                    ),
+                                    'defaults' => array(
+                                        'action' => 'getusermenus'
+                                    ),
+                                ),
+                            ),
+                            'getusersubmenus' => array(
+                                'type'    => 'Segment',
+                                'options' => array(
+                                    'route'    => '/getusersubmenus',
+                                    'constraints' => array(
+                                        'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                        'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                    ),
+                                    'defaults' => array(
+                                        'action' => 'getusersubmenus'
+                                    ),
+                                ),
+                            ),
+                            'getuserpreferences' => array(
+                                'type'    => 'Segment',
+                                'options' => array(
+                                    'route'    => '/getuserpreferences',
+                                    'constraints' => array(
+                                        'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                        'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                    ),
+                                    'defaults' => array(
+                                        'action' => 'getuserpreferences'
+                                    ),
+                                ),
+                            ),
+                            'getcontentpanel' => array(
+                                'type'    => 'Segment',
+                                'options' => array(
+                                    'route'    => '/getcontentpanel',
+                                    'constraints' => array(
+                                        'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                        'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                    ),
+                                    'defaults' => array(
+                                        'action' => 'getcontentpanel'
+                                    ),
+                                ),
+                            ),
             		),
             ),
         ),

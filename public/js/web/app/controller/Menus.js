@@ -12,7 +12,7 @@ Ext.define('Asgard.controller.Menus', {
       this.control({
 	'menubar-tree': {
 	  itemclick: function(tree, record){
-	    this.onMenuItemClicked(record)
+	    this.onMenuItemClicked(record);
 	    //console.log(record.get('id_menu'));
 	  }
 	}
@@ -34,12 +34,10 @@ Ext.define('Asgard.controller.Menus', {
 	  tabsPanel.add({
 	      title: record.get('description'),
 	      id: itemTab,
-	      layout: 'fit',
 	      closable: true,
 	      AutoDestroy: true,
 	      xtype: record.get('contentHeader'),
-              items: this.createPanelContent(record),
-	      modal: true,
+              items: this.createPanelContent(record)
 	  }).show();
 	  tabsPanel.ownerCt.doLayout();                    			
 	}
@@ -56,33 +54,20 @@ Ext.define('Asgard.controller.Menus', {
       {
 	this.innerItems[i] = Ext.Object.merge({
 	  xtype: iterItems[i],
-	  value: 'Hello World'
+	  value: 'Hello World',
+          height: 500,
         }, this.innerItems[i]);
       }
       console.log(this.innerItems);
       this.config = [{
-	layout: 'fit',
+        //layout: 'fit',
+        flex: 1,
 	autoScroll: true,
         dockedItems: {
-         xtype: 'toolbar',
-         dock: 'top',
-         ui: 'footer',
-         items: [
-         {
-           text: 'Save',
-           frame: true,
-         },{
-           text: 'Edit',
-           frame: true,
-         },
-         '->',
-         {
-           text: 'Dont Save',
-           frame: true,
-         }]
+         xtype: 'Viewer-toolbar'
        },
        
-       items: this.innerItems,
+       items: this.innerItems
 
       }];
       return this.config;

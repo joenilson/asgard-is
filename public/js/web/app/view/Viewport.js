@@ -27,7 +27,7 @@ Ext.define('Asgard.view.Viewport', {
 	}, {
 	    id: 'content-panel',
 	    region: 'center',
-	    xtype: 'contentpanel',
+	    xtype: 'contentpanel'
 	}
     ];
     this.callParent(arguments);

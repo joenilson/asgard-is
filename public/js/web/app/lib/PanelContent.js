@@ -2,10 +2,10 @@ Ext.define('Asgard.lib.PanelContent',{
   extend: 'Ext.Panel',
   alias: 'widget.panel-content',
   layout: 'fit',
-  plain: true,
+  plain: false,
   minHeight: 200,
-  autoScroll:true,
-
+  border : false,
+  autoScroll: true,
   initComponent: function(){
     this.callParent(arguments);
   }
