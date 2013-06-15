@@ -20,6 +20,7 @@ use Application\Model\UserPreferencesTable;
 use Application\Model\UsersTable;
 use Application\Model\AdminUserModulesTable;
 use Application\Model\AdminUserSubmodulesTable;
+use Application\Model\CompaniesTable;
 
 class Module
 {
@@ -124,82 +125,87 @@ class Module
     public function getServiceConfig()
     {
     	return array(
-    		'factories' => array(
-    		    'layoutType' => function ($sm) {
-    		    	$layoutConfig = $sm->get('Config');
-    		    	$layoutConfig['mobileSite'] = $this->mobileSite;
-    		    	return $layoutConfig['mobileSite'];
-    		    },
+            'factories' => array(
+                'layoutType' => function ($sm) {
+                    $layoutConfig = $sm->get('Config');
+                    $layoutConfig['mobileSite'] = $this->mobileSite;
+                    return $layoutConfig['mobileSite'];
+                },
 
-    		    'userSessionData' => function ($sm) {
-    		    	$userSessionData = $sm->get('Auth\Model\MyAuthStorage')->read();
-    		    	return $userSessionData;
-    		    	
-    		    },
+                'userSessionData' => function ($sm) {
+                    $userSessionData = $sm->get('Auth\Model\MyAuthStorage')->read();
+                    return $userSessionData;
 
-    		    'userPreferences' => function ($sm) {
-    		        $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-    		        $tableUserPrefs = new UserPreferencesTable($dbAdapter);
-    		    	$user = $sm->get('Auth\Model\MyAuthStorage')->read();
-    		    	$userPreferences = $tableUserPrefs->getUserPreferences($user->id);
-    		    	return $userPreferences;
-    		    },
-    		    
-    		    'Application\Model\TranslationTable' =>  function($sm) {
-    		    	$dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-    		    	$table = new TranslationTable($dbAdapter);
-    		    	return $table;
-    		    },
-   		    
-    		    'Application\Model\ModulesTable' => function($sm) {
-    		    	$dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-    		    	$table = new ModulesTable($dbAdapter);
-    		    	return $table;
-    		    },
-    		    
-    		    'Application\Model\UserModulesTable' => function($sm) {
-    		    	$dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-    		    	$table = new UserModulesTable($dbAdapter);
-    		    	return $table;
-    		    },
-    		    
-    		    'Application\Model\UserSubmodulesTable' => function($sm) {
-    		    	$dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-    		    	$table = new UserSubmodulesTable($dbAdapter);
-    		    	return $table;
-    		    },
-    		    
-    		    'Application\Model\SubmodulesTable' => function($sm) {
-    		    	$dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-    		    	$table = new SubmodulesTable($dbAdapter);
-    		    	return $table;
-    		    },
-    		    
-    		    'Application\Model\UserPreferencesTable' => function($sm) {
-    		    	$dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-    		    	$table = new UserPreferencesTable($dbAdapter);
-    		    	return $table;
-    		    },
-    		    
-    		    'Application\Model\UsersTable' => function($sm) {
-    		    	$dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-    		    	$table = new UsersTable($dbAdapter);
-    		    	return $table;
-    		    },
+                },
 
-    		    'Application\Model\AdminUserModulesTable' => function($sm) {
-    		    	$dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-    		    	$table = new AdminUserModulesTable($dbAdapter);
-    		    	return $table;
-    		    },
-    		    
-    		    'Application\Model\AdminUserSubmodulesTable' => function($sm) {
-    		     
-    		    	$dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-    		    	$table = new AdminUserSubmodulesTable($dbAdapter);
-    		    	return $table;
-    		    },
+                'userPreferences' => function ($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $tableUserPrefs = new UserPreferencesTable($dbAdapter);
+                    $user = $sm->get('Auth\Model\MyAuthStorage')->read();
+                    $userPreferences = $tableUserPrefs->getUserPreferences($user->id);
+                    return $userPreferences;
+                },
+
+                'Application\Model\TranslationTable' =>  function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new TranslationTable($dbAdapter);
+                    return $table;
+                },
+
+                'Application\Model\ModulesTable' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new ModulesTable($dbAdapter);
+                    return $table;
+                },
+
+                'Application\Model\UserModulesTable' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new UserModulesTable($dbAdapter);
+                    return $table;
+                },
+
+                'Application\Model\UserSubmodulesTable' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new UserSubmodulesTable($dbAdapter);
+                    return $table;
+                },
+
+                'Application\Model\SubmodulesTable' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new SubmodulesTable($dbAdapter);
+                    return $table;
+                },
+
+                'Application\Model\UserPreferencesTable' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new UserPreferencesTable($dbAdapter);
+                    return $table;
+                },
+
+                'Application\Model\UsersTable' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new UsersTable($dbAdapter);
+                    return $table;
+                },
+
+                'Application\Model\AdminUserModulesTable' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new AdminUserModulesTable($dbAdapter);
+                    return $table;
+                },
+
+                'Application\Model\AdminUserSubmodulesTable' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new AdminUserSubmodulesTable($dbAdapter);
+                    return $table;
+                },
+
+                'Application\Model\CompaniesTable' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new CompaniesTable($dbAdapter);
+                    return $table;
+                },
     	    ),
-	    );
+        );
     }
 }

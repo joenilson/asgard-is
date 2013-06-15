@@ -25,7 +25,7 @@ class CompaniesTable extends AbstractTableGateway {
 	}
 	
 	public function getCompanyById($id) {
-            $row = $this->select(array('id' => $id))->current();
+            $row = $this->select(array('id' => $id))->toArray();
             if (!$row)
                 return false;
             return $row;

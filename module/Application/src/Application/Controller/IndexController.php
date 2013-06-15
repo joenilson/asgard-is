@@ -14,6 +14,8 @@ use Zend\View\Model\ViewModel;
 
 class IndexController extends AbstractActionController
 {
+    protected $companiesTable;
+    
     public function indexAction()
     {
         $userData = $this->getServiceLocator()->get('userSessionData');
@@ -40,11 +42,19 @@ class IndexController extends AbstractActionController
         $userData = $this->getServiceLocator()->get('userSessionData');
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
         //print_r($userData);
-        $idCompany=$userData->company;
-        
-        return new ViewModel(array('lang'=>$userPrefs[0]['lang'], 'companyName'=>$idCompany));
+        $dataCompany=$this->getCompaniesTable()->getCompanyById($userData->company);
+        return new ViewModel(array('lang'=>$userPrefs[0]['lang'], 'companyName'=>$dataCompany[0]['legal_name']));
     }
     
+    public function getCompaniesTable()
+    {
+    	if (!$this->companiesTable) {
+    		$sm = $this->getServiceLocator();
+    		$this->companiesTable = $sm->get('Application\Model\CompaniesTable');
+    	}
+    	return $this->companiesTable;
+    }
+        
     protected function getViewHelper($helperName)
     {
     	return $this->getServiceLocator()->get('viewhelpermanager')->get($helperName);
