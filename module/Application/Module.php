@@ -11,6 +11,7 @@ namespace Application;
 
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
+use Application\Model\ApplicationTable;
 use Application\Model\TranslationTable;
 use Application\Model\ModulesTable;
 use Application\Model\SubmodulesTable;
@@ -203,6 +204,12 @@ class Module
                 'Application\Model\CompaniesTable' => function($sm) {
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new CompaniesTable($dbAdapter);
+                    return $table;
+                },
+                        
+                'Application\Model\ApplicationTable' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new ApplicationTable($dbAdapter);
                     return $table;
                 },
     	    ),
