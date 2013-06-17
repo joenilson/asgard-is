@@ -1,11 +1,12 @@
 <?php
 namespace Application\Model\Entity;
 
-class Submodules_i18n {
+class SubmodulesI18n {
     
 	protected $_lang;
 	protected $_id_module;
 	protected $_id_submodule;
+        protected $_key;
 	protected $_value;
 	protected $_status;
 	protected $_date_create;
@@ -68,6 +69,17 @@ class Submodules_i18n {
     public function getId_module()
     {
     	return $this->_id_module;
+    }
+    
+     public function setId_submodule($id_submodule)
+    {
+    	$this->_id_submodule = (int) $id_submodule;
+    	return $this;
+    }
+    
+    public function getId_submodule()
+    {
+    	return $this->_id_submodule;
     }
     
     public function setKey($key)

@@ -14,6 +14,7 @@ use Zend\Mvc\MvcEvent;
 use Application\Model\ApplicationTable;
 use Application\Model\TranslationTable;
 use Application\Model\ModulesTable;
+use Application\Model\ModulesI18nTable;
 use Application\Model\SubmodulesTable;
 use Application\Model\UserModulesTable;
 use Application\Model\UserSubmodulesTable;
@@ -156,6 +157,12 @@ class Module
                 'Application\Model\ModulesTable' => function($sm) {
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new ModulesTable($dbAdapter);
+                    return $table;
+                },
+                        
+                'Application\Model\ModulesI18nTable' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new ModulesI18nTable($dbAdapter);
                     return $table;
                 },
 

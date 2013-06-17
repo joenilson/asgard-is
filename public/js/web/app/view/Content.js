@@ -15,7 +15,8 @@ Ext.define('Asgard.view.Content', {
                 title: this.titleText,
                 loader: {
                     url: '/application/presentation',
-                    autoLoad: true
+                    autoLoad: true,
+                    scripts: true
                 },      
             },
             ]

@@ -1,3 +1,45 @@
+<script>
+var revision_date = Ext.Date.format(Ext.Date.parse("<?php echo $this->presentationContentAproved; ?>", "Y-m-d g:i:s.u"), "l, jS F Y");
+Ext.get('presentationContentAproved').update(revision_date);
+
+Ext.define('Asgard.view.window.systemInformation', {
+    extend: 'Ext.window.Window',
+    xtype: 'basic-window',
+    height: 300,
+    width: 400,
+    title: 'Window',
+    autoScroll: true,
+    autoShow: true,
+    bodyPadding: 10,
+    companyName: '<? echo $this->companyName; ?>',
+    systemDescription: '<? echo $this->systemDescription; ?>',
+    defaultModule: <? echo $this->defaultModule; ?>,
+    presentationContentHeader: '<? echo $this->presentationContentHeader; ?>',
+    presentationContentRevision: '<? echo $this->presentationContentRevision; ?>',
+    presentationContentRevisionText: 'Revision',
+    presentationContentAproved: Ext.Date.format(Ext.Date.parse("<?php echo $this->presentationContentAproved; ?>", "Y-m-d g:i:s.u"), "l, jS F Y"),
+    presentationContentAprovedText: 'Approved',
+    presentationContent: 'System Status',
+    initComponent: function(){
+        var content = "";
+        if (this.defaultModule === 10){
+            content = this.companyName+'<br />'+
+                  this.systemDescription+'<br />'+
+                  this.defaultModule+'<br />'+
+                  this.presentationContentHeader+'<br />'+
+                  this.presentationContentRevision+'<br />'+
+                  this.presentationContentAproved+'<br />';
+        }else{
+            content = this.presentationContent;
+        }
+        this.html = content;
+        console.log(content);
+        this.callParent(arguments);
+    }
+});
+
+Ext.create('Asgard.view.window.systemInformation');
+</script>
 <center>
 <h1><? echo $this->companyName; ?></h1>
 <h2>Manual del Sistema de Gestión Integrado</h2>
@@ -17,7 +59,7 @@ Aprobado el 20 de Abril del 2012
             echo "<br />";
             echo $this->presentationContentRevision;
             echo "<br />";
-            echo $this->presentationContentAproved; 
+            echo "<div id='presentationContentAproved'></div>";
         }else{
             echo $this->presentationContent; 
         }

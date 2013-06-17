@@ -3,17 +3,22 @@ namespace Application\Model\Entity;
 
 class Modules {
    
-	protected $_mid;
-	protected $_mshortdesc;
-	protected $_mlongdesc;
-	protected $_loadurl;
-	protected $_helpurl;
-	protected $_icon;
-	protected $_status;
-	protected $_typeof;
-	protected $_ordering;
-	protected $_datecreation;
-	protected $_dateactivation;
+    protected $_mid;
+    protected $_mshortdesc;
+    protected $_mlongdesc;
+    protected $_loadurl;
+    protected $_helpurl;
+    protected $_icon;
+    protected $_status;
+    protected $_typeof;
+    protected $_ordering;
+    protected $_datecreation;
+    protected $_dateactivation;
+    protected $_majorversion;
+    protected $_minorversion;
+    protected $_patch;
+    protected $_build;
+    protected $_date_revision;
     
 
     public function __construct(array $options = null) {
@@ -145,6 +150,51 @@ class Modules {
     
     public function setDateactivation($dateactivation) {
     	$this->_dateactivation = $dateactivation;
+    	return $this;
+    }
+    
+    public function getMajorversion() {
+    	return $this->_majorversion;
+    }
+    
+    public function setMajorversion($majorversion) {
+    	$this->_majorversion = (int) $majorversion;
+    	return $this;
+    }
+    
+    public function getMinorversion() {
+    	return $this->_minorversion;
+    }
+    
+    public function setMinorversion($minorversion) {
+    	$this->_minorversion = (int) $minorversion;
+    	return $this;
+    }
+    
+    public function getPatch() {
+    	return $this->_patch;
+    }
+    
+    public function setPatch($patch) {
+    	$this->_patch = (int) $patch;
+    	return $this;
+    }
+    
+    public function getBuild() {
+    	return $this->_build;
+    }
+    
+    public function setBuild($build) {
+    	$this->_build = (int) $build;
+    	return $this;
+    }
+    
+    public function getDate_revision() {
+    	return $this->_date_revision;
+    }
+    
+    public function setDate_revision($date_revision) {
+    	$this->_date_revision = $date_revision;
     	return $this;
     }
     
