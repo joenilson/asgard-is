@@ -4,7 +4,7 @@ Ext.Loader.setConfig({
     Asgard : 'js/web/app'
   } 
 });
-
+Ext.setGlyphFontFamily('Pictos');
 Ext.application({
     name: 'Asgard',
 
@@ -19,6 +19,7 @@ Ext.application({
     controllers: [
       'UserWorkspace',
       'Menus',
+      'AppTabs'
     ],
     
     autoCreateViewport: false,

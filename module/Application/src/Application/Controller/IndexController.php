@@ -48,7 +48,7 @@ class IndexController extends AbstractActionController
         $dataApplication=$this->getApplicationTable()->fetchAll();
         //print_r($dataApplication);
         $dataModules=$this->getModulesTable()->getModule($dataApplication[0]['app_module_default']);
-        $moduleRevision=$dataModules->majorversion.".".$dataModules->minorversion.".".$dataModules->patch.".".$dataModules->build;
+        $moduleReview=$dataModules->majorversion.".".$dataModules->minorversion.".".$dataModules->patch.".".$dataModules->build;
         $dataI18nModules=$this->getModulesI18nTable()->getModuleValuesByIdAndKey($userPrefs[0]['lang'],$dataModules->mid,$dataModules->mshortdesc);
         //print_r($dataModules);
         //echo $dataModules->date_revision;
@@ -60,8 +60,8 @@ class IndexController extends AbstractActionController
             'systemDescription'=>$dataApplication[0]['app_name'],
             'defaultModule'=>$dataModules->mid,
             'presentationContentHeader'=>$dataI18nModules->value,
-            'presentationContentRevision'=>$moduleRevision,
-            'presentationContentAproved'=>$dataModules->date_revision));
+            'presentationContentReview'=>$moduleReview,
+            'presentationContentApproved'=>$dataModules->date_revision));
     }
     
     public function getApplicationTable()

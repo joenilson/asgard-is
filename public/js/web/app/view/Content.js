@@ -13,6 +13,7 @@ Ext.define('Asgard.view.Content', {
                 xtype: 'panel',
                 closable: false,
                 title: this.titleText,
+                glyph: '72@Pictos',
                 loader: {
                     url: '/application/presentation',
                     autoLoad: true,

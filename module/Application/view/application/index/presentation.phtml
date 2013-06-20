@@ -1,13 +1,12 @@
 <script>
-var revision_date = Ext.Date.format(Ext.Date.parse("<?php echo $this->presentationContentAproved; ?>", "Y-m-d g:i:s.u"), "l, jS F Y");
-Ext.get('presentationContentAproved').update(revision_date);
+var revision_date = Ext.Date.format(Ext.Date.parse("<?php echo $this->presentationContentApproved; ?>", "Y-m-d g:i:s.u"), "l, jS F Y");
 
 Ext.define('Asgard.view.window.systemInformation', {
     extend: 'Ext.window.Window',
     xtype: 'basic-window',
     height: 300,
     width: 400,
-    title: 'Window',
+    title: '<? echo $this->systemDescription; ?>',
     autoScroll: true,
     autoShow: true,
     bodyPadding: 10,
@@ -15,10 +14,11 @@ Ext.define('Asgard.view.window.systemInformation', {
     systemDescription: '<? echo $this->systemDescription; ?>',
     defaultModule: <? echo $this->defaultModule; ?>,
     presentationContentHeader: '<? echo $this->presentationContentHeader; ?>',
-    presentationContentRevision: '<? echo $this->presentationContentRevision; ?>',
-    presentationContentRevisionText: 'Revision',
-    presentationContentAproved: Ext.Date.format(Ext.Date.parse("<?php echo $this->presentationContentAproved; ?>", "Y-m-d g:i:s.u"), "l, jS F Y"),
-    presentationContentAprovedText: 'Approved',
+    presentationContentReview: '<? echo $this->presentationContentReview; ?>',
+    presentationContentReviewText: 'Review',
+    //presentationContentApproved: Ext.Date.format(Ext.Date.parse("<?php echo $this->presentationContentApproved; ?>", "Y-m-d g:i:s.u"), "l, jS F Y"),
+    presentationContentApproved: revision_date,
+    presentationContentApprovedText: 'Approved',
     presentationContent: 'System Status',
     initComponent: function(){
         var content = "";
@@ -27,8 +27,8 @@ Ext.define('Asgard.view.window.systemInformation', {
                   this.systemDescription+'<br />'+
                   this.defaultModule+'<br />'+
                   this.presentationContentHeader+'<br />'+
-                  this.presentationContentRevision+'<br />'+
-                  this.presentationContentAproved+'<br />';
+                  this.presentationContentReviewText+': '+this.presentationContentReview+'<br />'+
+                  this.presentationContentApprovedText+': '+this.presentationContentApproved+'<br />';
         }else{
             content = this.presentationContent;
         }
@@ -40,30 +40,3 @@ Ext.define('Asgard.view.window.systemInformation', {
 
 Ext.create('Asgard.view.window.systemInformation');
 </script>
-<center>
-<h1><? echo $this->companyName; ?></h1>
-<h2>Manual del Sistema de Gestión Integrado</h2>
-<h2><? echo $this->systemDescription; ?></h2>
-<div id='centered-box'>
-Manual del Sistema de Gestión Integrado
-<br />
-Revisión 01
-<br />
-Aprobado el 20 de Abril del 2012
-</div>
-
-<div id='centered-box'>
-    <?php
-        if($this->defaultModule=='10'){
-            echo $this->presentationContentHeader;
-            echo "<br />";
-            echo $this->presentationContentRevision;
-            echo "<br />";
-            echo "<div id='presentationContentAproved'></div>";
-        }else{
-            echo $this->presentationContent; 
-        }
-    ?>
-</div>
-
-</center>

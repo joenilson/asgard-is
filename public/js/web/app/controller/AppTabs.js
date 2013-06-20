@@ -1,6 +1,6 @@
 Ext.define('Asgard.controller.AppTabs', {
     extend: 'Ext.app.Controller',
-
+    views: ['Content'],
     //stores: ['Menus'],
 
     //views: ['article.Grid'],
@@ -14,14 +14,21 @@ Ext.define('Asgard.controller.AppTabs', {
     }],
     */
     init: function() {
-	/*
         this.control({
-            'articleTab': {
-                refresh: this.selectItem
+            firebutton: {
+                click: this.fireButtonClickHandler
             }
         });
-	*/
+	
     },
+    
+    fireButtonClickHandler: function(btn) {
+    
+        console.log('button clicked');
+    
+    //var toolbar = btn.up('toolbar');
+    //toolbar.add({xtype: 'waterbutton'});
+    }
     /*
     selectItem: function(view) {
         var first = this.getArticlesStore().getAt(0);
@@ -34,27 +41,7 @@ Ext.define('Asgard.controller.AppTabs', {
      * Loads the given article into a new tab
      * @param {Asgard.model.AppTab} article The article to load into a new tab
      */
-    loadArticle: function(view, article) {
-        var viewer = this.getViewer(),
-            title = article.get('title'),
-            articleId = article.id;
-
-        tab = viewer.down('[articleId=' + articleId + ']');
-        if (!tab) {
-            tab = this.getArticleTab();
-            tab.down('button[action=viewintab]').destroy();
-        }
-
-        tab.setTitle(title);
-        tab.article = article;
-        tab.articleId = articleId;
-        tab.update(article.data);
-
-        viewer.add(tab);
-        viewer.setActiveTab(tab);
-
-        return tab;
-    }
+    
 });
 
 

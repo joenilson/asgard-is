@@ -1,76 +1,66 @@
 <script>
-//Ext = top.Ext;
-Asgard = top.Asgard;
-
-Ext.Loader.setConfig({ 
-  enabled: true, 
-  paths   : {
-    Asgard : '/js/web/app'
-  }
-});
 <?php
 if(!empty($this->role)){
   $var=str_replace(' ','',$this->role);
-  echo "Ext.require('Asgard.view.content.{$var}Functions');\n";
+  echo "Ext.require('Asgard.lib.toolbar{$var}');\n";
   echo "var panelContent = '".$this->panelContent."';\n";
-  echo "var toolbarType = '".$var."-functions';\n";
+  //echo "var panelContent = '';\n";
+  echo "var toolbarType = '".$var."-toolbar';\n";
 }
 ?>
 Ext.tip.QuickTipManager.init();
-/*
-Ext.create('Ext.panel.Panel', {
-    scope: this,
-    bodyPadding: 15,  // Don't want content to crunch against the borders
-    width: 300,
-    title: 'Filters',
-    items: [{
-	//text: 'One',
-        xtype: 'datefield',
-        fieldLabel: 'Start date'
-    }, {
-        
-        xtype: 'textfield',
-        fieldLabel: 'End date'
-    }],
-    renderTo: document.body
-});
-*/
-Ext.create('Ext.form.Panel', {
-  //title: 'Results',
-  bodyPadding: 15,
-  //width: 600,
-  //height: 400,
-  renderTo: document.body,
-  docketItems: {
-    xtype: toolbarType,
-  },
-  /*
+
+var Panel = Ext.create('Asgard.lib.RTFPanel', {
   dockedItems: {
-   xtype: 'toolbar',
-    dock: 'top',
-    ui: 'header',
-    items: [
-    {
-      text: 'Save',
-      frame: false,
-    }, 
-    '->',
-    {
-      text: 'Dont Save',
-      frame: false,
-    },]
+    xtype: toolbarType
   },
-  */
-  defaults: {
-    layout: 'fit',
-    border: true,
-    frame: false,    
-  },
-  items: [{               // Results grid specified as a config object with an xtype of 'grid'
+  submit: '#',
+  autoShow: true,
+  autoDestroy: true,
+  frame: false,
+  layout: 'fit',
+  //renderTo: 'contentModule-<?php echo $this->contentId; ?>',
+  items: [{
       xtype: 'container',
-      //flex: 1,
-      html: panelContent// Use 1/3 of Container's height (hint to Box layout)
+      anchor: '100%',
+      html: panelContent
   }],
+  
 });
 
+function onClick(btn){
+    //console.log(btn);
+    switch (btn.text){
+        case "Search":
+            console.log('Search lib class to be implemented.');
+            break;
+        case "Refresh":
+            console.log('Refresh lib class to be implemented.');
+            break;
+        case "Edit Content":
+            console.log('Editor lib class to be implemented.');
+            console.log(Panel.items);
+            Panel.removeAll();
+            var items = [{ xtype: 'rtfeditor', value: panelContent, autoHeight: true }];
+            Panel.add(items);
+            //Panel.items.items[0].update("Changed by click!");;
+            Panel.doLayout();
+            break;
+        case "Add Content":
+            console.log('Add lib class to be implemented.');
+            break;
+        case "Remove Content":
+            console.log('Remove lib class to be implemented.');
+            break;
+        case "Save Changes":
+            console.log('Save lib class to be implemented.');
+            break;
+        default:
+            console.log('At this point we will do nothing.');
+            break;
+    }
+}
+Ext.getCmp('content-panel').getActiveTab().add(Panel);
 </script>
+<div id='contentModule-<?php echo $this->contentId; ?>'></div>
+    

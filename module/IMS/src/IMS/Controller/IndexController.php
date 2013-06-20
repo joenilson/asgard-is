@@ -33,7 +33,7 @@ class IndexController extends AbstractActionController
             $role=($userGrantedAccess[0]['edit']==1)?'Editor':$role;
         }
         
-        return array('role'=>$role,'panelContent'=>'Hello World!');
+        return array('role'=>$role,'panelContent'=>'<h1>Hello World!</h1>','contentId'=>$this->params()->fromRoute('id', 0));
     }
     
     

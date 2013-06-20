@@ -58,7 +58,14 @@ body {
     background: -ms-linear-gradient(top,  #c9de96 0%,#7eab32 44%,#7eab32 100%); /* IE10+ */
     background: linear-gradient(to bottom,  #c9de96 0%,#7eab32 44%,#7eab32 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c9de96', endColorstr='#7eab32',GradientType=0 ); /* IE6-9 */
+}
 
-    
-    
+@font-face {
+    font-family: 'Pictos';
+    src: url("../../js/extjs/resources/pictos/pictos.eot");
+    src: url("../../js/extjs/resources/pictos/pictos.eot?#iefix") format("embedded-opentype"), 
+        url("../../js/extjs/resources/pictos/pictos.woff") format("woff"), 
+        url("../../js/extjs/resources/pictos/pictos.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
 }

@@ -31,13 +31,26 @@ Ext.define('Asgard.controller.Menus', {
 	if (tab) {
 	  tabsPanel.setActiveTab(tab);
 	} else {
-	  tabsPanel.add({
+            tabsPanel.add({
+                xtype: 'panel',
+                closable: true,
+                id: itemTab,
+                title: record.get('description'),
+                AutoDestroy: true,
+                layout: 'fit',
+                loader: {
+                    url: record.get('path')+'/'+record.get('id_menu'),
+                    autoLoad: true,
+                    scripts: true
+                }
+              /*
 	      title: record.get('description'),
 	      id: itemTab,
 	      closable: true,
 	      AutoDestroy: true,
 	      xtype: record.get('contentHeader'),
               items: this.createPanelContent(record)
+              */
 	  }).show();
 	  tabsPanel.ownerCt.doLayout();                    			
 	}
