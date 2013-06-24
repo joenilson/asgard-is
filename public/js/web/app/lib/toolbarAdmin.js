@@ -9,12 +9,14 @@ Ext.define('Asgard.lib.toolbarAdmin',{
     saveButtonText: 'Save Changes',
     addButtonText: 'Add Content',
     removeButtonText: 'Remove Changes',
+    cancelButtonText: 'Cancel Changes',
     searchButton: undefined,
     refreshButton: undefined,
     editButton: undefined,
     saveButton: undefined,
     addButton: undefined,
     removeButton: undefined,
+    cancelButton: undefined,
     initComponent: function(){
         var me = this;
         this.searchButton = this.searchButton || []; 
@@ -48,7 +50,15 @@ Ext.define('Asgard.lib.toolbarAdmin',{
                 scope: me,
                 handler: onClick
             }, this.saveButton);
-            
+        
+        this.cancelButton = this.cancelButton || []; 
+        this.cancelButton = Ext.Object.merge({
+                text: this.cancelButtonText,
+                type: 'button',
+                scope: me,
+                handler: onClick
+            }, this.cancelButton);
+        
         this.addButton = this.addButton || []; 
         this.addButton = Ext.Object.merge({
                 text: this.addButtonText,
@@ -66,7 +76,7 @@ Ext.define('Asgard.lib.toolbarAdmin',{
             }, this.removeButton);
             
         this.items = this.items || [];
-        this.items = this.items.concat([this.editButton, this.addButton, this.removeButton, this.saveButton, '->', this.searchButton, this.refreshButton ]);
+        this.items = this.items.concat([this.editButton, this.addButton, this.removeButton, this.saveButton, this.cancelButton, '->', this.searchButton, this.refreshButton ]);
         
         this.callParent(arguments);
     }

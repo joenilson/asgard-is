@@ -7,10 +7,12 @@ Ext.define('Asgard.lib.toolbarEditor',{
     refreshButtonText: 'Refresh',
     editButtonText: 'Edit Content',
     saveButtonText: 'Save Changes',
+    cancelButtonText: 'Cancel Changes',
     searchButton: undefined,
     refreshButton: undefined,
     editButton: undefined,
     saveButton: undefined,
+    cancelButton: undefined,
     initComponent: function(){
         var me = this;
         this.searchButton = this.searchButton || []; 
@@ -45,8 +47,15 @@ Ext.define('Asgard.lib.toolbarEditor',{
                 handler: onClick
             }, this.saveButton);
         
+        this.cancelButton = this.cancelButton || []; 
+        this.cancelButton = Ext.Object.merge({
+                text: this.cancelButtonText,
+                type: 'button',
+                scope: me,
+                handler: onClick
+            }, this.cancelButton);
         this.items = this.items || [];
-        this.items = this.items.concat([this.editButton, this.saveButton, '->', this.searchButton, this.refreshButton ]);
+        this.items = this.items.concat([this.editButton, this.saveButton, this.cancelButton, '->', this.searchButton, this.refreshButton ]);
         
         this.callParent(arguments);
     }

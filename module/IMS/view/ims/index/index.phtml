@@ -10,6 +10,8 @@ if(!empty($this->role)){
 ?>
 Ext.tip.QuickTipManager.init();
 
+var originalItems = [{ xtype: 'container', anchor: '100%', html: panelContent }];
+
 var Panel = Ext.create('Asgard.lib.RTFPanel', {
   dockedItems: {
     xtype: toolbarType
@@ -20,11 +22,7 @@ var Panel = Ext.create('Asgard.lib.RTFPanel', {
   frame: false,
   layout: 'fit',
   //renderTo: 'contentModule-<?php echo $this->contentId; ?>',
-  items: [{
-      xtype: 'container',
-      anchor: '100%',
-      html: panelContent
-  }],
+  items: originalItems,
   
 });
 
@@ -39,11 +37,10 @@ function onClick(btn){
             break;
         case "Edit Content":
             console.log('Editor lib class to be implemented.');
-            console.log(Panel.items);
+            //console.log(Panel.items);
             Panel.removeAll();
             var items = [{ xtype: 'rtfeditor', value: panelContent, autoHeight: true }];
             Panel.add(items);
-            //Panel.items.items[0].update("Changed by click!");;
             Panel.doLayout();
             break;
         case "Add Content":
@@ -53,7 +50,22 @@ function onClick(btn){
             console.log('Remove lib class to be implemented.');
             break;
         case "Save Changes":
+            var editedContent = Panel.items.items[0].value;
+            console.log(editedContent);
+            if (editedContent !== panelContent){
+                console.log('Has been made changes');
+            }else{
+                Panel.removeAll();
+                Panel.add(originalItems);
+                console.log('No changes to commit');
+                Panel.doLayout();
+            }
             console.log('Save lib class to be implemented.');
+            break;
+        case "Cancel Changes":
+            Panel.removeAll();
+            Panel.add(originalItems);
+            Panel.doLayout();
             break;
         default:
             console.log('At this point we will do nothing.');
@@ -62,5 +74,3 @@ function onClick(btn){
 }
 Ext.getCmp('content-panel').getActiveTab().add(Panel);
 </script>
-<div id='contentModule-<?php echo $this->contentId; ?>'></div>
-    

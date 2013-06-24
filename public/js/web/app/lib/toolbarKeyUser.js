@@ -7,11 +7,13 @@ Ext.define('Asgard.lib.toolbarKeyUser',{
     refreshButtonText: 'Refresh',
     editButtonText: 'Edit Content',
     saveButtonText: 'Save Changes',
+    cancelButtonText: 'Cancel Changes',
     addButtonText: 'Add Content',
     searchButton: undefined,
     refreshButton: undefined,
     editButton: undefined,
     saveButton: undefined,
+    cancelButton: undefined,
     addButton: undefined,
     initComponent: function(){
         var me = this;
@@ -46,7 +48,15 @@ Ext.define('Asgard.lib.toolbarKeyUser',{
                 scope: me,
                 handler: onClick
             }, this.saveButton);
-            
+        
+        this.cancelButton = this.cancelButton || []; 
+        this.cancelButton = Ext.Object.merge({
+                text: this.cancelButtonText,
+                type: 'button',
+                scope: me,
+                handler: onClick
+            }, this.cancelButton);
+        
         this.addButton = this.addButton || []; 
         this.addButton = Ext.Object.merge({
                 text: this.addButtonText,
@@ -56,7 +66,7 @@ Ext.define('Asgard.lib.toolbarKeyUser',{
             }, this.addButton);
         
         this.items = this.items || [];
-        this.items = this.items.concat([this.editButton, this.addButton, this.saveButton, '->', this.searchButton, this.refreshButton ]);
+        this.items = this.items.concat([this.editButton, this.addButton, this.saveButton, this.cancelButton, '->', this.searchButton, this.refreshButton ]);
 
         
         this.callParent(arguments);
