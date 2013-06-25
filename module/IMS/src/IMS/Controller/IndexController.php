@@ -98,19 +98,6 @@ class IndexController extends AbstractActionController
                 ->setDate_creation($date_now)
                 ->setDate_lastmodif($date_now);
         
-        /*
-        $contentTextBody = new ContentText();
-        $contentTextBody->setId_module($moduleParams[0])
-                ->setId_submodule($moduleParams[1])
-                ->setLang($lang)
-                ->setContent($contentTextData);
-        /*
-                ->setMajorversion($majorversion)
-                ->setMinorversion($minorversion)
-                ->setCorrection($correction)
-                ->setDate_creation($date_creation)
-                ->setDate_lastmodif($date_lastmodif);
-        */
         $contentData->save($contentTextBody);
         
         $data['success']=true;
