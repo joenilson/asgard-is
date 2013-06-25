@@ -23,6 +23,7 @@ use Application\Model\UsersTable;
 use Application\Model\AdminUserModulesTable;
 use Application\Model\AdminUserSubmodulesTable;
 use Application\Model\CompaniesTable;
+use Application\Model\MessagesTable;
 
 class Module
 {
@@ -219,6 +220,12 @@ class Module
                     $table = new ApplicationTable($dbAdapter);
                     return $table;
                 },
+                        
+                'Application\Model\MessagesTable' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new MessagesTable($dbAdapter);
+                    return $table;
+                },        
     	    ),
         );
     }

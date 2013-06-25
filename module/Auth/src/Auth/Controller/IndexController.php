@@ -91,91 +91,90 @@ class IndexController extends AbstractActionController
             $userLang = substr($request->getPost('userlanguage'),0,2);
             $userLang = (empty($userLang))?'en':$userLang;
             $userTimezone = $request->getPost('client_timezone');
-    		//check authentication...
-    		$authHeader = $this->getAuthService($userType)->getAdapter();
-    		if($userType == 'db'){
-    		  $authHeader->setIdentity($userAuth)
-    		      ->setCredential($passAuth);
-    		}elseif ($userType == 'ldap'){
-    		    $authHeader->setUsername($userAuth)
-    		    ->setPassword($passAuth);
-    		}
-    		$result = $this->getAuthService($userType)->authenticate();
-    		
-    		$TranslationTable=$this->getTranslationTable();
-    		
-    		switch ($result->getCode()) {
-    			 
-    			case Result::FAILURE_IDENTITY_NOT_FOUND:
-    				/** do stuff for nonexistent identity **/
-    				$data['message']=$TranslationTable->getTranslationItem(
-    				substr($request->getPost('userlanguage'),0,2),
-    				$request->getPost('module'),
-    				'erroridentityText')->value;
-    				//$data['message']='User not allowed to login... ';
-    				break;
-    				 
-    			case Result::FAILURE_CREDENTIAL_INVALID:
-    				/** do stuff for invalid credential **/
-    				$data['message']=$TranslationTable->getTranslationItem(
-    				substr($request->getPost('userlanguage'),0,2),
-    				$request->getPost('module'),
-    				'errorcredentialText')->value;
-    				//$data['message']='User/Password dont match... ';
-    				break;
-    				 
-    			case Result::SUCCESS:
-    				/** do stuff for successful authentication **/
-    				$data['redirect'] = '/';
-    				$data['success'] = true;
-    				$now = date('Y-m-d H:i:s.'). str_pad(substr((float)microtime(), 2), 6, '0', STR_PAD_LEFT);
-    				//check if it has rememberMe :
-    				$UsersTable=$this->getUsersTable();
-    				$UserPrefsTable = $this->getUserPreferencesTable();
-    				if ($request->getPost('rememberme')){
-    				    if( $request->getPost('rememberme') == 'on' ) {
-        					$this->getSessionStorage()->setRememberMe(1);
-        					//set storage again
-        					$this->getAuthService($userType)->setStorage($this->getSessionStorage());
-    				    }
-    				}
-    				//print_r($user_prefs);
-    				if($userType == 'db'){
-    				    $userData = $this->getAuthService($userType)
-    				                    ->getAdapter()
-    				                    ->getResultRowObject(null,array('password','salt'));
-    				    
-    				    $dataValues = array ('date_lastlogin' => $now);
-    				    
-    				    $UsersTable->updateById($userData->id, $dataValues);
-    				    
-    				}elseif ($userType == 'ldap'){
-    				    
-    				    $resultMessages = $this->getAuthService($userType)
-    				                    ->getAdapter()
-    				                    ->getAccountObject();
-    				    
-    				    $userRegistry = $UsersTable->getUserByUsername($resultMessages->uid,$userType);
-    				    
-    				    if(!empty($userRegistry)){
+            //check authentication...
+            $authHeader = $this->getAuthService($userType)->getAdapter();
+            if($userType == 'db'){
+              $authHeader->setIdentity($userAuth)
+                  ->setCredential($passAuth);
+            }elseif ($userType == 'ldap'){
+                $authHeader->setUsername($userAuth)
+                ->setPassword($passAuth);
+            }
+            $result = $this->getAuthService($userType)->authenticate();
+
+            $TranslationTable=$this->getTranslationTable();
+
+            switch ($result->getCode()) {
+
+                case Result::FAILURE_IDENTITY_NOT_FOUND:
+                    /** do stuff for nonexistent identity **/
+                    $data['message']=$TranslationTable->getTranslationItem(
+                    substr($request->getPost('userlanguage'),0,2),
+                    $request->getPost('module'),
+                    'erroridentityText')->value;
+                    //$data['message']='User not allowed to login... ';
+                    break;
+
+                case Result::FAILURE_CREDENTIAL_INVALID:
+                    /** do stuff for invalid credential **/
+                    $data['message']=$TranslationTable->getTranslationItem(
+                    substr($request->getPost('userlanguage'),0,2),
+                    $request->getPost('module'),
+                    'errorcredentialText')->value;
+                    //$data['message']='User/Password dont match... ';
+                    break;
+
+                case Result::SUCCESS:
+                    /** do stuff for successful authentication **/
+                    $data['redirect'] = '/';
+                    $data['success'] = true;
+                    $now = date('Y-m-d H:i:s.'). str_pad(substr((float)microtime(), 2), 6, '0', STR_PAD_LEFT);
+                    //check if it has rememberMe :
+                    $UsersTable=$this->getUsersTable();
+                    $UserPrefsTable = $this->getUserPreferencesTable();
+                    if ($request->getPost('rememberme')){
+                        if( $request->getPost('rememberme') == 'on' ) {
+                                    $this->getSessionStorage()->setRememberMe(1);
+                                    //set storage again
+                                    $this->getAuthService($userType)->setStorage($this->getSessionStorage());
+                        }
+                    }
+                    //print_r($user_prefs);
+                    if($userType == 'db'){
+                        $userData = $this->getAuthService($userType)
+                                        ->getAdapter()
+                                        ->getResultRowObject(null,array('password','salt'));
+
+                        $dataValues = array ('date_lastlogin' => $now);
+
+                        $UsersTable->updateById($userData->id, $dataValues);
+
+                    }elseif ($userType == 'ldap'){
+
+                        $resultMessages = $this->getAuthService($userType)
+                                        ->getAdapter()
+                                        ->getAccountObject();
+
+                        $userRegistry = $UsersTable->getUserByUsername($resultMessages->uid,$userType);
+
+                        if(!empty($userRegistry)){
                             $userData = $UsersTable->getUserByIdRaw($userRegistry[0]['id']);
-    				        $dataValues = array ('date_lastlogin' => $now);
-    				        $UsersTable->updateById($userRegistry[0]['id'], $dataValues);
-    				    
-    				    }else{
-    				        $country=($userField[1]=='kolareal.com.do')?'DO':'PE';
-    				        $country=($userField[1]=='kr.com.pe')?'PE':$country;
-    				        $country=($userField[1]=='group-ism.com')?'PE':$country;
-    				        $country=($userField[1]=='group-ism.com.br')?'BR':$country;
-    				        
-    				        
-    				        $salt=md5($resultMessages->uid.$now.$country);
-    				        
-    				        $prePassword = $this->getConfig()['salt'].$passAuth.$salt;
-    				        $password=md5($prePassword);
-                            
-    				        $user = new Users();
-                            
+                            $dataValues = array ('date_lastlogin' => $now);
+                            $UsersTable->updateById($userRegistry[0]['id'], $dataValues);
+
+                        }else{
+                            $country=($userField[1]=='kolareal.com.do')?'DO':'PE';
+                            $country=($userField[1]=='kr.com.pe')?'PE':$country;
+                            $country=($userField[1]=='group-ism.com')?'PE':$country;
+                            $country=($userField[1]=='group-ism.com.br')?'BR':$country;
+
+                            $salt=md5($resultMessages->uid.$now.$country);
+
+                            $prePassword = $this->getConfig()['salt'].$passAuth.$salt;
+                            $password=md5($prePassword);
+
+                            $user = new Users();
+
                             $user->setId(0)
                             ->setUsername($resultMessages->uid)
                             ->setPassword($password)
@@ -193,7 +192,7 @@ class IndexController extends AbstractActionController
                             ->setAccount_type('ldap');
 
                             $newUserId=$UsersTable->save($user);
-                           
+
                             $user->setId($newUserId);
                             /*
                              * User preferences first load
@@ -216,22 +215,22 @@ class IndexController extends AbstractActionController
                             ->setFax_phone(null)
                             ->setOffice_ext(null);
                             $UserPrefsTable->save($userPrefs);
-                            
+
                             /*
                              * Module and Submodule initial load for IMS
                              * IMS is id 10
                              */
                             $imsMid=10;
                             $imsModuleLoad = $this->getAdminUserModulesTable();
-                            
+
                             $module = new AdminUserModules();
                             $module->setUser_id($newUserId)
                                     ->setMid($imsMid);
-                            
+
                             $imsModuleLoad->populateUserModule($module);
-                            
+
                             $ismSubmoduleLoad = $this->getAdminUserSubmodulesTable();
-                            
+                                
                             $submodule = new AdminUserSubmodules();
                             $submodule->setUser_id($newUserId)
                                         ->setMid($imsMid)
@@ -239,26 +238,25 @@ class IndexController extends AbstractActionController
                                         ->setEdit('f')
                                         ->setAdd('f')
                                         ->setAdmin('f');
-                            
+
                             $ismSubmoduleLoad->populateUserSubmodule($submodule);
                             $userData = $user;
                             $dataValues = array ('date_lastlogin' => $now);
                             $UsersTable->updateById($newUserId, $dataValues);
-                            
-    				    }
-    				}
-    				$this->getAuthService($userType)->getStorage()->write($userData);
-    				break;
-    				 
-    			default:
-    				/** do stuff for other failure **/
-    				$data['message']=$TranslationTable->getTranslationItem(
-    				substr($request->getPost('userlanguage'),0,2),
-    				$request->getPost('module'),
-    				'errorprocessText')->value;
-    				break;
-    		}
-    
+
+                        }
+                    }
+                    $this->getAuthService($userType)->getStorage()->write($userData);
+                    break;
+
+                default:
+                    /** do stuff for other failure **/
+                    $data['message']=$TranslationTable->getTranslationItem(
+                    substr($request->getPost('userlanguage'),0,2),
+                    $request->getPost('module'),
+                    'errorprocessText')->value;
+                    break;
+            }
     	}
     
     	$result = new JsonModel($data);

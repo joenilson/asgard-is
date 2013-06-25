@@ -18,6 +18,7 @@ class IndexController extends AbstractActionController
 {
     protected $adminusersubmodulesTable;
     protected $contentTextTable;
+    protected $messagesTable;
     
     public function indexAction()
     {
@@ -39,21 +40,29 @@ class IndexController extends AbstractActionController
         }
         
         $contentModule = $this->getContentTextTable()->getContent($idModule,$idSubmodule,$userPrefs[0]['lang']);
+        
         $versioning = new Documents();
         if(!empty($contentModule)){
             $contentVersioning = $versioning->getVersioning(
                                 $contentModule->majorversion, 
                                 $contentModule->minorversion, 
                                 $contentModule->correction);
-            $panelContent = $contentModule->content; 
+            $panelContent = $contentModule->content;
+            $messageContent = "";
         }else{
+            $msgBox = $this->getMessagesTable()->getMessage($userPrefs[0]['lang'],'NoContent');
             $contentVersioning = $versioning->getVersioning(
                                         null, null, null);
             $panelContent = "";
+            $messageContent = $msgBox->value;
         }
-        $panelHeader="<div class='versioning'>$contentVersioning</div>";
+        $panelHeader="<div class=\"versioning\">$contentVersioning</div>";
         
-        return array('role'=>$role,'panelVersioning'=>$panelHeader,'panelContent'=>$contentModule,'contentId'=>$this->params()->fromRoute('id', 0));
+        return array('role'=>$role,
+            'panelVersioning'=>$panelHeader,
+            'panelContent'=>$panelContent,
+            'message'=>$messageContent,
+            'contentId'=>$this->params()->fromRoute('id', 0));
     }
     
     
@@ -62,11 +71,35 @@ class IndexController extends AbstractActionController
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
         $request = $this->getRequest();
         $moduleParams = explode('-',$this->params()->fromRoute('id', 0));
-        $contentTextData = $request->getPost('content_text');
+        $contentTextData = $request->getPost('rtfeditor');
+        $versioning = explode('.',$request->getPost('content_versioning'));
+        $type_versioning = explode('.',$request->getPost('type_versioning'));
         $lang = $userPrefs[0]['lang'];
         
-        $contentText = $this->getContentTextTable();
-        $contentTextBody = new ContentText;
+        $versioning[0] = (!$versioning[0])?null:$versioning[0];
+        $versioning[1] = (!$versioning[1])?null:$versioning[1];
+        $versioning[2] = (!$versioning[2])?null:$versioning[2];
+        
+        $versioningDocument = new Documents();
+        
+        $mmc = $versioningDocument->setVersioning($versioning[0],$versioning[1],$versioning[2],$type_versioning);
+
+        $date_now=date('Y-m-d H:i:s.u');
+        
+        $contentData = $this->getContentTextTable();
+        $contentTextBody = new ContentText();
+        $contentTextBody->setId_module($moduleParams[0])
+                ->setId_submodule($moduleParams[1])
+                ->setLang($lang)
+                ->setContent($contentTextData)
+                ->setMajorversion($mmc['majorversion'])
+                ->setMinorversion($mmc['minorversion'])
+                ->setCorrection($mmc['correction'])
+                ->setDate_creation($date_now)
+                ->setDate_lastmodif($date_now);
+        
+        /*
+        $contentTextBody = new ContentText();
         $contentTextBody->setId_module($moduleParams[0])
                 ->setId_submodule($moduleParams[1])
                 ->setLang($lang)
@@ -78,7 +111,7 @@ class IndexController extends AbstractActionController
                 ->setDate_creation($date_creation)
                 ->setDate_lastmodif($date_lastmodif);
         */
-        $contentText->saveContent($contentTextBody);
+        $contentData->save($contentTextBody);
         
         $data['success']=true;
         $result = new JsonModel($data);
@@ -88,18 +121,27 @@ class IndexController extends AbstractActionController
     public function getAdminUserSubmodulesTable()
     {
     	if (!$this->adminusersubmodulesTable) {
-    		$sm = $this->getServiceLocator();
-    		$this->adminusersubmodulesTable = $sm->get('Application\Model\AdminUserSubmodulesTable');
+            $sm = $this->getServiceLocator();
+            $this->adminusersubmodulesTable = $sm->get('Application\Model\AdminUserSubmodulesTable');
     	}
     	return $this->adminusersubmodulesTable;
     }
     
-     public function getContentTextTable()
+    public function getContentTextTable()
     {
     	if (!$this->contentTextTable) {
-    		$sm = $this->getServiceLocator();
-    		$this->contentTextTable = $sm->get('IMS\Model\ContentTextTable');
+            $sm = $this->getServiceLocator();
+            $this->contentTextTable = $sm->get('IMS\Model\ContentTextTable');
     	}
     	return $this->contentTextTable;
+    }
+    
+    public function getMessagesTable()
+    {
+    	if (!$this->messagesTable) {
+            $sm = $this->getServiceLocator();
+            $this->messagesTable = $sm->get('Application\Model\MessagesTable');
+    	}
+    	return $this->messagesTable;
     }
 }

@@ -115,7 +115,7 @@ class ContentText {
     }
 
     public function setDate_creation($date_creation){
-        $this->_date_creation = (int) $date_creation;
+        $this->_date_creation = $date_creation;
         return $this;
     }
     
@@ -124,7 +124,7 @@ class ContentText {
     }
 
     public function setDate_lastmodif($date_lastmodif){
-        $this->_date_lastmodif = (int) $date_lastmodif;
+        $this->_date_lastmodif = $date_lastmodif;
         return $this;
     }
     

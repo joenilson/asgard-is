@@ -25,7 +25,7 @@ class ContentTextTable extends AbstractTableGateway {
     }
 
     public function getContent($mid,$smid,$lang) {
-        $row = $this->select(array('id_module' => (int) $mid,'id_submodule' => (int) $smid,'lang' => (int) $lang))->current();
+        $row = $this->select(array('id_module' => (int) $mid,'id_submodule' => (int) $smid,'lang' => (string) $lang))->current();
         if (!$row)
             return false;
         return $row;

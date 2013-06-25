@@ -2,28 +2,28 @@
 <?php
 if(!empty($this->role)){
   $var=str_replace(' ','',$this->role);
-  echo "Ext.require('Asgard.lib.toolbar{$var}');\n";
+  //echo "Ext.require('Asgard.lib.toolbar{$var}');\n";
+  echo "var panelVersioning = '".$this->panelVersioning."';\n";
   echo "var panelContent = '".$this->panelContent."';\n";
+  echo "var emptyContent = '".$this->message."'\n";
   //echo "var panelContent = '';\n";
   echo "var toolbarType = '".$var."-toolbar';\n";
 }
 ?>
 Ext.tip.QuickTipManager.init();
 
-var originalItems = [{ xtype: 'container', anchor: '100%', html: panelContent }];
+var originalItems = [{ xtype: 'container', anchor: '100%', html: panelVersioning+panelContent+emptyContent }];
 
 var Panel = Ext.create('Asgard.lib.RTFPanel', {
   dockedItems: {
     xtype: toolbarType
   },
-  submit: '#',
+  url: '/ims/saveContent/<?php echo $this->contentId; ?>',
   autoShow: true,
   autoDestroy: true,
   frame: false,
-  layout: 'fit',
-  //renderTo: 'contentModule-<?php echo $this->contentId; ?>',
-  items: originalItems,
-  
+  layout: 'anchor',
+  items: originalItems
 });
 
 function onClick(btn){
@@ -32,14 +32,15 @@ function onClick(btn){
         case "Search":
             console.log('Search lib class to be implemented.');
             break;
-        case "Refresh":
-            console.log('Refresh lib class to be implemented.');
-            break;
         case "Edit Content":
-            console.log('Editor lib class to be implemented.');
-            //console.log(Panel.items);
             Panel.removeAll();
-            var items = [{ xtype: 'rtfeditor', value: panelContent, autoHeight: true }];
+            var items = [
+                { 
+                    xtype: 'rb-versioning'
+                },
+                { 
+                    xtype: 'rtfeditor', name: 'rtfeditor', value: panelContent, height: '90%', anchor: '100%'
+                }];
             Panel.add(items);
             Panel.doLayout();
             break;
@@ -53,6 +54,14 @@ function onClick(btn){
             var editedContent = Panel.items.items[0].value;
             console.log(editedContent);
             if (editedContent !== panelContent){
+                Panel.form.submit({
+                    success: function(form, action) {
+                       Ext.Msg.alert('Success', action.result.msg);
+                    },
+                    failure: function(form, action) {
+                        Ext.Msg.alert('Failed', action.result.msg);
+                    }
+                });
                 console.log('Has been made changes');
             }else{
                 Panel.removeAll();
