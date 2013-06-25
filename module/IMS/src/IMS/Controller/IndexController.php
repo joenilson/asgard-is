@@ -12,6 +12,7 @@ namespace IMS\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use IMS\Model\Entity\ContentText;
+use AsgardLib\Versioning\Documents;
 
 class IndexController extends AbstractActionController
 {
@@ -29,6 +30,7 @@ class IndexController extends AbstractActionController
         $idSubmodule = $moduleParams[1];
         
         $userGrantedAccess = $this->getAdminUserSubmodulesTable()->getUserSubmodulesAccess($idUser, $idModule, $idSubmodule);
+        
         if(!empty($userGrantedAccess)){
             $role='Viewer';
             $role=($userGrantedAccess[0]['admin']==1)?'Administrator':$role;
@@ -36,7 +38,22 @@ class IndexController extends AbstractActionController
             $role=($userGrantedAccess[0]['edit']==1)?'Editor':$role;
         }
         
-        return array('role'=>$role,'panelContent'=>'<h1>Hello World!</h1>','contentId'=>$this->params()->fromRoute('id', 0));
+        $contentModule = $this->getContentTextTable()->getContent($idModule,$idSubmodule,$userPrefs[0]['lang']);
+        $versioning = new Documents();
+        if(!empty($contentModule)){
+            $contentVersioning = $versioning->getVersioning(
+                                $contentModule->majorversion, 
+                                $contentModule->minorversion, 
+                                $contentModule->correction);
+            $panelContent = $contentModule->content; 
+        }else{
+            $contentVersioning = $versioning->getVersioning(
+                                        null, null, null);
+            $panelContent = "";
+        }
+        $panelHeader="<div class='versioning'>$contentVersioning</div>";
+        
+        return array('role'=>$role,'panelVersioning'=>$panelHeader,'panelContent'=>$contentModule,'contentId'=>$this->params()->fromRoute('id', 0));
     }
     
     
@@ -60,7 +77,7 @@ class IndexController extends AbstractActionController
                 ->setCorrection($correction)
                 ->setDate_creation($date_creation)
                 ->setDate_lastmodif($date_lastmodif);
-        */            
+        */
         $contentText->saveContent($contentTextBody);
         
         $data['success']=true;

@@ -7,9 +7,9 @@ use Zend\Db\Sql\TableIdentifier;
 use Zend\Db\Sql\Select;
 use IMS\Model\Entity\ContentText;
 
-class ContextTextTable extends AbstractTableGateway {
+class ContentTextTable extends AbstractTableGateway {
 
-    protected $table_name = 'context_text';
+    protected $table_name = 'content_text';
     protected $schema_name = 'ims';
 
     public function __construct(Adapter $adapter) {
@@ -25,7 +25,7 @@ class ContextTextTable extends AbstractTableGateway {
     }
 
     public function getContent($mid,$smid,$lang) {
-        $row = $this->select(array('id_module' => (int) $mid,'id_submodule' => (int) $smid,'lang' => (int) $lang))->toArray();
+        $row = $this->select(array('id_module' => (int) $mid,'id_submodule' => (int) $smid,'lang' => (int) $lang))->current();
         if (!$row)
             return false;
         return $row;

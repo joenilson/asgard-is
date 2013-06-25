@@ -14,8 +14,8 @@
 return array(
     // ...
     'db' => array(
-		'driver'         => 'Pdo',
-		'dsn'            => 'pgsql:dbname=psamment;host=localhost',
+		'driver'    => 'Pdo',
+		'dsn'       => 'pgsql:dbname=psamment;host=localhost',
         'driver_options' => array(
             PDO::PGSQL_ATTR_DISABLE_NATIVE_PREPARED_STATEMENT => true,
             PDO::ATTR_EMULATE_PREPARES => true

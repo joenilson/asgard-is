@@ -1,7 +1,10 @@
 <?php
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Asgard  Library for common functions
+ * Versioning functions
+ * Documents versioning Class
+ * With this class we can create a document versioning for documents
+ * 
  */
 
 namespace AsgardLib\Versioning;
@@ -24,17 +27,20 @@ class Documents {
     }
     
     public function setMajorVersion($majorversion = null){
+        $majorversion = ($majorversion == null)?1:$majorversion++;
         $this->_majorversion = (int) $majorversion;
         return $this->_majorversion;
     }
     
     public function setMinorVersion($minorversion = null){
+        $minorversion = ($minorversion == null)?0:$minorversion++;
         $this->_minorversion = (int) $minorversion; 
         return $this->_minorversion;
     }
     
     public function setCorrection($correction = null){
-        $this->_correction = (int) $correction; 
+        $correction = ($correction == null)?0:$correction++;
+        $this->_correction = (int) $correction;
         return $this->_correction;
     }
     
