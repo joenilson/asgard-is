@@ -39,7 +39,7 @@ Ext.define('Asgard.lib.RadioButtonsVersioning',{
         this.correctionField = Ext.Object.merge({
             boxLabel: this.correctionFieldText,
             name: 'type_versioning',
-            inputValue: 'modification',
+            inputValue: 'correction',
             checked: true
         }, this.correctionField);
 

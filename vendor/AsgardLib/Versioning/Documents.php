@@ -27,10 +27,11 @@ class Documents {
         return $this->_doctype;
     }
     
-    public function setMajorVersion($majorversion = null, $type_versioning = null){
+    public function setMajorVersion($majorversion, $type_versioning){
         switch($type_versioning){
             case "change":
-                $majorversion = ($majorversion == null)?1:$majorversion++;
+                $majorversion = ($majorversion == null)?1:$majorversion;
+                $majorversion++;
                 break;
             case "modification":
                 $majorversion = ($majorversion == null)?1:$majorversion;
@@ -46,18 +47,19 @@ class Documents {
         return $this->_majorversion;
     }
     
-    public function getMajorVersion($majorversion = null){
+    public function getMajorVersion($majorversion){
         $this->_majorversion = (int) $majorversion;
         return $this->_majorversion;
     }
     
-    public function setMinorVersion($minorversion = null, $type_versioning = null){
+    public function setMinorVersion($minorversion, $type_versioning){
         switch($type_versioning){
             case "change":
-                $minorversion = ($minorversion == null)?0:$minorversion++;
+                $minorversion = ($minorversion == null)?0:0;
                 break;
             case "modification":
-                $minorversion = ($minorversion == null)?0:$minorversion;
+                $minorversion = ($minorversion == null)?1:$minorversion;
+                $minorversion++;
                 break;
             case "correction":
                 $minorversion = ($minorversion == null)?0:$minorversion;
@@ -70,37 +72,38 @@ class Documents {
         return $this->_minorversion;
     }
     
-    public function getMinorVersion($minorversion = null){
+    public function getMinorVersion($minorversion){
         $this->_minorversion = (int) $minorversion;
         return $this->_minorversion;
     }
 
     
-    public function setCorrection($correction = null, $type_versioning = null){
+    public function setCorrection($correction, $type_versioning){
         switch($type_versioning){
             case "change":
-                $correction = ($correction == null)?0:$correction++;
+                $correction = ($correction === null)?0:0;
                 break;
             case "modification":
-                $correction = ($correction == null)?0:$correction;
+                $correction = ($correction === null)?0:0;
                 break;
             case "correction":
-                $correction = ($correction == null)?0:$correction;
+                $correction = ($correction === null)?1:$correction;
+                $correction++;
                 break;
             default:
-                $correction = ($correction == null)?0:$correction;
+                $correction = ($correction === null)?0:$correction;
                 break;
         }
         $this->_correction = (int) $correction;
         return $this->_correction;
     }
     
-    public function getCorrection($correction = null){
+    public function getCorrection($correction){
         $this->_correction = (int) $correction;
         return $this->_correction;
     }
     
-    public function setVersioning($majorversion = null, $minorversion = null, $correction = null, $type_versioning = null){
+    public function setVersioning($majorversion, $minorversion, $correction, $type_versioning){
         $this->_majorversion = $this->setMajorVersion($majorversion, $type_versioning);
         $this->_minorversion = $this->setMinorVersion($minorversion, $type_versioning);
         $this->_correction = $this->setCorrection($correction, $type_versioning); 
@@ -111,7 +114,7 @@ class Documents {
         return $this->_versioning;
     }
     
-    public function getVersioning($majorversion = null, $minorversion = null, $correction = null){
+    public function getVersioning($majorversion, $minorversion, $correction){
         $this->_majorversion = $this->getMajorVersion($majorversion);
         $this->_minorversion = $this->getMinorVersion($minorversion); 
         $this->_correction = $this->getCorrection($correction); 

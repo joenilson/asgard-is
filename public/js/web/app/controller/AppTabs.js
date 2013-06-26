@@ -11,7 +11,6 @@ Ext.define('Asgard.controller.AppTabs', {
     },
     
     fireButtonClickHandler: function(btn) {
-        console.log(btn.text+' button clicked');
         if(btn.text === 'Refresh'){
             Ext.getCmp('content-panel').getActiveTab().removeAll();
             Ext.getCmp('content-panel').getActiveTab().getLoader().load();

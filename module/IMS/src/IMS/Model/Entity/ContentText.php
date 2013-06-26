@@ -17,6 +17,7 @@ class ContentText {
     protected $_correction;
     protected $_date_creation;
     protected $_date_lastmodif;
+    protected $_user_id;
     
     public function __construct(array $options = null) {
         if (is_array($options)) {
@@ -132,5 +133,12 @@ class ContentText {
         return $this->_date_lastmodif;
     }
     
+    public function setUser_id($user_id){
+        $this->_user_id = (int) $user_id;
+        return $this;
+    }
     
+    public function getUser_id(){
+        return $this->_user_id;
+    }
 }

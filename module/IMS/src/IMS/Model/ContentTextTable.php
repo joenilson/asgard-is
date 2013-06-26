@@ -42,7 +42,8 @@ class ContentTextTable extends AbstractTableGateway {
             'minorversion' => $object->getMinorversion(),
             'correction' => $object->getCorrection(),
             'date_creation' => $object->getDate_creation(),
-            'date_lastmodif' => $object->getDate_lastmodif()
+            'date_lastmodif' => $object->getDate_lastmodif(),
+            'user_id' => $object->getUser_id()
         );
 
         $id_module = (int) $object->id_module;
@@ -57,7 +58,7 @@ class ContentTextTable extends AbstractTableGateway {
                 $data,
                 array('id_module' => $id_module, 'id_submodule' => $id_submodule, 'lang' => $lang)
             );
-            return $object->content;
+            return true;
         } else {
             throw new \Exception('id_module, or id_submodule or lang in object ContentText does not exist');
         }

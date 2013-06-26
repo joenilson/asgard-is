@@ -2,23 +2,22 @@
 <?php
 if(!empty($this->role)){
   $var=str_replace(' ','',$this->role);
-  //echo "Ext.require('Asgard.lib.toolbar{$var}');\n";
   echo "var panelVersioning = '".$this->panelVersioning."';\n";
   echo "var panelContent = '".$this->panelContent."';\n";
-  echo "var emptyContent = '".$this->message."'\n";
-  //echo "var panelContent = '';\n";
+  echo "var emptyContent = '".$this->message."';\n";
   echo "var toolbarType = '".$var."-toolbar';\n";
 }
 ?>
 Ext.tip.QuickTipManager.init();
 
-var originalItems = [{ xtype: 'container', anchor: '100%', html: panelVersioning+panelContent+emptyContent }];
+var originalItems = [{ xtype: 'container', anchor: '100%', html: panelVersioning+Ext.String.htmlDecode(panelContent)+emptyContent }];
 
 var Panel = Ext.create('Asgard.lib.RTFPanel', {
   dockedItems: {
     xtype: toolbarType
   },
   url: '/ims/saveContent/<?php echo $this->contentId; ?>',
+  
   autoShow: true,
   autoDestroy: true,
   frame: false,
@@ -52,24 +51,24 @@ function onClick(btn){
             break;
         case "Save Changes":
             var editedContent = Panel.items.items[0].value;
-            console.log(editedContent);
             if (editedContent !== panelContent){
                 Panel.form.submit({
+                    params: {
+                        content_versioning: '<?php echo $this->versioningContent; ?>'
+                    },
                     success: function(form, action) {
-                       Ext.Msg.alert('Success', action.result.msg);
+                        Ext.getCmp('content-panel').getActiveTab().removeAll();
+                        Ext.getCmp('content-panel').getActiveTab().getLoader().load();
                     },
                     failure: function(form, action) {
-                        Ext.Msg.alert('Failed', action.result.msg);
+                        Ext.Msg.alert('Failed', action.msg);
                     }
                 });
-                console.log('Has been made changes');
             }else{
                 Panel.removeAll();
                 Panel.add(originalItems);
-                console.log('No changes to commit');
                 Panel.doLayout();
             }
-            console.log('Save lib class to be implemented.');
             break;
         case "Cancel Changes":
             Panel.removeAll();
@@ -77,7 +76,7 @@ function onClick(btn){
             Panel.doLayout();
             break;
         default:
-            console.log('At this point we will do nothing.');
+            
             break;
     }
 }

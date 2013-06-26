@@ -11,7 +11,11 @@ namespace IMS\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
+use Zend\Mime\Mime;
+use Zend\Escaper\Escaper;
+
 use IMS\Model\Entity\ContentText;
+
 use AsgardLib\Versioning\Documents;
 
 class IndexController extends AbstractActionController
@@ -47,7 +51,9 @@ class IndexController extends AbstractActionController
                                 $contentModule->majorversion, 
                                 $contentModule->minorversion, 
                                 $contentModule->correction);
-            $panelContent = $contentModule->content;
+            $escaper = new Escaper('UTF-8');
+            $panelContent = $escaper->escapeJs($contentModule->content);
+            
             $messageContent = "";
         }else{
             $msgBox = $this->getMessagesTable()->getMessage($userPrefs[0]['lang'],'NoContent');
@@ -61,6 +67,7 @@ class IndexController extends AbstractActionController
         return array('role'=>$role,
             'panelVersioning'=>$panelHeader,
             'panelContent'=>$panelContent,
+            'versioningContent'=>$contentVersioning,
             'message'=>$messageContent,
             'contentId'=>$this->params()->fromRoute('id', 0));
     }
@@ -73,18 +80,13 @@ class IndexController extends AbstractActionController
         $moduleParams = explode('-',$this->params()->fromRoute('id', 0));
         $contentTextData = $request->getPost('rtfeditor');
         $versioning = explode('.',$request->getPost('content_versioning'));
-        $type_versioning = explode('.',$request->getPost('type_versioning'));
+        $type_versioning = $request->getPost('type_versioning');
         $lang = $userPrefs[0]['lang'];
-        
-        $versioning[0] = (!$versioning[0])?null:$versioning[0];
-        $versioning[1] = (!$versioning[1])?null:$versioning[1];
-        $versioning[2] = (!$versioning[2])?null:$versioning[2];
-        
+      
         $versioningDocument = new Documents();
-        
         $mmc = $versioningDocument->setVersioning($versioning[0],$versioning[1],$versioning[2],$type_versioning);
-
         $date_now=date('Y-m-d H:i:s.u');
+        
         
         $contentData = $this->getContentTextTable();
         $contentTextBody = new ContentText();
@@ -96,11 +98,16 @@ class IndexController extends AbstractActionController
                 ->setMinorversion($mmc['minorversion'])
                 ->setCorrection($mmc['correction'])
                 ->setDate_creation($date_now)
-                ->setDate_lastmodif($date_now);
+                ->setDate_lastmodif($date_now)
+                ->setUser_id($userPrefs[0]['user_id']);
         
-        $contentData->save($contentTextBody);
+        if($contentData->save($contentTextBody)){
+            $data['success']=true; 
+        }else{
+            $data['success']=false;
+            $data['msg']="Error trying to save the information...";
+        }
         
-        $data['success']=true;
         $result = new JsonModel($data);
     	return $result;
     }
