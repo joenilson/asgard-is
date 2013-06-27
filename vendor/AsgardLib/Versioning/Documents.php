@@ -11,20 +11,16 @@ namespace AsgardLib\Versioning;
 
 class Documents {
 
-    protected $_doctype = null;
     protected $_type_versioning = null;
     protected $_majorversion = null;
     protected $_minorversion = null;
     protected $_correction = null;
     protected $_versioning = null;
     
-    public function __construct($doctype = null) {
-        $this->setDoctype($doctype);
-    }
-    
-    public function setDoctype($doctype = null){
-        $this->_doctype = (string) $doctype; 
-        return $this->_doctype;
+    public function __construct($majorversion = null, $minorversion = null, $correction = null, $type_versioning = null) {
+        $this->setMajorVersion($majorversion, $type_versioning);
+        $this->setMinorVersion($minorversion, $type_versioning);
+        $this->setCorrection($correction, $type_versioning);
     }
     
     public function setMajorVersion($majorversion, $type_versioning){

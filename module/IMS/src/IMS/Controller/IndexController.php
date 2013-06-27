@@ -11,12 +11,12 @@ namespace IMS\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
-use Zend\Mime\Mime;
 use Zend\Escaper\Escaper;
 
 use IMS\Model\Entity\ContentText;
 
 use AsgardLib\Versioning\Documents;
+use AsgardLib\Versioning\Scope;
 
 class IndexController extends AbstractActionController
 {
@@ -28,7 +28,9 @@ class IndexController extends AbstractActionController
     {
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
         $userData = $this->getServiceLocator()->get('userSessionData');
+        
         $request = $this->getRequest();
+        
         $moduleParams = explode('-',$this->params()->fromRoute('id', 0));
         $idUser = $userPrefs[0]['user_id'];
         $idModule = $moduleParams[0];
@@ -43,7 +45,14 @@ class IndexController extends AbstractActionController
             $role=($userGrantedAccess[0]['edit']==1)?'Editor':$role;
         }
         
-        $contentModule = $this->getContentTextTable()->getContent($idModule,$idSubmodule,$userPrefs[0]['lang']);
+        $contentModule = $this->getContentTextTable()->getContentByCCL(
+            $idModule,
+            $idSubmodule,
+            $userPrefs[0]['lang'],
+            $userData->country,
+            $userData->company,
+            $userData->location
+        );
         
         $versioning = new Documents();
         if(!empty($contentModule)){
@@ -93,7 +102,7 @@ class IndexController extends AbstractActionController
         $type_versioning = $request->getPost('type_versioning');
         $type_scope = $request->getPost('type_versioning');
         
-        
+        /*
         switch($type_scope){
             case "country":
                 $scopeData=array(
@@ -117,14 +126,24 @@ class IndexController extends AbstractActionController
                     );
                 break;
         }
+        */
         
         $lang = $userPrefs[0]['lang'];
       
+        $scopeDocument = new Scope();
+        $scope = $scopeDocument->getScopeParams($userData->country, $userData->company, $userData->location, $type_scope);
+        
+        if($scope->errorMessage){
+            $data['success']=false;
+            $msgBox = $this->getMessagesTable()->getMessage($userPrefs[0]['lang'],$scope->errorMessage);
+            $data['msg']=$msgBox;
+        }
+        
         $versioningDocument = new Documents();
         $mmc = $versioningDocument->setVersioning($versioning[0],$versioning[1],$versioning[2],$type_versioning);
+        
         $date_now=date('Y-m-d H:i:s.u');
-        
-        
+                
         $contentData = $this->getContentTextTable();
         $contentTextBody = new ContentText();
         $contentTextBody->setId_module($moduleParams[0])
