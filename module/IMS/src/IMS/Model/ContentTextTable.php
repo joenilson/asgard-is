@@ -11,6 +11,7 @@ class ContentTextTable extends AbstractTableGateway {
 
     protected $table_name = 'content_text';
     protected $schema_name = 'ims';
+    protected $empty_value = '0000';
 
     public function __construct(Adapter $adapter) {
         $this->table = new TableIdentifier($this->table_name, $this->schema_name);
@@ -31,6 +32,23 @@ class ContentTextTable extends AbstractTableGateway {
         return $row;
     }
 
+    public function getContentByCCL($mid,$smid,$lang,$country,$company,$location) {
+        
+        $row = $this->select(
+            array(
+                'id_module' => (int) $mid,
+                'id_submodule' => (int) $smid,
+                'lang' => (string) $lang,
+                'country'=> array((string) $country, (string) $this->empty_value),
+                'company'=> array((string) $company, (string) $this->empty_value),
+                'location'=> array((string) $location, (string) $this->empty_value)
+            )
+        )->current();
+        if (!$row)
+            return false;
+        return $row;
+    }
+    
     public function save(ContentText $object)
     {
         $data = array(
@@ -43,20 +61,32 @@ class ContentTextTable extends AbstractTableGateway {
             'correction' => $object->getCorrection(),
             'date_creation' => $object->getDate_creation(),
             'date_lastmodif' => $object->getDate_lastmodif(),
-            'user_id' => $object->getUser_id()
+            'user_id' => $object->getUser_id(),
+            'country' => $object->getCountry(),
+            'company' => $object->getCompany(),
+            'location' => $object->getLocation()
         );
 
         $id_module = (int) $object->id_module;
         $id_submodule = (int) $object->id_submodule;
         $lang = (string) $object->lang;
-        if (!$this->getContent($id_module,$id_submodule,$lang)) {
+        $country = (string) $object->country;
+        $company = (string) $object->company;
+        
+        if (!$this->getContentByCC($id_module,$id_submodule,$lang,$country,$company)) {
             if (!$this->insert($data))
                 return false;
             return true;
         } elseif ($this->getContent($id_module,$id_submodule,$lang)) {
             $this->update(
                 $data,
-                array('id_module' => $id_module, 'id_submodule' => $id_submodule, 'lang' => $lang)
+                array(
+                    'id_module' => $id_module, 
+                    'id_submodule' => $id_submodule, 
+                    'lang' => $lang, 
+                    'country' => $country, 
+                    'company' => $company
+                    )
             );
             return true;
         } else {

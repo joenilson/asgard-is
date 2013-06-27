@@ -2,57 +2,72 @@
 <?php
 if(!empty($this->role)){
   $var=str_replace(' ','',$this->role);
-  echo "var panelVersioning = '".$this->panelVersioning."';\n";
-  echo "var panelContent = '".$this->panelContent."';\n";
-  echo "var emptyContent = '".$this->message."';\n";
-  echo "var toolbarType = '".$var."-toolbar';\n";
+  echo "var panelVersioning".$this->panelId." = '".$this->panelVersioning."';\n";
+  echo "var panelContent".$this->panelId." = '".$this->panelContent."';\n";
+  echo "var emptyContent".$this->panelId." = '".$this->message."';\n";
+  echo "var toolbarType".$this->panelId." = '".$var."-toolbar';\n";
 }
 ?>
 Ext.tip.QuickTipManager.init();
 
-var originalItems = [{ xtype: 'container', anchor: '100%', html: panelVersioning+Ext.String.htmlDecode(panelContent)+emptyContent }];
+var originalItems<?php echo $this->panelId; ?> = [{ 
+        xtype: 'container',
+        anchor: '100%', 
+        html: panelVersioning<?php echo $this->panelId; ?>+Ext.String.htmlDecode(panelContent<?php echo $this->panelId; ?>)+emptyContent<?php echo $this->panelId; ?> 
+    }];
 
-var Panel = Ext.create('Asgard.lib.RTFPanel', {
+var <?php echo 'Panel'.$this->panelId; ?> = Ext.create('Asgard.lib.RTFPanel', {
   dockedItems: {
-    xtype: toolbarType
+    xtype: toolbarType<?php echo $this->panelId; ?>
   },
   url: '/ims/saveContent/<?php echo $this->contentId; ?>',
-  
   autoShow: true,
   autoDestroy: true,
+  autoScroll: true,
+  border: false,
   frame: false,
   layout: 'anchor',
-  items: originalItems
+  items: originalItems<?php echo $this->panelId; ?>
 });
 
 function onClick(btn){
-    //console.log(btn);
-    switch (btn.text){
-        case "Search":
+    var tbar<?php echo $this->panelId; ?> = <?php echo 'Panel'.$this->panelId; ?>.getDockedItems('toolbar[dock="top"]')[0];
+    switch (btn.name){
+        case "search":
             console.log('Search lib class to be implemented.');
             break;
-        case "Edit Content":
-            Panel.removeAll();
+        case "edit":
+            tbar<?php echo $this->panelId; ?>.down('#save').setDisabled(false);
+            tbar<?php echo $this->panelId; ?>.down('#cancel').setDisabled(false);
+            
+            <?php echo 'Panel'.$this->panelId; ?>.removeAll();
             var items = [
-                { 
+                {
                     xtype: 'rb-versioning'
                 },
+                {
+                    xtype: 'rb-scope'
+                },
                 { 
-                    xtype: 'rtfeditor', name: 'rtfeditor', value: panelContent, height: '90%', anchor: '100%'
+                    xtype: 'rtfeditor', name: 'rtfeditor', value: panelContent<?php echo $this->panelId; ?>, height: '95%', anchor: '100%'
                 }];
-            Panel.add(items);
-            Panel.doLayout();
+            <?php echo 'Panel'.$this->panelId; ?>.add(items);
+            <?php echo 'Panel'.$this->panelId; ?>.doLayout();
             break;
-        case "Add Content":
+        case "add":
             console.log('Add lib class to be implemented.');
             break;
-        case "Remove Content":
+        case "remove":
             console.log('Remove lib class to be implemented.');
             break;
-        case "Save Changes":
-            var editedContent = Panel.items.items[0].value;
-            if (editedContent !== panelContent){
-                Panel.form.submit({
+        case "save":
+            
+            tbar<?php echo $this->panelId; ?>.down('#save').setDisabled(true);
+            tbar<?php echo $this->panelId; ?>.down('#cancel').setDisabled(true);
+            
+            var editedContent = <?php echo 'Panel'.$this->panelId; ?>.items.items[2].value;
+            if (editedContent !== panelContent<?php echo $this->panelId; ?>){
+                <?php echo 'Panel'.$this->panelId; ?>.form.submit({
                     params: {
                         content_versioning: '<?php echo $this->versioningContent; ?>'
                     },
@@ -65,20 +80,23 @@ function onClick(btn){
                     }
                 });
             }else{
-                Panel.removeAll();
-                Panel.add(originalItems);
-                Panel.doLayout();
+                <?php echo 'Panel'.$this->panelId; ?>.removeAll();
+                <?php echo 'Panel'.$this->panelId; ?>.add(originalItems<?php echo $this->panelId; ?>);
+                <?php echo 'Panel'.$this->panelId; ?>.doLayout();
             }
             break;
-        case "Cancel Changes":
-            Panel.removeAll();
-            Panel.add(originalItems);
-            Panel.doLayout();
+        case "cancel":
+            tbar<?php echo $this->panelId; ?>.down('#save').setDisabled(true);
+            tbar<?php echo $this->panelId; ?>.down('#cancel').setDisabled(true);
+
+            <?php echo 'Panel'.$this->panelId; ?>.removeAll();
+            <?php echo 'Panel'.$this->panelId; ?>.add(originalItems<?php echo $this->panelId; ?>);
+            <?php echo 'Panel'.$this->panelId; ?>.doLayout();
             break;
         default:
             
             break;
     }
 }
-Ext.getCmp('content-panel').getActiveTab().add(Panel);
+Ext.getCmp('content-panel').getActiveTab().add(<?php echo 'Panel'.$this->panelId; ?>);
 </script>

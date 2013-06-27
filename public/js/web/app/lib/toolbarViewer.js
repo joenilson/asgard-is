@@ -12,7 +12,9 @@ Ext.define('Asgard.lib.toolbarViewer',{
         this.searchButton = this.searchButton || []; 
         this.searchButton = Ext.Object.merge({
                 text: this.searchButtonText,
+                name: 'search',
                 type: 'button',
+                itemId: 'search',
                 scope: me,
                 handler: onClick
             }, this.searchButton);
@@ -20,7 +22,9 @@ Ext.define('Asgard.lib.toolbarViewer',{
         this.refreshButton = this.refreshButton || []; 
         this.refreshButton = Ext.Object.merge({
                 text: this.refreshButtonText,
+                name: 'refresh',
                 type: 'button',
+                itemId: 'refresh',
                 scope: me,
                 handler: onClick
             }, this.refreshButton);

@@ -8,7 +8,7 @@ Ext.define('Asgard.lib.toolbarAdmin',{
     editButtonText: 'Edit Content',
     saveButtonText: 'Save Changes',
     addButtonText: 'Add Content',
-    removeButtonText: 'Remove Changes',
+    removeButtonText: 'Remove Content',
     cancelButtonText: 'Cancel Changes',
     searchButton: undefined,
     refreshButton: undefined,
@@ -22,7 +22,9 @@ Ext.define('Asgard.lib.toolbarAdmin',{
         this.searchButton = this.searchButton || []; 
         this.searchButton = Ext.Object.merge({
                 text: this.searchButtonText,
+                name: 'search',
                 type: 'button',
+                itemId: 'search',
                 scope: me,
                 handler: onClick
             }, this.searchButton);
@@ -30,7 +32,9 @@ Ext.define('Asgard.lib.toolbarAdmin',{
         this.refreshButton = this.refreshButton || []; 
         this.refreshButton = Ext.Object.merge({
                 text: this.refreshButtonText,
+                name: 'refresh',
                 type: 'button',
+                itemId: 'refresh',
                 scope: me,
                 handler: onClick
             }, this.refreshButton);
@@ -38,7 +42,9 @@ Ext.define('Asgard.lib.toolbarAdmin',{
         this.editButton = this.editButton || []; 
         this.editButton = Ext.Object.merge({
                 text: this.editButtonText,
+                name: 'edit',
                 type: 'button',
+                itemId: 'edit',
                 scope: me,
                 handler: onClick
             }, this.editButton);
@@ -46,23 +52,31 @@ Ext.define('Asgard.lib.toolbarAdmin',{
         this.saveButton = this.saveButton || []; 
         this.saveButton = Ext.Object.merge({
                 text: this.saveButtonText,
+                name: 'save',
                 type: 'button',
+                itemId: 'save',
                 scope: me,
+                disabled: true,
                 handler: onClick
             }, this.saveButton);
         
         this.cancelButton = this.cancelButton || []; 
         this.cancelButton = Ext.Object.merge({
                 text: this.cancelButtonText,
+                name: 'cancel',
                 type: 'button',
+                itemId: 'cancel',
                 scope: me,
+                disabled: true,
                 handler: onClick
             }, this.cancelButton);
         
         this.addButton = this.addButton || []; 
         this.addButton = Ext.Object.merge({
                 text: this.addButtonText,
+                name: 'add',
                 type: 'button',
+                itemId: 'add',
                 scope: me,
                 handler: onClick
             }, this.addButton);
@@ -70,7 +84,9 @@ Ext.define('Asgard.lib.toolbarAdmin',{
         this.removeButton = this.removeButton || []; 
         this.removeButton = Ext.Object.merge({
                 text: this.removeButtonText,
+                name: 'remove',
                 type: 'button',
+                itemId: 'remove',
                 scope: me,
                 handler: onClick
             }, this.removeButton);

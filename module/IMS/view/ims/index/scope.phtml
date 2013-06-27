@@ -1,0 +1,85 @@
+<script>
+<?php
+if(!empty($this->role)){
+  $var=str_replace(' ','',$this->role);
+  echo "var panelVersioning = '".$this->panelVersioning."';\n";
+  echo "var panelContent = '".$this->panelContent."';\n";
+  echo "var emptyContent = '".$this->message."';\n";
+  echo "var toolbarType = '".$var."-toolbar';\n";
+}
+?>
+Ext.tip.QuickTipManager.init();
+
+var originalItems = [{ xtype: 'container', anchor: '100%', html: panelVersioning+Ext.String.htmlDecode(panelContent)+emptyContent }];
+
+var Panel = Ext.create('Asgard.lib.RTFPanel', {
+  dockedItems: {
+    xtype: toolbarType
+  },
+  url: '/ims/saveContent/<?php echo $this->contentId; ?>',
+  
+  autoShow: true,
+  autoDestroy: true,
+  frame: false,
+  layout: 'anchor',
+  items: originalItems
+});
+
+function onClick(btn){
+    //console.log(btn);
+    switch (btn.text){
+        case "Search":
+            console.log('Search lib class to be implemented.');
+            break;
+        case "Edit Content":
+            Panel.removeAll();
+            var items = [
+                {
+                    xtype: 'rb-versioning'
+                },
+                { 
+                    xtype: 'rtfeditor', name: 'rtfeditor', value: panelContent, height: '90%', anchor: '100%'
+                }];
+            Panel.add(items);
+            Panel.doLayout();
+            break;
+        case "Add Content":
+            console.log('Add lib class to be implemented.');
+            break;
+        case "Remove Content":
+            console.log('Remove lib class to be implemented.');
+            break;
+        case "Save Changes":
+            
+            var editedContent = Panel.items.items[1].value;
+            if (editedContent !== panelContent){
+                Panel.form.submit({
+                    params: {
+                        content_versioning: '<?php echo $this->versioningContent; ?>'
+                    },
+                    success: function(form, action) {
+                        Ext.getCmp('content-panel').getActiveTab().removeAll();
+                        Ext.getCmp('content-panel').getActiveTab().getLoader().load();
+                    },
+                    failure: function(form, action) {
+                        Ext.Msg.alert('Failed', action.msg);
+                    }
+                });
+            }else{
+                Panel.removeAll();
+                Panel.add(originalItems);
+                Panel.doLayout();
+            }
+            break;
+        case "Cancel Changes":
+            Panel.removeAll();
+            Panel.add(originalItems);
+            Panel.doLayout();
+            break;
+        default:
+            
+            break;
+    }
+}
+Ext.getCmp('content-panel').getActiveTab().add(Panel);
+</script>

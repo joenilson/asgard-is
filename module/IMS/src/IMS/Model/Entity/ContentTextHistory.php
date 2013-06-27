@@ -6,7 +6,7 @@
  */
 namespace IMS\Model\Entity;
 
-class ContentText {
+class ContentTextHistory {
 
     protected $_id_module;
     protected $_id_submodule;
@@ -16,7 +16,7 @@ class ContentText {
     protected $_minorversion;
     protected $_correction;
     protected $_date_creation;
-    protected $_date_lastmodif;
+    protected $_date_modification;
     protected $_user_id;
     protected $_country;
     protected $_company;
@@ -128,13 +128,13 @@ class ContentText {
         return $this->_date_creation;
     }
 
-    public function setDate_lastmodif($date_lastmodif){
-        $this->_date_lastmodif = $date_lastmodif;
+    public function setDate_modification($date_modification){
+        $this->_date_modification = $date_modification;
         return $this;
     }
     
-    public function getDate_lastmodif(){
-        return $this->_date_lastmodif;
+    public function getDate_modification(){
+        return $this->_date_modification;
     }
     
     public function setUser_id($user_id){

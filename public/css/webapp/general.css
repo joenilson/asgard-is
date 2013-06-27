@@ -42,8 +42,8 @@
     width: '100%';
     padding: 5px 5px 5px 5px;
     font-family: Arial; 
-    /*height: 120px; */
-    font-size: 12px; 
+    height: 25px;
+    font-size: 12px;
     text-align: center;
     background: #c9de96; /* Old browsers */
     background: -moz-linear-gradient(top,  #c9de96 0%, #7eab32 44%, #7eab32 100%); /* FF3.6+ */
@@ -54,6 +54,37 @@
     background: linear-gradient(to bottom,  #c9de96 0%,#7eab32 44%,#7eab32 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c9de96', endColorstr='#7eab32',GradientType=0 ); /* IE6-9 */
 }
+
+.versioning_title {
+    float: left;
+    width: 20%;
+    text-align: right;
+    padding: 0px 5px 0px 5px;
+}
+
+.versioning_type {
+    float: left;
+    text-align: left;
+    padding: 0px 5px 0px 5px;
+}
+
+.versioning_date {
+    float: left;
+    text-align: left;
+    padding: 0px 5px 0px 5px;
+}
+
+.versioning_datecreation {
+    float: left;
+    text-align: left;
+    padding: 0px 5px 0px 5px;
+}
+.versioning_history {
+    float: right;
+    width: 10%;
+    text-align: center;
+}
+
 
 body {
     font-family: Arial;

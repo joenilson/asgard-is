@@ -6,11 +6,8 @@
 Ext.define('Asgard.lib.RadioButtonsVersioning',{
     extend: 'Ext.form.RadioGroup',
     alias: 'widget.rb-versioning',
-    bodyStyle: {
-        background: '#ffc',
-    },
-    fieldLabel: 'Versioning Type',
-    xtype: 'radiogroup',
+    labelWidth: 120,
+    fieldLabelText: 'Versioning Type',
     columns: 3,
     changeField: undefined,
     modificationField: undefined,
@@ -21,6 +18,7 @@ Ext.define('Asgard.lib.RadioButtonsVersioning',{
     correctionFieldText: 'Corrections',
     
     initComponent: function(){
+        this.fieldLabel = this.fieldLabelText;
         this.changeField = this.changeField || []; 
         this.changeField = Ext.Object.merge({
             boxLabel: this.changeFieldText,

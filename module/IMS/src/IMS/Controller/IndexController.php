@@ -27,7 +27,7 @@ class IndexController extends AbstractActionController
     public function indexAction()
     {
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
-        
+        $userData = $this->getServiceLocator()->get('userSessionData');
         $request = $this->getRequest();
         $moduleParams = explode('-',$this->params()->fromRoute('id', 0));
         $idUser = $userPrefs[0]['user_id'];
@@ -53,34 +53,71 @@ class IndexController extends AbstractActionController
                                 $contentModule->correction);
             $escaper = new Escaper('UTF-8');
             $panelContent = $escaper->escapeJs($contentModule->content);
-            
+            $versioningDate = date_format(new \DateTime($contentModule->date_creation), "d-m-Y");
             $messageContent = "";
         }else{
             $msgBox = $this->getMessagesTable()->getMessage($userPrefs[0]['lang'],'NoContent');
             $contentVersioning = $versioning->getVersioning(
                                         null, null, null);
             $panelContent = "";
+            $versioningDate = "";
             $messageContent = $msgBox->value;
         }
-        $panelHeader="<div class=\"versioning\">$contentVersioning</div>";
+        $panelHeader="<div class=\"versioning\"> ".
+            "<div class=\"versioning_title\">Version: </div>  ".
+            "<div class=\"versioning_type\">$contentVersioning</div> ".
+            "<div class=\"versioning_date\">Valid from: </div> ".
+            "<div class=\"versioning_datecreation\">$versioningDate</div> ".
+            "<div class=\"versioning_history\"></div> ".
+            "</div>";
         
         return array('role'=>$role,
             'panelVersioning'=>$panelHeader,
+            'versioningDate'=>$versioningDate,
             'panelContent'=>$panelContent,
             'versioningContent'=>$contentVersioning,
             'message'=>$messageContent,
-            'contentId'=>$this->params()->fromRoute('id', 0));
+            'contentId'=>$this->params()->fromRoute('id', 0),
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0)));
     }
-    
     
     public function saveContentAction()
     {
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        
         $request = $this->getRequest();
         $moduleParams = explode('-',$this->params()->fromRoute('id', 0));
         $contentTextData = $request->getPost('rtfeditor');
         $versioning = explode('.',$request->getPost('content_versioning'));
         $type_versioning = $request->getPost('type_versioning');
+        $type_scope = $request->getPost('type_versioning');
+        
+        
+        switch($type_scope){
+            case "country":
+                $scopeData=array(
+                    'country'=>$userData->country,
+                    'company'=>'',
+                    'location'=>''
+                    );
+                break;
+            case "company":
+                $scopeData=array(
+                    'country'=>'',
+                    'company'=>$userData->company,
+                    'location'=>''
+                    );
+                break;
+            case "location":
+                $scopeData=array(
+                    'country'=>$userData->country,
+                    'company'=>$userData->company,
+                    'location'=>$userData->location
+                    );
+                break;
+        }
+        
         $lang = $userPrefs[0]['lang'];
       
         $versioningDocument = new Documents();
@@ -99,7 +136,10 @@ class IndexController extends AbstractActionController
                 ->setCorrection($mmc['correction'])
                 ->setDate_creation($date_now)
                 ->setDate_lastmodif($date_now)
-                ->setUser_id($userPrefs[0]['user_id']);
+                ->setUser_id($userPrefs[0]['user_id'])
+                ->setCountry($scopeData['country'])
+                ->setCompany($scopeData['company'])
+                ->setLocation($scopeData['location']);
         
         if($contentData->save($contentTextBody)){
             $data['success']=true; 

@@ -16,7 +16,6 @@ Ext.define('Asgard.view.window.systemInformation', {
     presentationContentHeader: '<? echo $this->presentationContentHeader; ?>',
     presentationContentReview: '<? echo $this->presentationContentReview; ?>',
     presentationContentReviewText: 'Review',
-    //presentationContentApproved: Ext.Date.format(Ext.Date.parse("<?php echo $this->presentationContentApproved; ?>", "Y-m-d g:i:s.u"), "l, jS F Y"),
     presentationContentApproved: revision_date,
     presentationContentApprovedText: 'Approved',
     presentationContent: 'System Status',
@@ -33,10 +32,9 @@ Ext.define('Asgard.view.window.systemInformation', {
             content = this.presentationContent;
         }
         this.html = content;
-        console.log(content);
+        //console.log(content);
         this.callParent(arguments);
     }
 });
-
 Ext.create('Asgard.view.window.systemInformation');
 </script>

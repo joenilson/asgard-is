@@ -1,6 +1,5 @@
 Ext.define('Asgard.view.Header', {
     extend: 'Ext.Container',
-    //require: ['Asgard.store.UserPreferences'],
     alias: 'widget.headerbar',
     cls: 'app-header',
     
