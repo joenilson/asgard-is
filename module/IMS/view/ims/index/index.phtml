@@ -10,16 +10,30 @@ if(!empty($this->role)){
 ?>
 Ext.tip.QuickTipManager.init();
 
+var versioningHeader<?php echo $this->panelId; ?> = Ext.create('Asgard.lib.versioningContent',{
+    anchor: '100%',
+    versionField: {
+        value: "<?php echo $this->versioningContent; ?>"
+    },
+    validField: {
+        value: "<?php echo $this->versioningDate; ?>"
+    },
+    scopeField: {
+        value: "<?php echo $this->documentScope; ?>"
+    }
+});
+var oItems<?php echo $this->panelId; ?> = Ext.String.htmlDecode(panelContent<?php echo $this->panelId; ?>);
 var originalItems<?php echo $this->panelId; ?> = [{ 
         xtype: 'container',
-        anchor: '100%', 
-        html: panelVersioning<?php echo $this->panelId; ?>+Ext.String.htmlDecode(panelContent<?php echo $this->panelId; ?>)+emptyContent<?php echo $this->panelId; ?> 
+        anchor: '100%',
+        name: 'dataContainer',
+        html: oItems<?php echo $this->panelId; ?>+emptyContent<?php echo $this->panelId; ?>
     }];
 
 var <?php echo 'Panel'.$this->panelId; ?> = Ext.create('Asgard.lib.RTFPanel', {
-  dockedItems: {
+  dockedItems: [{
     xtype: toolbarType<?php echo $this->panelId; ?>
-  },
+  }, versioningHeader<?php echo $this->panelId; ?>],
   url: '/ims/saveContent/<?php echo $this->contentId; ?>',
   autoShow: true,
   autoDestroy: true,
@@ -67,6 +81,7 @@ function onClick(btn){
             
             var editedContent = <?php echo 'Panel'.$this->panelId; ?>.items.items[2].value;
             if (editedContent !== panelContent<?php echo $this->panelId; ?>){
+                console.log('changes detected');
                 <?php echo 'Panel'.$this->panelId; ?>.form.submit({
                     params: {
                         content_versioning: '<?php echo $this->versioningContent; ?>'
@@ -80,6 +95,7 @@ function onClick(btn){
                     }
                 });
             }else{
+                console.log('no changes detected');
                 <?php echo 'Panel'.$this->panelId; ?>.removeAll();
                 <?php echo 'Panel'.$this->panelId; ?>.add(originalItems<?php echo $this->panelId; ?>);
                 <?php echo 'Panel'.$this->panelId; ?>.doLayout();

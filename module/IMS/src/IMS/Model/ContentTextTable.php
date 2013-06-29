@@ -72,20 +72,22 @@ class ContentTextTable extends AbstractTableGateway {
         $lang = (string) $object->lang;
         $country = (string) $object->country;
         $company = (string) $object->company;
+        $location = (string) $object->location;
         
-        if (!$this->getContentByCC($id_module,$id_submodule,$lang,$country,$company)) {
+        if (!$this->getContentByCCL($id_module,$id_submodule,$lang,$country,$company,$location)) {
             if (!$this->insert($data))
-                return false;
+                throw new \Exception('insert statement can\'t be executed');
             return true;
-        } elseif ($this->getContent($id_module,$id_submodule,$lang)) {
+        } elseif ($this->getContentByCCL($id_module,$id_submodule,$lang,$country,$company,$location)) {
             $this->update(
                 $data,
                 array(
                     'id_module' => $id_module, 
                     'id_submodule' => $id_submodule, 
-                    'lang' => $lang, 
+                    'lang' => $lang,
                     'country' => $country, 
-                    'company' => $company
+                    'company' => $company,
+                    'location' => $location
                     )
             );
             return true;

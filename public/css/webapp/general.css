@@ -40,19 +40,14 @@
 .versioning {
     color: #FFFFFF; 
     width: '100%';
-    padding: 5px 5px 5px 5px;
+    padding: 3px 3px 3px 3px;
     font-family: Arial; 
     height: 25px;
     font-size: 12px;
-    text-align: center;
-    background: #c9de96; /* Old browsers */
-    background: -moz-linear-gradient(top,  #c9de96 0%, #7eab32 44%, #7eab32 100%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#c9de96), color-stop(44%,#7eab32), color-stop(100%,#7eab32)); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(top,  #c9de96 0%,#7eab32 44%,#7eab32 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(top,  #c9de96 0%,#7eab32 44%,#7eab32 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(top,  #c9de96 0%,#7eab32 44%,#7eab32 100%); /* IE10+ */
-    background: linear-gradient(to bottom,  #c9de96 0%,#7eab32 44%,#7eab32 100%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c9de96', endColorstr='#7eab32',GradientType=0 ); /* IE6-9 */
+    background: #DFEAF2;
+        -webkit-box-shadow: 0 10px 6px -6px #777;
+	   -moz-box-shadow: 0 10px 6px -6px #777;
+	        box-shadow: 0 10px 6px -6px #777;
 }
 
 .versioning_title {

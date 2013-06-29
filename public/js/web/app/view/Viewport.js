@@ -4,7 +4,7 @@ Ext.define('Asgard.view.Viewport', {
   requires: ['Asgard.view.Header','Asgard.view.Menubar','Asgard.view.Content','Asgard.view.Statusbar',
     'Asgard.view.statusbar.Clock', 'Asgard.view.statusbar.Actualdate', 'Asgard.view.content.IframeContent',
     'Asgard.lib.MenuTree','Asgard.lib.PanelContent', 'Asgard.lib.RadioButtonsVersioning',
-    'Asgard.lib.RadioButtonsScope'
+    'Asgard.lib.RadioButtonsScope', 'Asgard.lib.versioningContent'
   ],
   layout : 'border',
   menuTitleText: 'Main Menu',

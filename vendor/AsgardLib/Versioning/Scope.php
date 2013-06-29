@@ -11,16 +11,15 @@
  * 
  * The basic matrix is:
  * 
- * Doc/Scope    Country  | Company | Location       
+ * Doc\Scope    Country  | Company | Location       
  *          - - - - - - - - - - - - - - - - - -
  * Country   :    CODE   |   CODE  | EMPTYCODE
  * Company   : EMPTYCODE |   CODE  | EMPTYCODE
- * Location  :    CODE   |   CODE  | EMPTYCODE
+ * Location  :    CODE   |   CODE  |    CODE
  * 
  * The empty code is by default a varchar(4) 0000
  * 
  */
-
 namespace AsgardLib\Versioning;
 
 class Scope {
@@ -92,8 +91,53 @@ class Scope {
         return $CompanyScope;
     }
     
+    public function getScopeParams($country = null, $company = null, $location = null)
+    {
+        
+        $scopeObjects = new \stdClass();
+     
+        if(empty($country) AND ($country === null))
+        {
+            $scopeObjects->errorMessage='ERROR_NotFound_countryCode';
+            return $scopeObjects;
+        }
+        
+        if(empty($company) AND ($company === null))
+        {
+            $scopeObjects->errorMessage='ERROR_NotFound_companyCode';
+            return $scopeObjects;
+        }
+        
+        if(empty($location) AND ($location === null))
+        {
+            $scopeObjects->errorMessage='ERROR_NotFound_locationCode';
+            return $scopeObjects;
+        }
+        
+        if(($company !== $this->empty_value) AND ($country !== $this->empty_value) AND ($location !== $this->empty_value))
+        {
+            $type_scope = "location";
+        }
+        elseif(($company !== $this->empty_value) AND ($country !== $this->empty_value) AND ($location === $this->empty_value))
+        {
+            $type_scope = "company";
+        }
+        elseif(($company !== $this->empty_value) AND ($country === $this->empty_value) AND ($location === $this->empty_value))
+        {
+            $type_scope = "country";
+        }
+        else
+        {
+            $scopeObjects->errorMessage='ERROR_NotFound_typeScope';
+            return $scopeObjects;
+        }
+
+        $scopeObjects->type_scope = $type_scope;
+        
+        return $scopeObjects;
+    }
     
-    public function getScopeParams($country = null, $company = null, $location = null, $type_scope = null)
+    public function setScopeParams($country = null, $company = null, $location = null, $type_scope = null)
     {
         
         $scopeObjects = new \stdClass();

@@ -55,6 +55,7 @@ class IndexController extends AbstractActionController
         );
         
         $versioning = new Documents();
+        $scopeDocument = new Scope();
         if(!empty($contentModule)){
             $contentVersioning = $versioning->getVersioning(
                                 $contentModule->majorversion, 
@@ -63,6 +64,7 @@ class IndexController extends AbstractActionController
             $escaper = new Escaper('UTF-8');
             $panelContent = $escaper->escapeJs($contentModule->content);
             $versioningDate = date_format(new \DateTime($contentModule->date_creation), "d-m-Y");
+            $documentScope = $scopeDocument->getScopeParams($contentModule->country, $contentModule->company, $contentModule->location)->type_scope;
             $messageContent = "";
         }else{
             $msgBox = $this->getMessagesTable()->getMessage($userPrefs[0]['lang'],'NoContent');
@@ -70,6 +72,7 @@ class IndexController extends AbstractActionController
                                         null, null, null);
             $panelContent = "";
             $versioningDate = "";
+            $documentScope = "";
             $messageContent = $msgBox->value;
         }
         $panelHeader="<div class=\"versioning\"> ".
@@ -77,12 +80,16 @@ class IndexController extends AbstractActionController
             "<div class=\"versioning_type\">$contentVersioning</div> ".
             "<div class=\"versioning_date\">Valid from: </div> ".
             "<div class=\"versioning_datecreation\">$versioningDate</div> ".
+            "<div class=\"versioning_scope\">Valid from: </div> ".
+            "<div class=\"versioning_documentscope\">$versioningDate</div> ".
             "<div class=\"versioning_history\"></div> ".
+            "<div class=\"versioning_historylist\"></div> ".
             "</div>";
         
         return array('role'=>$role,
             'panelVersioning'=>$panelHeader,
             'versioningDate'=>$versioningDate,
+            'documentScope'=>$documentScope,
             'panelContent'=>$panelContent,
             'versioningContent'=>$contentVersioning,
             'message'=>$messageContent,
@@ -131,9 +138,9 @@ class IndexController extends AbstractActionController
         $lang = $userPrefs[0]['lang'];
       
         $scopeDocument = new Scope();
-        $scope = $scopeDocument->getScopeParams($userData->country, $userData->company, $userData->location, $type_scope);
+        $scope = $scopeDocument->setScopeParams($userData->country, $userData->company, $userData->location, $type_scope);
         
-        if($scope->errorMessage){
+        if(isset($scope->errorMessage)){
             $data['success']=false;
             $msgBox = $this->getMessagesTable()->getMessage($userPrefs[0]['lang'],$scope->errorMessage);
             $data['msg']=$msgBox;
@@ -156,9 +163,9 @@ class IndexController extends AbstractActionController
                 ->setDate_creation($date_now)
                 ->setDate_lastmodif($date_now)
                 ->setUser_id($userPrefs[0]['user_id'])
-                ->setCountry($scopeData['country'])
-                ->setCompany($scopeData['company'])
-                ->setLocation($scopeData['location']);
+                ->setCountry($scope->country_scope)
+                ->setCompany($scope->company_scope)
+                ->setLocation($scope->location_scope);
         
         if($contentData->save($contentTextBody)){
             $data['success']=true; 
