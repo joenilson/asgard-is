@@ -53,6 +53,7 @@ function onClick(btn){
         case "edit":
             tbar<?php echo $this->panelId; ?>.down('#save').setDisabled(false);
             tbar<?php echo $this->panelId; ?>.down('#cancel').setDisabled(false);
+            tbar<?php echo $this->panelId; ?>.down('#edit').setDisabled(true);
             
             <?php echo 'Panel'.$this->panelId; ?>.removeAll();
             var items = [
@@ -78,6 +79,7 @@ function onClick(btn){
             
             tbar<?php echo $this->panelId; ?>.down('#save').setDisabled(true);
             tbar<?php echo $this->panelId; ?>.down('#cancel').setDisabled(true);
+            tbar<?php echo $this->panelId; ?>.down('#edit').setDisabled(false);
             
             var editedContent = <?php echo 'Panel'.$this->panelId; ?>.items.items[2].value;
             if (editedContent !== panelContent<?php echo $this->panelId; ?>){
@@ -104,6 +106,7 @@ function onClick(btn){
         case "cancel":
             tbar<?php echo $this->panelId; ?>.down('#save').setDisabled(true);
             tbar<?php echo $this->panelId; ?>.down('#cancel').setDisabled(true);
+            tbar<?php echo $this->panelId; ?>.down('#edit').setDisabled(false);
 
             <?php echo 'Panel'.$this->panelId; ?>.removeAll();
             <?php echo 'Panel'.$this->panelId; ?>.add(originalItems<?php echo $this->panelId; ?>);

@@ -1,40 +1,23 @@
 <script>
 var revision_date = Ext.Date.format(Ext.Date.parse("<?php echo $this->presentationContentApproved; ?>", "Y-m-d g:i:s.u"), "l, jS F Y");
 
-Ext.define('Asgard.view.window.systemInformation', {
-    extend: 'Ext.window.Window',
-    xtype: 'basic-window',
-    height: 300,
-    width: 400,
-    title: '<? echo $this->systemDescription; ?>',
-    autoScroll: true,
-    autoShow: true,
-    bodyPadding: 10,
-    companyName: '<? echo $this->companyName; ?>',
-    systemDescription: '<? echo $this->systemDescription; ?>',
-    defaultModule: <? echo $this->defaultModule; ?>,
-    presentationContentHeader: '<? echo $this->presentationContentHeader; ?>',
-    presentationContentReview: '<? echo $this->presentationContentReview; ?>',
-    presentationContentReviewText: 'Review',
-    presentationContentApproved: revision_date,
-    presentationContentApprovedText: 'Approved',
-    presentationContent: 'System Status',
-    initComponent: function(){
-        var content = "";
-        if (this.defaultModule === 10){
-            content = this.companyName+'<br />'+
-                  this.systemDescription+'<br />'+
-                  this.defaultModule+'<br />'+
-                  this.presentationContentHeader+'<br />'+
-                  this.presentationContentReviewText+': '+this.presentationContentReview+'<br />'+
-                  this.presentationContentApprovedText+': '+this.presentationContentApproved+'<br />';
-        }else{
-            content = this.presentationContent;
-        }
-        this.html = content;
-        //console.log(content);
-        this.callParent(arguments);
+var windowPresentation = Ext.create('Asgard.view.window.systemInformation', {
+    companyNameField: {
+        value: '<? echo $this->companyName; ?>',
+    },
+    defaultModuleField: {
+        value: '<? echo $this->defaultModule." - ".$this->presentationContentHeader; ?>'
+    },
+    presentationContentHeaderField: {
+        value: '<? echo $this->presentationContentHeader; ?>'
+    },
+    presentationContentReviewField: {
+        value: '<? echo $this->presentationContentReview; ?>'
+    },
+    presentationContentApprovedField: {
+        value: revision_date
     }
+
 });
-Ext.create('Asgard.view.window.systemInformation');
+Ext.getCmp('content-panel').getActiveTab().add(windowPresentation);
 </script>

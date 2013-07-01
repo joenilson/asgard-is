@@ -60,3 +60,11 @@ Ext.define('Asgard.locales.lib.toolbarViewer', {
     searchButtonText: 'Buscar',
     refreshButtonText: 'Actualizar',
 });
+
+Ext.define('Asgard.locales.view.window.systemInformation', {
+    override: 'Asgard.view.window.systemInformation',
+    companyNameText: 'Empresa',
+    presentationContentReviewText: 'Revisado',
+    presentationContentApprovedText: 'Aprobado',
+    defaultModuleText: 'Modulo',
+});
