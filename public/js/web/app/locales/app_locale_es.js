@@ -68,3 +68,13 @@ Ext.define('Asgard.locales.view.window.systemInformation', {
     presentationContentApprovedText: 'Aprobado',
     defaultModuleText: 'Modulo',
 });
+
+Ext.define('Asgard.locales.lib.versioningContent',{
+    override: 'Asgard.lib.versioningContent',
+    versionFieldText: "Version",
+    validFieldText: "Valido desde",
+    scopeFieldText: "Alcance",
+    registryFieldText: "Registro",
+    historyFieldText: "Otras Versiones",
+    historyEmptyText: 'Historial Vacio',
+})

@@ -149,8 +149,8 @@ class IndexController extends AbstractActionController
         $versioningDocument = new Documents();
         $mmc = $versioningDocument->setVersioning($versioning[0],$versioning[1],$versioning[2],$type_versioning);
         
-        $date_now=date('Y-m-d H:i:s.'). str_pad(substr((float)microtime(), 2), 6, '0', STR_PAD_LEFT);
-                
+        $date_now=date('Y-m-d H:i:s.').str_pad(substr((float)microtime(), 2), 6, '0', STR_PAD_LEFT);
+        
         $contentData = $this->getContentTextTable();
         $contentTextBody = new ContentText();
         $contentTextBody->setId_module($moduleParams[0])
