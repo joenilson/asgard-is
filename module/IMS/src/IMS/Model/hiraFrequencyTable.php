@@ -24,14 +24,6 @@ class hiraFrequencyTable extends AbstractTableGateway {
         return $resultSet->toArray();
     }
 
-    /*
-     * Gets one severity values using id and lang
-     * 
-     * @param {int} ids Id of the severity
-     * @param {varchar(4)} lang Language id to get the corresponding description
-     * @return {object} Returns the object asociated to it: 
-     *                  id_severity, lang, description, status and order
-     */
     public function getFrequencyValue($idf,$lang) {
         $row = $this->select(array('id_frequency' => (int) $idf,'lang' => (string) $lang))->current();
         if (!$row)

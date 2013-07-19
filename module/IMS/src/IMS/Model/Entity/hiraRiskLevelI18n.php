@@ -1,4 +1,8 @@
 <?php
+/* 
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 /**
  * @application Asgard Information System :: asgard-is
  * @version 1.0.0 devel
@@ -7,15 +11,13 @@
 
 namespace IMS\Model\Entity;
 
-class hiraMatrix {
+class hiraRiskLevelI18n {
     
-    protected $country;
-    protected $company;
-    protected $location;
-    protected $id_severity;
-    protected $id_frequency;
-    protected $risk;
-    
+    protected $id_level;
+    protected $lang;
+    protected $key;
+    protected $description;
+       
     public function __construct(array $options = null)
     {
     	if (is_array($options)) {
@@ -53,57 +55,39 @@ class hiraMatrix {
     	return $this;
     }
     
-    public function getCountry() {
-        return $this->country;
+    public function getId_level() {
+        return $this->id_level;
     }
 
-    public function setCountry($country) {
-        $this->country = $country;
+    public function setId_level($id_level) {
+        $this->id_level = $id_level;
         return $this;
     }
 
-    public function getCompany() {
-        return $this->company;
+    public function getLang() {
+        return $this->lang;
     }
 
-    public function setCompany($company) {
-        $this->company = $company;
+    public function setLang($lang) {
+        $this->lang = $lang;
         return $this;
     }
 
-    public function getLocation() {
-        return $this->location;
+    public function getKey() {
+        return $this->key;
     }
 
-    public function setLocation($location) {
-        $this->location = $location;
+    public function setKey($key) {
+        $this->key = $key;
         return $this;
     }
 
-    public function getId_severity() {
-        return $this->id_severity;
+    public function getDescription() {
+        return $this->description;
     }
 
-    public function setId_severity($id_severity) {
-        $this->id_severity = $id_severity;
-        return $this;
-    }
-
-    public function getId_frequency() {
-        return $this->id_frequency;
-    }
-
-    public function setId_frequency($id_frequency) {
-        $this->id_frequency = $id_frequency;
-        return $this;
-    }
-
-    public function getRisk() {
-        return $this->risk;
-    }
-
-    public function setRisk($risk) {
-        $this->risk = $risk;
+    public function setDescription($description) {
+        $this->description = $description;
         return $this;
     }
 
