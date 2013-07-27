@@ -47,8 +47,27 @@ class TranslationTable extends AbstractTableGateway
 			throw new \Exception("Could not find row $lang_id or $module_id or $key_id");
 		}
 		return $row;
-	}	
-	
+	}
+        
+	public function getTranslationList($lang_id,$module_id)
+	{
+		//$id  = (int) $id;
+		$rowset = $this->select(array('lang' => $lang_id,'module'=>$module_id));
+		
+		if (!$rowset) {
+                    throw new \Exception("Could not find row $lang_id or $module_id");
+		}
+                
+                $dataList = array();
+                
+                for ($index = 0; $index < $rowset->count(); $index++) {
+                    $item = $rowset->current();
+                    $dataList[$item->key]=$item->value;
+                    $rowset->next();
+                }
+                
+		return $dataList;
+	}
 	/*
 	public function saveTranslation(Translation $translation)
 	{

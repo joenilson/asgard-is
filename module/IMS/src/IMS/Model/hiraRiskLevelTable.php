@@ -28,7 +28,23 @@ class hiraRiskLevelTable extends AbstractTableGateway {
     	$resultSet = $this->select(function (Select $select) {
     		$select->order('id_level ASC');
     	});
-    	return $resultSet->toArray();
+        
+        $hRL=array();
+        if($resultSet->count() > 0)
+        {
+            for ($index = 0; $index < $resultSet->count(); $index++) {
+                $hRL[] = $resultSet->current();
+
+                $resultSet->next();
+            }
+            return $hRL;
+        }
+        else
+        {
+            return false;
+        }
+        
+    	//return $resultSet->toArray();
     }
     
     public function getHiraRiskLevel($id_level) {
@@ -37,16 +53,8 @@ class hiraRiskLevelTable extends AbstractTableGateway {
         if($resultSet->count() > 0)
         {
             for ($index = 0; $index < $resultSet->count(); $index++) {
-                $row = $resultSet->current();
-                $hRL[] = new hiraRiskLevel(array(
-                    'id_level' => $row->id_level,
-                    'min_risk' => $row->min_risk,
-                    'max_risk' => $row->max_risk,
-                    'min_fixtime' => $row->min_fixtime,
-                    'max_fixtime' => $row->max_fixtime,
-                    'format_fixtime' => $row->format_fixtime,
-                    'status' => $row->status
-                ));
+                $hRL[] = $resultSet->current();
+
                 $resultSet->next();
             }
             return $hRL;

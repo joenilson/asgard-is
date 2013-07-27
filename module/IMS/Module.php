@@ -13,6 +13,11 @@ use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\ModuleManager;
 use Zend\Mvc\ModuleRouteListener;
 use IMS\Model\ContentTextTable;
+use IMS\Model\hiraMatrixTable;
+use IMS\Model\hiraFrequencyTable;
+use IMS\Model\hiraSeverityTable;
+use IMS\Model\hiraRiskLevelTable;
+use IMS\Model\hiraRiskLevelI18nTable;
 
 class Module implements AutoloaderProviderInterface
 {
@@ -62,6 +67,31 @@ class Module implements AutoloaderProviderInterface
                 'IMS\Model\ContentTextTable' => function($sm) {
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new ContentTextTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\hiraRiskLevelTable' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new hiraRiskLevelTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\hiraSeverityTable' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new hiraSeverityTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\hiraFrequencyTable' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new hiraFrequencyTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\hiraRiskLevelI18nTable' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new hiraRiskLevelI18nTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\hiraMatrixTable' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new hiraMatrixTable($dbAdapter);
                     return $table;
                 },
             )

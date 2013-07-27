@@ -41,10 +41,15 @@ class hiraSeverityTable extends AbstractTableGateway {
 
     public function getSeverityList($lang) {
         
-        $row = $this->select(array('lang' => (string) $lang))->current();
+        $row = $this->select(array('lang' => (string) $lang));
         if (!$row)
             return false;
-        return $row;
+        $listItems=array();
+        for ($index = 0; $index < $row->count(); $index++) {
+            $listItems[]=$row->current();
+            $row->next();
+        }
+        return $listItems;
     }
     
     public function save(hiraSeverity $object)

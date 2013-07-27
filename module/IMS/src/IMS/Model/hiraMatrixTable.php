@@ -32,21 +32,26 @@ class hiraMatrixTable extends AbstractTableGateway {
                     'company' => array((string) $company, $this->empty_value), 
                     'location' => array((string) $location, $this->empty_value) 
             ));
-        if ($row->count() == 0)
+        if (!$row)
             return false;
         $itemMatrix = new hiraMatrix;
         $resultMatrix = array();
         
         for ($i = 0; $i < $row->count(); $i++) {
-            $dataMatrix = $row->current();
+            $resultMatrix[] = $row->current();
+            /*
             $itemMatrix->setCompany($dataMatrix->company)
                     ->setCountry($dataMatrix->country)
                     ->setLocation($dataMatrix->location)
                     ->setId_frequency($dataMatrix->id_frequency)
                     ->setId_severity($dataMatrix->id_severity)
                     ->setRisk($dataMatrix->risk);
+            $resultMatrix[]=$itemMatrix;
+            */
+            $row->next();
+            
         }
-        return $row;
+        return $resultMatrix;
     }
 
     public function getSeverityList($lang) {

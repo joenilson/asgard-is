@@ -36,20 +36,16 @@ class hiraRiskLevelI18nTable extends AbstractTableGateway {
     }
 
     public function getTextList($lang){
-        
-        $itemList = new hiraRiskLevelI18n;
-        $dataList = array();
-        
         $row = $this->select(array('lang' => (string) $lang));
-        if ($row->count() == 0)
+
+        $dataList = array();
+        $item = "";
+        if (!$row)
             return false;
         for ($index = 0; $index < $row->count(); $index++) {
-            $row->current();
-            $itemList->setId_level($row->id_level)
-                    ->setLang($row->lang)
-                    ->setKey($row->key)
-                    ->setDescription($row->description);
-            $dataList[]=$itemList;
+            $item = $row->current();
+            $dataList[$item->id_level]=array('key'=>$item->key,
+                                            'description'=>$item->description);
             $row->next();
         }
         return $dataList;

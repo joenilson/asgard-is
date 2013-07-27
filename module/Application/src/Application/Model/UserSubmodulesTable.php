@@ -58,7 +58,7 @@ class UserSubmodulesTable extends AbstractTableGateway {
 			$submodules[$counter]['id_menu'] = $key['mid'].'-'.$key['smid'];
 			$submodules[$counter]['text'] = $key['smshortdesc'];
 			$submodules[$counter]['description'] = $key['smshortdesc'];
-			$submodules[$counter]['path'] = $key['mloadurl'];
+			$submodules[$counter]['path'] = $key['smloadurl'];
 			$submodules[$counter]['iconCls'] = $key['smicon'];
 			$submodules[$counter]['leaf'] = ($key['smtypeof']=='leaf')?true:false;
 			$submodules[$counter]['contentHeader'] = $key['content_header'];
