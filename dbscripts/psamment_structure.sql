@@ -4,7 +4,7 @@
 
 -- Dumped from database version 9.1.9
 -- Dumped by pg_dump version 9.1.9
--- Started on 2013-06-26 11:59:20 AST
+-- Started on 2013-07-29 09:10:43 AST
 
 SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
@@ -53,14 +53,6 @@ CREATE SCHEMA ims;
 
 
 --
--- TOC entry 10 (class 2615 OID 16556)
--- Name: rolpro; Type: SCHEMA; Schema: -; Owner: -
---
-
-CREATE SCHEMA rolpro;
-
-
---
 -- TOC entry 11 (class 2615 OID 16557)
 -- Name: sales; Type: SCHEMA; Schema: -; Owner: -
 --
@@ -84,23 +76,6 @@ CREATE SCHEMA system;
 CREATE SCHEMA warehouse;
 
 
---
--- TOC entry 202 (class 3079 OID 11716)
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
-
-
---
--- TOC entry 2149 (class 0 OID 0)
--- Dependencies: 202
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -
---
-
-COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
-
-
 SET search_path = ims, pg_catalog;
 
 SET default_tablespace = '';
@@ -109,7 +84,7 @@ SET default_with_oids = false;
 
 --
 -- TOC entry 200 (class 1259 OID 17433)
--- Dependencies: 15
+-- Dependencies: 2095 2096 2097 15
 -- Name: content_text; Type: TABLE; Schema: ims; Owner: -; Tablespace: 
 --
 
@@ -123,13 +98,17 @@ CREATE TABLE content_text (
     correction integer,
     date_creation timestamp with time zone,
     date_lastmodif timestamp with time zone,
-    user_id integer NOT NULL
+    user_id integer NOT NULL,
+    country character varying(4) DEFAULT '0000'::character varying NOT NULL,
+    company character varying(4) DEFAULT '0000'::character varying NOT NULL,
+    location character varying(4) DEFAULT '0000'::character varying NOT NULL,
+    ims_registry text
 );
 
 
 --
 -- TOC entry 201 (class 1259 OID 17450)
--- Dependencies: 15
+-- Dependencies: 2098 2099 2100 15
 -- Name: content_text_history; Type: TABLE; Schema: ims; Owner: -; Tablespace: 
 --
 
@@ -143,7 +122,111 @@ CREATE TABLE content_text_history (
     correction integer NOT NULL,
     date_creation timestamp with time zone,
     date_modification timestamp with time zone,
-    user_id integer
+    user_id integer,
+    country character varying(4) DEFAULT '0000'::character varying NOT NULL,
+    company character varying(4) DEFAULT '0000'::character varying NOT NULL,
+    location character varying(4) DEFAULT '0000'::character varying NOT NULL,
+    ims_registry text
+);
+
+
+--
+-- TOC entry 203 (class 1259 OID 17579)
+-- Dependencies: 15
+-- Name: hira_frequency; Type: TABLE; Schema: ims; Owner: -; Tablespace: 
+--
+
+CREATE TABLE hira_frequency (
+    id_frequency character varying(2) NOT NULL,
+    lang character varying(10) NOT NULL,
+    description text NOT NULL,
+    status boolean NOT NULL,
+    ordering integer NOT NULL
+);
+
+
+--
+-- TOC entry 204 (class 1259 OID 17587)
+-- Dependencies: 2101 2102 2103 15
+-- Name: hira_matrix; Type: TABLE; Schema: ims; Owner: -; Tablespace: 
+--
+
+CREATE TABLE hira_matrix (
+    country character varying(4) DEFAULT '0000'::character varying NOT NULL,
+    company character varying(4) DEFAULT '0000'::character varying NOT NULL,
+    location character varying(4) DEFAULT '0000'::character varying NOT NULL,
+    id_severity integer,
+    id_frequency character varying(2),
+    risk integer NOT NULL
+);
+
+
+--
+-- TOC entry 206 (class 1259 OID 17595)
+-- Dependencies: 15
+-- Name: hira_risk_level; Type: TABLE; Schema: ims; Owner: -; Tablespace: 
+--
+
+CREATE TABLE hira_risk_level (
+    id_level integer NOT NULL,
+    min_risk integer NOT NULL,
+    max_risk integer NOT NULL,
+    min_fixtime integer,
+    max_fixtime integer,
+    format_fixtime character varying(12),
+    status boolean
+);
+
+
+--
+-- TOC entry 207 (class 1259 OID 17615)
+-- Dependencies: 15
+-- Name: hira_risk_level_i18n; Type: TABLE; Schema: ims; Owner: -; Tablespace: 
+--
+
+CREATE TABLE hira_risk_level_i18n (
+    id_level integer NOT NULL,
+    lang character varying(10),
+    key character varying(12),
+    description text
+);
+
+
+--
+-- TOC entry 205 (class 1259 OID 17593)
+-- Dependencies: 15 206
+-- Name: hira_risk_level_id_level_seq; Type: SEQUENCE; Schema: ims; Owner: -
+--
+
+CREATE SEQUENCE hira_risk_level_id_level_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- TOC entry 2188 (class 0 OID 0)
+-- Dependencies: 205
+-- Name: hira_risk_level_id_level_seq; Type: SEQUENCE OWNED BY; Schema: ims; Owner: -
+--
+
+ALTER SEQUENCE hira_risk_level_id_level_seq OWNED BY hira_risk_level.id_level;
+
+
+--
+-- TOC entry 202 (class 1259 OID 17557)
+-- Dependencies: 15
+-- Name: hira_severity; Type: TABLE; Schema: ims; Owner: -; Tablespace: 
+--
+
+CREATE TABLE hira_severity (
+    id_severity integer NOT NULL,
+    lang character varying(4) NOT NULL,
+    description text NOT NULL,
+    status boolean,
+    ordering integer NOT NULL
 );
 
 
@@ -163,45 +246,6 @@ CREATE TABLE application_content (
     content_footer text,
     template text
 );
-
-
-SET search_path = rolpro, pg_catalog;
-
---
--- TOC entry 170 (class 1259 OID 16566)
--- Dependencies: 10
--- Name: roles; Type: TABLE; Schema: rolpro; Owner: -; Tablespace: 
---
-
-CREATE TABLE roles (
-    id integer NOT NULL,
-    description character varying(50) NOT NULL,
-    date_created timestamp without time zone NOT NULL,
-    status boolean
-);
-
-
---
--- TOC entry 171 (class 1259 OID 16569)
--- Dependencies: 170 10
--- Name: roles_id_seq; Type: SEQUENCE; Schema: rolpro; Owner: -
---
-
-CREATE SEQUENCE roles_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- TOC entry 2150 (class 0 OID 0)
--- Dependencies: 171
--- Name: roles_id_seq; Type: SEQUENCE OWNED BY; Schema: rolpro; Owner: -
---
-
-ALTER SEQUENCE roles_id_seq OWNED BY roles.id;
 
 
 SET search_path = system, pg_catalog;
@@ -242,7 +286,7 @@ CREATE SEQUENCE application_app_id_seq
 
 
 --
--- TOC entry 2151 (class 0 OID 0)
+-- TOC entry 2189 (class 0 OID 0)
 -- Dependencies: 197
 -- Name: application_app_id_seq; Type: SEQUENCE OWNED BY; Schema: system; Owner: -
 --
@@ -338,7 +382,7 @@ CREATE SEQUENCE log_audit_event_id_seq
 
 
 --
--- TOC entry 2152 (class 0 OID 0)
+-- TOC entry 2190 (class 0 OID 0)
 -- Dependencies: 173
 -- Name: log_audit_event_id_seq; Type: SEQUENCE OWNED BY; Schema: system; Owner: -
 --
@@ -382,7 +426,7 @@ CREATE SEQUENCE log_logins_id_seq
 
 
 --
--- TOC entry 2153 (class 0 OID 0)
+-- TOC entry 2191 (class 0 OID 0)
 -- Dependencies: 175
 -- Name: log_logins_id_seq; Type: SEQUENCE OWNED BY; Schema: system; Owner: -
 --
@@ -425,7 +469,7 @@ CREATE SEQUENCE log_updates_id_seq
 
 
 --
--- TOC entry 2154 (class 0 OID 0)
+-- TOC entry 2192 (class 0 OID 0)
 -- Dependencies: 177
 -- Name: log_updates_id_seq; Type: SEQUENCE OWNED BY; Schema: system; Owner: -
 --
@@ -442,7 +486,9 @@ ALTER SEQUENCE log_updates_id_seq OWNED BY log_updates.id;
 CREATE TABLE messages (
     lang character varying(10) NOT NULL,
     key text NOT NULL,
-    value text NOT NULL
+    value text NOT NULL,
+    type character varying(30),
+    severity integer
 );
 
 
@@ -504,7 +550,7 @@ CREATE SEQUENCE modules_mid_seq
 
 
 --
--- TOC entry 2155 (class 0 OID 0)
+-- TOC entry 2193 (class 0 OID 0)
 -- Dependencies: 180
 -- Name: modules_mid_seq; Type: SEQUENCE OWNED BY; Schema: system; Owner: -
 --
@@ -581,7 +627,7 @@ CREATE SEQUENCE submodules_smid_seq
 
 
 --
--- TOC entry 2156 (class 0 OID 0)
+-- TOC entry 2194 (class 0 OID 0)
 -- Dependencies: 183
 -- Name: submodules_smid_seq; Type: SEQUENCE OWNED BY; Schema: system; Owner: -
 --
@@ -591,7 +637,7 @@ ALTER SEQUENCE submodules_smid_seq OWNED BY submodules.smid;
 
 --
 -- TOC entry 178 (class 1259 OID 16595)
--- Dependencies: 2063 2064 2065 2066 12
+-- Dependencies: 2086 2087 2088 2089 12
 -- Name: submodules_users; Type: TABLE; Schema: system; Owner: -; Tablespace: 
 --
 
@@ -650,7 +696,7 @@ CREATE TABLE user_preferences (
 
 --
 -- TOC entry 184 (class 1259 OID 16611)
--- Dependencies: 2070 12
+-- Dependencies: 2093 12
 -- Name: users; Type: TABLE; Schema: system; Owner: -; Tablespace: 
 --
 
@@ -665,7 +711,7 @@ CREATE TABLE users (
     date_lastlogin timestamp with time zone,
     country character varying(4),
     company character varying(4),
-    location character varying(5),
+    location character varying(4),
     admin boolean,
     status character(1),
     type character varying(20),
@@ -675,7 +721,7 @@ CREATE TABLE users (
 
 --
 -- TOC entry 185 (class 1259 OID 16617)
--- Dependencies: 184 12
+-- Dependencies: 12 184
 -- Name: users_id_seq; Type: SEQUENCE; Schema: system; Owner: -
 --
 
@@ -688,7 +734,7 @@ CREATE SEQUENCE users_id_seq
 
 
 --
--- TOC entry 2157 (class 0 OID 0)
+-- TOC entry 2195 (class 0 OID 0)
 -- Dependencies: 185
 -- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: system; Owner: -
 --
@@ -715,7 +761,7 @@ CREATE TABLE users_sessions (
 
 --
 -- TOC entry 191 (class 1259 OID 17172)
--- Dependencies: 2056 12
+-- Dependencies: 2080 12
 -- Name: view_modules_users; Type: VIEW; Schema: system; Owner: -
 --
 
@@ -725,7 +771,7 @@ CREATE VIEW view_modules_users AS
 
 --
 -- TOC entry 192 (class 1259 OID 17253)
--- Dependencies: 2057 12
+-- Dependencies: 2081 12
 -- Name: view_submodules_users; Type: VIEW; Schema: system; Owner: -
 --
 
@@ -733,21 +779,21 @@ CREATE VIEW view_submodules_users AS
     SELECT smo.user_id, sm.mid, ssmi18n.lang, sm.mshortdesc, ss.parent_smid, ss.smid, ssmi18n.value AS smshortdesc, sm.helpurl, sm.loadurl AS mloadurl, ss.loadurl AS smloadurl, sm.icon AS micon, ss.icon AS smicon, sm.typeof AS mtypeof, ss.typeof AS smtypeof, sm.ordering AS mordering, ss.ordering AS smordering, smu.view, smu.edit, smu.add, smu.admin, ss.content_header, ss.content_body FROM (((((modules sm LEFT JOIN modules_users smo ON ((sm.mid = smo.mid))) LEFT JOIN submodules_users smu ON ((sm.mid = smu.mid))) LEFT JOIN submodules ss ON ((ss.smid = smu.smid))) LEFT JOIN submodules_i18n ssmi18n ON ((ssmi18n.id_submodule = smu.smid))) JOIN users su ON (((su.id = smo.user_id) AND (su.id = smu.user_id)))) WHERE ((ssmi18n.key)::text = (ss.smshortdesc)::text) ORDER BY sm.ordering, ss.ordering;
 
 
-SET search_path = rolpro, pg_catalog;
+SET search_path = ims, pg_catalog;
 
 --
--- TOC entry 2059 (class 2604 OID 16627)
--- Dependencies: 171 170
--- Name: id; Type: DEFAULT; Schema: rolpro; Owner: -
+-- TOC entry 2104 (class 2604 OID 17598)
+-- Dependencies: 206 205 206
+-- Name: id_level; Type: DEFAULT; Schema: ims; Owner: -
 --
 
-ALTER TABLE ONLY roles ALTER COLUMN id SET DEFAULT nextval('roles_id_seq'::regclass);
+ALTER TABLE ONLY hira_risk_level ALTER COLUMN id_level SET DEFAULT nextval('hira_risk_level_id_level_seq'::regclass);
 
 
 SET search_path = system, pg_catalog;
 
 --
--- TOC entry 2071 (class 2604 OID 17401)
+-- TOC entry 2094 (class 2604 OID 17401)
 -- Dependencies: 198 197 198
 -- Name: app_id; Type: DEFAULT; Schema: system; Owner: -
 --
@@ -756,7 +802,7 @@ ALTER TABLE ONLY application ALTER COLUMN app_id SET DEFAULT nextval('applicatio
 
 
 --
--- TOC entry 2060 (class 2604 OID 16628)
+-- TOC entry 2083 (class 2604 OID 16628)
 -- Dependencies: 173 172
 -- Name: event_id; Type: DEFAULT; Schema: system; Owner: -
 --
@@ -765,7 +811,7 @@ ALTER TABLE ONLY log_audit ALTER COLUMN event_id SET DEFAULT nextval('log_audit_
 
 
 --
--- TOC entry 2061 (class 2604 OID 16629)
+-- TOC entry 2084 (class 2604 OID 16629)
 -- Dependencies: 175 174
 -- Name: id; Type: DEFAULT; Schema: system; Owner: -
 --
@@ -774,7 +820,7 @@ ALTER TABLE ONLY log_logins ALTER COLUMN id SET DEFAULT nextval('log_logins_id_s
 
 
 --
--- TOC entry 2062 (class 2604 OID 16630)
+-- TOC entry 2085 (class 2604 OID 16630)
 -- Dependencies: 177 176
 -- Name: id; Type: DEFAULT; Schema: system; Owner: -
 --
@@ -783,7 +829,7 @@ ALTER TABLE ONLY log_updates ALTER COLUMN id SET DEFAULT nextval('log_updates_id
 
 
 --
--- TOC entry 2067 (class 2604 OID 16631)
+-- TOC entry 2090 (class 2604 OID 16631)
 -- Dependencies: 180 179
 -- Name: mid; Type: DEFAULT; Schema: system; Owner: -
 --
@@ -792,7 +838,7 @@ ALTER TABLE ONLY modules ALTER COLUMN mid SET DEFAULT nextval('modules_mid_seq':
 
 
 --
--- TOC entry 2068 (class 2604 OID 16632)
+-- TOC entry 2091 (class 2604 OID 16632)
 -- Dependencies: 183 182
 -- Name: smid; Type: DEFAULT; Schema: system; Owner: -
 --
@@ -801,7 +847,7 @@ ALTER TABLE ONLY submodules ALTER COLUMN smid SET DEFAULT nextval('submodules_sm
 
 
 --
--- TOC entry 2069 (class 2604 OID 16633)
+-- TOC entry 2092 (class 2604 OID 16633)
 -- Dependencies: 185 184
 -- Name: id; Type: DEFAULT; Schema: system; Owner: -
 --
@@ -812,30 +858,70 @@ ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regcl
 SET search_path = ims, pg_catalog;
 
 --
--- TOC entry 2129 (class 2606 OID 17440)
--- Dependencies: 200 200 200 200 2143
+-- TOC entry 2166 (class 2606 OID 17586)
+-- Dependencies: 203 203 203 2183
+-- Name: hira_frequency_pkey; Type: CONSTRAINT; Schema: ims; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY hira_frequency
+    ADD CONSTRAINT hira_frequency_pkey PRIMARY KEY (id_frequency, lang);
+
+
+--
+-- TOC entry 2170 (class 2606 OID 17622)
+-- Dependencies: 207 207 207 207 2183
+-- Name: hira_risk_level_i18n_id_lang_key_key; Type: CONSTRAINT; Schema: ims; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY hira_risk_level_i18n
+    ADD CONSTRAINT hira_risk_level_i18n_id_lang_key_key UNIQUE (id_level, lang, key);
+
+
+--
+-- TOC entry 2168 (class 2606 OID 17600)
+-- Dependencies: 206 206 2183
+-- Name: hira_risk_level_pkey; Type: CONSTRAINT; Schema: ims; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY hira_risk_level
+    ADD CONSTRAINT hira_risk_level_pkey PRIMARY KEY (id_level);
+
+
+--
+-- TOC entry 2164 (class 2606 OID 17564)
+-- Dependencies: 202 202 202 2183
+-- Name: hira_severity_pkey; Type: CONSTRAINT; Schema: ims; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY hira_severity
+    ADD CONSTRAINT hira_severity_pkey PRIMARY KEY (id_severity, lang);
+
+
+--
+-- TOC entry 2160 (class 2606 OID 17521)
+-- Dependencies: 200 200 200 200 200 200 200 2183
 -- Name: pk_ims_content_text; Type: CONSTRAINT; Schema: ims; Owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY content_text
-    ADD CONSTRAINT pk_ims_content_text PRIMARY KEY (id_module, id_submodule, lang);
+    ADD CONSTRAINT pk_ims_content_text PRIMARY KEY (id_module, id_submodule, lang, country, company, location);
 
 
 --
--- TOC entry 2131 (class 2606 OID 17457)
--- Dependencies: 201 201 201 201 201 201 201 2143
--- Name: pk_ims_content_text_log; Type: CONSTRAINT; Schema: ims; Owner: -; Tablespace: 
+-- TOC entry 2162 (class 2606 OID 17463)
+-- Dependencies: 201 201 201 201 201 201 201 201 201 2183
+-- Name: pk_ims_content_text_history; Type: CONSTRAINT; Schema: ims; Owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY content_text_history
-    ADD CONSTRAINT pk_ims_content_text_log PRIMARY KEY (id_module, id_submodule, lang, majorversion, minorversion, correction);
+    ADD CONSTRAINT pk_ims_content_text_history PRIMARY KEY (id_module, id_submodule, lang, country, company, majorversion, minorversion, correction);
 
 
 SET search_path = public, pg_catalog;
 
 --
--- TOC entry 2123 (class 2606 OID 17384)
--- Dependencies: 196 196 196 2143
+-- TOC entry 2154 (class 2606 OID 17384)
+-- Dependencies: 196 196 196 2183
 -- Name: pk_application_content; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -843,23 +929,11 @@ ALTER TABLE ONLY application_content
     ADD CONSTRAINT pk_application_content PRIMARY KEY (screen, lang);
 
 
-SET search_path = rolpro, pg_catalog;
-
---
--- TOC entry 2073 (class 2606 OID 16635)
--- Dependencies: 170 170 2143
--- Name: roles_pkey; Type: CONSTRAINT; Schema: rolpro; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY roles
-    ADD CONSTRAINT roles_pkey PRIMARY KEY (id);
-
-
 SET search_path = system, pg_catalog;
 
 --
--- TOC entry 2125 (class 2606 OID 17406)
--- Dependencies: 198 198 2143
+-- TOC entry 2156 (class 2606 OID 17406)
+-- Dependencies: 198 198 2183
 -- Name: application_pkey; Type: CONSTRAINT; Schema: system; Owner: -; Tablespace: 
 --
 
@@ -868,8 +942,8 @@ ALTER TABLE ONLY application
 
 
 --
--- TOC entry 2113 (class 2606 OID 17333)
--- Dependencies: 194 194 2143
+-- TOC entry 2144 (class 2606 OID 17333)
+-- Dependencies: 194 194 2183
 -- Name: companies_pkey; Type: CONSTRAINT; Schema: system; Owner: -; Tablespace: 
 --
 
@@ -878,8 +952,8 @@ ALTER TABLE ONLY companies
 
 
 --
--- TOC entry 2115 (class 2606 OID 17335)
--- Dependencies: 194 194 2143
+-- TOC entry 2146 (class 2606 OID 17335)
+-- Dependencies: 194 194 2183
 -- Name: companies_unique_comercial_name; Type: CONSTRAINT; Schema: system; Owner: -; Tablespace: 
 --
 
@@ -888,8 +962,8 @@ ALTER TABLE ONLY companies
 
 
 --
--- TOC entry 2117 (class 2606 OID 17337)
--- Dependencies: 194 194 2143
+-- TOC entry 2148 (class 2606 OID 17337)
+-- Dependencies: 194 194 2183
 -- Name: companies_unique_legal_name; Type: CONSTRAINT; Schema: system; Owner: -; Tablespace: 
 --
 
@@ -898,8 +972,8 @@ ALTER TABLE ONLY companies
 
 
 --
--- TOC entry 2109 (class 2606 OID 17299)
--- Dependencies: 193 193 2143
+-- TOC entry 2140 (class 2606 OID 17299)
+-- Dependencies: 193 193 2183
 -- Name: countries_pkey; Type: CONSTRAINT; Schema: system; Owner: -; Tablespace: 
 --
 
@@ -908,8 +982,8 @@ ALTER TABLE ONLY countries
 
 
 --
--- TOC entry 2111 (class 2606 OID 17301)
--- Dependencies: 193 193 2143
+-- TOC entry 2142 (class 2606 OID 17301)
+-- Dependencies: 193 193 2183
 -- Name: countries_unique_name; Type: CONSTRAINT; Schema: system; Owner: -; Tablespace: 
 --
 
@@ -918,8 +992,8 @@ ALTER TABLE ONLY countries
 
 
 --
--- TOC entry 2119 (class 2606 OID 17355)
--- Dependencies: 195 195 195 2143
+-- TOC entry 2150 (class 2606 OID 17355)
+-- Dependencies: 195 195 195 2183
 -- Name: locations_pkey; Type: CONSTRAINT; Schema: system; Owner: -; Tablespace: 
 --
 
@@ -928,8 +1002,8 @@ ALTER TABLE ONLY locations
 
 
 --
--- TOC entry 2121 (class 2606 OID 17357)
--- Dependencies: 195 195 195 2143
+-- TOC entry 2152 (class 2606 OID 17357)
+-- Dependencies: 195 195 195 2183
 -- Name: locations_unique_country_location; Type: CONSTRAINT; Schema: system; Owner: -; Tablespace: 
 --
 
@@ -938,8 +1012,8 @@ ALTER TABLE ONLY locations
 
 
 --
--- TOC entry 2075 (class 2606 OID 16637)
--- Dependencies: 172 172 2143
+-- TOC entry 2106 (class 2606 OID 16637)
+-- Dependencies: 172 172 2183
 -- Name: log_audit_pkey; Type: CONSTRAINT; Schema: system; Owner: -; Tablespace: 
 --
 
@@ -948,8 +1022,8 @@ ALTER TABLE ONLY log_audit
 
 
 --
--- TOC entry 2077 (class 2606 OID 16639)
--- Dependencies: 174 174 2143
+-- TOC entry 2108 (class 2606 OID 16639)
+-- Dependencies: 174 174 2183
 -- Name: log_logins_pkey; Type: CONSTRAINT; Schema: system; Owner: -; Tablespace: 
 --
 
@@ -958,8 +1032,8 @@ ALTER TABLE ONLY log_logins
 
 
 --
--- TOC entry 2079 (class 2606 OID 16641)
--- Dependencies: 176 176 2143
+-- TOC entry 2110 (class 2606 OID 16641)
+-- Dependencies: 176 176 2183
 -- Name: log_updates_pkey; Type: CONSTRAINT; Schema: system; Owner: -; Tablespace: 
 --
 
@@ -968,8 +1042,8 @@ ALTER TABLE ONLY log_updates
 
 
 --
--- TOC entry 2081 (class 2606 OID 16643)
--- Dependencies: 178 178 178 178 2143
+-- TOC entry 2112 (class 2606 OID 16643)
+-- Dependencies: 178 178 178 178 2183
 -- Name: pk_menu_users; Type: CONSTRAINT; Schema: system; Owner: -; Tablespace: 
 --
 
@@ -978,8 +1052,8 @@ ALTER TABLE ONLY submodules_users
 
 
 --
--- TOC entry 2103 (class 2606 OID 17137)
--- Dependencies: 188 188 188 188 2143
+-- TOC entry 2134 (class 2606 OID 17137)
+-- Dependencies: 188 188 188 188 2183
 -- Name: pk_module_i18n; Type: CONSTRAINT; Schema: system; Owner: -; Tablespace: 
 --
 
@@ -988,8 +1062,8 @@ ALTER TABLE ONLY modules_i18n
 
 
 --
--- TOC entry 2083 (class 2606 OID 16645)
--- Dependencies: 179 179 2143
+-- TOC entry 2114 (class 2606 OID 16645)
+-- Dependencies: 179 179 2183
 -- Name: pk_modules; Type: CONSTRAINT; Schema: system; Owner: -; Tablespace: 
 --
 
@@ -998,8 +1072,8 @@ ALTER TABLE ONLY modules
 
 
 --
--- TOC entry 2087 (class 2606 OID 16647)
--- Dependencies: 181 181 181 2143
+-- TOC entry 2118 (class 2606 OID 16647)
+-- Dependencies: 181 181 181 2183
 -- Name: pk_modules_users; Type: CONSTRAINT; Schema: system; Owner: -; Tablespace: 
 --
 
@@ -1008,8 +1082,8 @@ ALTER TABLE ONLY modules_users
 
 
 --
--- TOC entry 2105 (class 2606 OID 17145)
--- Dependencies: 189 189 189 189 189 2143
+-- TOC entry 2136 (class 2606 OID 17145)
+-- Dependencies: 189 189 189 189 189 2183
 -- Name: pk_submodule_i18n; Type: CONSTRAINT; Schema: system; Owner: -; Tablespace: 
 --
 
@@ -1018,8 +1092,8 @@ ALTER TABLE ONLY submodules_i18n
 
 
 --
--- TOC entry 2089 (class 2606 OID 16649)
--- Dependencies: 182 182 182 2143
+-- TOC entry 2120 (class 2606 OID 16649)
+-- Dependencies: 182 182 182 2183
 -- Name: pk_submodules; Type: CONSTRAINT; Schema: system; Owner: -; Tablespace: 
 --
 
@@ -1028,8 +1102,8 @@ ALTER TABLE ONLY submodules
 
 
 --
--- TOC entry 2127 (class 2606 OID 17432)
--- Dependencies: 199 199 199 2143
+-- TOC entry 2158 (class 2606 OID 17432)
+-- Dependencies: 199 199 199 2183
 -- Name: pk_system_messages; Type: CONSTRAINT; Schema: system; Owner: -; Tablespace: 
 --
 
@@ -1038,8 +1112,8 @@ ALTER TABLE ONLY messages
 
 
 --
--- TOC entry 2101 (class 2606 OID 16699)
--- Dependencies: 187 187 187 187 2143
+-- TOC entry 2132 (class 2606 OID 16699)
+-- Dependencies: 187 187 187 187 2183
 -- Name: pk_translation; Type: CONSTRAINT; Schema: system; Owner: -; Tablespace: 
 --
 
@@ -1048,8 +1122,8 @@ ALTER TABLE ONLY translation
 
 
 --
--- TOC entry 2107 (class 2606 OID 17166)
--- Dependencies: 190 190 2143
+-- TOC entry 2138 (class 2606 OID 17166)
+-- Dependencies: 190 190 2183
 -- Name: pk_userprefs; Type: CONSTRAINT; Schema: system; Owner: -; Tablespace: 
 --
 
@@ -1058,8 +1132,8 @@ ALTER TABLE ONLY user_preferences
 
 
 --
--- TOC entry 2099 (class 2606 OID 16651)
--- Dependencies: 186 186 186 2143
+-- TOC entry 2130 (class 2606 OID 16651)
+-- Dependencies: 186 186 186 2183
 -- Name: pk_users_sessions; Type: CONSTRAINT; Schema: system; Owner: -; Tablespace: 
 --
 
@@ -1068,8 +1142,8 @@ ALTER TABLE ONLY users_sessions
 
 
 --
--- TOC entry 2085 (class 2606 OID 16653)
--- Dependencies: 179 179 2143
+-- TOC entry 2116 (class 2606 OID 16653)
+-- Dependencies: 179 179 2183
 -- Name: uk_modules_mshortdesc; Type: CONSTRAINT; Schema: system; Owner: -; Tablespace: 
 --
 
@@ -1078,8 +1152,8 @@ ALTER TABLE ONLY modules
 
 
 --
--- TOC entry 2094 (class 2606 OID 16655)
--- Dependencies: 184 184 184 184 2143
+-- TOC entry 2125 (class 2606 OID 16655)
+-- Dependencies: 184 184 184 184 2183
 -- Name: user_unique_login_by_country_company; Type: CONSTRAINT; Schema: system; Owner: -; Tablespace: 
 --
 
@@ -1088,8 +1162,8 @@ ALTER TABLE ONLY users
 
 
 --
--- TOC entry 2096 (class 2606 OID 16657)
--- Dependencies: 184 184 2143
+-- TOC entry 2127 (class 2606 OID 16657)
+-- Dependencies: 184 184 2183
 -- Name: users_pkey; Type: CONSTRAINT; Schema: system; Owner: -; Tablespace: 
 --
 
@@ -1098,8 +1172,8 @@ ALTER TABLE ONLY users
 
 
 --
--- TOC entry 2090 (class 1259 OID 17370)
--- Dependencies: 184 2143
+-- TOC entry 2121 (class 1259 OID 17370)
+-- Dependencies: 184 2183
 -- Name: fki_companies_users; Type: INDEX; Schema: system; Owner: -; Tablespace: 
 --
 
@@ -1107,8 +1181,8 @@ CREATE INDEX fki_companies_users ON users USING btree (company);
 
 
 --
--- TOC entry 2091 (class 1259 OID 17364)
--- Dependencies: 184 2143
+-- TOC entry 2122 (class 1259 OID 17364)
+-- Dependencies: 184 2183
 -- Name: fki_countries_users; Type: INDEX; Schema: system; Owner: -; Tablespace: 
 --
 
@@ -1116,8 +1190,8 @@ CREATE INDEX fki_countries_users ON users USING btree (country);
 
 
 --
--- TOC entry 2092 (class 1259 OID 17376)
--- Dependencies: 184 184 2143
+-- TOC entry 2123 (class 1259 OID 17488)
+-- Dependencies: 184 184 2183
 -- Name: fki_locations_users; Type: INDEX; Schema: system; Owner: -; Tablespace: 
 --
 
@@ -1125,8 +1199,8 @@ CREATE INDEX fki_locations_users ON users USING btree (location, country);
 
 
 --
--- TOC entry 2097 (class 1259 OID 16658)
--- Dependencies: 186 2143
+-- TOC entry 2128 (class 1259 OID 16658)
+-- Dependencies: 186 2183
 -- Name: fki_users_users_sessions; Type: INDEX; Schema: system; Owner: -; Tablespace: 
 --
 
@@ -1136,19 +1210,29 @@ CREATE INDEX fki_users_users_sessions ON users_sessions USING btree (user_id);
 SET search_path = ims, pg_catalog;
 
 --
--- TOC entry 2058 (class 2618 OID 17459)
--- Dependencies: 200 201 200 200 200 200 200 200 200 200 200 200 2143
+-- TOC entry 2082 (class 2618 OID 17524)
+-- Dependencies: 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 201 2183
 -- Name: content_text_control; Type: RULE; Schema: ims; Owner: -
 --
 
-CREATE RULE content_text_control AS ON UPDATE TO content_text DO INSERT INTO content_text_history (id_module, id_submodule, lang, content, majorversion, minorversion, correction, date_creation, date_modification, user_id) VALUES (old.id_module, old.id_submodule, old.lang, old.content, old.majorversion, old.minorversion, old.correction, old.date_creation, new.date_creation, old.user_id);
+CREATE RULE content_text_control AS ON UPDATE TO content_text DO INSERT INTO content_text_history (id_module, id_submodule, lang, content, majorversion, minorversion, correction, date_creation, date_modification, user_id, country, company, location, ims_registry) VALUES (old.id_module, old.id_submodule, old.lang, old.content, old.majorversion, old.minorversion, old.correction, old.date_creation, new.date_creation, old.user_id, old.country, old.company, old.location, old.ims_registry);
+
+
+--
+-- TOC entry 2181 (class 2606 OID 17623)
+-- Dependencies: 207 206 2167 2183
+-- Name: hira_risk_level_i18n_id_fkey; Type: FK CONSTRAINT; Schema: ims; Owner: -
+--
+
+ALTER TABLE ONLY hira_risk_level_i18n
+    ADD CONSTRAINT hira_risk_level_i18n_id_fkey FOREIGN KEY (id_level) REFERENCES hira_risk_level(id_level);
 
 
 SET search_path = system, pg_catalog;
 
 --
--- TOC entry 2138 (class 2606 OID 17365)
--- Dependencies: 2112 194 184 2143
+-- TOC entry 2176 (class 2606 OID 17505)
+-- Dependencies: 2143 184 194 2183
 -- Name: fk_companies_users; Type: FK CONSTRAINT; Schema: system; Owner: -
 --
 
@@ -1157,8 +1241,8 @@ ALTER TABLE ONLY users
 
 
 --
--- TOC entry 2137 (class 2606 OID 17359)
--- Dependencies: 193 184 2108 2143
+-- TOC entry 2177 (class 2606 OID 17510)
+-- Dependencies: 184 193 2139 2183
 -- Name: fk_countries_users; Type: FK CONSTRAINT; Schema: system; Owner: -
 --
 
@@ -1167,8 +1251,8 @@ ALTER TABLE ONLY users
 
 
 --
--- TOC entry 2139 (class 2606 OID 17371)
--- Dependencies: 195 184 184 2118 195 2143
+-- TOC entry 2178 (class 2606 OID 17515)
+-- Dependencies: 184 195 195 2149 184 2183
 -- Name: fk_locations_users; Type: FK CONSTRAINT; Schema: system; Owner: -
 --
 
@@ -1177,8 +1261,8 @@ ALTER TABLE ONLY users
 
 
 --
--- TOC entry 2132 (class 2606 OID 17208)
--- Dependencies: 179 178 2082 2143
+-- TOC entry 2171 (class 2606 OID 17208)
+-- Dependencies: 178 179 2113 2183
 -- Name: fk_modules; Type: FK CONSTRAINT; Schema: system; Owner: -
 --
 
@@ -1187,8 +1271,8 @@ ALTER TABLE ONLY submodules_users
 
 
 --
--- TOC entry 2135 (class 2606 OID 16664)
--- Dependencies: 179 2082 181 2143
+-- TOC entry 2174 (class 2606 OID 16664)
+-- Dependencies: 179 181 2113 2183
 -- Name: fk_modules_1; Type: FK CONSTRAINT; Schema: system; Owner: -
 --
 
@@ -1197,8 +1281,8 @@ ALTER TABLE ONLY modules_users
 
 
 --
--- TOC entry 2133 (class 2606 OID 17213)
--- Dependencies: 182 182 178 178 2088 2143
+-- TOC entry 2172 (class 2606 OID 17213)
+-- Dependencies: 178 178 182 182 2119 2183
 -- Name: fk_submodules; Type: FK CONSTRAINT; Schema: system; Owner: -
 --
 
@@ -1207,8 +1291,8 @@ ALTER TABLE ONLY submodules_users
 
 
 --
--- TOC entry 2134 (class 2606 OID 17218)
--- Dependencies: 2095 178 184 2143
+-- TOC entry 2173 (class 2606 OID 17218)
+-- Dependencies: 178 184 2126 2183
 -- Name: fk_users; Type: FK CONSTRAINT; Schema: system; Owner: -
 --
 
@@ -1217,8 +1301,8 @@ ALTER TABLE ONLY submodules_users
 
 
 --
--- TOC entry 2136 (class 2606 OID 16679)
--- Dependencies: 184 2095 181 2143
+-- TOC entry 2175 (class 2606 OID 16679)
+-- Dependencies: 2126 181 184 2183
 -- Name: fk_users_1; Type: FK CONSTRAINT; Schema: system; Owner: -
 --
 
@@ -1227,8 +1311,8 @@ ALTER TABLE ONLY modules_users
 
 
 --
--- TOC entry 2141 (class 2606 OID 17167)
--- Dependencies: 190 2095 184 2143
+-- TOC entry 2180 (class 2606 OID 17167)
+-- Dependencies: 2126 190 184 2183
 -- Name: fk_users_userprefs; Type: FK CONSTRAINT; Schema: system; Owner: -
 --
 
@@ -1237,8 +1321,8 @@ ALTER TABLE ONLY user_preferences
 
 
 --
--- TOC entry 2140 (class 2606 OID 16684)
--- Dependencies: 170 186 2072 2143
+-- TOC entry 2179 (class 2606 OID 16684)
+-- Dependencies: 170 186 2183
 -- Name: fk_users_users_sessions; Type: FK CONSTRAINT; Schema: system; Owner: -
 --
 
@@ -1247,7 +1331,7 @@ ALTER TABLE ONLY users_sessions
 
 
 --
--- TOC entry 2148 (class 0 OID 0)
+-- TOC entry 2187 (class 0 OID 0)
 -- Dependencies: 14
 -- Name: public; Type: ACL; Schema: -; Owner: -
 --
@@ -1258,7 +1342,7 @@ GRANT ALL ON SCHEMA public TO postgres;
 GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
--- Completed on 2013-06-26 11:59:20 AST
+-- Completed on 2013-07-29 09:10:43 AST
 
 --
 -- PostgreSQL database dump complete
