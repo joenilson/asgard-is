@@ -19,10 +19,6 @@ foreach ($this->hiraRiskLevel as $rlValues) {
     echo "<td class=\"risk_text_{$rlValues->id_level}\" width=\"220\">".$this->hiraRiskLabels[$rlValues->id_level]['description']."</td>\n";
     echo "<td class=\"risk_text_{$rlValues->id_level}\">".$rlValues->min_fixtime." - ".$rlValues->max_fixtime." ".$this->timeLabels[$rlValues->format_fixtime]."</td>\n";
     echo "</tr>\n";
-    for($i=$rlValues->min_risk; $i<$rlValues->max_risk; $i++)
-    {
-        
-    }
     $riskLevelRange[$rlValues->id_level]=array('min'=>$rlValues->min_risk,'max'=>$rlValues->max_risk);
 }
 ?>
@@ -81,37 +77,4 @@ foreach ($this->hiraRiskLevel as $rlValues) {
     </tr>
 </table>
 <div id="test"></div>
-<style>
-    .risk_label_1
-    {
-        background: #bd362f;
-        color: #ffffff;
-    }
-    .risk_label_2
-    {
-        background: yellow;
-        color: #000;
-    }
-    .risk_label_3
-    {
-        background: yellowgreen;
-        color: #ffffff;
-    }
-    .risk_text_1
-    {
-        background: silver;
-        color: #000;
-    }
-    .risk_text_2
-    {
-        background: snow;
-        color: #000;
-    }
-    .risk_text_3
-    {
-        background: silver;
-        color: #000;
-    }
-</style>
-
 

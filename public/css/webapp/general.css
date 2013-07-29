@@ -139,3 +139,34 @@ body {
     font-weight: normal;
     font-style: normal;
 }
+
+.risk_label_1
+{
+    background: #bd362f;
+    color: #ffffff;
+}
+.risk_label_2
+{
+    background: yellow;
+    color: #000;
+}
+.risk_label_3
+{
+    background: yellowgreen;
+    color: #ffffff;
+}
+.risk_text_1
+{
+    background: silver;
+    color: #000;
+}
+.risk_text_2
+{
+    background: snow;
+    color: #000;
+}
+.risk_text_3
+{
+    background: silver;
+    color: #000;
+}
