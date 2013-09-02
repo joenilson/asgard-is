@@ -6,7 +6,6 @@
  * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
-
 namespace IMS\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
@@ -140,7 +139,9 @@ class IndexController extends AbstractActionController
             'titleSeverity'=>$titleSeverity['value'],
             'titleFrequency'=>$titleFrequency['value'],
             'titleMatrixRiskEval'=>$titleMatrixRiskEval['value'],
-            'timeLabels'=>$timeLabels);
+            'timeLabels'=>$timeLabels,
+            'HIRAGridTitle'=>'HIRA Matrix By Process',
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0)));
             /*
             'contentId'=>$this->params()->fromRoute('id', 0),
             'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0)));

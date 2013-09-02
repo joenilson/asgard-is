@@ -170,3 +170,7 @@ body {
     background: silver;
     color: #000;
 }
+
+.x-column-header-inner .x-column-header-text {
+    white-space: normal;
+}
