@@ -134,13 +134,11 @@ class Module
                     $layoutConfig['mobileSite'] = $this->mobileSite;
                     return $layoutConfig['mobileSite'];
                 },
-
                 'userSessionData' => function ($sm) {
                     $userSessionData = $sm->get('Auth\Model\MyAuthStorage')->read();
                     return $userSessionData;
 
                 },
-
                 'userPreferences' => function ($sm) {
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $tableUserPrefs = new UserPreferencesTable($dbAdapter);
@@ -148,25 +146,21 @@ class Module
                     $userPreferences = $tableUserPrefs->getUserPreferences($user->id);
                     return $userPreferences;
                 },
-
                 'Application\Model\TranslationTable' =>  function($sm) {
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new TranslationTable($dbAdapter);
                     return $table;
                 },
-
                 'Application\Model\ModulesTable' => function($sm) {
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new ModulesTable($dbAdapter);
                     return $table;
-                },
-                        
+                },                    
                 'Application\Model\ModulesI18nTable' => function($sm) {
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new ModulesI18nTable($dbAdapter);
                     return $table;
                 },
-
                 'Application\Model\UserModulesTable' => function($sm) {
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new UserModulesTable($dbAdapter);

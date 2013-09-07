@@ -22,10 +22,8 @@ return array(
     ),
     'mssql_db' => array(
         'driver'         => 'Pdo',
-        'dsn'            => 'dblib:host=192.168.3.46\SQLEXPRESS;dbname=bygweb_isov2kr',
+        'dsn'            => 'dblib:host=SQLEXPRESS;dbname=bygweb_isov2kr3',
         'charset'        =>  'UTF-8',
-        'username'       => 'kolareal',
-        'password'       => 'kolareal11',
         'pdotype'       => 'dblib',
     ),
     'service_manager' => array(
@@ -40,19 +38,19 @@ return array(
                          */
                         'Application\Db\AdapterTwo' => function($sm) {
                         $config = $sm->get('Config');
-                        return new Adapter($config['mssql_db']);
+                        return new \Zend\Db\Adapter\Adapter($config['mssql_db']);
                     },
 		),
     ),
     'ldap_config' => array(
         'server1' => array(
-            'bindRequiresDn'         => true,
+            'bindRequiresDn' => true,
         ),
         'server2' => array(
-            'useSsl'                 => true,
+            'useSsl' => true,
         ),
         'server3' => array(
-    		'useSsl'                 => true,
+    		'useSsl' => true,
         ),
     ),
 

@@ -18,6 +18,7 @@ use IMS\Model\hiraFrequencyTable;
 use IMS\Model\hiraSeverityTable;
 use IMS\Model\hiraRiskLevelTable;
 use IMS\Model\hiraRiskLevelI18nTable;
+use IMS\Model\hiraDocumentsTable;
 
 class Module implements AutoloaderProviderInterface
 {
@@ -64,6 +65,11 @@ class Module implements AutoloaderProviderInterface
     {
         return array(
             'factories' => array(
+                'IMS\Model\hiraDocumentsTable'=> function($sm){
+                    $dbAdapter = $sm->get('Application\Db\AdapterTwo');
+                    $table = new hiraDocumentsTable($dbAdapter);
+                    return $table;
+                },
                 'IMS\Model\ContentTextTable' => function($sm) {
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new ContentTextTable($dbAdapter);

@@ -5,7 +5,7 @@
  */
 Ext.define('Asgard.lib.GridPanel',{
   extend: 'Ext.grid.Panel',
-  alias: 'widget.gridpanel',
+  alias: 'widget.asgardgrid',
   layout: 'fit',
   border: false,
   frame: false,
@@ -14,7 +14,21 @@ Ext.define('Asgard.lib.GridPanel',{
   emptyText: 'No content added yet.',
   viewConfig: {
         stripeRows: true
-    },
+  },
+    plugins: [{
+        ptype: 'filterbar',
+        renderHidden: false,
+        showShowHideButton: false,
+        showClearAllButton: false
+    /*
+    Ext.create('Ext.ux.grid.xFilterRow',{
+        remoteFilter:false
+    })
+    */
+
+    }
+    ],
+  
   initComponent: function(){
     this.callParent(arguments);
   }

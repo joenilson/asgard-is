@@ -26,6 +26,7 @@ class IndexController extends AbstractActionController
     protected $hiraFrequencyTable;
     protected $hiraRLTable;
     protected $hiraRLI18nTable;
+    protected $hiraDocumentsTable;
     protected $messagesTable;
     protected $translationTable;
     
@@ -109,6 +110,15 @@ class IndexController extends AbstractActionController
         $idUser = $userPrefs[0]['user_id'];
         $idModule = $moduleParams[0];
         $idSubmodule = $moduleParams[1];
+
+        $userGrantedAccess = $this->getAdminUserSubmodulesTable()->getUserSubmodulesAccess($idUser, $idModule, $idSubmodule);
+        
+        if(!empty($userGrantedAccess)){
+            $role='Viewer';
+            $role=($userGrantedAccess[0]['admin']==1)?'Administrator':$role;
+            $role=($userGrantedAccess[0]['add']==1)?'Key User':$role;
+            $role=($userGrantedAccess[0]['edit']==1)?'Editor':$role;
+        }
         
         $HiraMatrix = $this->getHiraMatrixTable()->getMatrix( 
             $userData->country,
@@ -128,7 +138,9 @@ class IndexController extends AbstractActionController
         $titleMatrixRiskEval=$translator->getTranslationItem($userPrefs[0]['lang'],$idModule,'titleMatrixRiskEval_'.$idSubmodule);
         $timeLabels=$translator->getTranslationList($userPrefs[0]['lang'],'time');
         
-        return array('hiraMatrix'=>$HiraMatrix,
+        return array(
+            'userRole'=>$role,
+            'hiraMatrix'=>$HiraMatrix,
             'severityLabels'=>$HiraSeverityLabels,
             'frequencyLabels'=>$HiraFrequencyLabels,
             'hiraRiskLevel'=>$hiraRiskLevel,
@@ -205,6 +217,24 @@ class IndexController extends AbstractActionController
     	return $result;
     }
     
+    public function hiraDocsAction() {
+        
+        
+        
+        $hiraDocuments = $this->getHiraDocumentsTable();
+        $listDocuments = $hiraDocuments->fetchAll();
+        if(!empty($listDocuments)){
+            $data['success']=true;
+            $data['results']=$listDocuments;
+            $data['msg']="";
+        }else{
+            $data['success']=false;
+            $data['msg']="Error trying to get the information...";
+        }
+        $result = new JsonModel($data);
+    	return $result;
+    }
+    
     public function getAdminUserSubmodulesTable()
     {
     	if (!$this->adminusersubmodulesTable) {
@@ -268,6 +298,14 @@ class IndexController extends AbstractActionController
     	return $this->hiraRLI18nTable;
     }
     
+    public function getHiraDocumentsTable() {
+        if (!$this->hiraDocumentsTable) {
+            $sm = $this->getServiceLocator();
+            $this->hiraDocumentsTable = $sm->get('IMS\Model\hiraDocumentsTable');
+        }
+        return $this->hiraDocumentsTable;
+    }
+    
     public function getMessagesTable()
     {
     	if (!$this->messagesTable) {
@@ -284,5 +322,10 @@ class IndexController extends AbstractActionController
     		$this->translationTable = $sm->get('Application\Model\TranslationTable');
     	}
     	return $this->translationTable;
+    }
+    
+    protected function getViewHelper($helperName)
+    {
+    	return $this->getServiceLocator()->get('viewhelpermanager')->get($helperName);
     }
 }

@@ -82,11 +82,11 @@ Ext.define('Asgard.locales.lib.versioningContent',{
 Ext.define('Ext.locales.ux.form.field.OperatorButton',{
     override: 'Ext.ux.form.field.OperatorButton',
     operatorSetText: {
-        eq: 'Es igual a',
-        ne: 'No es igual a',
-        gte: 'Mayor o igual',
-        lte: 'Menor o igual',
-        gt: 'Mayor que',
-        lt: 'Menor que'
+        eq: 'É igual',
+        ne: 'Não é igual',
+        gte: 'Grande ou igual',
+        lte: 'Menos do que ou igual',
+        gt: 'Grande de',
+        lt: 'Menos que'
     } 
 });
