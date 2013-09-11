@@ -99,3 +99,6 @@
     -khtml-transition: opacity .35s linear, visibility .0s linear .35s;
 }
 
+.ext-ux-checkbox-column {
+    padding-left: 24px;
+}

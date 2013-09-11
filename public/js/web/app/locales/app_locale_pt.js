@@ -1,82 +1,82 @@
 Ext.define('Asgard.locales.view.headerbar', {
   override: 'Asgard.view.Header',
-  appHeaderInfoText: 'Bienvenido: ',
-  appHeaderTitleText: 'Sistema de Información Asgard',
-  appHeaderLogoutText: 'Cerrar Sesion'
+  appHeaderInfoText: 'Boas-vindas: ',
+  appHeaderTitleText: 'Sistema de Informação Asgard',
+  appHeaderLogoutText: 'Fechar Sessão'
 });
 Ext.define('Asgard.locales.view.menubar', {
   override: 'Asgard.view.Viewport',
-  menuTitleText: 'Menú Principal'
+  menuTitleText: 'Menu Principal'
 });
 
 Ext.define('Asgard.locales.lib.RadioButtonsScope', {
   override: 'Asgard.lib.RadioButtonsScope',
-  fieldLabelText: 'Alcance',
-  countryFieldText: 'para el Pais',
-  companyFieldText: 'para la empresa',
-  locationFieldText: 'para la sede'
+  fieldLabelText: 'Escopo',
+  countryFieldText: 'para o País',
+  companyFieldText: 'para a empresa',
+  locationFieldText: 'para a sede'
 });
 
 Ext.define('Asgard.locales.lib.RadioButtonsVersioning', {
   override: 'Asgard.lib.RadioButtonsVersioning',
-  fieldLabelText: 'Tipo de Cambio',
-  changeFieldText: 'Cambio Mayor',
-  modificationFieldText: 'Modificacion',
-  correctionFieldText: 'Corrección Menor'
+  fieldLabelText: 'Motivo da alteração',
+  changeFieldText: 'Grande mudança',
+  modificationFieldText: 'Modificação',
+  correctionFieldText: 'Correção Minor'
 });
 
 Ext.define('Asgard.locales.lib.toolbarAdmin', {
     override: 'Asgard.lib.toolbarAdmin',
-    searchButtonText: 'Buscar',
-    refreshButtonText: 'Actualizar',
-    editButtonText: 'Editar Contenido',
-    saveButtonText: 'Guardar cambios',
-    cancelButtonText: 'Cancelar cambios',
-    addButtonText: 'Agregar Contenido',
-    removeButtonText: 'Eliminar Contenido'
+    searchButtonText: 'Pesquisar',
+    refreshButtonText: 'Atualizar',
+    editButtonText: 'Editar Conteúdo',
+    saveButtonText: 'Salvar Alterações',
+    cancelButtonText: 'Cancelar Mudanças',
+    addButtonText: 'Adicionar conteúdo',
+    removeButtonText: 'Remover conteúdo'
 });
 
 Ext.define('Asgard.locales.lib.toolbarKeyUser', {
     override: 'Asgard.lib.toolbarKeyUser',
-    searchButtonText: 'Buscar',
-    refreshButtonText: 'Actualizar',
-    editButtonText: 'Editar Contenido',
-    saveButtonText: 'Guardar cambios',
-    cancelButtonText: 'Cancelar cambios',
-    addButtonText: 'Agregar Contenido'
+    searchButtonText: 'Pesquisar',
+    refreshButtonText: 'Atualizar',
+    editButtonText: 'Editar Conteúdo',
+    saveButtonText: 'Salvar Alterações',
+    cancelButtonText: 'Cancelar Mudanças',
+    addButtonText: 'Adicionar conteúdo'
 });
 
 Ext.define('Asgard.locales.lib.toolbarEditor', {
     override: 'Asgard.lib.toolbarEditor',
-    searchButtonText: 'Buscar',
-    refreshButtonText: 'Actualizar',
-    editButtonText: 'Editar Contenido',
-    saveButtonText: 'Guardar cambios',
-    cancelButtonText: 'Cancelar cambios'
+    searchButtonText: 'Pesquisar',
+    refreshButtonText: 'Atualizar',
+    editButtonText: 'Editar Conteúdo',
+    saveButtonText: 'Salvar Alterações',
+    cancelButtonText: 'Cancelar Mudanças',
 });
 
 Ext.define('Asgard.locales.lib.toolbarViewer', {
     override: 'Asgard.lib.toolbarViewer',
-    searchButtonText: 'Buscar',
-    refreshButtonText: 'Actualizar',
+    searchButtonText: 'Pesquisar',
+    refreshButtonText: 'Atualizar',
 });
 
 Ext.define('Asgard.locales.view.window.systemInformation', {
     override: 'Asgard.view.window.systemInformation',
     companyNameText: 'Empresa',
     presentationContentReviewText: 'Revisado',
-    presentationContentApprovedText: 'Aprobado',
-    defaultModuleText: 'Modulo',
+    presentationContentApprovedText: 'Aprovado',
+    defaultModuleText: 'Módulo',
 });
 
 Ext.define('Asgard.locales.lib.versioningContent',{
     override: 'Asgard.lib.versioningContent',
-    versionFieldText: "Version",
-    validFieldText: "Valido desde",
-    scopeFieldText: "Alcance",
-    registryFieldText: "Registro",
-    historyFieldText: "Otras Versiones",
-    historyEmptyText: 'Historial Vacio',
+    versionFieldText: "Versão",
+    validFieldText: "Válido a partir de",
+    scopeFieldText: "Escopo",
+    registryFieldText: "Registrar",
+    historyFieldText: "Outras versões",
+    historyEmptyText: 'Historial Vazio',
 });
 
 Ext.define('Ext.locales.ux.form.field.OperatorButton',{
@@ -89,4 +89,43 @@ Ext.define('Ext.locales.ux.form.field.OperatorButton',{
         gt: 'Grande de',
         lt: 'Menos que'
     } 
+});
+
+Ext.define('Asgard.locales.lib.gridToolbarAdmin',{
+    override: 'Asgard.lib.gridToolbarAdmin',
+    refreshButtonText: 'Atualizar',
+    addButtonText: 'Adicionar conteúdo',
+    removeButtonText: 'Remover conteúdo',
+    enableButtonText: 'Habilitar Conteúdo',
+    disableButtonText: 'Desativar conteúdo',
+    exportButtonText: 'Exportar conteúdo'
+});
+
+Ext.define('Asgard.locales.lib.gridToolbarSpecial',{
+    override: 'Asgard.lib.gridToolbarSpecial',
+    refreshButtonText: 'Atualizar',
+    addButtonText: 'Adicionar conteúdo',
+    enableButtonText: 'Habilitar Conteúdo',
+    disableButtonText: 'Desativar conteúdo',
+    exportButtonText: 'Exportar conteúdo'
+});
+
+Ext.define('Asgard.locales.lib.gridToolbarKeyUser',{
+    override: 'Asgard.lib.gridToolbarKeyUser',
+    refreshButtonText: 'Atualizar',
+    addButtonText: 'Adicionar conteúdo',
+    enableButtonText: 'Habilitar Conteúdo',
+    disableButtonText: 'Desativar conteúdo'
+});
+
+Ext.define('Asgard.locales.lib.gridToolbarEditor',{
+    override: 'Asgard.lib.gridToolbarEditor',
+    refreshButtonText: 'Atualizar',
+    enableButtonText: 'Habilitar Conteúdo',
+    disableButtonText: 'Desativar conteúdo'
+});
+
+Ext.define('Asgard.locales.lib.gridToolbarViewer',{
+    override: 'Asgard.lib.gridToolbarViewer',
+    refreshButtonText: 'Atualizar'
 });

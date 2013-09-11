@@ -50,6 +50,11 @@
  * private method applyFilters refactored to support delayed (key events) and instant filters (enter key and combo/picker select event)
  * @updated 2012-07-31 by Ing. Leonardo D'Onofrio (leonardo_donofrio at hotmail.com)
  * Added operator selection in number and date filters
+ * @updated 2013-09-06 by Joe Nilson (joenilson at gmail dot com)
+ * Changed to docked bar to work with grouped header, using the code from: 
+ * http://www.sencha.com/forum/showthread.php?152923-Ext.ux.grid.FilterBar-plugin&p=917075&viewfull=1#post917075
+ * @updated 2013-09-11 by Joe Nilson (joenilson at gmail dot com)
+ * Fixed docked bar to render correctly the checkbox header column in selmodel
 */
 
 Ext.define('Ext.ux.grid.FilterBar', {
@@ -172,7 +177,7 @@ Ext.define('Ext.ux.grid.FilterBar', {
 			reconfigure: me.resetup,
 			scope: me
 		});
-                //grid.addDocked(me.filterBar);
+
 		grid.addEvents('filterupdated');
 
                 Ext.apply(grid, {
@@ -202,18 +207,20 @@ Ext.define('Ext.ux.grid.FilterBar', {
                /*
                 * Added to get filter bar in a row
                 */
-                me.filterBar = Ext.create('Ext.container.Container', {  // adds a filter bar to grid 
-                    id: grid.id + '-filter-bar',
-                    weight: 100,
-                    height: 23,
-                    dock: 'top',
-                    border: true,
-                    baseCls: Ext.baseCSSPrefix + 'grid-header-ct',
-                    style: 'border-top-color: #c5c5c5;',
-                    layout: {
-                        type: 'hbox'
-                    }
-                });
+                grid.addDocked(
+                    me.filterBar = Ext.create('Ext.container.Container', {  // adds a filter bar to grid 
+                        id: grid.id + '-filter-bar',
+                        weight: 100,
+                        height: 23,
+                        dock: 'top',
+                        border: true,
+                        baseCls: Ext.baseCSSPrefix + 'grid-header-ct',
+                        style: 'border-top-color: #c5c5c5;',
+                        layout: {
+                            type: 'hbox'
+                        }
+                    })
+                );
                 
 		me.fields = Ext.create('Ext.util.MixedCollection');
 		me.actionColumn = me.grid.down('actioncolumn') || me.grid.down('actioncolumnpro');
@@ -233,7 +240,8 @@ Ext.define('Ext.ux.grid.FilterBar', {
 			me.renderFilterBar(grid);
                         
 		} else {
-			grid.on('afterrender', me.renderFilterBar, me, { single: true });
+			//grid.on('afterrender', me.renderFilterBar, me, { single: true });
+                        grid.on('viewready', me.renderFilterBar, me, { single: true });
 		}
 	},
 
@@ -591,7 +599,7 @@ Ext.define('Ext.ux.grid.FilterBar', {
 				dataIndex: key,
 				layout: 'hbox',
 				bodyStyle: 'background-color: "transparent";',
-				width: column.getWidth(),
+                                width: column.getWidth(),
 				items: [field],
 				listeners: {
 					scope: me,
@@ -618,16 +626,17 @@ Ext.define('Ext.ux.grid.FilterBar', {
 		if (me.actionColumn) excludedCols.push(me.actionColumn.id);
 		if (me.extraColumn) excludedCols.push(me.extraColumn.id);
 		Ext.each(me.grid.headerCt.getGridColumns(), function(column) {
-			if (!Ext.Array.contains(excludedCols, column.id)) {
-				column.setPadding = Ext.Function.createInterceptor(column.setPadding, function(h) {
-					if (column.hasCls(Ext.baseCSSPrefix + 'column-header-checkbox')) { //checkbox column
-						this.titleEl.setStyle({
-                			paddingTop: '4px'
-            			});
-					}
-					return false;
-				});
-			}
+                    if (!Ext.Array.contains(excludedCols, column.id)) {
+                        //column.setPadding = Ext.Function.createInterceptor(column.setPadding, function(h) {
+                            if (column.hasCls(Ext.baseCSSPrefix + 'column-header-checkbox')) { //checkbox column
+                                this.titleEl.setStyle({
+                                    paddingTop: '4px',
+                                });
+                                me.filterBar.getEl().toggleCls('ext-ux-checkbox-column');
+                            }
+                            return false;
+                        //});
+                    }
 		});
 
 

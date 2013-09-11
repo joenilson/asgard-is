@@ -76,7 +76,7 @@ Ext.define('Asgard.locales.lib.versioningContent',{
     scopeFieldText: "Alcance",
     registryFieldText: "Registro",
     historyFieldText: "Otras Versiones",
-    historyEmptyText: 'Historial Vacio',
+    historyEmptyText: 'Historial Vacio'
 });
 
 Ext.define('Ext.locales.ux.form.field.OperatorButton',{
@@ -89,4 +89,43 @@ Ext.define('Ext.locales.ux.form.field.OperatorButton',{
         gt: 'Mayor que',
         lt: 'Menor que'
     } 
+});
+
+Ext.define('Asgard.locales.lib.gridToolbarAdmin',{
+    override: 'Asgard.lib.gridToolbarAdmin',
+    refreshButtonText: 'Actualizar',
+    addButtonText: 'Agregar Contenido',
+    removeButtonText: 'Eliminar Contenido',
+    enableButtonText: 'Activar Contenido',
+    disableButtonText: 'Desactivar Contenido',
+    exportButtonText: 'Exportar Contentido'
+});
+
+Ext.define('Asgard.locales.lib.gridToolbarSpecial',{
+    override: 'Asgard.lib.gridToolbarSpecial',
+    refreshButtonText: 'Actualizar',
+    addButtonText: 'Agregar Contenido',
+    enableButtonText: 'Activar Contenido',
+    disableButtonText: 'Desactivar Contenido',
+    exportButtonText: 'Exportar Contentido'
+});
+
+Ext.define('Asgard.locales.lib.gridToolbarKeyUser',{
+    override: 'Asgard.lib.gridToolbarKeyUser',
+    refreshButtonText: 'Actualizar',
+    addButtonText: 'Agregar Contenido',
+    enableButtonText: 'Activar Contenido',
+    disableButtonText: 'Desactivar Contenido'
+});
+
+Ext.define('Asgard.locales.lib.gridToolbarEditor',{
+    override: 'Asgard.lib.gridToolbarEditor',
+    refreshButtonText: 'Actualizar',
+    enableButtonText: 'Activar Contenido',
+    disableButtonText: 'Desactivar Contenido'
+});
+
+Ext.define('Asgard.locales.lib.gridToolbarViewer',{
+    override: 'Asgard.lib.gridToolbarViewer',
+    refreshButtonText: 'Actualizar'
 });

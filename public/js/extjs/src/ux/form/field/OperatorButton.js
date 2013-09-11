@@ -4,12 +4,15 @@
  * Plugin for text components that shows a "operator" button over the text field and shows a menu with operators.
  * For use in Ext.ux.grid.FilterBar plugin
  * 2012-07-30 by Ing. Leonardo D'Onofrio (leonardo_donofrio at hotmail.com)
+ * @updated 2013-09-06 by Joe Nilson (joenilson at gmail dot com)
+ * added support for i18n in the operators text with operatorSetText array configuration that can be 
+ * ovewrited with OperatorButton_lang_xx.js
 */
 Ext.define('Ext.ux.form.field.OperatorButton', {
 	extend: 'Ext.AbstractPlugin',
 	alias: 'plugin.operatorbutton',
 	mixins: {
-		observable: 'Ext.util.Observable'
+            observable: 'Ext.util.Observable'
 	},
 
 	autoHide: true,
@@ -21,6 +24,9 @@ Ext.define('Ext.ux.form.field.OperatorButton', {
 
 	textField: undefined,
         
+        /*
+         * Default language english
+         */
         operatorSetText: {
             eq: 'Is equal to',
             ne: 'Is not equal to',
@@ -32,32 +38,26 @@ Ext.define('Ext.ux.form.field.OperatorButton', {
         
 	operatorSet: {
 		eq: {
-			text: this.operatorEQText,
 			iconCls: Ext.baseCSSPrefix + 'operator-button-equal',
 			value: 'eq'
 		},
 		ne: {
-			text: this.operatorNEText,
 			iconCls: Ext.baseCSSPrefix + 'operator-button-not-equal',
 			value: 'ne'
 		},
 		gte: {
-			text: this.operatorGTEText,
 			iconCls: Ext.baseCSSPrefix + 'operator-button-great-than-equal',
 			value: 'gte'
 		},
 		lte: {
-			text: this.operatorLTEText,
 			iconCls: Ext.baseCSSPrefix + 'operator-button-less-than-equal',
 			value: 'lte'
 		},
 		gt: {
-			text: this.operatorGTText,
 			iconCls: Ext.baseCSSPrefix + 'operator-button-great-than',
 			value: 'gt'
 		},
 		lt: {
-			text: this.operatorLTText,
 			iconCls: Ext.baseCSSPrefix + 'operator-button-less-than',
 			value: 'lt'
 		}

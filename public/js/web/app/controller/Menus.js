@@ -6,7 +6,10 @@ Ext.define('Asgard.controller.Menus', {
     views: ['Menubar'],
     requires: ['Asgard.lib.RTFPanel','Asgard.lib.RTFEditor','Asgard.lib.RTFViewer',
                 'Asgard.lib.toolbarViewer','Asgard.lib.toolbarEditor','Asgard.lib.toolbarKeyUser',
-                'Asgard.lib.toolbarAdmin','Asgard.lib.toolbarSpecial'],
+                'Asgard.lib.toolbarAdmin','Asgard.lib.toolbarSpecial',
+                //'Asgard.lib.gridToolbarViewer','Asgard.lib.gridToolbarEditor','Asgard.lib.gridToolbarKeyUser',
+                'Asgard.lib.gridToolbarAdmin' //,'Asgard.lib.gridToolbarSpecial',
+            ],
     init: function() {
       var me = this;
       this.control({

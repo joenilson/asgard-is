@@ -184,3 +184,7 @@ body {
     background: #FFFFFF url("../../images/default/filter-row-icon.png") no-repeat bottom left !important;
     padding: 4px 5px 0 16px !important;
 }
+
+.wrapText .x-grid-cell-inner {
+    white-space: normal;
+}

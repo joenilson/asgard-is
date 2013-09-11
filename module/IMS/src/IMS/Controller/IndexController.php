@@ -44,7 +44,7 @@ class IndexController extends AbstractActionController
         
         if(!empty($userGrantedAccess)){
             $role='Viewer';
-            $role=($userGrantedAccess[0]['admin']==1)?'Administrator':$role;
+            $role=($userGrantedAccess[0]['admin']==1)?'Admin':$role;
             $role=($userGrantedAccess[0]['add']==1)?'Key User':$role;
             $role=($userGrantedAccess[0]['edit']==1)?'Editor':$role;
         }
@@ -115,7 +115,7 @@ class IndexController extends AbstractActionController
         
         if(!empty($userGrantedAccess)){
             $role='Viewer';
-            $role=($userGrantedAccess[0]['admin']==1)?'Administrator':$role;
+            $role=($userGrantedAccess[0]['admin']==1)?'Admin':$role;
             $role=($userGrantedAccess[0]['add']==1)?'Key User':$role;
             $role=($userGrantedAccess[0]['edit']==1)?'Editor':$role;
         }
@@ -136,6 +136,19 @@ class IndexController extends AbstractActionController
         $titleSeverity=$translator->getTranslationItem($userPrefs[0]['lang'],$idModule,'titleSeverity_'.$idSubmodule);
         $titleFrequency=$translator->getTranslationItem($userPrefs[0]['lang'],$idModule,'titleFrequency_'.$idSubmodule);
         $titleMatrixRiskEval=$translator->getTranslationItem($userPrefs[0]['lang'],$idModule,'titleMatrixRiskEval_'.$idSubmodule);
+        $HiraGridTitle_38=$translator->getTranslationItem($userPrefs[0]['lang'],$idModule,'HiraGridTitle_'.$idSubmodule);
+        $HiraGridHeaderTypeProcess_38=$translator->getTranslationItem($userPrefs[0]['lang'],$idModule,'HiraGridHeaderTypeProcess_'.$idSubmodule);
+        $HiraGridHeaderProcess_38=$translator->getTranslationItem($userPrefs[0]['lang'],$idModule,'HiraGridHeaderProcess_'.$idSubmodule);
+        $HiraGridHeaderSubProcess_38=$translator->getTranslationItem($userPrefs[0]['lang'],$idModule,'HiraGridHeaderSubProcess_'.$idSubmodule);
+        $HiraGridHeaderDangerDesc_38=$translator->getTranslationItem($userPrefs[0]['lang'],$idModule,'HiraGridHeaderDangerDesc_'.$idSubmodule);
+        $HiraGridHeaderRiskDesc_38=$translator->getTranslationItem($userPrefs[0]['lang'],$idModule,'HiraGridHeaderRiskDesc_'.$idSubmodule);
+        $HiraGridHeaderHiraEval_38=$translator->getTranslationItem($userPrefs[0]['lang'],$idModule,'HiraGridHeaderHiraEval_'.$idSubmodule);
+        $HiraGridHeaderMeasures_38=$translator->getTranslationItem($userPrefs[0]['lang'],$idModule,'HiraGridHeaderMeasures_'.$idSubmodule);
+        $HiraGridHeaderScaleHigh_38=$translator->getTranslationItem($userPrefs[0]['lang'],$idModule,'HiraGridHeaderScaleHigh_'.$idSubmodule);
+        $HiraGridHeaderScaleMedium_38=$translator->getTranslationItem($userPrefs[0]['lang'],$idModule,'HiraGridHeaderScaleMedium_'.$idSubmodule);
+        $HiraGridHeaderScaleLow_38=$translator->getTranslationItem($userPrefs[0]['lang'],$idModule,'HiraGridHeaderScaleLow_'.$idSubmodule);
+        $HiraGridHeaderResidualRiskEval_38=$translator->getTranslationItem($userPrefs[0]['lang'],$idModule,'HiraGridHeaderResidualRiskEval_'.$idSubmodule);
+        
         $timeLabels=$translator->getTranslationList($userPrefs[0]['lang'],'time');
         
         return array(
@@ -152,8 +165,21 @@ class IndexController extends AbstractActionController
             'titleFrequency'=>$titleFrequency['value'],
             'titleMatrixRiskEval'=>$titleMatrixRiskEval['value'],
             'timeLabels'=>$timeLabels,
-            'HIRAGridTitle'=>'HIRA Matrix By Process',
-            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0)));
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0)),
+            'HiraGridTitle'=>$HiraGridTitle_38['value'],
+            'HiraGridHeaderTypeProcess'=>$HiraGridHeaderTypeProcess_38['value'],
+            'HiraGridHeaderProcess'=>$HiraGridHeaderProcess_38['value'],
+            'HiraGridHeaderSubProcess'=>$HiraGridHeaderSubProcess_38['value'],
+            'HiraGridHeaderDangerDesc'=>$HiraGridHeaderDangerDesc_38['value'],
+            'HiraGridHeaderRiskDesc'=>$HiraGridHeaderRiskDesc_38['value'],
+            'HiraGridHeaderHiraEval'=>$HiraGridHeaderHiraEval_38['value'],
+            'HiraGridHeaderMeasures'=>$HiraGridHeaderMeasures_38['value'],
+            'HiraGridHeaderScaleHigh'=>$HiraGridHeaderScaleHigh_38['value'],
+            'HiraGridHeaderScaleMedium'=>$HiraGridHeaderScaleMedium_38['value'],
+            'HiraGridHeaderScaleLow'=>$HiraGridHeaderScaleLow_38['value'],
+            'HiraGridHeaderResidualRiskEval'=>$HiraGridHeaderResidualRiskEval_38['value'],
+
+        );
             /*
             'contentId'=>$this->params()->fromRoute('id', 0),
             'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0)));

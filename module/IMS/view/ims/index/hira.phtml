@@ -13,7 +13,6 @@
         <td><?php echo $this->titleCorrectionTime; ?></td>
     </tr>
 <?php
-echo "EL ROL ES: ".$this->userRole;
 foreach ($this->hiraRiskLevel as $rlValues) {
     echo "<tr>\n";
     echo "<td class=\"risk_label_{$rlValues->id_level}\">".$rlValues->id_level."</td>\n";
@@ -81,7 +80,12 @@ foreach ($this->hiraRiskLevel as $rlValues) {
 </table>
 </div>
 <script>
-    
+<?php
+if(!empty($this->userRole)){
+    $var=str_replace(' ','',$this->userRole);
+    echo "var toolbarType".$this->panelId." = Ext.create('Asgard.lib.gridToolbar".$var."',{titleBarText: '<b>".$this->HiraGridTitle."</b>'});\n";
+}
+?>
 /**
 * Custom function used for column renderer
 * @param {Object} val
@@ -95,6 +99,10 @@ function riskleveler(val) {
        return '<span style="color:green;">' + val + '</span>';
    }
    return val;
+}
+
+function onClick(btn){
+
 }
 
 var <?php echo 'rowEditing'.$this->panelId; ?> = Ext.create('Ext.grid.plugin.RowEditing', {
@@ -112,9 +120,11 @@ var <?php echo 'HIRAGridPanel'.$this->panelId; ?> = Ext.create('Asgard.lib.GridP
   border: false,
   frame: false,
   layout: 'fit',
+  selType: 'checkboxmodel',
   store: <?php echo 'HIRAStore'.$this->panelId; ?>,
-  title: '<?php echo $this->HIRAGridTitle; ?>',
-  
+  dockedItems: [{
+    xtype: toolbarType<?php echo $this->panelId; ?>
+  }],
   columns: {
       plugins: [{
             ptype: 'gridautoresizer'
@@ -123,14 +133,14 @@ var <?php echo 'HIRAGridPanel'.$this->panelId; ?> = Ext.create('Asgard.lib.GridP
     ],
       items: [
             {text: "Id", flex:0.25, sortable: true, dataIndex: 'in_idPeligroRiesgo', hidden: true },
-            {text: "Tipo Proceso", flex:1, sortable: true, filter: 'combo', dataIndex: 'in_TypeProcessDesc'},
-            {text: "Proceso", flex:1, sortable: true, filter: 'combo', dataIndex: 'in_ProcessSupDesc'},
-            {text: "Sub Proceso", flex:1.3, sortable: true, filter: 'combo', dataIndex: 'in_ProcesoDesc'},
-            {text: "Descripción del Peligro", flex:1.5, sortable: true, filter: 'combo', dataIndex: 'in_PeligroDesc'},
-            {text: "Riesgo", flex:1.2, sortable: true, filter: true, dataIndex: 'in_RiesgoDesc'},
-            {text: "Evaluación IPER",
+            {text: "<?=$this->HiraGridHeaderTypeProcess; ?>", flex:1, sortable: true, filter: 'combo', dataIndex: 'in_TypeProcessDesc', tdCls: 'wrapText'},
+            {text: "<?=$this->HiraGridHeaderProcess; ?>", flex:1, sortable: true, filter: 'combo', dataIndex: 'in_ProcessSupDesc', tdCls: 'wrapText'},
+            {text: "<?=$this->HiraGridHeaderSubProcess; ?>", flex:1.3, sortable: true, filter: 'combo', dataIndex: 'in_ProcesoDesc', tdCls: 'wrapText'},
+            {text: "<?=$this->HiraGridHeaderDangerDesc; ?>", flex:1.5, sortable: true, filter: 'combo', dataIndex: 'in_PeligroDesc', tdCls: 'wrapText'},
+            {text: "<?=$this->HiraGridHeaderRiskDesc; ?>", flex:1.2, sortable: true, filter: true, dataIndex: 'in_RiesgoDesc', tdCls: 'wrapText'},
+            {text: "<?=$this->HiraGridHeaderHiraEval; ?>",
             columns: [{
-                    text     : 'A',
+                    text     : '<?=$this->HiraGridHeaderScaleHigh; ?>',
                     width    : 50,
                     sortable : true,
                     filter: true,
@@ -140,7 +150,7 @@ var <?php echo 'HIRAGridPanel'.$this->panelId; ?> = Ext.create('Asgard.lib.GridP
                         hideTrigger: true, keyNavEnabled: false, mouseWheelEnabled: false
                     }
                 }, {
-                    text     : 'M',
+                    text     : '<?=$this->HiraGridHeaderScaleMedium; ?>',
                     width    : 50,
                     sortable : true,
                     filter: true,
@@ -150,7 +160,7 @@ var <?php echo 'HIRAGridPanel'.$this->panelId; ?> = Ext.create('Asgard.lib.GridP
                         hideTrigger: true, keyNavEnabled: false, mouseWheelEnabled: false
                     }
                 }, {
-                    text     : 'B',
+                    text     : '<?=$this->HiraGridHeaderScaleLow; ?>',
                     width    : 50,
                     sortable : true, 
                     filter: true,
@@ -161,12 +171,15 @@ var <?php echo 'HIRAGridPanel'.$this->panelId; ?> = Ext.create('Asgard.lib.GridP
                     }
                 }]
             },
-            {text: "Medidas a Implementar", flex:1.2, sortable: true, filter: true, dataIndex: 'vc_MedidasControl', editor: {
-                xtype: 'textareafield', allowBlank: false
-            } },
-            {text: "Evaluación Riesgo Residual",
+            {text: "<?=$this->HiraGridHeaderMeasures; ?>", flex:1.2, sortable: true, filter: true, dataIndex: 'vc_MedidasControl', 
+                editor: {
+                    xtype: 'textareafield', allowBlank: false
+                },
+                tdCls: 'wrapText'
+            },
+            {text: "<?=$this->HiraGridHeaderResidualRiskEval; ?>",
             columns: [{
-                    text     : 'A',
+                    text     : '<?=$this->HiraGridHeaderScaleHigh; ?>',
                     width    : 50,
                     sortable : true, 
                     filter: true,
@@ -176,7 +189,7 @@ var <?php echo 'HIRAGridPanel'.$this->panelId; ?> = Ext.create('Asgard.lib.GridP
                         hideTrigger: true, keyNavEnabled: false, mouseWheelEnabled: false
                     }
                 }, {
-                    text     : 'M',
+                    text     : '<?=$this->HiraGridHeaderScaleMedium; ?>',
                     width    : 50,
                     sortable : true, 
                     filter: true,
@@ -186,7 +199,7 @@ var <?php echo 'HIRAGridPanel'.$this->panelId; ?> = Ext.create('Asgard.lib.GridP
                         hideTrigger: true, keyNavEnabled: false, mouseWheelEnabled: false
                     }
                 }, {
-                    text     : 'B',
+                    text     : '<?=$this->HiraGridHeaderScaleLow; ?>',
                     width    : 50,
                     sortable : true, 
                     filter: true,
