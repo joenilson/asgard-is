@@ -54,6 +54,20 @@ return array(
                             ),
                         ),
                     ),
+                    'hiraspecs' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/hiraspecs[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'hiraspecs'
+                            ),
+                        ),
+                    ),
                     'hira' => array(
                         'type'    => 'Segment',
                         'options' => array(
@@ -79,6 +93,34 @@ return array(
                             ),
                             'defaults' => array(
                                 'action' => 'hiraDocs'
+                            ),
+                        ),
+                    ),
+                    'listhira' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/listhira[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'listhira'
+                            ),
+                        ),
+                    ),
+                    'hiralit' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/hiralit[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'hiralit'
                             ),
                         ),
                     ),

@@ -1,0 +1,81 @@
+<?php
+/**
+ * @application Asgard Information System :: asgard-is
+ * @version 1.0.0 devel
+ * @author Joe Nilson <joenilson@gmail.com>
+ */
+?>
+<div style='float: left;'>
+<table>
+    <tr style="font-weight: bold;">
+        <td colspan="2"><?php echo $this->titleRiskLevel; ?></td>
+        <td><?php echo $this->titleDescription; ?></td>
+        <td><?php echo $this->titleCorrectionTime; ?></td>
+    </tr>
+<?php
+foreach ($this->hiraRiskLevel as $rlValues) {
+    echo "<tr>\n";
+    echo "<td class=\"risk_label_{$rlValues->id_level}\">".$rlValues->id_level."</td>\n";
+    echo "<td class=\"risk_label_{$rlValues->id_level}\">".$this->hiraRiskLabels[$rlValues->id_level]['key']."</td>\n";
+    echo "<td class=\"risk_text_{$rlValues->id_level}\" width=\"220\">".$this->hiraRiskLabels[$rlValues->id_level]['description']."</td>\n";
+    echo "<td class=\"risk_text_{$rlValues->id_level}\">".$rlValues->min_fixtime." - ".$rlValues->max_fixtime." ".$this->timeLabels[$rlValues->format_fixtime]."</td>\n";
+    echo "</tr>\n";
+    $riskLevelRange[$rlValues->id_level]=array('min'=>$rlValues->min_risk,'max'=>$rlValues->max_risk);
+}
+?>
+</table>
+</div>
+
+<div style='float: left;'>
+
+<table border="0">
+    <tr style="font-weight: bold;">
+        <td colspan="2" align="center" width="100">
+            <?php echo $this->titleSeverity; ?>
+        </td>
+        <td colspan="<?php echo count($this->frequencyLabels); ?>" align="center">
+            <?php echo $this->titleMatrixRiskEval; ?>
+        </td>
+    </tr>
+<?php
+    
+    foreach ($this->severityLabels as $sValues) {
+        echo "<tr>\n";
+        echo "<td style=\"font-weight: bold;\">".$sValues->description."</td>\n";
+        echo "<td style=\"font-weight: bold;\">".$sValues->id_severity."</td>\n";
+        foreach ($this->frequencyLabels as $fValues) {
+            foreach ($this->hiraMatrix as $hValue) {
+                if(($hValue->id_frequency == $fValues->id_frequency) AND ($hValue->id_severity == $sValues->id_severity))
+                {
+                    $idcls="";
+                    foreach ($riskLevelRange as $key=>$range) {
+                        $idcls=(($hValue->risk>=$range['min']) and ($hValue->risk<=$range['max']))?$key:$idcls;
+                    }
+                    echo "<td align=\"center\" class=\"risk_label_{$idcls}\">".$hValue->risk."</td>\n";
+                }
+            }
+
+        }
+        echo "</tr>\n";
+    }
+    
+    echo "<tr align=\"center\" width=\"20\" style=\"font-weight: bold;\">\n";
+    echo "<td colspan=\"2\" rowspan=\"3\">&nbsp;</td>";
+    foreach ($this->frequencyLabels as $values) {
+        echo "<td width=\"20\">".$values->id_frequency."</td>\n";
+    }
+    echo "</tr>\n";
+    
+    echo "<tr style=\"font-weight: bold;\">\n";
+    foreach ($this->frequencyLabels as $values) {
+        echo "<td height=\"85\"><div class=\"rotated-text-plus90\" style=\"text-align: left; position: relative;\">".$values->description."</div></td>\n";
+    }
+    echo "</tr>\n";
+?>
+    <tr>
+        <td style="font-weight: bold; background: darkorange;" colspan="<? echo count($this->frequencyLabels); ?>" align="center" width="90">
+            <?php echo $this->titleFrequency; ?>
+        </td>
+    </tr>
+</table>
+</div>

@@ -91,6 +91,32 @@ return array(
                                 ),
                             ),
                             */
+                            'getcountries' => array(
+                                'type'    => 'Segment',
+                                'options' => array(
+                                    'route'    => '/getcountries',
+                                    'constraints' => array(
+                                        'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                        'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                    ),
+                                    'defaults' => array(
+                                        'action' => 'getcountries'
+                                    ),
+                                ),
+                            ),
+                            'getlocations' => array(
+                                'type'    => 'Segment',
+                                'options' => array(
+                                    'route'    => '/getlocations',
+                                    'constraints' => array(
+                                        'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                        'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                    ),
+                                    'defaults' => array(
+                                        'action' => 'getlocations'
+                                    ),
+                                ),
+                            ),
                             'getmenus' => array(
                                 'type'    => 'Segment',
                                 'options' => array(

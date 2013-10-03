@@ -70,7 +70,7 @@ class CompaniesTable extends AbstractTableGateway {
                         return false;
                     return $this->getLastInsertValue();
                 //return $this->adapter->getDriver()->getLastGeneratedValue();
-		} elseif ($this->getUserById($id)) {
+		} elseif ($this->getCompanyById($id)) {
                     $this->update(
                         $data,
                         array('id' => $id,)

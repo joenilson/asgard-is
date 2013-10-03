@@ -5,80 +5,6 @@
  * @author Joe Nilson <joenilson@gmail.com>
  */
 ?>
-<div style='float: left;'>
-<table>
-    <tr style="font-weight: bold;">
-        <td colspan="2"><?php echo $this->titleRiskLevel; ?></td>
-        <td><?php echo $this->titleDescription; ?></td>
-        <td><?php echo $this->titleCorrectionTime; ?></td>
-    </tr>
-<?php
-foreach ($this->hiraRiskLevel as $rlValues) {
-    echo "<tr>\n";
-    echo "<td class=\"risk_label_{$rlValues->id_level}\">".$rlValues->id_level."</td>\n";
-    echo "<td class=\"risk_label_{$rlValues->id_level}\">".$this->hiraRiskLabels[$rlValues->id_level]['key']."</td>\n";
-    echo "<td class=\"risk_text_{$rlValues->id_level}\" width=\"220\">".$this->hiraRiskLabels[$rlValues->id_level]['description']."</td>\n";
-    echo "<td class=\"risk_text_{$rlValues->id_level}\">".$rlValues->min_fixtime." - ".$rlValues->max_fixtime." ".$this->timeLabels[$rlValues->format_fixtime]."</td>\n";
-    echo "</tr>\n";
-    $riskLevelRange[$rlValues->id_level]=array('min'=>$rlValues->min_risk,'max'=>$rlValues->max_risk);
-}
-?>
-</table>
-</div>
-
-<div style='float: left;'>
-
-<table border="0">
-    <tr style="font-weight: bold;">
-        <td colspan="2" align="center" width="100">
-            <?php echo $this->titleSeverity; ?>
-        </td>
-        <td colspan="<?php echo count($this->frequencyLabels); ?>" align="center">
-            <?php echo $this->titleMatrixRiskEval; ?>
-        </td>
-    </tr>
-<?php
-    
-    foreach ($this->severityLabels as $sValues) {
-        echo "<tr>\n";
-        echo "<td style=\"font-weight: bold;\">".$sValues->description."</td>\n";
-        echo "<td style=\"font-weight: bold;\">".$sValues->id_severity."</td>\n";
-        foreach ($this->frequencyLabels as $fValues) {
-            foreach ($this->hiraMatrix as $hValue) {
-                if(($hValue->id_frequency == $fValues->id_frequency) AND ($hValue->id_severity == $sValues->id_severity))
-                {
-                    $idcls="";
-                    foreach ($riskLevelRange as $key=>$range) {
-                        $idcls=(($hValue->risk>=$range['min']) and ($hValue->risk<=$range['max']))?$key:$idcls;
-                    }
-                    echo "<td align=\"center\" class=\"risk_label_{$idcls}\">".$hValue->risk."</td>\n";
-                }
-            }
-
-        }
-        echo "</tr>\n";
-    }
-    
-    echo "<tr align=\"center\" width=\"20\" style=\"font-weight: bold;\">\n";
-    echo "<td colspan=\"2\" rowspan=\"3\">&nbsp;</td>";
-    foreach ($this->frequencyLabels as $values) {
-        echo "<td width=\"20\">".$values->id_frequency."</td>\n";
-    }
-    echo "</tr>\n";
-    
-    echo "<tr style=\"font-weight: bold;\">\n";
-    foreach ($this->frequencyLabels as $values) {
-        echo "<td height=\"85\"><div class=\"rotated-text-plus90\" style=\"text-align: left; position: relative;\">".$values->description."</div></td>\n";
-    }
-    echo "</tr>\n";
-?>
-    <tr>
-        <td style="font-weight: bold; background: darkorange;" colspan="<? echo count($this->frequencyLabels); ?>" align="center" width="90">
-            <?php echo $this->titleFrequency; ?>
-        </td>
-    </tr>
-</table>
-</div>
 <script>
 <?php
 if(!empty($this->userRole)){
@@ -101,10 +27,6 @@ function riskleveler(val) {
    return val;
 }
 
-function onClick(btn){
-
-}
-
 var <?php echo 'rowEditing'.$this->panelId; ?> = Ext.create('Ext.grid.plugin.RowEditing', {
     clicksToMoveEditor: 1,
     autoCancel: false
@@ -112,14 +34,14 @@ var <?php echo 'rowEditing'.$this->panelId; ?> = Ext.create('Ext.grid.plugin.Row
 
 var <?php echo 'HIRAStore'.$this->panelId; ?> = Ext.create('Asgard.store.HiraDocuments');
 <?php echo 'HIRAStore'.$this->panelId.'.load();'; ?>
-    
+
 var <?php echo 'HIRAGridPanel'.$this->panelId; ?> = Ext.create('Asgard.lib.GridPanel', {
   autoShow: true,
   autoDestroy: true,
   autoScroll: true,
   border: false,
   frame: false,
-  layout: 'fit',
+  //layout: 'fit',
   selType: 'checkboxmodel',
   store: <?php echo 'HIRAStore'.$this->panelId; ?>,
   dockedItems: [{
@@ -213,11 +135,63 @@ var <?php echo 'HIRAGridPanel'.$this->panelId; ?> = Ext.create('Asgard.lib.GridP
         ]
     },
 });
+
 <?php
 if ($this->userRole!='Viewer'){
     echo 'rowEditing'.$this->panelId.".init(HIRAGridPanel".$this->panelId.");\n\r";
     echo "HIRAGridPanel".$this->panelId.".plugins.push(rowEditing".$this->panelId.");\n\r";
 }
 ?>
-Ext.getCmp('content-panel').getActiveTab().add(<?php echo 'HIRAGridPanel'.$this->panelId; ?>);
+function onClick(btn){
+    var tbar<?php echo $this->panelId; ?> = <?php echo 'HIRAGridPanel'.$this->panelId; ?>.getDockedItems('toolbar[dock="top"]')[0];
+    switch (btn.name){
+        case "edit":
+            tbar<?php echo $this->panelId; ?>.down('#save').setDisabled(false);
+            tbar<?php echo $this->panelId; ?>.down('#cancel').setDisabled(false);
+            tbar<?php echo $this->panelId; ?>.down('#edit').setDisabled(true);
+            
+            <?php echo 'HIRAGridPanel'.$this->panelId; ?>.removeAll();
+            var items = [
+                {
+                    xtype: 'rb-versioning'
+                },
+                {
+                    xtype: 'rb-scope'
+                },
+                { 
+                    xtype: 'rtfeditor', name: 'rtfeditor', value: panelContent<?php echo $this->panelId; ?>, height: '95%', anchor: '100%'
+                }];
+            <?php echo 'HIRAGridPanel'.$this->panelId; ?>.add(items);
+            <?php echo 'HIRAGridPanel'.$this->panelId; ?>.doLayout();
+            break;
+        case "add":
+            console.log('Add lib class to be implemented.');
+            break;
+        case "remove":
+            console.log('Remove lib class to be implemented.');
+            break;
+    }
+}
+
+var <?php echo 'HiraSpecs'.$this->panelId; ?> = Ext.create('Ext.Panel', {
+    collapsible: true,
+    frame: false,
+    height: '250px',
+    layout: 'fit',
+    collapsed: true,
+    title: '<?php echo $this->titleHiraSpecs; ?>',
+    loader: {
+        url: 'ims/hiraspecs/<?php echo $this->moduleId; ?>',
+        autoLoad: true,
+        scripts: true
+    }
+});
+
+var <?php echo 'HiraPanel'.$this->panelId; ?> = Ext.create('Ext.Panel', {
+    frame: false,
+    items: [ <?php echo 'HiraSpecs'.$this->panelId; ?>,<?php echo 'HIRAGridPanel'.$this->panelId; ?> ]
+});
+
+
+Ext.getCmp('content-panel').getActiveTab().add(<?php echo 'HiraPanel'.$this->panelId; ?>);
 </script>

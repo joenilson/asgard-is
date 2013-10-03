@@ -23,6 +23,8 @@ use Application\Model\UsersTable;
 use Application\Model\AdminUserModulesTable;
 use Application\Model\AdminUserSubmodulesTable;
 use Application\Model\CompaniesTable;
+use Application\Model\CountriesTable;
+use Application\Model\LocationsTable;
 use Application\Model\MessagesTable;
 
 class Module
@@ -206,6 +208,18 @@ class Module
                 'Application\Model\CompaniesTable' => function($sm) {
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new CompaniesTable($dbAdapter);
+                    return $table;
+                },
+                
+                'Application\Model\CountriesTable' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new CountriesTable($dbAdapter);
+                    return $table;
+                },
+                
+                'Application\Model\LocationsTable' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new LocationsTable($dbAdapter);
                     return $table;
                 },
                         

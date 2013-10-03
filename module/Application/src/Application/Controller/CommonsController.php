@@ -22,6 +22,9 @@ class CommonsController extends AbstractActionController
     protected $adminusermodulesTable;
     protected $adminusersubmodulesTable;
     
+    protected $countriesTable;
+    protected $locationsTable;
+    
     /**
      * The default action - show the home page
      */
@@ -29,6 +32,41 @@ class CommonsController extends AbstractActionController
     {
         // TODO Auto-generated CommonsController::indexAction() default action
         return new ViewModel();
+    }
+    
+    public function getcountriesAction()
+    {
+        if (! $this->getServiceLocator()
+    	 		->get('AuthService')->hasIdentity()){
+    	   return $this->redirect()->toRoute('login');
+    	}
+        $request = $this->getRequest();
+        if ($request->isGet()){
+            $Countries = $this->getCountriesTable()->fetchAll();
+            $data=array('success'=>true,'results'=>$Countries);
+        }else{
+            $data=array('success'=>false);
+        }
+        $result = new JsonModel($data);
+    	return $result;
+    }
+    
+    public function getlocationsAction()
+    {
+        if (! $this->getServiceLocator()
+    	 		->get('AuthService')->hasIdentity()){
+    	   return $this->redirect()->toRoute('login');
+    	}
+        $request = $this->getRequest();
+        if ($request->isGet() AND $request->getQuery('cid')!==''){
+            $country_id = (string) $request->getQuery('cid');
+            $Locations = $this->getLocationsTable()->getLocationsByCountry($country_id);
+            $data=array('success'=>true,'results'=>$Locations);
+        }else{
+            $data=array('success'=>false);
+        }
+        $result = new JsonModel($data);
+    	return $result;
     }
     
     public function getmenusAction()
@@ -228,4 +266,21 @@ class CommonsController extends AbstractActionController
     	return $this->adminusersubmodulesTable;
     }
     
+    public function getCountriesTable()
+    {
+        if (!$this->countriesTable){
+            $sm = $this->getServiceLocator();
+            $this->countriesTable = $sm->get('Application\Model\CountriesTable');
+        }
+        return $this->countriesTable;
+    }
+    
+    public function getLocationsTable()
+    {
+        if (!$this->locationsTable){
+            $sm = $this->getServiceLocator();
+            $this->locationsTable = $sm->get('Application\Model\LocationsTable');
+        }
+        return $this->locationsTable;
+    }
 }

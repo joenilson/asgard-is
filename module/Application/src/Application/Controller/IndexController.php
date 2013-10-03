@@ -36,6 +36,8 @@ class IndexController extends AbstractActionController
         //$this->getViewHelper('HeadScript')->appendFile("/js/extjs/src/ux/grid/FilterBarOriginal.js","text/javascript");
         $this->getViewHelper('HeadScript')->appendFile("/js/extjs/src/ux/grid/AutoResizer.js","text/javascript");
         
+        $this->getViewHelper('HeadScript')->appendFile("/js/extjs/src/ux/form/field/Month.js","text/javascript");
+        
         $this->getViewHelper('HeadLink')->appendStylesheet("/css/overrides.css");
         $this->getViewHelper('HeadLink')->appendStylesheet("/css/uxs.css");
         

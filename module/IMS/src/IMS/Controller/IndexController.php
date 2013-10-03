@@ -29,6 +29,8 @@ class IndexController extends AbstractActionController
     protected $hiraDocumentsTable;
     protected $messagesTable;
     protected $translationTable;
+    protected $hiraIncidentTypeTable;
+    protected $countriesTable;
     
     public function indexAction()
     {
@@ -101,6 +103,53 @@ class IndexController extends AbstractActionController
             'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0)));
     }
     
+    public function hiraspecsAction()
+    {
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+
+        $moduleParams = explode('-',$this->params()->fromRoute('id', 0));
+        $idUser = $userPrefs[0]['user_id'];
+        $idModule = $moduleParams[0];
+        $idSubmodule = $moduleParams[1];
+        
+        $HiraMatrix = $this->getHiraMatrixTable()->getMatrix( 
+            $userData->country,
+            $userData->company,
+            $userData->location);
+        $HiraSeverityLabels = $this->getHiraSeverityTable()->getSeverityList($userPrefs[0]['lang']);
+        $HiraFrequencyLabels = $this->getHiraFrequencyTable()->getFrequencyList($userPrefs[0]['lang']);
+        $hiraRiskLevel = $this->getHiraRLTable()->fetchAll();
+        $hiraRiskLevelI18n = $this->getHiraRLI18nTable()->getTextList($userPrefs[0]['lang']);
+        
+        $translator = $this->getTranslationTable();
+        $titleRiskLevel=$translator->getTranslationItem($userPrefs[0]['lang'],$idModule,'titleRiskLevel_'.$idSubmodule);
+        $titleDescription=$translator->getTranslationItem($userPrefs[0]['lang'],$idModule,'titleDescription_'.$idSubmodule);
+        $titleCorrectionTime=$translator->getTranslationItem($userPrefs[0]['lang'],$idModule,'titleCorrectionTime_'.$idSubmodule);
+        $titleSeverity=$translator->getTranslationItem($userPrefs[0]['lang'],$idModule,'titleSeverity_'.$idSubmodule);
+        $titleFrequency=$translator->getTranslationItem($userPrefs[0]['lang'],$idModule,'titleFrequency_'.$idSubmodule);
+        $titleMatrixRiskEval=$translator->getTranslationItem($userPrefs[0]['lang'],$idModule,'titleMatrixRiskEval_'.$idSubmodule);
+
+        $timeLabels=$translator->getTranslationList($userPrefs[0]['lang'],'time');
+        
+        return array(
+            'hiraMatrix'=>$HiraMatrix,
+            'severityLabels'=>$HiraSeverityLabels,
+            'frequencyLabels'=>$HiraFrequencyLabels,
+            'hiraRiskLevel'=>$hiraRiskLevel,
+            'hiraRiskLabels'=>$hiraRiskLevelI18n,
+            'titleRiskLevel'=>$titleRiskLevel['value'],
+            'titleDescription'=>$titleDescription['value'],
+            'titleCorrectionTime'=>$titleCorrectionTime['value'],
+            'titleSeverity'=>$titleSeverity['value'],
+            'titleFrequency'=>$titleFrequency['value'],
+            'titleMatrixRiskEval'=>$titleMatrixRiskEval['value'],
+            'timeLabels'=>$timeLabels,
+            'subpanelId'=>str_replace("-","",$this->params()->fromRoute('id', 0)),
+        );
+        
+    }
+    
     public function hiraAction()
     {
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
@@ -120,22 +169,9 @@ class IndexController extends AbstractActionController
             $role=($userGrantedAccess[0]['edit']==1)?'Editor':$role;
         }
         
-        $HiraMatrix = $this->getHiraMatrixTable()->getMatrix( 
-            $userData->country,
-            $userData->company,
-            $userData->location);
-        $HiraSeverityLabels = $this->getHiraSeverityTable()->getSeverityList($userPrefs[0]['lang']);
-        $HiraFrequencyLabels = $this->getHiraFrequencyTable()->getFrequencyList($userPrefs[0]['lang']);
-        $hiraRiskLevel = $this->getHiraRLTable()->fetchAll();
-        $hiraRiskLevelI18n = $this->getHiraRLI18nTable()->getTextList($userPrefs[0]['lang']);
-        
         $translator = $this->getTranslationTable();
-        $titleRiskLevel=$translator->getTranslationItem($userPrefs[0]['lang'],$idModule,'titleRiskLevel_'.$idSubmodule);
-        $titleDescription=$translator->getTranslationItem($userPrefs[0]['lang'],$idModule,'titleDescription_'.$idSubmodule);
-        $titleCorrectionTime=$translator->getTranslationItem($userPrefs[0]['lang'],$idModule,'titleCorrectionTime_'.$idSubmodule);
-        $titleSeverity=$translator->getTranslationItem($userPrefs[0]['lang'],$idModule,'titleSeverity_'.$idSubmodule);
-        $titleFrequency=$translator->getTranslationItem($userPrefs[0]['lang'],$idModule,'titleFrequency_'.$idSubmodule);
-        $titleMatrixRiskEval=$translator->getTranslationItem($userPrefs[0]['lang'],$idModule,'titleMatrixRiskEval_'.$idSubmodule);
+        
+        $titleHiraSpecs=$translator->getTranslationItem($userPrefs[0]['lang'],$idModule,'titleHiraSpecs_'.$idSubmodule);
         $HiraGridTitle_38=$translator->getTranslationItem($userPrefs[0]['lang'],$idModule,'HiraGridTitle_'.$idSubmodule);
         $HiraGridHeaderTypeProcess_38=$translator->getTranslationItem($userPrefs[0]['lang'],$idModule,'HiraGridHeaderTypeProcess_'.$idSubmodule);
         $HiraGridHeaderProcess_38=$translator->getTranslationItem($userPrefs[0]['lang'],$idModule,'HiraGridHeaderProcess_'.$idSubmodule);
@@ -149,23 +185,11 @@ class IndexController extends AbstractActionController
         $HiraGridHeaderScaleLow_38=$translator->getTranslationItem($userPrefs[0]['lang'],$idModule,'HiraGridHeaderScaleLow_'.$idSubmodule);
         $HiraGridHeaderResidualRiskEval_38=$translator->getTranslationItem($userPrefs[0]['lang'],$idModule,'HiraGridHeaderResidualRiskEval_'.$idSubmodule);
         
-        $timeLabels=$translator->getTranslationList($userPrefs[0]['lang'],'time');
-        
         return array(
             'userRole'=>$role,
-            'hiraMatrix'=>$HiraMatrix,
-            'severityLabels'=>$HiraSeverityLabels,
-            'frequencyLabels'=>$HiraFrequencyLabels,
-            'hiraRiskLevel'=>$hiraRiskLevel,
-            'hiraRiskLabels'=>$hiraRiskLevelI18n,
-            'titleRiskLevel'=>$titleRiskLevel['value'],
-            'titleDescription'=>$titleDescription['value'],
-            'titleCorrectionTime'=>$titleCorrectionTime['value'],
-            'titleSeverity'=>$titleSeverity['value'],
-            'titleFrequency'=>$titleFrequency['value'],
-            'titleMatrixRiskEval'=>$titleMatrixRiskEval['value'],
-            'timeLabels'=>$timeLabels,
+            'titleHiraSpecs'=>$titleHiraSpecs['value'],
             'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0)),
+            'moduleId'=>$this->params()->fromRoute('id', 0),
             'HiraGridTitle'=>$HiraGridTitle_38['value'],
             'HiraGridHeaderTypeProcess'=>$HiraGridHeaderTypeProcess_38['value'],
             'HiraGridHeaderProcess'=>$HiraGridHeaderProcess_38['value'],
@@ -180,14 +204,43 @@ class IndexController extends AbstractActionController
             'HiraGridHeaderResidualRiskEval'=>$HiraGridHeaderResidualRiskEval_38['value'],
 
         );
-            /*
-            'contentId'=>$this->params()->fromRoute('id', 0),
-            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0)));
-             * 
-             */
         
     }
-            
+    
+   
+    public function listhiraAction()
+    {
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        
+        $request = $this->getRequest();
+        $moduleParams = explode('-',$this->params()->fromRoute('id', 0));
+        $contentTextData = $request->getPost('rtfeditor');
+        $versioning = explode('.',$request->getPost('content_versioning'));
+        $type_versioning = $request->getPost('type_versioning');
+        $type_scope = $request->getPost('type_versioning');
+        
+        $lang = $userPrefs[0]['lang'];
+    }
+    
+    public function hiralitAction()
+    {
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang = $userPrefs[0]['lang'];
+        $hiraIncidentType = $this->getHiraIncidentTypeTable();
+        $listDocuments = $hiraIncidentType->getIncidentTypeList($lang);
+        if(!empty($listDocuments)){
+            $data['success']=true;
+            $data['results']=$listDocuments;
+            $data['msg']="";
+        }else{
+            $data['success']=false;
+            $data['msg']="Error trying to get the information...";
+        }
+        $result = new JsonModel($data);
+    	return $result;   
+    }
+    
     public function saveContentAction()
     {
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
@@ -244,9 +297,6 @@ class IndexController extends AbstractActionController
     }
     
     public function hiraDocsAction() {
-        
-        
-        
         $hiraDocuments = $this->getHiraDocumentsTable();
         $listDocuments = $hiraDocuments->fetchAll();
         if(!empty($listDocuments)){
@@ -268,6 +318,15 @@ class IndexController extends AbstractActionController
             $this->adminusersubmodulesTable = $sm->get('Application\Model\AdminUserSubmodulesTable');
     	}
     	return $this->adminusersubmodulesTable;
+    }
+    
+    public function getHiraIncidentTypeTable()
+    {
+    	if (!$this->hiraIncidentTypeTable) {
+            $sm = $this->getServiceLocator();
+            $this->hiraIncidentTypeTable = $sm->get('IMS\Model\hiraIncidentTypeTable');
+    	}
+    	return $this->hiraIncidentTypeTable;
     }
     
     public function getContentTextTable()
