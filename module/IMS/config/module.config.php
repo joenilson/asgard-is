@@ -124,6 +124,33 @@ return array(
                             ),
                         ),
                     ),
+                    'hiradetails' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/hiradetails[/:country[/:location[/:date_incident]]]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                //'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'hiradetails'
+                            ),
+                        ),
+                    ),
+                    'hirailist' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/hirailist',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'hirailist'
+                            ),
+                        ),
+                    ),
                     'saveContent' => array(
                         'type'    => 'Segment',
                         'options' => array(

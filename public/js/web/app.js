@@ -9,12 +9,13 @@ Ext.application({
     name: 'Asgard',
 
     paths: {
+        'feature': '/js/extjs/features',
         'Asgard': '/js/web/app'
     },
     
     models: ['Menus', 'Submenus'],
     stores: ['SearchSubmenus', 'Menus','UserPreferences'],
-    requires : ['Asgard.view.Viewport'],
+    requires : ['Asgard.view.Viewport','feature.FixedSummary'],
     // Define all the controllers that should initialize at boot up of your application
     controllers: [
       'UserWorkspace',

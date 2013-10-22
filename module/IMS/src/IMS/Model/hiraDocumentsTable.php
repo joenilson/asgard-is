@@ -9,8 +9,8 @@ namespace IMS\Model;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\TableGateway\AbstractTableGateway;
 //use Zend\Db\Sql\TableIdentifier;
-use Zend\Db\Sql\Select;
 use IMS\Model\Entity\hiraDocuments;
+
 
 class hiraDocumentsTable extends AbstractTableGateway {
 
@@ -93,13 +93,12 @@ class hiraDocumentsTable extends AbstractTableGateway {
                 iper_pr.in_idProc = iper_proc.idProc
                 order by iper_pr.in_idPeligroRiesgo";
         $result3 = $this->getAdapter()->query($query3,Adapter::QUERY_MODE_EXECUTE);
+        
         if (!$result3)
             return false;
         $listItems=array();
         
         $bulkData =$result3->toArray();
-       
-        //echo $row->toArray();
         
         for ($index = 0; $index < count($bulkData); $index++) {
             $listItems[$index]['in_idPeligroRiesgo']=$bulkData[$index]['in_idPeligroRiesgo'];

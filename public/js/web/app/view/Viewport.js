@@ -6,7 +6,7 @@ Ext.define('Asgard.view.Viewport', {
     'Asgard.lib.MenuTree','Asgard.lib.PanelContent', 'Asgard.lib.RadioButtonsVersioning', 'Asgard.lib.GridPanel',
     'Asgard.lib.RadioButtonsScope', 'Asgard.lib.versioningContent', 'Asgard.view.window.systemInformation',
     'Asgard.store.HiraDocuments','Asgard.store.HiraIncidentsType','Asgard.store.HiraIncidentsList',
-    'Asgard.store.Countries','Asgard.store.Locations'
+    'Asgard.store.Countries','Asgard.store.Locations','Asgard.lib.hiraIncidentsDetails','Asgard.store.HiraIncidentsDetails'
   ],
   menuTitleText: 'Main Menu',
     defaults: {

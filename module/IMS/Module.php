@@ -20,6 +20,7 @@ use IMS\Model\hiraRiskLevelTable;
 use IMS\Model\hiraRiskLevelI18nTable;
 use IMS\Model\hiraDocumentsTable;
 use IMS\Model\hiraIncidentTypeTable;
+use IMS\Model\hiraIncidentsTable;
 
 class Module implements AutoloaderProviderInterface
 {
@@ -69,6 +70,11 @@ class Module implements AutoloaderProviderInterface
                 'IMS\Model\hiraDocumentsTable'=> function($sm){
                     $dbAdapter = $sm->get('Application\Db\AdapterTwo');
                     $table = new hiraDocumentsTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\hiraIncidentsTable'=> function($sm){
+                    $dbAdapter = $sm->get('Application\Db\AdapterTwo');
+                    $table = new hiraIncidentsTable($dbAdapter);
                     return $table;
                 },
                 'IMS\Model\hiraIncidentTypeTable'=> function($sm){

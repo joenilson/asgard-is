@@ -41,7 +41,9 @@ var <?php echo 'HIRAGridPanel'.$this->panelId; ?> = Ext.create('Asgard.lib.GridP
   autoScroll: true,
   border: false,
   frame: false,
-  //layout: 'fit',
+  region: 'center',
+  layout: 'fit',
+  flex: 0.90,
   selType: 'checkboxmodel',
   store: <?php echo 'HIRAStore'.$this->panelId; ?>,
   dockedItems: [{
@@ -176,8 +178,8 @@ function onClick(btn){
 var <?php echo 'HiraSpecs'.$this->panelId; ?> = Ext.create('Ext.Panel', {
     collapsible: true,
     frame: false,
-    height: '250px',
-    layout: 'fit',
+    region: 'north',
+    titleAlign: 'right',
     collapsed: true,
     title: '<?php echo $this->titleHiraSpecs; ?>',
     loader: {
@@ -189,7 +191,11 @@ var <?php echo 'HiraSpecs'.$this->panelId; ?> = Ext.create('Ext.Panel', {
 
 var <?php echo 'HiraPanel'.$this->panelId; ?> = Ext.create('Ext.Panel', {
     frame: false,
-    items: [ <?php echo 'HiraSpecs'.$this->panelId; ?>,<?php echo 'HIRAGridPanel'.$this->panelId; ?> ]
+    layout: 'border',
+    items: [ 
+        <?php echo 'HiraSpecs'.$this->panelId; ?>,
+        <?php echo 'HIRAGridPanel'.$this->panelId; ?>
+    ]
 });
 
 

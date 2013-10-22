@@ -38,8 +38,10 @@ class hiraIncidentTypeTable extends AbstractTableGateway {
     }
     
     public function getIncidentTypeList($lang) {
-        
-        $row = $this->select(array('lang' => (string) $lang));
+        $row = $this->select(function (Select $select) use ($lang) {
+            $select->where(array('lang' => (string) $lang))->order('id_incident ASC');
+        });
+        //$row = $this->select(array('lang' => (string) $lang));
         if (!$row)
             return false;
         $listItems=array();
@@ -61,7 +63,7 @@ class hiraIncidentTypeTable extends AbstractTableGateway {
             'date_modification' => $object->getDate_modification()
         );
 
-        $id_incident = (string) $object->id_incident;
+        $id_incident = (int) $object->id_incident;
         $lang = (string) $object->lang;
         
         if (!$this->getIncidentValue($id_incident,$lang)) {
@@ -84,7 +86,7 @@ class hiraIncidentTypeTable extends AbstractTableGateway {
 
     public function updateHiraIncidentType($idi,$lang,$data)
     {
-        $id_incident = (string) $idi;
+        $id_incident = (int) $idi;
         $lang = (string) $lang;
         $this->update($data, array('id_incident' => $id_incident, 'lang' => $lang));
     }

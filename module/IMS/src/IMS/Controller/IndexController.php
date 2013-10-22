@@ -30,6 +30,7 @@ class IndexController extends AbstractActionController
     protected $messagesTable;
     protected $translationTable;
     protected $hiraIncidentTypeTable;
+    protected $hiraIncidentsListTable;
     protected $countriesTable;
     
     public function indexAction()
@@ -212,6 +213,7 @@ class IndexController extends AbstractActionController
     {
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
         $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang = $userPrefs[0]['lang'];
         
         $request = $this->getRequest();
         $moduleParams = explode('-',$this->params()->fromRoute('id', 0));
@@ -220,7 +222,15 @@ class IndexController extends AbstractActionController
         $type_versioning = $request->getPost('type_versioning');
         $type_scope = $request->getPost('type_versioning');
         
-        $lang = $userPrefs[0]['lang'];
+        $incidentTypeList = $this->getHiraIncidentTypeTable();
+        $listIT = $incidentTypeList->getIncidentTypeList($lang);
+        
+        
+        return array(
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0)),
+            'listIT'=>$listIT
+        );
+        
     }
     
     public function hiralitAction()
@@ -241,6 +251,47 @@ class IndexController extends AbstractActionController
     	return $result;   
     }
     
+    public function hiradetailsAction()
+    {
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang = $userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        
+        $countryParams = $request->getQuery('country');
+        $locationParams = $request->getQuery('location');
+        $dateParams = $request->getQuery('date_incident');
+        
+        $hiraIncidentDetail = $this->getHiraIncidentsListTable();
+        $listDocuments = $hiraIncidentDetail->getIncidentsDetails($countryParams,$locationParams,$dateParams);
+        
+        if(!empty($listDocuments)){
+            $data['success']=true;
+            $data['results']=$listDocuments;
+            $data['msg']="";
+        }else{
+            $data['success']=false;
+            $data['msg']="Error trying to get the information...";
+        }
+        
+        $result = new JsonModel($data);
+    	return $result;   
+    }
+    
+    public function hirailistAction()
+    {
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang = $userPrefs[0]['lang'];
+        $request = $this->getRequest();
+        $hiraIncidentsList = $this->getHiraIncidentsListTable();
+        $resultList = $hiraIncidentsList->getIncidentsListFiltered($request->getQuery('countries'),$request->getQuery('locations'),$request->getQuery('monthfield'),$lang);
+        $data['results']=(!empty($resultList))?$resultList:"";
+        $data['success']=(!empty($resultList))?true:false;
+        $data['msg']=(!empty($resultList))?"":"Error trying to get the information...";
+        $result = new JsonModel($data);
+        return $result;
+    }
+
     public function saveContentAction()
     {
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
@@ -328,6 +379,16 @@ class IndexController extends AbstractActionController
     	}
     	return $this->hiraIncidentTypeTable;
     }
+
+    public function getHiraIncidentsListTable()
+    {
+    	if (!$this->hiraIncidentsListTable) {
+            $sm = $this->getServiceLocator();
+            $this->hiraIncidentsListTable = $sm->get('IMS\Model\hiraIncidentsTable');
+    	}
+    	return $this->hiraIncidentsListTable;
+    }
+
     
     public function getContentTextTable()
     {
