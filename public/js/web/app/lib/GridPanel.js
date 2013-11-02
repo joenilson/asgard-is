@@ -20,11 +20,6 @@ Ext.define('Asgard.lib.GridPanel',{
         renderHidden: false,
         showShowHideButton: false,
         showClearAllButton: false
-    /*
-    Ext.create('Ext.ux.grid.xFilterRow',{
-        remoteFilter:false
-    })
-    */
 
     }
     ],

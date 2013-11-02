@@ -54,6 +54,48 @@ return array(
                             ),
                         ),
                     ),
+                    'diagram' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/diagram[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'diagram'
+                            ),
+                        ),
+                    ),
+                    'processdiagram' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/processdiagram[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'processdiagram'
+                            ),
+                        ),
+                    ),
+                    'processmainlist' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/processmainlist[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'processmainlist'
+                            ),
+                        ),
+                    ),
                     'hiraspecs' => array(
                         'type'    => 'Segment',
                         'options' => array(

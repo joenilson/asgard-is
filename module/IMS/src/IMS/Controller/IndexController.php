@@ -32,6 +32,7 @@ class IndexController extends AbstractActionController
     protected $hiraIncidentTypeTable;
     protected $hiraIncidentsListTable;
     protected $countriesTable;
+    protected $processmainView;
     
     public function indexAction()
     {
@@ -102,6 +103,13 @@ class IndexController extends AbstractActionController
             'message'=>$messageContent,
             'contentId'=>$this->params()->fromRoute('id', 0),
             'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0)));
+    }
+    
+    public function diagramAction()
+    {
+        return array(
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
+        );
     }
     
     public function hiraspecsAction()
@@ -207,8 +215,75 @@ class IndexController extends AbstractActionController
         );
         
     }
-    
    
+    public function processdiagramAction()
+    {
+        
+        $request = $this->getRequest();
+        $module = $request->getPost('module');
+        $process = $request->getPost('process');
+        $type = $request->getPost('type');
+        $ids = json_decode($request->getPost('values'));
+        
+        if($module != "diagram") 
+            die();
+        
+        switch ($process){
+            case 'ims-main-process':
+                $process_type = 2;
+                break;
+            case 'ims-strategic-process':
+                $process_type = 1;
+                break;
+            case 'ims-support-process':
+                $process_type = 3;
+                break;
+        }
+
+        $proc_rel = new \IMS\Model\Entity\ProcessMain;
+        
+        
+        
+        echo $ids;
+        $listDocuments="";
+        if(!empty($listDocuments)){
+            $data['success']=true;
+            $data['results']=$listDocuments;
+            $data['msg']="";
+        }else{
+            $data['success']=false;
+            $data['msg']="Error trying to get the information...";
+        }
+        $result = new JsonModel($data);
+    	return $result;  
+    }
+    
+    public function processmainlistAction()
+    {
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang = $userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $moduleParams = explode('-',$this->params()->fromRoute('id', 0));
+        
+        $queryPM = $this->getProcessMainView();
+        $listDocuments = $queryPM->getProcessList($lang);
+        
+        if(!empty($listDocuments)){
+            $data['success']=true;
+            $data['results']=$listDocuments;
+            $data['msg']="";
+        }else{
+            $data['success']=false;
+            $data['msg']="Error trying to get the information...";
+        }
+        $result = new JsonModel($data);
+    	return $result;  
+
+        
+    }
+    
     public function listhiraAction()
     {
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
@@ -450,6 +525,14 @@ class IndexController extends AbstractActionController
             $this->hiraDocumentsTable = $sm->get('IMS\Model\hiraDocumentsTable');
         }
         return $this->hiraDocumentsTable;
+    }
+    
+    public function getProcessMainView() {
+        if(!$this->processmainView) {
+            $sm = $this->getServiceLocator();
+            $this->processmainView = $sm->get('IMS\Model\ProcessMainView');
+        }
+        return $this->processmainView;
     }
     
     public function getMessagesTable()
