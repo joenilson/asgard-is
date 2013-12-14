@@ -13,15 +13,10 @@ namespace IMS\Model\Entity;
 
 class ProcessMain {
     
-    protected $lang;
     protected $id;
-    protected $value;
-    protected $description;
     protected $ordering;
     protected $status;
-    protected $type;
-    protected $parent_id;
-    protected $assignment;
+    
     public function __construct(array $options = null)
     {
     	if (is_array($options)) {
@@ -59,20 +54,8 @@ class ProcessMain {
     	return $this;
     }
     
-    public function getLang() {
-        return $this->lang;
-    }
-
     public function getId() {
         return $this->id;
-    }
-
-    public function getValue() {
-        return $this->value;
-    }
-
-    public function getDescription() {
-        return $this->description;
     }
 
     public function getOrdering() {
@@ -83,23 +66,8 @@ class ProcessMain {
         return $this->status;
     }
 
-    public function setLang($lang) {
-        $this->lang = $lang;
-        return $this;
-    }
-
     public function setId($id) {
         $this->id = $id;
-        return $this;
-    }
-
-    public function setValue($value) {
-        $this->value = $value;
-        return $this;
-    }
-
-    public function setDescription($description) {
-        $this->description = $description;
         return $this;
     }
 
@@ -112,32 +80,8 @@ class ProcessMain {
         $this->status = $status;
         return $this;
     }
-    
-    public function getType() {
-        return $this->type;
-    }
 
-    public function getParent_id() {
-        return $this->parent_id;
-    }
 
-    public function getAssignment() {
-        return $this->assignment;
-    }
 
-    public function setType($type) {
-        $this->type = $type;
-        return $this;
-    }
-
-    public function setParent_id($parent_id) {
-        $this->parent_id = $parent_id;
-        return $this;
-    }
-
-    public function setAssignment($assignment) {
-        $this->assignment = $assignment;
-        return $this;
-    }
 
 }

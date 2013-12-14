@@ -5,11 +5,13 @@ use Zend\Db\Adapter\Adapter;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Sql\TableIdentifier;
 use Zend\Db\Sql\Select;
+use Zend\Db\Sql\Predicate\Expression;
 use Application\Model\Entity\Countries;
 
 class CountriesTable extends AbstractTableGateway {
 
 	protected $table_name = 'countries';
+        protected $table_geolocation = 'companies_geolocation';
 	protected $schema_name = 'system';
 
 	public function __construct(Adapter $adapter) {
@@ -30,7 +32,26 @@ class CountriesTable extends AbstractTableGateway {
                 return false;
             return $row;
 	}
-       
+
+        public function getCountriesByCompany($company) {
+            $company_id = (string) $company;
+            $row = $this->select(function (Select $select) use ($company_id) {
+                $select->join(
+                    array('cg'=>new TableIdentifier($this->table_geolocation, $this->schema_name)), 
+                    new Expression(
+                        $this->table_name.'.id = cg.company_id and cg.company_id = \''.$company_id.'\''), 
+                    array( 'company_id', 'country_id')
+                );
+                $select->order('name ASC');
+                $select->quantifier('DISTINCT');
+                //echo $select->getSqlString();
+            });
+            if (!$row)
+                return false;
+            return $row->toArray();
+	}
+
+        
 	public function save(Countries $object)
 	{
             $data = array(

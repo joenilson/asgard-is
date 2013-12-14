@@ -1,0 +1,222 @@
+<?php
+/*
+ * Copyright (C) 2013 Joe Nilson <joenilson@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/**
+ * @application Asgard Information System :: asgard-is
+ * @version 1.0.0 devel
+ * @author Joe Nilson <joenilson@gmail.com>
+ */
+?>
+<link rel="stylesheet" href="/css/TextLayerBuilder.css">
+
+<script>
+<?php
+$thread_values = "pid: $this->process_id, ";
+
+$values = "company: '".$this->company."', country: '".$this->country."', location: '".$this->location."' ";
+?>
+var storeThreadAssigned<?=$this->panelId; ?> = Ext.create('Asgard.store.ProcessThread');
+storeThreadAssigned<?=$this->panelId; ?>.load({ params: { type: 'A', <?=$thread_values.$values; ?> } });
+
+var storeThreadUnassigned<?=$this->panelId; ?> = Ext.create('Asgard.store.ProcessThread');
+storeThreadUnassigned<?=$this->panelId; ?>.load({ params: { type: 'U', <?=$thread_values.$values; ?> } });
+
+var toolsSubProcess<?=$this->panelId; ?> = [{
+    type: 'plus',
+    tooltip: 'Add SubProcess',
+    handler: fnThreadTool
+},{
+    type: 'minus',
+    tooltip: 'Remove SubProcess',
+    handler: fnThreadTool
+}];
+
+var toolsThreads = [{
+    type: 'gear',
+    tooltip: 'Config Thread',
+    handler: fnThreadConfig
+}];
+
+var panelThreads<?=$this->panelId; ?> = Ext.create('widget.dataview', {
+    autoScroll: true,
+    store: storeThreadAssigned<?=$this->panelId; ?>,
+    selModel: {
+        mode: 'SINGLE',
+        listeners: {
+            scope: this,
+            selectionchange: onSelectionChange
+        }
+    },
+    trackOver: true,
+    
+    cls: 'thread-list',
+    itemSelector: '.thread-list-item',
+    overItemCls: 'thread-list-item-hover',
+    
+    tpl: '<tpl for="."><div class="thread-list-item">{value}</div></tpl>'
+});
+
+var panelProcess<?=$this->panelId; ?> = Ext.create('Ext.panel.Panel', {
+    title: '<?php echo "Company: ".$this->companyDesc." | Country: ".$this->countryDesc." | Location: ".$this->locationDesc; ?>',
+    layout: {
+        type: 'border',
+        padding: 5
+    },
+    items: [{
+        region: 'west',
+        title: 'Subprocesos',
+        width: 280,
+        maxWidth: 280,
+        split: true,
+        collapsible: true,
+        floatable: false,
+        layout: 'fit',
+        tools: toolsSubProcess<?=$this->panelId; ?>,
+        items: panelThreads<?=$this->panelId; ?>
+    }]
+});
+
+var threadList<?=$this->panelId; ?> = Ext.create('Asgard.lib.grid.list', {
+    selType: 'checkboxmodel',
+    store: storeThreadAssigned<?=$this->panelId; ?>,
+    columns: {
+        plugins: [{
+            ptype: 'gridautoresizer'
+        }],
+        items: [
+            {text: 'id', flex: 0.25, dataIndex: 'id', sortable: true, filter: true },
+            {text: 'description', flex: 0.75, dataIndex: 'value', sortable: true, filter: true, tdCls: 'wrapText' }
+        ]
+    }
+});
+
+var threadWindow<?=$this->panelId; ?> = Ext.create('Asgard.lib.window.list', {
+    title: 'Thread List',
+    layout: 'fit',
+    items: [ threadList<?=$this->panelId; ?> ]
+});
+
+function onSelectionChange(){
+    var selected = panelThreads<?=$this->panelId; ?>.getSelectionModel().getSelection()[0];
+    if(selected){
+        centerRegion = panelProcess<?=$this->panelId; ?>.getComponent(2);
+        Ext.suspendLayouts();
+        var threaddetails<?=$this->panelId; ?> = Ext.create('Ext.Panel', {
+            frame: false,
+            region: 'center',
+            closable: true,
+            titleAlign: 'right',
+            title: selected.data.value,
+            loader: {
+                url: 'ims/threaddetails/'+selected.data.id,
+                autoLoad: true,
+                scripts: true
+            }
+        });
+        if(centerRegion){
+            panelProcess<?=$this->panelId; ?>.remove(centerRegion);
+        }
+        panelProcess<?=$this->panelId; ?>.add(threaddetails<?=$this->panelId; ?>);
+        Ext.resumeLayouts(true);
+    }
+}
+
+function fnThreadTool(me, e, object, tool) {
+    var panel = tool.up('panel');
+    
+    Ext.get('toolType').value=tool.type;
+    Ext.get('processType').value=panel.name;
+    //console.log(tool.type);
+    threadList<?=$this->panelId; ?>.suspendEvents();
+    if(tool.type==='minus'){
+        threadList<?=$this->panelId; ?>.reconfigure(storeThreadAssigned<?=$this->panelId; ?>);
+    }else if(tool.type==='plus'){
+        threadList<?=$this->panelId; ?>.reconfigure(storeThreadUnassigned<?=$this->panelId; ?>);
+    }
+    threadList<?=$this->panelId; ?>.resumeEvents();
+    
+    if (threadWindow<?=$this->panelId; ?>.isVisible()) {
+        threadWindow<?=$this->panelId; ?>.hide();
+    } else {
+        threadWindow<?=$this->panelId; ?>.show();
+    }
+}
+
+
+function fnThreadConfig(me, e, object, tool) {
+    var panel = tool.up('panel');
+    
+    Ext.get('toolType').value=tool.type;
+    Ext.get('processType').value=panel.name;
+    console.log(tool.type);
+    if(tool.type==='minus'){
+        threadList<?=$this->panelId; ?>.reconfigure(storeThreadAssigned<?=$this->panelId; ?>);  
+    }else if(tool.type==='plus'){
+        threadList<?=$this->panelId; ?>.reconfigure(storeThreadUnassigned<?=$this->panelId; ?>);  
+    }
+    
+    if (threadWindow<?=$this->panelId; ?>.isVisible()) {
+        threadWindow<?=$this->panelId; ?>.hide();
+    } else {
+        threadWindow<?=$this->panelId; ?>.show();
+    }
+}
+
+
+function fnSubmit (button, object)
+{
+    var grid = threadList<?=$this->panelId; ?>;
+    var sm = grid.getSelectionModel();
+    var m = sm.getSelection();
+    
+    this.selectedIds = [];
+    Ext.each(m, function(rec) {
+        this.selectedIds.push(rec.get("id"));
+    }, this);
+    
+    var actionType = Ext.get('toolType').value;
+    var processType = Ext.get('processType').value;
+    
+    Ext.Ajax.request({
+        url: 'ims/processdiagram',
+        params: {
+            type: actionType,
+            thread: '<?=$this->panelId; ?>',
+            values: Ext.encode(this.selectedIds),
+            process: 'ims-thread-list',
+            type_process: 's',
+            module: 'diagram',
+            <?=$thread_values.$values; ?>
+        },
+        success: function(response){
+            storeThreadUnassigned<?=$this->panelId; ?>.reload();
+            storeThreadAssigned<?=$this->panelId; ?>.removeAll();
+            storeThreadAssigned<?=$this->panelId; ?>.reload();
+            threadWindow<?=$this->panelId; ?>.hide();
+        }
+    });
+}
+
+function fnCancel ()
+{
+    threadWindow<?=$this->panelId; ?>.hide();
+}
+
+Ext.getCmp('content-panel').getActiveTab().add(panelProcess<?=$this->panelId; ?>);
+
+</script>
+<input type="hidden" id="toolType">

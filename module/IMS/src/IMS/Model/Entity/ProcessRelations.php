@@ -14,6 +14,9 @@ class ProcessRelations {
     protected $parent_id;
     protected $date_creation;
     protected $user_id;
+    protected $company;
+    protected $country;
+    protected $location;
    
     public function __construct(array $options = null)
     {
@@ -97,6 +100,31 @@ class ProcessRelations {
         return $this;
     }
 
+    public function getCompany() {
+        return $this->company;
+    }
 
+    public function getCountry() {
+        return $this->country;
+    }
+
+    public function getLocation() {
+        return $this->location;
+    }
+
+    public function setCompany($company) {
+        $this->company = $company;
+        return $this;
+    }
+
+    public function setCountry($country) {
+        $this->country = $country;
+        return $this;
+    }
+
+    public function setLocation($location) {
+        $this->location = $location;
+        return $this;
+    }
 
 }

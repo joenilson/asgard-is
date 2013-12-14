@@ -149,12 +149,12 @@ class IndexController extends AbstractActionController
 
                         $UsersTable->updateById($userData->id, $dataValues);
 
-                    }elseif ($userType == 'ldap'){
+                    }elseif ($userType === 'ldap'){
 
                         $resultMessages = $this->getAuthService($userType)
                                         ->getAdapter()
                                         ->getAccountObject();
-
+                        
                         $userRegistry = $UsersTable->getUserByUsername($resultMessages->uid,$userType);
 
                         if(!empty($userRegistry)){
@@ -266,7 +266,7 @@ class IndexController extends AbstractActionController
     public function logoutAction()
     {
     	$this->getSessionStorage()->forgetMe();
-    	$this->getAuthService()->clearIdentity();
+    	$this->getAuthService('ldap')->clearIdentity();
     
     	$this->flashmessenger()->addMessage("You've been logged out");
     	//echo 'hola';

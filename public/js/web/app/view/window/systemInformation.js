@@ -12,6 +12,7 @@ Ext.define('Asgard.view.window.systemInformation', {
     autoScroll: true,
     autoShow: true,
     autoDestroy: true,
+    closable: false,
     bodyPadding: 10,
     companyNameField: undefined,
     presentationContentReviewField: undefined,

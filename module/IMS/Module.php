@@ -13,6 +13,8 @@ use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\ModuleManager;
 use Zend\Mvc\ModuleRouteListener;
 use IMS\Model\ContentTextTable;
+use IMS\Model\DocsLibraryTable;
+use IMS\Model\DocsHelpersTable;
 use IMS\Model\hiraMatrixTable;
 use IMS\Model\hiraFrequencyTable;
 use IMS\Model\hiraSeverityTable;
@@ -21,7 +23,10 @@ use IMS\Model\hiraRiskLevelI18nTable;
 use IMS\Model\hiraDocumentsTable;
 use IMS\Model\hiraIncidentTypeTable;
 use IMS\Model\hiraIncidentsTable;
+use IMS\Model\ProcessMainTable;
 use IMS\Model\ProcessMainView;
+use IMS\Model\ProcessRelationsTable;
+use IMS\Model\ProcessThreadTable;
 
 class Module implements AutoloaderProviderInterface
 {
@@ -78,9 +83,34 @@ class Module implements AutoloaderProviderInterface
                     $table = new hiraIncidentsTable($dbAdapter);
                     return $table;
                 },
+                'IMS\Model\DocsLibraryTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new DocsLibraryTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\DocsHelpersTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new DocsHelpersTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\ProcessRelationsTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new ProcessRelationsTable($dbAdapter);
+                    return $table;
+                },
                 'IMS\Model\ProcessMainView'=> function($sm){
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new ProcessMainView($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\ProcessMainTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new ProcessMainTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\ProcessThreadTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new ProcessThreadTable($dbAdapter);
                     return $table;
                 },
                 'IMS\Model\hiraIncidentTypeTable'=> function($sm){

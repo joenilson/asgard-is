@@ -68,6 +68,20 @@ return array(
                             ),
                         ),
                     ),
+                    'process' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route' => '/process[/:company[/:country[/:location[/:process_id[/:parent_id[/:type]]]]]]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'process'
+                            ),
+                        ),
+                    ),
                     'processdiagram' => array(
                         'type'    => 'Segment',
                         'options' => array(
@@ -85,7 +99,7 @@ return array(
                     'processmainlist' => array(
                         'type'    => 'Segment',
                         'options' => array(
-                            'route'    => '/processmainlist[/:id]',
+                            'route'    => '/processmainlist[/:id_process]',
                             'constraints' => array(
                                 'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
@@ -93,6 +107,90 @@ return array(
                             ),
                             'defaults' => array(
                                 'action' => 'processmainlist'
+                            ),
+                        ),
+                    ),
+                    'processthreadlist' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/processthreadlist[/:id_process]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id_process'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'processthreadlist'
+                            ),
+                        ),
+                    ),
+                    'requestdocchange'  => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/requestdocchange',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'requestdocchange'
+                            ),
+                        ),
+                    ),
+                    'processdocslist' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/processdocslist',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'processdocslist'
+                            ),
+                        ),
+                    ),
+                    'threaddetails' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/threaddetails[/:id_thread]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'threaddetails'
+                            ),
+                        ),
+                    ),
+                    'docs' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/docs[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'docs'
+                            ),
+                        ),
+                    ),
+                    'processdocshelpers' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/processdocshelpers',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'processdocshelpers'
                             ),
                         ),
                     ),

@@ -10,9 +10,11 @@ namespace IMS\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
+use Zend\View\Model\ViewModel;
 use Zend\Escaper\Escaper;
 
 use IMS\Model\Entity\ContentText;
+use IMS\Model\Entity\ProcessRelations;
 
 use AsgardLib\Versioning\Documents;
 use AsgardLib\Versioning\Scope;
@@ -31,8 +33,15 @@ class IndexController extends AbstractActionController
     protected $translationTable;
     protected $hiraIncidentTypeTable;
     protected $hiraIncidentsListTable;
-    protected $countriesTable;
     protected $processmainView;
+    protected $processmainTable;
+    protected $processRelationsTable;
+    protected $processThreadTable;
+    protected $docsLibraryTable;
+    protected $docsHelpersTable;
+    protected $companiesTable;
+    protected $countriesTable;
+    protected $locationsTable;
     
     public function indexAction()
     {
@@ -107,7 +116,20 @@ class IndexController extends AbstractActionController
     
     public function diagramAction()
     {
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        //$userData = $this->getServiceLocator()->get('userSessionData');
+        
+        $lang=$userPrefs[0]['lang'];
+        
+        $translator = $this->getTranslationTable();
+        $imsMainProcess = $translator->getTranslationItem($lang,'diagram','ims-main-process');
+        $imsStrategicProcess = $translator->getTranslationItem($lang,'diagram','ims-strategic-process');
+        $imsSupportProcess = $translator->getTranslationItem($lang,'diagram','ims-support-process');
+        
         return array(
+            'ims_main_process'=>$imsMainProcess->value,
+            'ims_strategic_process'=>$imsStrategicProcess->value,
+            'ims_support_process'=>$imsSupportProcess->value,
             'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
         );
     }
@@ -216,13 +238,49 @@ class IndexController extends AbstractActionController
         
     }
    
+    public function processAction()
+    {
+        $id = $this->params()->fromRoute('process_id', 0);
+        $company  = $this->params()->fromRoute('company', 0);
+        $country  = $this->params()->fromRoute('country', 0);
+        $location  = $this->params()->fromRoute('location', 0);
+        $parent_id  = $this->params()->fromRoute('parent_id', 0);
+        $type_process = $this->params()->fromRoute('type', 0);
+        
+        $companyRequest = $this->getCompaniesTable()->getCompanyById($company);
+        $countryRequest = $this->getCountriesTable()->getCountryById($country);
+        $locationRequest = $this->getLocationsTable()->getLocationById($country,$location);
+        //print_r($companyRequest);
+        return new ViewModel (
+                array(
+                    'panelId'=>$id.'_'.$parent_id.'_'.$type_process,
+                    'process_id'=>$id,
+                    'process_type'=>$type_process,
+                    'company'=>$company,
+                    'companyDesc'=>$companyRequest[0]['legal_name'],
+                    'country'=>$country,
+                    'countryDesc'=>$countryRequest[0]['name'],
+                    'location'=>$location,
+                    'locationDesc'=>$locationRequest[0]['location_name']
+                )
+            );
+    }
+    
     public function processdiagramAction()
     {
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang = $userPrefs[0]['lang'];
         
         $request = $this->getRequest();
         $module = $request->getPost('module');
         $process = $request->getPost('process');
+        $company= $request->getPost('company');
+        $country= $request->getPost('country');
+        $location = $request->getPost('location');
+        $parent_id = $request->getPost('pid');
         $type = $request->getPost('type');
+        $type_process = $request->getPost('type_process');
         $ids = json_decode($request->getPost('values'));
         
         if($module != "diagram") 
@@ -238,17 +296,37 @@ class IndexController extends AbstractActionController
             case 'ims-support-process':
                 $process_type = 3;
                 break;
+            case 'ims-thread-list':
+                $process_type = $parent_id;
+        }
+        $date_now=date("Y-m-d H:i:s");
+        $processCounter=0;
+        $proc_rel = $this->getProcessRelationsTable();
+            
+        foreach($ids as $value)
+        {
+            $processRelation = new ProcessRelations();
+            $processRelation->setCompany($company)
+                ->setCountry($country)
+                ->setLocation($location)
+                ->setId($value)
+                ->setParent_id($process_type)
+                ->setType($type_process)
+                ->setUser_id($userData->id)
+                ->setDate_creation($date_now);
+            if($type==='plus'){
+                $proc_rel->save($processRelation);
+            }elseif($type==='minus'){
+                $proc_rel->removeProcessRelations($processRelation);
+            }
+            $processCounter++;
         }
 
-        $proc_rel = new \IMS\Model\Entity\ProcessMain;
+        $action = ($type==='plus')?"added":"removed";
         
-        
-        
-        echo $ids;
-        $listDocuments="";
-        if(!empty($listDocuments)){
+        if(!empty($processCounter)){
             $data['success']=true;
-            $data['results']=$listDocuments;
+            $data['results']=$processCounter." documents $action.";
             $data['msg']="";
         }else{
             $data['success']=false;
@@ -265,10 +343,63 @@ class IndexController extends AbstractActionController
         $lang = $userPrefs[0]['lang'];
         
         $request = $this->getRequest();
-        $moduleParams = explode('-',$this->params()->fromRoute('id', 0));
+        $moduleParams = explode('-',$this->params()->fromRoute('id_process', 0));
         
-        $queryPM = $this->getProcessMainView();
-        $listDocuments = $queryPM->getProcessList($lang);
+        $parent_type = $request->getQuery('type');
+        $assigned = $request->getQuery('assigned');
+        $company= $request->getQuery('company');
+        $country= $request->getQuery('country');
+        $location= $request->getQuery('location');
+        $process= $request->getQuery('process');
+        
+        switch ($process){
+            case 'ims-main-process':
+                $process_type = 2;
+                break;
+            case 'ims-strategic-process':
+                $process_type = 1;
+                break;
+            case 'ims-support-process':
+                $process_type = 3;
+                break;
+        }
+        
+        $parent_id = (!empty($parent_type))?$parent_type:$process_type;
+        
+        $queryPM = $this->getProcessMainTable();
+        $listDocuments = $queryPM->getMainProcess($lang,$parent_id,$assigned,$company,$country,$location);
+        
+        if(!empty($listDocuments)){
+            $data['success']=true;
+            $data['results']=$listDocuments;
+            $data['msg']="";
+        }else{
+            $data['success']=false;
+            $data['results']='';
+            $data['msg']="Error trying to get the information...";
+        }
+        $result = new JsonModel($data);
+    	return $result;  
+    }
+    
+    public function processthreadlistAction()
+    {
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang = $userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        
+        $moduleParams = explode('-',$this->params()->fromRoute('id_process', 0));
+        
+        $assignment = $request->getQuery('type');
+        $company = $request->getQuery('company');
+        $country = $request->getQuery('country');
+        $location = $request->getQuery('location');
+        $process_id = $request->getQuery('pid');
+        
+        $queryPM = $this->getProcessThreadTable();
+        $listDocuments = $queryPM->getThreads($lang,$assignment,$company,$country,$location,$process_id);
         
         if(!empty($listDocuments)){
             $data['success']=true;
@@ -280,26 +411,102 @@ class IndexController extends AbstractActionController
         }
         $result = new JsonModel($data);
     	return $result;  
-
+    }
+    
+    public function threaddetailsAction()
+    {
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang = $userPrefs[0]['lang'];
         
+        $thread_id = $this->params()->fromRoute('id_thread',0);
+
+        $queryPM = $this->getProcessThreadTable();
+        $listDocuments = $queryPM->getThreadInfo($lang,$thread_id);
+        //print_r($listDocuments);
+        return array(
+            'threadId'=>$thread_id,
+            'threadData'=>$listDocuments
+        );
+    }
+    
+    public function processdocslistAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang = $userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        
+        $module = $request->getQuery('module');
+        $company= $request->getQuery('company');
+        $country= $request->getQuery('country');
+        $location= $request->getQuery('location');
+        if($module){
+            $sql = $this->getDocsLibraryTable();
+            $listDocuments = $sql->getLibrary($lang,$company,$country,$location);
+            //print_r($listDocuments);
+            if(!empty($listDocuments)){
+                $data['success']=true;
+                $data['results']=$listDocuments;
+                $data['msg']="";
+            }else{
+                $data['success']=false;
+                $data['msg']="Error trying to get the information...";
+            }
+            $result = new JsonModel($data);
+            return $result;
+        }
+    }
+    
+    public function processdocshelpersAction()
+    {
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang = $userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        
+        $module = $request->getQuery('module');
+        $helper = $request->getQuery('helper');
+        
+        //if($module){
+            $sql = $this->getDocsHelpersTable();
+            $listDocuments = $sql->getHelpersByType($lang,$helper);
+            //print_r($listDocuments);
+            if(!empty($listDocuments)){
+                $data['success']=true;
+                $data['results']=$listDocuments;
+                $data['msg']="";
+            }else{
+                $data['success']=false;
+                $data['msg']="Error trying to get the information...";
+            }
+            $result = new JsonModel($data);
+            return $result;
+        //}
+        
+        
+    }
+    
+    public function docsAction()
+    {
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        return array('data'=>'LLegamos!','userData'=>$userPrefs);
+    }
+    
+    public function requestdocchangeAction()
+    {
+        $request = $this->getRequest();
+        $file = $request->getPost('change_doc');
+        //echo $file['NAME'];
+        
+        return new JsonModel(array('success'=>true,'result'=>'cambios aplicados ','result'=>'LLegamos!'));
     }
     
     public function listhiraAction()
     {
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
-        $userData = $this->getServiceLocator()->get('userSessionData');
         $lang = $userPrefs[0]['lang'];
-        
-        $request = $this->getRequest();
-        $moduleParams = explode('-',$this->params()->fromRoute('id', 0));
-        $contentTextData = $request->getPost('rtfeditor');
-        $versioning = explode('.',$request->getPost('content_versioning'));
-        $type_versioning = $request->getPost('type_versioning');
-        $type_scope = $request->getPost('type_versioning');
-        
         $incidentTypeList = $this->getHiraIncidentTypeTable();
         $listIT = $incidentTypeList->getIncidentTypeList($lang);
-        
         
         return array(
             'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0)),
@@ -437,6 +644,24 @@ class IndexController extends AbstractActionController
     	return $result;
     }
     
+    public function getDocsHelpersTable()
+    {
+    	if (!$this->docsHelpersTable) {
+            $sm = $this->getServiceLocator();
+            $this->docsHelpersTable = $sm->get('IMS\Model\DocsHelpersTable');
+    	}
+    	return $this->docsHelpersTable;
+    }
+    
+    public function getDocsLibraryTable()
+    {
+    	if (!$this->docsLibraryTable) {
+            $sm = $this->getServiceLocator();
+            $this->docsLibraryTable = $sm->get('IMS\Model\DocsLibraryTable');
+    	}
+    	return $this->docsLibraryTable;
+    }
+    
     public function getAdminUserSubmodulesTable()
     {
     	if (!$this->adminusersubmodulesTable) {
@@ -527,12 +752,36 @@ class IndexController extends AbstractActionController
         return $this->hiraDocumentsTable;
     }
     
+    public function getProcessMainTable() {
+        if(!$this->processmainTable) {
+            $sm = $this->getServiceLocator();
+            $this->processmainTable = $sm->get('IMS\Model\ProcessMainTable');
+        }
+        return $this->processmainTable;
+    }
+    
     public function getProcessMainView() {
         if(!$this->processmainView) {
             $sm = $this->getServiceLocator();
             $this->processmainView = $sm->get('IMS\Model\ProcessMainView');
         }
         return $this->processmainView;
+    }
+
+    public function getProcessRelationsTable() {
+        if(!$this->processRelationsTable) {
+            $sm = $this->getServiceLocator();
+            $this->processRelationsTable = $sm->get('IMS\Model\ProcessRelationsTable');
+        }
+        return $this->processRelationsTable;
+    }
+    
+    public function getProcessThreadTable() {
+        if(!$this->processThreadTable) {
+            $sm = $this->getServiceLocator();
+            $this->processThreadTable = $sm->get('IMS\Model\ProcessThreadTable');
+        }
+        return $this->processThreadTable;
     }
     
     public function getMessagesTable()
@@ -551,6 +800,34 @@ class IndexController extends AbstractActionController
     		$this->translationTable = $sm->get('Application\Model\TranslationTable');
     	}
     	return $this->translationTable;
+    }
+    
+        public function getCompaniesTable()
+    {
+        if (!$this->companiesTable){
+            $sm = $this->getServiceLocator();
+            $this->companiesTable = $sm->get('Application\Model\CompaniesTable');
+        }
+        return $this->companiesTable;
+    }
+
+    
+    public function getCountriesTable()
+    {
+        if (!$this->countriesTable){
+            $sm = $this->getServiceLocator();
+            $this->countriesTable = $sm->get('Application\Model\CountriesTable');
+        }
+        return $this->countriesTable;
+    }
+    
+    public function getLocationsTable()
+    {
+        if (!$this->locationsTable){
+            $sm = $this->getServiceLocator();
+            $this->locationsTable = $sm->get('Application\Model\LocationsTable');
+        }
+        return $this->locationsTable;
     }
     
     protected function getViewHelper($helperName)

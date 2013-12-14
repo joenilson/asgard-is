@@ -55,6 +55,10 @@
  * http://www.sencha.com/forum/showthread.php?152923-Ext.ux.grid.FilterBar-plugin&p=917075&viewfull=1#post917075
  * @updated 2013-09-11 by Joe Nilson (joenilson at gmail dot com)
  * Fixed docked bar to render correctly the checkbox header column in selmodel
+ * @updated 2013-11-15 by Joe Nilson (joenilson at gmail fot com)
+ * Applied a fix to rendering the column headers using the code from:
+ * http://www.sencha.com/forum/showthread.php?152923-Ext.ux.grid.FilterBar-plugin&p=1002888&viewfull=1#post1002888
+ * 
 */
 
 Ext.define('Ext.ux.grid.FilterBar', {
@@ -343,7 +347,9 @@ Ext.define('Ext.ux.grid.FilterBar', {
 	// private
 	parseFiltersConfig: function() {
 		var me = this;
-		var columns = this.grid.headerCt.getGridColumns();
+                // -- var columns = this.grid.headerCt.getGridColumns();
+                // ++ var columns = this.getGridColumns();
+		var columns = this.getGridColumns();
 		me.columns.clear();
 		me.autoStores.clear();
 		Ext.each(columns, function(column) {
@@ -625,13 +631,18 @@ Ext.define('Ext.ux.grid.FilterBar', {
 		var excludedCols = [];
 		if (me.actionColumn) excludedCols.push(me.actionColumn.id);
 		if (me.extraColumn) excludedCols.push(me.extraColumn.id);
-		Ext.each(me.grid.headerCt.getGridColumns(), function(column) {
+                // -- Ext.each(me.grid.headerCt.getGridColumns(), function(column) {
+                // ++ Ext.each(me.getGridColumns(), function(column) {
+		Ext.each(me.getGridColumns(), function(column) {
                     if (!Ext.Array.contains(excludedCols, column.id)) {
                         //column.setPadding = Ext.Function.createInterceptor(column.setPadding, function(h) {
                             if (column.hasCls(Ext.baseCSSPrefix + 'column-header-checkbox')) { //checkbox column
+                                /*
+                                 * Deactivated
                                 this.titleEl.setStyle({
                                     paddingTop: '4px',
                                 });
+                                */
                                 me.filterBar.getEl().toggleCls('ext-ux-checkbox-column');
                             }
                             return false;
@@ -860,13 +871,32 @@ Ext.define('Ext.ux.grid.FilterBar', {
 
 		me.task.delay(0, me.applyFilters, me, [field]);
 	},
-
+        
+        // private
+        // Workaround from langles
+        // http://www.sencha.com/forum/showthread.php?152923-Ext.ux.grid.FilterBar-plugin&p=1002888&viewfull=1#post1002888
+        getGridColumns : function(refreshCache) {
+            var me = this, gridHeaderContainer = this.grid.headerCt;
+            var result = refreshCache ? null : gridHeaderContainer.gridDataColumns;
+            // Not already got the column cache, so collect the base columns
+            if (!result) {
+                gridHeaderContainer.gridDataColumns = result = [];
+                gridHeaderContainer.cascade(function(c) {
+                    if ((c !== gridHeaderContainer) && !c.isGroupHeader) {
+                        result.push(c);
+                    }
+                });
+            }
+            return result;
+        },
+        
 	//private
 	getFirstField: function() {
 		var me = this,
 			field = undefined;
-
-		Ext.each(me.grid.headerCt.getGridColumns(), function(col) {
+                // -- Ext.each(me.grid.headerCt.getGridColumns(), function(col) {
+                // ++ Ext.each(me.getGridColumns(), function(col) {
+		Ext.each(me.getGridColumns(), function(col) {
 			if (col.filter) {
 				field = me.fields.get(col.dataIndex);
 				return false;

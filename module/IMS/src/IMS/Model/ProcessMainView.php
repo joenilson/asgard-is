@@ -52,6 +52,22 @@ class ProcessMainView extends AbstractTableGateway {
         return $listItems;
     }
     
+    public function getProcessListByParent($lang,$parent_id) {
+        $row = $this->select(function (Select $select) use ($lang,$parent_id) {
+            $select->where(array('lang' => (string) $lang,'parent_id'=>$parent_id))->order('ordering ASC');
+        });
+        //$row = $this->select(array('lang' => (string) $lang));
+        if (!$row)
+            return false;
+        $listItems=array();
+        for ($index = 0; $index < $row->count(); $index++) {
+            $listItems[]=$row->current();
+            $row->next();
+        }
+        return $listItems;
+    }
+    
+    
     public function save(ProcessMain $object)
     {
         $data = array(

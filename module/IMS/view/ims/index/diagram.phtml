@@ -5,163 +5,290 @@
  * @author Joe Nilson <joenilson@gmail.com>
  */
 ?>
-<style>
-    .ims-diagram {
-        //overflow: auto;
-        height: 100%;
-    }
-    
-    .ims-main-process {
-        float: left;
-        height: 93%;
-        width: 55%;
-        position: relative;
-    }
-    
-    .ims-central-body {
-        display: block;
-        clear: both;
-        width: auto;
-        height: 50%;
-        background-color: #ffcccc;
-    }
-    
-    .ims-measure-dispatch {
-        float: right;
-        background-color: #00538d;
-        width: 15%;
-        text-align: center;
-    }
-    
-    .ims-request {
-        float: left;
-        background-color: #387038;
-        width: 15%;
-        text-align: center;
-    }
-    
-    .ims-satisfaction {
-        float: right;
-        width: 15%;
-        text-align: center;
-    }
-    
-    .ims-strategic-process {
-        display: block;
-        clear: both;
-        width: auto;
-        height: 25%;
-        position: relative;
-    }
-    
-    .ims-support-process {
-        display: block;
-        clear: both;
-        width: auto;
-        height: 25%;
-        position: relative;
-    }
-    
-    .ims-add-link {
-        text-decoration: none;
-        color: yellow;
-        border: thin yellow dashed;
-        background-color: black;
-        padding: 1px 3px 1px 3px;
-        float: right;
-        bottom: auto;
-        position:absolute;
-        bottom:0;
-        right:0;
-    }
-</style>
 <script>
 var diagram<?=$this->panelId; ?>;
 
+var storeProcessList<?=$this->panelId; ?> = Ext.create('Asgard.store.ProcessMain');
+var storeProcessMain<?=$this->panelId; ?> = Ext.create('Asgard.store.ProcessMain');
+var storeProcessSupport<?=$this->panelId; ?> = Ext.create('Asgard.store.ProcessMain');
+var storeProcessStrategic<?=$this->panelId; ?> = Ext.create('Asgard.store.ProcessMain');
 
+var tpl = Ext.create('Ext.ux.CTemplate',
+    '<tpl for=".">',
+        '<div class="item" style="padding: 5px; float: left;">{button}</div>',
+    '</tpl>'
+);
+
+var mainProcessTpl = Ext.create('Ext.ux.CTemplate',
+    '<tpl for=".">',
+        '<div class="item" style="padding: 5px; text-align: center; clear: both;">{button}</div>',
+    '</tpl>'
+);
 
 
 var toolsProcess = [{
-            type: 'plus',
-            tooltip: 'Add Process',
-            handler: fnTool
-        },{
-            type: 'minus',
-            tooltip: 'Remove Process',
-            handler: fnTool
-        }];
+    type: 'plus',
+    tooltip: 'Add Process',
+    handler: fnTool
+},{
+    type: 'minus',
+    tooltip: 'Remove Process',
+    handler: fnTool
+}];
+
+var diagramStrategicView = Ext.create('Asgard.lib.Panels.DiagramView',{
+    itemSelector: 'item',
+    autoScroll: true,
+    margin: 3,
+    tpl: tpl,
+    name: 'ims1',
+    emptyText: 'No hay nada que ver',
+    minHeight: '200px',
+    store: storeProcessStrategic<?=$this->panelId; ?>,
+});
+
+var diagramMainView = Ext.create('Asgard.lib.Panels.DiagramView',{
+    itemSelector: 'item',
+    autoScroll: true,
+    margin: 3,
+    tpl: mainProcessTpl,
+    name: 'ims2',
+    store: storeProcessMain<?=$this->panelId; ?>,
+});
+
+
+var diagramSupportView = Ext.create('Asgard.lib.Panels.DiagramView',{
+    itemSelector: 'item',
+    autoScroll: true,
+    margin: 3,
+    tpl: tpl,
+    store: storeProcessSupport<?=$this->panelId; ?>,
+});
+
 
 var strategicProcess = Ext.create('Ext.panel.Panel',{
-    title: 'Strategic Processes',
-    renderTo: 'ims-strategic-process',
+    title: '<?=$this->ims_strategic_process; ?>',
     name: 'ims-strategic-process',
+    border: true,
     layout: 'fit',
-    tools: toolsProcess
+    tools: toolsProcess,
+    flex:1,
+    items: [diagramStrategicView]
 });
 
 var mainProcess = Ext.create('Ext.panel.Panel',{
-    title: 'Main Processes',
-    renderTo: 'ims-main-process',
+    title: '<?=$this->ims_main_process; ?>',
     name: 'ims-main-process',
     layout: 'fit',
-    tools: toolsProcess
+    border: true,
+    flex:3,
+    tools: toolsProcess,
+    items: [diagramMainView]
 });
 
 var supportProcess = Ext.create('Ext.panel.Panel',{
-    title: 'Support Processes',
-    renderTo: 'ims-support-process',
+    title: '<?=$this->ims_support_process; ?>',
     name: 'ims-support-process',
     layout: 'fit',
-    tools: toolsProcess
+    flex:1,
+    border: true,
+    tools: toolsProcess,
+    items: [diagramSupportView]
 });
 
-
-var storeProcessMain<?=$this->panelId; ?> = Ext.create('Asgard.store.ProcessMain');
-
-storeProcessMain<?=$this->panelId; ?>.load();
-storeProcessMain<?=$this->panelId; ?>.filter('assignment','U');
-
-
-var processList<?=$this->panelId; ?> = Ext.create('Ext.grid.Panel',{
-    //layout: 'fit',
-    autoScroll: true,
-    //flex: 1,
-    border: false,
-    //plain: false,
-    width: '100%',
-    height: '100%',
-    selType: 'checkboxmodel',
-    store: storeProcessMain<?=$this->panelId; ?>,
-    columns: {
-        items: [
-        {text: 'id', flex: 0.25, dataIndex: 'id', sortable: true },
-        {text: 'description', flex: 0.75, dataIndex: 'value', sortable: true, tdCls: 'wrapText' }
-        ]
-    }
-    
+var RequestButton = Ext.create('Ext.Button',{
+    iconMask: true, 
+    width: 120, 
+    height: 26, 
+    cls: 'rotate270', 
+    text: 'Cliente'
 });
 
+var MeasureButton = Ext.create('Ext.Button',{
+    width: '70%',
+    height: 26,
+    name:  'measure',
+    margin: "10 0 0 0",
+    text: 'Medición de Satisfacción'
+});
 
-var processWindow<?=$this->panelId; ?> = Ext.create('Ext.window.Window', {
-    title: 'Process List',
-    closeAction: 'hide',
-    width: '280px',
-    height: '50%',
-    layout: 'fit',
-    modal: true,
-    items: [ processList<?=$this->panelId; ?> ],
-    buttons: [
-        '->',
-        { 
-            text: 'Add',
-            handler: fnSubmit
+var DispatchButton = Ext.create('Ext.Button',{
+    width: '70%',
+    height: 26,
+    name:  'dispatch',
+    margin: "10 0 0 0",
+    text: 'Entrega'
+});
+
+var SatisfactionButton = Ext.create('Ext.Button',{
+    iconMask: true, 
+    width: 120, 
+    height: 26, 
+    cls: 'rotate270', 
+    text: 'Cliente'
+});
+
+<? $this->ims_request = 'Requisitos'; ?>
+var requestPanel = Ext.create('Ext.panel.Panel',{
+    name: 'ims-request',
+    border: true,
+    flex:1,
+    layout: {
+        type: 'hbox',
+        align: 'middle',
+        pack: 'center'
+    },
+    items: [
+        {
+            xtype: 'text',
+            text: '<?=$this->ims_request; ?>',
+            degrees: 270
         },
-        { 
-            text: 'Cancel', 
-            handler: fnCancel 
-        }
+        RequestButton
     ]
 });
+
+<? $this->ims_satisfaction = 'Satisfacción'; ?>
+var satisfactionPanel = Ext.create('Ext.panel.Panel',{
+    name: 'ims-satisfaction',
+    border: true,
+    flex:1,
+    layout: {
+        type: 'hbox',
+        align: 'middle',
+        pack: 'center'
+    },
+    items: [
+        {
+            xtype: 'text',
+            text: '<?=$this->ims_satisfaction; ?>',
+            degrees: 270
+        },
+        SatisfactionButton
+    ]
+});
+
+var salesPanel = Ext.create('Ext.Container',{
+    name: 'ims-measure-dispatch',
+    border: true,
+    flex:2,
+    layout: {
+        type: 'vbox',
+        align: 'center',
+        pack: 'center'
+    },
+    items: [ MeasureButton,DispatchButton ]
+});
+
+/*
+* Form Panel to attach
+*/
+var formDataRequest<?=$this->panelId; ?> = Ext.create('Asgard.lib.forms.comboCCL');
+
+var processList<?=$this->panelId; ?> = Ext.create('Asgard.lib.grid.list', {
+    selType: 'checkboxmodel',
+    store: storeProcessList<?=$this->panelId; ?>,
+    columns: {
+         plugins: [{
+            ptype: 'gridautoresizer'
+        }],
+        items: [
+            {text: 'id', flex: 0.25, dataIndex: 'id', sortable: true, filter: true },
+            {text: 'description', flex: 0.75, dataIndex: 'value', sortable: true, filter: true, tdCls: 'wrapText' }
+        ]
+    }
+});
+
+var processWindow<?=$this->panelId; ?> = Ext.create('Asgard.lib.window.list', {
+    title: 'Process List',
+    items: [ processList<?=$this->panelId; ?> ]
+});
+
+var diagramViewport<?=$this->panelId; ?> = Ext.create('Ext.panel.Panel', {
+    layout: {
+        type: 'vbox',
+        align : 'stretch',
+        pack  : 'start'
+    },
+    items: [
+        <?php echo 'formDataRequest' . $this->panelId; ?>,
+        strategicProcess,
+        { 
+            flex: 2,
+            xtype: 'container',
+            layout: {
+                type: 'hbox',
+                pack: 'start',
+                align: 'stretch'
+            },
+            items: [
+                requestPanel,
+                mainProcess,
+                salesPanel,
+                satisfactionPanel
+                
+            ]
+        },
+        supportProcess 
+    ]
+});
+
+function fnCCLProcess(button, opt, obj) {
+    var values = button.up('form').getForm().getValues();
+    var companies = values['companiesCombo'];
+    var countries = values['countriesCombo'];
+    var locations = values['locationsCombo'];
+
+    storeProcessStrategic<?=$this->panelId; ?>.load({params: { type: '1', assigned: 'A', company: companies, country: countries, location: locations }});
+    storeProcessMain<?=$this->panelId; ?>.load({params: { type: '2', assigned: 'A', company: companies, country: countries, location: locations }});
+    storeProcessSupport<?=$this->panelId; ?>.load({params: { type: '3', assigned: 'A', company: companies, country: countries, location: locations }});
+
+    diagramStrategicView.store.removeAll();
+    diagramStrategicView.store.load();
+
+    diagramMainView.store.removeAll();
+    diagramMainView.store.load();
+
+    diagramSupportView.store.removeAll();
+    diagramSupportView.store.load();
+}
+
+   
+function fnButton (button, object)
+{
+    var paths = button.path.split('/');
+    var tabsPanel = Ext.getCmp('content-panel'); 
+    var itemTab = paths[0]+'-'+paths[1]+'-process';
+    var tab = Ext.getCmp(itemTab);
+    
+    var form = <?php echo 'formDataRequest' . $this->panelId; ?>;
+    var values = form.getForm().getValues();
+    var companies = values['companiesCombo'];
+    var countries = values['countriesCombo'];
+    var locations = values['locationsCombo'];
+    
+    if (tab) {
+      tabsPanel.setActiveTab(tab);
+    } else {
+        tabsPanel.add({
+            xtype: 'panel',
+            closable: true,
+            id: itemTab,
+            title: button.text,
+            AutoDestroy: true,
+            layout: 'fit',
+            loader: {
+                url: 'ims/process/'+companies+'/'+countries+'/'+locations+'/'+button.path,
+                autoLoad: true,
+                scripts: true
+            }
+      }).show();
+      tabsPanel.ownerCt.doLayout();    
+  }
+    
+}
+
+
 
 
 function fnSubmit (button, object)
@@ -169,30 +296,51 @@ function fnSubmit (button, object)
     var grid = processList<?=$this->panelId; ?>;
     var sm = grid.getSelectionModel();
     var m = sm.getSelection();
-    
+    var form = <?php echo 'formDataRequest' . $this->panelId; ?>;
+    var values = form.getForm().getValues();
+    var companies = values['companiesCombo'];
+    var countries = values['countriesCombo'];
+    var locations = values['locationsCombo'];
+
     this.selectedIds = [];
+    this.parentId = "";
     Ext.each(m, function(rec) {
         this.selectedIds.push(rec.get("id"));
     }, this);
     
     var actionType = Ext.get('toolType').value;
     var processType = Ext.get('processType').value;
-    console.log(this.selectedIds);
     
     Ext.Ajax.request({
         url: 'ims/processdiagram',
         params: {
+            company: companies, 
+            country: countries, 
+            location: locations,
             type: actionType,
             process: processType,
+            type_process: 'p',
             values: Ext.encode(this.selectedIds),
             module: 'diagram'
         },
         success: function(response){
-            var text = response.responseText;
-            // process server response here
+            fnStoreReload(processType,'A',companies,countries,locations,processType);
+            storeProcessList<?=$this->panelId; ?>.reload();
+            processWindow<?=$this->panelId; ?>.hide();
         }
     });
     
+}
+
+function fnStoreReload(processType,asignation,companyId,countryId,locationId,processType)
+{
+    if(processType==='ims-strategic-process'){
+        storeProcessStrategic<?=$this->panelId; ?>.load({params: { assigned: asignation, company: companyId, country: countryId, location: locationId, process: processType }});
+    }else if (processType==='ims-main-process'){
+        storeProcessMain<?=$this->panelId; ?>.load({params: { assigned: asignation, company: companyId, country: countryId, location: locationId, process: processType }});
+    }else if (processType==='ims-support-process'){
+        storeProcessSupport<?=$this->panelId; ?>.load({params: { assigned: asignation, company: companyId, country: countryId, location: locationId, process: processType }});
+    }
 }
 
 function fnCancel ()
@@ -203,46 +351,38 @@ function fnCancel ()
 function fnTool(me, e, object, tool) {
     var panel = tool.up('panel');
 
-    //formProcess<?=$this->panelId; ?>.addParam({ type_process : panel.name });
-    
     Ext.get('toolType').value=tool.type;
     Ext.get('processType').value=panel.name;
     
-    //console.log(Ext.get('toolType'));//.setValue(tool.name);
-    //console.log(Ext.get('processType'));//.setValue(panel.name);
+    var form = <?php echo 'formDataRequest' . $this->panelId; ?>;
+    var values = form.getForm().getValues();
+    var companies = values['companiesCombo'];
+    var countries = values['countriesCombo'];
+    var locations = values['locationsCombo'];
     
+    processList<?=$this->panelId; ?>.suspendEvents();
+    if(tool.type==='minus'){
+        // on windows load
+        //storeProcessStrategic<?=$this->panelId; ?>.load({params: { assigned: 'A', company: companies, country: countries, location: locations }});
+        if(panel.name==='ims-strategic-process'){        
+            processList<?=$this->panelId; ?>.reconfigure(storeProcessStrategic<?=$this->panelId; ?>);  
+        }else if (panel.name==='ims-main-process'){
+            processList<?=$this->panelId; ?>.reconfigure(storeProcessMain<?=$this->panelId; ?>);
+        }else if (panel.name==='ims-support-process'){
+            processList<?=$this->panelId; ?>.reconfigure(storeProcessSupport<?=$this->panelId; ?>);  
+        }
+    }else if(tool.type==='plus'){
+        storeProcessList<?=$this->panelId; ?>.load({params: { assigned: 'U', company: companies, country: countries, location: locations }});
+        processList<?=$this->panelId; ?>.reconfigure(storeProcessList<?=$this->panelId; ?>);  
+    }
+    processList<?=$this->panelId; ?>.resumeEvents();
     if (processWindow<?=$this->panelId; ?>.isVisible()) {
         processWindow<?=$this->panelId; ?>.hide();
     } else {
         processWindow<?=$this->panelId; ?>.show();
     }
-    
-    //console.log(panel.name);
 }
-
-/*
-Ext.get('add-strategic-process').on('click', function() {
-    if (processWindows<?=$this->panelId; ?>.isVisible()) {
-        processWindows<?=$this->panelId; ?>.hide();
-    } else {
-        processWindows<?=$this->panelId; ?>.show();
-    }
-});
-*/
-   
+Ext.getCmp('content-panel').getActiveTab().add(diagramViewport<?=$this->panelId; ?>);
 </script>
-<div class='ims-diagram'>
-    <div class='ims-strategic-process' id='ims-strategic-process'>
-    </div>
-    <div class="ims-central-body">
-        <div class='ims-request'>Requisitos</div>
-        <div class='ims-main-process' id='ims-main-process'>
-        </div>
-        <div class="ims-satisfaction">Satisfacción</div>
-        <div class='ims-measure-dispatch'>Medicion / Entrega</div>
-    </div>
-    <div class="ims-support-process" id='ims-support-process'>
-    </div>
-</div>
 <input type="hidden" id="toolType">
 <input type="hidden" id="processType">

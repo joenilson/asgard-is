@@ -16,10 +16,13 @@
 
         <!-- Scripts -->
         <?php 
-	      echo $this->headScript()->prependFile($this->basePath() . '/js/extjs/features/FixedSummary.js')
+	      echo $this->headScript()->prependFile($this->basePath() . '/js/extjs/src/ux/panel/PDF.js')
+                      ->prependFile($this->basePath() . '/js/extjs/src/ux/CTemplate.js')
+                      ->prependFile($this->basePath() . '/js/extjs/features/FixedSummary.js')
                                       ->prependFile($this->basePath() . '/js/web/app.js')
 				      ->prependFile($this->basePath() . '/js/extjs/ext-theme-neptune.js')
 				      ->prependFile($this->basePath() . '/js/extjs/ext-all-dev.js')
+                                      ->prependFile($this->basePath() . '/js/pdf.js/pdf.js')
 				      ->prependFile($this->basePath() . '/js/tinymce/tiny_mce_src.js')
                                       ->prependFile($this->basePath() . '/js/webrootkit.base64.js')
 

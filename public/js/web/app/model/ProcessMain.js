@@ -7,13 +7,16 @@ Ext.define('Asgard.model.ProcessMain', {
     extend: 'Ext.data.Model',
     fields: [
         'lang',
-        'id',
-        'value',
+        { name: 'id', type: 'float' },
+        { name: 'value', type: 'string' },
         'description',
         'ordering',
         'status',
         'type',
         'parent_id',
-        'assignment'
+        'assignment',
+        'company',
+        'country',
+        'location'
     ]
 });

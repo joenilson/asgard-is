@@ -6,8 +6,13 @@ Ext.define('Asgard.view.Viewport', {
     'Asgard.lib.MenuTree','Asgard.lib.PanelContent', 'Asgard.lib.RadioButtonsVersioning', 'Asgard.lib.GridPanel',
     'Asgard.lib.RadioButtonsScope', 'Asgard.lib.versioningContent', 'Asgard.view.window.systemInformation',
     'Asgard.store.HiraDocuments','Asgard.store.HiraIncidentsType','Asgard.store.HiraIncidentsList',
-    'Asgard.store.Countries','Asgard.store.Locations','Asgard.lib.hiraIncidentsDetails','Asgard.store.HiraIncidentsDetails',
-    'Asgard.store.ProcessMain'
+    'Asgard.store.Companies','Asgard.store.Countries','Asgard.store.Locations','Asgard.lib.hiraIncidentsDetails',
+    'Asgard.store.HiraIncidentsDetails','Asgard.store.ProcessMain','Asgard.lib.Panels.DiagramView',
+    'Asgard.store.ProcessThread','Asgard.lib.grid.list','Asgard.lib.window.list',
+    'Asgard.lib.Panels.processThreads','Asgard.lib.Panels.threadList','Asgard.store.DocsLibrary',
+    'Asgard.lib.forms.docsChangeRequest','Asgard.lib.forms.docsNewDocument',
+    'Asgard.lib.forms.CompaniesCombo','Asgard.lib.forms.CountriesCombo','Asgard.lib.forms.LocationsCombo',
+    'Asgard.lib.forms.comboCCL','Asgard.lib.grid.documents','Asgard.store.DocsHelpers','Asgard.lib.forms.DocsHelpers'
   ],
   menuTitleText: 'Main Menu',
     defaults: {

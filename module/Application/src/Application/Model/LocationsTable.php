@@ -24,6 +24,13 @@ class LocationsTable extends AbstractTableGateway {
             return $resultSet->toArray();
 	}
 	
+        public function getLocationById($country_id,$location_id) {
+            $row = $this->select(array('country_id' => (string) $country_id,'id'=> (string) $location_id))->toArray();
+            if (!$row)
+                return false;
+            return $row;
+	}
+        
 	public function getLocationsByCountry($country_id) {
             $row = $this->select(array('country_id' => $country_id))->toArray();
             if (!$row)

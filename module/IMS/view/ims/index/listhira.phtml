@@ -5,21 +5,22 @@
  * @author Joe Nilson <joenilson@gmail.com>
  */
 ?>
+<style>
+
+</style>
 <script>
-    
-    function riskleveler(val) {
+    function riskleveler(val, meta) {
         if (val > 2 ) {
-            return '<span style="color:red;">' + val + '</span>';
+            meta.tdCls = 'red-column';
         } else if (val == 2) {
-            return '<span style="color:#989E2A;">' + val + '</span>';
+            meta.tdCls = 'yellow-column';
         } else if (val == 1) {
-            return '<span style="color:green;">' + val + '</span>';
+            meta.tdCls = 'green-column';
         } else if (val == 0 || val == null){
             return "";
         }
         return val;
      }
-
     
     function fnSummaryRender(value)
     {
@@ -32,7 +33,7 @@
      * Store to get the List of Countries
      */
     var <?php echo 'CountriesStore' . $this->panelId; ?> = Ext.create('Asgard.store.Countries');
-<?php echo 'CountriesStore' . $this->panelId . '.load();'; ?>
+    <?php echo 'CountriesStore' . $this->panelId . '.load();'; ?>
 
     /*
      * Store to get the List of Locations
@@ -73,21 +74,6 @@
             enableGroupingMenu: true
         }],
         columns: {
-        /*
-        'in_IdIdentificacionNC',
-        'in_IdTipoNC', 
-        'in_IdEstadoNC',
-        'vc_TipoIncidente',
-        'in_IdTipoIncidente', 
-        'in_IdPais',
-        'in_IdUbicacion',
-        'vc_Descripcion',
-        'vc_fullName', 
-        'vc_Email', 
-        'vc_UsuarioCreacion', 
-        'dt_FechaCreacion', 
-        'in_Estado'
-        */
             items: [
                 {text: "Id", flex: 0.25, sortable: true, dataIndex: 'vc_TipoIncidente', filter: true, summaryType: 'count',
                     summaryRenderer: function(value, summaryData, dataIndex) {
@@ -126,80 +112,80 @@ Ext.define('Asgard.model.HiraIncidentsList<?php echo $this->panelId; ?>', {
     ]
 });
 
-    /*
-     * Store to get the List of Incident registered
-     */
-    var <?php echo 'HIRAStoreIL' . $this->panelId; ?> = Ext.create('Asgard.store.HiraIncidentsList',{
-        model: 'Asgard.model.HiraIncidentsList<?php echo $this->panelId; ?>'
-    });
-    
-    /*
-     * Grid to show the Store HIRAStoreIT
-     */
-    var <?php echo 'HIRAGridIT' . $this->panelId; ?> = Ext.create('Asgard.lib.GridPanel', {
-        autoShow: true,
-        autoDestroy: true,
-        autoScroll: true,
-        border: false,
-        frame: false,
-        region: 'west',
-        collapsible: true,
-        flex: 0.2,
-        title: 'Tipo de Incidente',
-        store: <?php echo 'HIRAStoreIT' . $this->panelId; ?>,
-        columns: {
+/*
+ * Store to get the List of Incident registered
+ */
+var <?php echo 'HIRAStoreIL' . $this->panelId; ?> = Ext.create('Asgard.store.HiraIncidentsList',{
+    model: 'Asgard.model.HiraIncidentsList<?php echo $this->panelId; ?>'
+});
+
+/*
+ * Grid to show the Store HIRAStoreIT
+ */
+var <?php echo 'HIRAGridIT' . $this->panelId; ?> = Ext.create('Asgard.lib.GridPanel', {
+    autoShow: true,
+    autoDestroy: true,
+    autoScroll: true,
+    border: false,
+    frame: false,
+    region: 'west',
+    collapsible: true,
+    flex: 0.2,
+    title: 'Tipo de Incidente',
+    store: <?php echo 'HIRAStoreIT' . $this->panelId; ?>,
+    columns: {
+        plugins: [{
+                ptype: 'gridautoresizer'
+            }],
+        items: [
+            {text: "Id", flex: 0.25, sortable: true, dataIndex: 'id_incident', filter: true},
+            {text: "Description", flex: 0.75, sortable: true, filter: 'combo', dataIndex: 'val_incident', tdCls: 'wrapText'}
+        ]
+    }
+});
+
+ /*
+ * Grid to show the Incidents List
+ */
+var <?php echo 'HIRAGridIL' . $this->panelId; ?> = Ext.create('Asgard.lib.GridPanel', {
+    //autoShow: true,
+    //autoDestroy: true,
+    autoScroll: true,
+    border: false,
+    plain: false,
+    width: '100%',
+    features: [{
+        ftype: 'fixedsummary',
+    }],
+    fixedsummarytips : true,
+    //region: 'west',
+    //collapsible: true,
+    //selType: 'cellmodel',
+    flex: 1,
+    title: 'Lista de Incidentes',
+    store: <?php echo 'HIRAStoreIL' . $this->panelId; ?>,
+    columns: {
+            /*
             plugins: [{
-                    ptype: 'gridautoresizer'
-                }],
-            items: [
-                {text: "Id", flex: 0.25, sortable: true, dataIndex: 'id_incident', filter: true},
-                {text: "Description", flex: 0.75, sortable: true, filter: 'combo', dataIndex: 'val_incident', tdCls: 'wrapText'}
-            ]
-        }
-    });
-  
-     /*
-     * Grid to show the Incidents List
-     */
-    var <?php echo 'HIRAGridIL' . $this->panelId; ?> = Ext.create('Asgard.lib.GridPanel', {
-        //autoShow: true,
-        //autoDestroy: true,
-        autoScroll: true,
-        border: false,
-        plain: false,
-        width: '100%',
-        features: [{
-            ftype: 'fixedsummary',
-        }],
-        fixedsummarytips : true,
-        //region: 'west',
-        //collapsible: true,
-        //selType: 'cellmodel',
-        flex: 1,
-        title: 'Lista de Incidentes',
-        store: <?php echo 'HIRAStoreIL' . $this->panelId; ?>,
-        columns: {
-                /*
-                plugins: [{
-                    ptype: 'gridautoresizer'
-                }],
-                */
-            items: [
-                {text: "Fecha", flex: 0.45, sortable: true, dataIndex: 'dt_fechaCreacion', align: 'center', filter: false, 
-                    fixedSummaryRenderer: function(){ return "<b>Incidentes</b>"; }},
-                <?php
-                foreach($this->listIT as $values ){
-                    echo "{text: \"T{$values->id_incident}\", flex: 0.25, sortable: true, renderer :  riskleveler, dataIndex:'{$values->id_incident}', align: 'right', filter: false, "
-                    ."fixedSummaryType: 'sum', fixedSummaryRenderer: riskleveler"
-                    ."},\n";
-                }
-                ?>
-                {text: "Total Incidentes Dia", flex: 0.75, sortable: true, dataIndex: 'summaryIncidents', renderer: riskleveler, align: 'right', filter: false, 
-                    fixedSummaryType: 'sum', fixedSummaryRenderer: riskleveler 
-                }
-            ]
-        }
-    });
+                ptype: 'gridautoresizer'
+            }],
+            */
+        items: [
+            {text: "Fecha", flex: 0.45, sortable: true, dataIndex: 'dt_fechaCreacion', align: 'center', filter: false, 
+                fixedSummaryRenderer: function(){ return "<b>Incidentes</b>"; }},
+            <?php
+            foreach($this->listIT as $values ){
+                echo "{text: \"T{$values->id_incident}\", flex: 0.25, sortable: true, renderer :  riskleveler, dataIndex:'{$values->id_incident}', align: 'right', filter: false, "
+                ."fixedSummaryType: 'sum', fixedSummaryRenderer: riskleveler"
+                ."},\n";
+            }
+            ?>
+            {text: "Total Incidentes Dia", flex: 0.75, sortable: true, dataIndex: 'summaryIncidents', renderer: riskleveler, align: 'right', filter: false, 
+                fixedSummaryType: 'sum', fixedSummaryRenderer: riskleveler 
+            }
+        ]
+    }
+});
   
   <?php echo 'HIRAGridIL' . $this->panelId; ?>.on('itemdblclick', function(me, record){
             //call window to show list of incidents
@@ -226,8 +212,6 @@ var windowDetails<?php echo $this->panelId; ?> = Ext.create('Asgard.lib.hiraInci
     ]
 
 });
-  
-  
   
     /*
      * 

@@ -1,0 +1,211 @@
+<?php
+/*
+ * Copyright (C) 2013 Joe Nilson <joenilson@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/**
+ * @application Asgard Information System :: asgard-is
+ * @version 1.0.0 devel
+ * @author Joe Nilson <joenilson@gmail.com>
+ */
+?>
+<script>
+var required = '<span style="color:red;font-weight:bold" data-qtip="Required">*</span>';
+
+var DocsLibraryStore<?= $this->panelId; ?> = Ext.create('Asgard.store.DocsLibrary');
+
+var toolsLibrary = [{
+    type: 'plus',
+    tooltip: 'Add Document',
+    handler: fnLibraryTool
+}];
+
+/*
+ * Form Panel to attach
+ */
+var formDataRequest<?=$this->panelId; ?> = Ext.create('Asgard.lib.forms.comboCCL');
+
+/*
+ * Grid to show the Docs Documents
+ */
+var DocumentsGrid<?=$this->panelId; ?> = Ext.create('Asgard.lib.grid.documents',{
+    store: DocsLibraryStore<?= $this->panelId; ?>,
+    tools: toolsLibrary
+});
+    
+var libraryViewport<?=$this->panelId; ?> = Ext.create('Ext.panel.Panel', {
+    layout: {
+        type: 'vbox',
+        align : 'stretch',
+        pack  : 'start'
+    },
+    items: [
+        formDataRequest<?=$this->panelId; ?>,
+        DocumentsGrid<?=$this->panelId; ?>
+   ]
+});
+
+var windowDoc = Ext.create('Ext.window.Window',{
+    closable: true,
+    closeAction: 'hide',
+    maximizable : true,
+    layout: 'fit'
+});
+
+function fnLibraryTool(me, e, object, tool) {
+    var panel = tool.up('panel');
+    //Ext.get('toolType').value=tool.type;
+    //Ext.get('processType').value=panel.name;
+    
+    windowDoc.removeAll();
+    windowDoc.setTitle('Add New Document');
+    
+    var formRequest = new Ext.create('Asgard.lib.forms.docsNewDocument',{
+        flex: 1
+        //width: '100%',
+        //petitionerFieldValue: '<?=$this->userData[0]['alias']; ?>',
+        //emailFieldValue: '<?=$this->userData[0]['alias']; ?>'
+    });
+    
+    windowDoc.add(formRequest);
+    windowDoc.show();
+    
+}
+
+function fnCCLProcess(button, opt, obj) {
+    var values = button.up('form').getForm().getValues();
+    var companies = values['companiesCombo'];
+    var countries = values['countriesCombo'];
+    var locations = values['locationsCombo'];
+
+    DocsLibraryStore<?= $this->panelId; ?>.load({ params: { module: 'master', company: companies, country: countries, location: locations}});
+
+}
+
+function showDocument(obj, id, component, icon, event, record){
+    windowDoc.removeAll();
+    windowDoc.setTitle('Document Viewer');
+    var document = Ext.create('Ext.ux.panel.PDF', {
+        flex: 1,
+        //width    : 450,
+        height   : 500,
+        pageScale: 1,                                           // Initial scaling of the PDF. 1 = 100%
+        src      : record.data.doc_file, // URL to the PDF - Same Domain or Server with CORS Support
+    });
+    windowDoc.add(document);
+    windowDoc.show();
+    /*
+    console.log(obj);
+    console.log(id);
+    console.log(component);
+    console.log(icon);
+    console.log(event);
+    console.log(record.data.doc_file);
+    */
+}
+
+function showRequest(obj, id, component, icon, event, record){
+    windowDoc.removeAll();
+    windowDoc.setTitle('Change Request');
+    
+    var formRequest = new Ext.create('Asgard.lib.forms.docsChangeRequest',{
+        flex: 1,
+        petitionerFieldValue: '<?=$this->userData[0]['alias']; ?>',
+        emailFieldValue: '<?=$this->userData[0]['alias']; ?>'
+    });
+    
+    windowDoc.add(formRequest);
+    windowDoc.show();
+        /*
+    console.log(obj);
+    console.log(id);
+    console.log(component);
+    console.log(icon);
+    console.log(event);
+    console.log(record.data.doc_file);
+    */
+}
+
+ var tpl = new Ext.XTemplate(
+        'File processed on the server.<br />',
+        'Name: {fileName}<br />',
+        'Size: {fileSize:fileSize}'
+    );
+
+function fnSubmit (button, object)
+{
+    //var m = sm.getSelection();
+    var form = fsf;
+    if(form.getForm().isValid()){
+        form.submit({
+            url: 'ims/requestdocchange',
+            waitMsg: 'Uploading your photo...',
+            success: function(fp, o, m, r) {
+                console.log('bueno');
+                console.log(fp);
+                console.log(o);
+                console.log(m);
+                console.log(r);
+                Ext.Msg.alert('Success', tpl.apply(o.result));
+            },
+            failure: function(fp, o, u){
+                console.log('malo');
+                console.log(fp);
+                console.log(o);
+                console.log(u);
+            }
+            
+        });
+        
+    }
+    /*
+    var values = form.getForm().getValues();
+    var companies = values['companiesCombo'];
+    var countries = values['countriesCombo'];
+    var locations = values['locationsCombo'];
+
+    this.selectedIds = [];
+    this.parentId = "";
+    Ext.each(m, function(rec) {
+        this.selectedIds.push(rec.get("id"));
+    }, this);
+    
+    var actionType = Ext.get('toolType').value;
+    var processType = Ext.get('processType').value;
+    
+    Ext.Ajax.request({
+        url: 'ims/processdiagram',
+        params: {
+            company: companies, 
+            country: countries, 
+            location: locations,
+            type: actionType,
+            process: processType,
+            type_process: 'p',
+            values: Ext.encode(this.selectedIds),
+            module: 'diagram'
+        },
+        success: function(response){
+            fnStoreReload(processType,'A',companies,countries,locations,processType);
+            storeProcessList<?=$this->panelId; ?>.reload();
+            processWindow<?=$this->panelId; ?>.hide();
+        }
+    });
+    */
+    
+}
+    Ext.getCmp('content-panel').getActiveTab().add(libraryViewport<?= $this->panelId; ?>);
+
+</script>

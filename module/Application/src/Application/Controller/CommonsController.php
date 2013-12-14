@@ -22,6 +22,7 @@ class CommonsController extends AbstractActionController
     protected $adminusermodulesTable;
     protected $adminusersubmodulesTable;
     
+    protected $companiesTable;
     protected $countriesTable;
     protected $locationsTable;
     
@@ -34,21 +35,40 @@ class CommonsController extends AbstractActionController
         return new ViewModel();
     }
     
-    public function getcountriesAction()
+    public function getcompaniesAction()
     {
-        if (! $this->getServiceLocator()
-    	 		->get('AuthService')->hasIdentity()){
+        if (! $this->getServiceLocator()->get('AuthService')->hasIdentity()){
     	   return $this->redirect()->toRoute('login');
     	}
         $request = $this->getRequest();
         if ($request->isGet()){
-            $Countries = $this->getCountriesTable()->fetchAll();
-            $data=array('success'=>true,'results'=>$Countries);
+            $Companies = $this->getCompaniesTable()->fetchAll();
+            $data=array('success'=>true,'results'=>$Companies);
         }else{
             $data=array('success'=>false);
         }
         $result = new JsonModel($data);
     	return $result;
+    }
+
+    public function getcountriesAction()
+    {
+        if (! $this->getServiceLocator()->get('AuthService')->hasIdentity()){
+    	   return $this->redirect()->toRoute('login');
+    	}
+        $request = $this->getRequest();
+        if ($request->isGet() AND $request->getQuery('cid')===''){
+            $Countries = $this->getCountriesTable()->fetchAll();
+            $data=array('success'=>true,'results'=>$Countries);
+        }elseif ($request->isGet() AND $request->getQuery('cid')!==''){
+            $company_id = (string) $request->getQuery('cid');
+            $Countries = $this->getCountriesTable()->getCountriesByCompany($company_id);
+            //print_r($Countries);
+            $data=array('success'=>true,'results'=>$Countries);
+        }else{
+            $data=array('success'=>false);
+        }
+        return new JsonModel($data);
     }
     
     public function getlocationsAction()
@@ -265,6 +285,16 @@ class CommonsController extends AbstractActionController
     	}
     	return $this->adminusersubmodulesTable;
     }
+
+    public function getCompaniesTable()
+    {
+        if (!$this->companiesTable){
+            $sm = $this->getServiceLocator();
+            $this->companiesTable = $sm->get('Application\Model\CompaniesTable');
+        }
+        return $this->companiesTable;
+    }
+
     
     public function getCountriesTable()
     {

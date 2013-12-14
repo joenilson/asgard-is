@@ -91,6 +91,19 @@ return array(
                                 ),
                             ),
                             */
+                            'getcompanies' => array(
+                                'type'    => 'Segment',
+                                'options' => array(
+                                    'route'    => '/getcompanies',
+                                    'constraints' => array(
+                                        'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                        'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                    ),
+                                    'defaults' => array(
+                                        'action' => 'getcompanies'
+                                    ),
+                                ),
+                            ),
                             'getcountries' => array(
                                 'type'    => 'Segment',
                                 'options' => array(

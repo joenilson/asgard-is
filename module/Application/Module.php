@@ -145,8 +145,8 @@ class Module
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $tableUserPrefs = new UserPreferencesTable($dbAdapter);
                     $user = $sm->get('Auth\Model\MyAuthStorage')->read();
-                    $userPreferences = $tableUserPrefs->getUserPreferences($user->id);
-                    return $userPreferences;
+                    $uPreferences = $tableUserPrefs->getUserPreferences($user->id);
+                    return $uPreferences;
                 },
                 'Application\Model\TranslationTable' =>  function($sm) {
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');

@@ -63,6 +63,7 @@ Ext.define('Asgard.locales.lib.toolbarViewer', {
 
 Ext.define('Asgard.locales.view.window.systemInformation', {
     override: 'Asgard.view.window.systemInformation',
+    titleText: 'Información del Sistema',
     companyNameText: 'Empresa',
     presentationContentReviewText: 'Revisado',
     presentationContentApprovedText: 'Aprobado',
@@ -129,3 +130,87 @@ Ext.define('Asgard.locales.lib.gridToolbarViewer',{
     override: 'Asgard.lib.gridToolbarViewer',
     refreshButtonText: 'Actualizar'
 });
+
+Ext.define('Asgard.locales.lib.grid.documents',{
+    override: 'Asgard.lib.grid.documents',
+    titleText: 'Control de Documentos',
+    idText: 'Id',
+    classDocText: 'Clase Doc',
+    documentText: 'Documento',
+    recordText: 'Registro',
+    versionText: 'Version',
+    statusText: 'Estado',
+    dateActiveText: 'Fecha',
+    reviewText: 'Revision',
+    protectionText: 'Proteccion',
+    ownerText: 'Responsable',
+    locationText: 'Ubicacion',
+    originText: 'Origen',
+    retentionText: 'Tiempo de Retencion',
+    toolViewDocText: 'Ver Documento',
+    toolRequestText: 'Solicitar Cambio'
+});
+
+Ext.define('Asgard.locales.lib.forms.CompaniesCombo',{
+    override: 'Asgard.lib.forms.CompaniesCombo',
+    emptyTextText: 'No hay datos elegidos',
+    fieldLabelText: 'Compañia'
+});
+
+Ext.define('Asgard.locales.lib.forms.CountriesCombo',{
+    override: 'Asgard.lib.forms.CountriesCombo',
+    emptyTextText: 'No hay datos elegidos',
+    fieldLabelText: 'País'
+});
+
+Ext.define('Asgard.locales.lib.forms.LocationsCombo',{
+    override: 'Asgard.lib.forms.LocationsCombo',
+    emptyTextText: 'No hay datos elegidos',
+    fieldLabelText: 'Ubicación'
+});
+
+Ext.define('Asgard.locales.lib.forms.comboCCL',{
+    override: 'Asgard.lib.forms.comboCCL',
+    emptyTextText: 'No hay datos elegidos',
+    textSubmitButton: 'Consultar'
+});
+
+Ext.define('Asgard.locales.lib.forms.docsChangeRequest',{
+    override: 'Asgard.lib.forms.docsChangeRequest',
+    petitionerFieldText: 'Solicitante' ,
+    emailFieldText: 'Email',
+    documentFieldText: 'Documento Propuesto',
+    documentFieldEmptyText: 'Escoja el documento',
+    requestFieldText: 'Motivo del Cambio',
+    
+    textSubmitButton: 'Enviar',
+    textCancelButton: 'Cancelar'
+});
+
+Ext.define('Asgard.locales.lib.forms.docsNewDocument',{
+    override: 'Asgard.lib.forms.docsNewDocument',
+
+    documentClassText: 'Clasificación Doc',
+    documentTypeText: 'Estado',
+    documentReviewText: 'Revisión',
+    documentProtectionText: 'Protección',
+    documentOwnerText: 'Responsable del Documento',
+    documentLocationText: 'Ubicación',
+    documentOriginText: 'Origen',
+    documentRetentionText: 'Tiempo de Retención',
+    documentDescText: 'Descripción del Documento',
+    documentRecordText: 'Registro',
+    documentFileText: 'Documento',
+    
+    documentFieldEmptyText: 'Escoja un documento',
+    
+    textSubmitButton: 'Agregar',
+    textCancelButton: 'Cancelar'
+});
+
+Ext.define('Asgard.locales.lib.forms.DocsHelpers',{
+    override: 'Asgard.lib.forms.DocsHelpers',
+    emptyTextText: 'No hay datos elegidos'
+});
+
+
