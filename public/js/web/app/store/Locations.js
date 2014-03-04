@@ -5,7 +5,7 @@ Ext.define('Asgard.store.Locations', {
     //autoload: false,
     proxy: {
         type: 'ajax',
-        url: '/commons/getlocations',
+        url: 'commons/getlocations',
         reader: {
             type: 'json',
             root: 'results'

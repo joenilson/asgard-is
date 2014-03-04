@@ -7,10 +7,10 @@ Ext.define('Asgard.store.HiraIncidentsDetails', {
     extend: 'Ext.data.Store',
     requires: 'Asgard.model.HiraIncidentsDetails',
     model: 'Asgard.model.HiraIncidentsDetails',
-    groupField: 'vc_TipoIncidente',
+    groupField: 'val_incident',
     proxy: {
         type: 'ajax',
-        url: '/ims/hiradetails',
+        url: 'ims/hiradetails',
         reader: {
             type: 'json',
             root: 'results'

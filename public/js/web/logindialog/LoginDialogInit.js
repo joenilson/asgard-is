@@ -11,8 +11,8 @@ Ext.onReady(function() {
 	},
 	setupLang: function(extLang) {
 	  if(extLang){
-	    url_general = Ext.util.Format.format("/js/extjs/locale/ext-lang-{0}.js", extLang.substring(0,2));
-	    url_form = Ext.util.Format.format("/js/commons/logindialog/LoginDialog_{0}.js", extLang.substring(0,2));
+	    url_general = Ext.util.Format.format("../js/extjs/locale/ext-lang-{0}.js", extLang.substring(0,2));
+	    url_form = Ext.util.Format.format("../js/commons/logindialog/LoginDialog_{0}.js", extLang.substring(0,2));
 	    Ext.Loader.injectScriptElement(url_general, this.onSuccess, this.onFailure, this);
 	    Ext.Loader.injectScriptElement(url_form, this.onSuccess, this.onFailure, this);
 	    userLang = extLang;
@@ -30,7 +30,7 @@ Ext.onReady(function() {
 	setupLogin: function() {
 	  var loginDialog = Ext.create('Ext.ux.LoginDialog', {
 	    formPanel: {
-		url: '/auth/authenticate',
+		url: 'authenticate'
 	    },
 	    languageField: {
 		value: userLang.substring(0,2),

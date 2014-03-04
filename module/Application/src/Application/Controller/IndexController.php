@@ -23,23 +23,26 @@ class IndexController extends AbstractActionController
     {
         $userData = $this->getServiceLocator()->get('userSessionData');
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        
+        $request = $this->getRequest();
+        
         if($userPrefs[0]['lang'] != 'en'){
-            $this->getViewHelper('HeadScript')->appendFile("/js/web/app/locales/app_locale_{$userPrefs[0]['lang']}.js","text/javascript");
-            $this->getViewHelper('HeadScript')->appendFile("/js/extjs/locale/ext-lang-{$userPrefs[0]['lang']}.js","text/javascript");
+            $this->getViewHelper('HeadScript')->appendFile($request->getBaseUrl()."/js/web/app/locales/app_locale_{$userPrefs[0]['lang']}.js","text/javascript");
+            $this->getViewHelper('HeadScript')->appendFile($request->getBaseUrl()."/js/extjs/locale/ext-lang-{$userPrefs[0]['lang']}.js","text/javascript");
         }
         
         
-        $this->getViewHelper('HeadScript')->appendFile("/js/extjs/src/ux/form/field/ClearButton.js","text/javascript");
-        $this->getViewHelper('HeadScript')->appendFile("/js/extjs/src/ux/form/field/OperatorButton.js","text/javascript");
-        $this->getViewHelper('HeadScript')->appendFile("/js/extjs/src/ux/grid/column/ActionPro.js","text/javascript");
-        $this->getViewHelper('HeadScript')->appendFile("/js/extjs/src/ux/grid/FilterBar.js","text/javascript");
+        $this->getViewHelper('HeadScript')->appendFile($request->getBaseUrl()."/js/extjs/src/ux/form/field/ClearButton.js","text/javascript");
+        $this->getViewHelper('HeadScript')->appendFile($request->getBaseUrl()."/js/extjs/src/ux/form/field/OperatorButton.js","text/javascript");
+        $this->getViewHelper('HeadScript')->appendFile($request->getBaseUrl()."/js/extjs/src/ux/grid/column/ActionPro.js","text/javascript");
+        $this->getViewHelper('HeadScript')->appendFile($request->getBaseUrl()."/js/extjs/src/ux/grid/FilterBar.js","text/javascript");
         //$this->getViewHelper('HeadScript')->appendFile("/js/extjs/src/ux/grid/FilterBarOriginal.js","text/javascript");
-        $this->getViewHelper('HeadScript')->appendFile("/js/extjs/src/ux/grid/AutoResizer.js","text/javascript");
+        $this->getViewHelper('HeadScript')->appendFile($request->getBaseUrl()."/js/extjs/src/ux/grid/AutoResizer.js","text/javascript");
         
-        $this->getViewHelper('HeadScript')->appendFile("/js/extjs/src/ux/form/field/Month.js","text/javascript");
+        $this->getViewHelper('HeadScript')->appendFile($request->getBaseUrl()."/js/extjs/src/ux/form/field/Month.js","text/javascript");
         
-        $this->getViewHelper('HeadLink')->appendStylesheet("/css/overrides.css");
-        $this->getViewHelper('HeadLink')->appendStylesheet("/css/uxs.css");
+        $this->getViewHelper('HeadLink')->appendStylesheet($request->getBaseUrl()."/css/overrides.css");
+        $this->getViewHelper('HeadLink')->appendStylesheet($request->getBaseUrl()."/css/uxs.css");
         
         //$this->getViewHelper('HeadScript')->appendFile("/js/extjs/src/ux/grid/xFilterRow.js","text/javascript");
         

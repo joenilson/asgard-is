@@ -5,29 +5,32 @@
  */
 Ext.define('Asgard.model.HiraDocuments', {
     extend: 'Ext.data.Model',
-    fields: ['in_idPeligroRiesgo'
-      ,'in_idPeligro'
-      ,'in_PeligroDesc'
-      ,'in_idRiesgo'
-      ,'in_RiesgoDesc'
-      ,'in_TypeProcess'
-      ,'in_TypeProcessDesc'
-      ,'in_ProcessSup'
-      ,'in_ProcessSupDesc'
-      ,'in_idProc'
-      ,'in_ProcesoDesc'
-      ,{ name: 'in_EI_A', type: 'float' }
-      ,{ name: 'in_EI_M', type: 'float' }
-      ,{ name: 'in_EI_B', type: 'float' }
-      ,'vc_MedidasControl'
-      ,{ name: 'in_ER_A', type: 'float' }
-      ,{ name: 'in_ER_M', type: 'float' }
-      ,{ name: 'in_ER_B', type: 'float' }
-      ,'dt_FechaCreacion'
-      ,'vc_UsuarioCreacion'
-      ,'dt_FechaModificacion'
-      ,'vc_UsuarioModificacion'
-      ,'in_Estado'
-      ,'in_idUbicacion'
-      ,'in_idMaquinaria']
+    fields: [
+        { name: 'id_danger_risk', type: 'float'},
+        { name: 'id_danger', type: 'float'},
+        { name: 'desc_danger', type: 'string'},
+        { name: 'id_risk', type: 'float'},
+        { name: 'desc_risk', type: 'string'},
+        { name: 'id_process_main', type: 'float'},
+        { name: 'process_main_desc', type: 'string'},
+        { name: 'process_sup_desc', type: 'string'},
+        { name: 'type', type: 'float'},
+        { name: 'type_desc', type: 'string'},
+        { name: 'eval_iper_h', type: 'float'},
+        { name: 'eval_iper_m', type: 'float'},
+        { name: 'eval_iper_l', type: 'float'},
+        { name: 'control_measures', type: 'string'},
+        { name: 'eval_risk_h', type: 'float'},
+        { name: 'eval_risk_m', type: 'float'},
+        { name: 'eval_risk_l', type: 'float'},
+        { name: 'date_creation', type: 'date', dateFormat: 'c' },
+        { name: 'user_creation', type: 'string'},
+        { name: 'date_modification', type: 'date', dateFormat: 'c'},
+        { name: 'user_modification', type: 'string'},
+        { name: 'status', type: 'float'},
+        { name: 'company', type: 'string'},
+        { name: 'country', type: 'string'},
+        { name: 'location', type: 'string'},
+        { name: 'id_machine', type: 'float' }
+    ]
 });

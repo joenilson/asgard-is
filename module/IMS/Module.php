@@ -15,6 +15,7 @@ use Zend\Mvc\ModuleRouteListener;
 use IMS\Model\ContentTextTable;
 use IMS\Model\DocsLibraryTable;
 use IMS\Model\DocsHelpersTable;
+use IMS\Model\DocsRequestTable;
 use IMS\Model\hiraMatrixTable;
 use IMS\Model\hiraFrequencyTable;
 use IMS\Model\hiraSeverityTable;
@@ -22,11 +23,13 @@ use IMS\Model\hiraRiskLevelTable;
 use IMS\Model\hiraRiskLevelI18nTable;
 use IMS\Model\hiraDocumentsTable;
 use IMS\Model\hiraIncidentTypeTable;
+use IMS\Model\hiraNonConformityTypeTable;
 use IMS\Model\hiraIncidentsTable;
 use IMS\Model\ProcessMainTable;
 use IMS\Model\ProcessMainView;
 use IMS\Model\ProcessRelationsTable;
 use IMS\Model\ProcessThreadTable;
+use IMS\Model\ProcessOwnerTable;
 
 class Module implements AutoloaderProviderInterface
 {
@@ -73,16 +76,20 @@ class Module implements AutoloaderProviderInterface
     {
         return array(
             'factories' => array(
+                
+                /*
                 'IMS\Model\hiraDocumentsTable'=> function($sm){
                     $dbAdapter = $sm->get('Application\Db\AdapterTwo');
                     $table = new hiraDocumentsTable($dbAdapter);
                     return $table;
                 },
+                
                 'IMS\Model\hiraIncidentsTable'=> function($sm){
                     $dbAdapter = $sm->get('Application\Db\AdapterTwo');
                     $table = new hiraIncidentsTable($dbAdapter);
                     return $table;
                 },
+                 * */
                 'IMS\Model\DocsLibraryTable'=> function($sm){
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new DocsLibraryTable($dbAdapter);
@@ -91,6 +98,16 @@ class Module implements AutoloaderProviderInterface
                 'IMS\Model\DocsHelpersTable'=> function($sm){
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new DocsHelpersTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\DocsRequestTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new DocsRequestTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\ProcessOwnerTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new ProcessOwnerTable($dbAdapter);
                     return $table;
                 },
                 'IMS\Model\ProcessRelationsTable'=> function($sm){
@@ -113,9 +130,24 @@ class Module implements AutoloaderProviderInterface
                     $table = new ProcessThreadTable($dbAdapter);
                     return $table;
                 },
+                'IMS\Model\hiraDocumentsTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new hiraDocumentsTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\hiraIncidentsTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new hiraIncidentsTable($dbAdapter);
+                    return $table;
+                },
                 'IMS\Model\hiraIncidentTypeTable'=> function($sm){
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new hiraIncidentTypeTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\hiraNonConformityTypeTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new hiraNonConformityTypeTable($dbAdapter);
                     return $table;
                 },
                 'IMS\Model\ContentTextTable' => function($sm) {

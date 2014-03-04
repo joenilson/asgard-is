@@ -112,6 +112,9 @@ var threadWindow<?=$this->panelId; ?> = Ext.create('Asgard.lib.window.list', {
 
 function onSelectionChange(){
     var selected = panelThreads<?=$this->panelId; ?>.getSelectionModel().getSelection()[0];
+    var companyId = '<?=$this->company;?>';
+    var countryId = '<?=$this->country;?>';
+    var locationId = '<?=$this->location;?>';
     if(selected){
         centerRegion = panelProcess<?=$this->panelId; ?>.getComponent(2);
         Ext.suspendLayouts();
@@ -119,10 +122,11 @@ function onSelectionChange(){
             frame: false,
             region: 'center',
             closable: true,
+            layout: 'fit',
             titleAlign: 'right',
             title: selected.data.value,
             loader: {
-                url: 'ims/threaddetails/'+selected.data.id,
+                url: 'ims/threaddetails/'+selected.data.id+'/'+companyId+'/'+countryId+'/'+locationId,
                 autoLoad: true,
                 scripts: true
             }

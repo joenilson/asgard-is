@@ -1,6 +1,6 @@
 @CHARSET "UTF-8";
 .menu-icon-admin {
-	background: url(/images/default/16x16/menu-icon-admin.png) no-repeat !important;
+	background: url(../../images/default/16x16/menu-icon-admin.png) no-repeat !important;
 	background-size: auto 16px;
 	-moz-background-size: 16px 16px;  
  	-o-background-size: 16px 16px;  
@@ -8,7 +8,7 @@
 }
 
 .menu-icon-ims {
-	background: url(/images/default/16x16/menu-icon-ims.png) no-repeat !important;
+	background: url(../../images/default/16x16/menu-icon-ims.png) no-repeat !important;
 	background-size: auto 16px;
 	-moz-background-size: 16px 16px;  
  	-o-background-size: 16px 16px;  
@@ -16,7 +16,7 @@
 }
 
 .menu-icon-fi {
-	background: url(/images/default/16x16/menu-icon-admin.png) no-repeat !important;
+	background: url(../../images/default/16x16/menu-icon-admin.png) no-repeat !important;
 	background-size:16px 16px;
 	background-repeat:no-repeat;
 }

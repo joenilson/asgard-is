@@ -10,7 +10,7 @@
 Ext.define('Asgard.model.HiraIncidentsList', {
     extend: 'Ext.data.Model',
     fields: [
-        'dt_fechaCreacion',
-        'summaryIncidents'
+        { name: 'date_incident', type: 'date', dateFormat: 'Y-m-d'},
+        { name: 'summaryIncidents', type: 'float' }
     ]
 });

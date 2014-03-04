@@ -7,7 +7,7 @@ Ext.define('Asgard.store.UserPreferences', {
     proxy: {
         type: 'ajax',
 	method: 'post',
-        url: '/commons/getuserpreferences',
+        url: 'commons/getuserpreferences',
 	extraParams: { 
 	  module: 'userprefs' 
 	},

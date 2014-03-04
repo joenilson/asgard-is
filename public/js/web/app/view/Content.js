@@ -15,7 +15,7 @@ Ext.define('Asgard.view.Content', {
                 title: this.titleText,
                 glyph: '72@Pictos',
                 loader: {
-                    url: '/application/presentation',
+                    url: 'application/presentation',
                     autoLoad: true,
                     scripts: true
                 },      

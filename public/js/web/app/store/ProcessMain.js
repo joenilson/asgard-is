@@ -9,7 +9,7 @@ Ext.define('Asgard.store.ProcessMain', {
     model: 'Asgard.model.ProcessMain',
     proxy: {
         type: 'ajax',
-        url: '/ims/processmainlist',
+        url: 'ims/processmainlist',
         reader: {
             type: 'json',
             root: 'results'

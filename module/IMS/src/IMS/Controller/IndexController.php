@@ -12,9 +12,12 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 use Zend\Escaper\Escaper;
+use Zend\Validator\File;
 
 use IMS\Model\Entity\ContentText;
 use IMS\Model\Entity\ProcessRelations;
+use IMS\Model\Entity\DocsRequest;
+use IMS\Model\Entity\DocsLibrary;
 
 use AsgardLib\Versioning\Documents;
 use AsgardLib\Versioning\Scope;
@@ -33,15 +36,19 @@ class IndexController extends AbstractActionController
     protected $translationTable;
     protected $hiraIncidentTypeTable;
     protected $hiraIncidentsListTable;
+    protected $hiraNonConformityTypeTable;
     protected $processmainView;
     protected $processmainTable;
+    protected $processownerTable;
     protected $processRelationsTable;
     protected $processThreadTable;
     protected $docsLibraryTable;
     protected $docsHelpersTable;
+    protected $docsRequestTable;
     protected $companiesTable;
     protected $countriesTable;
     protected $locationsTable;
+    protected $systemConfig;
     
     public function indexAction()
     {
@@ -150,6 +157,7 @@ class IndexController extends AbstractActionController
             $userData->location);
         $HiraSeverityLabels = $this->getHiraSeverityTable()->getSeverityList($userPrefs[0]['lang']);
         $HiraFrequencyLabels = $this->getHiraFrequencyTable()->getFrequencyList($userPrefs[0]['lang']);
+        
         $hiraRiskLevel = $this->getHiraRLTable()->fetchAll();
         $hiraRiskLevelI18n = $this->getHiraRLI18nTable()->getTextList($userPrefs[0]['lang']);
         
@@ -413,18 +421,40 @@ class IndexController extends AbstractActionController
     	return $result;  
     }
     
+    public function processlistAction() 
+    {
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang = $userPrefs[0]['lang'];
+        $data['success']=false;
+        $queryPL = $this->getProcessMainView();
+        $listDocuments = $queryPL->getProcessList($lang);
+        if($listDocuments){
+            $data['success']=true;
+            $data['results']=$listDocuments;
+        }else{
+            $data['msg']="Error trying to get the information...";;
+        }
+        return new JsonModel($data);
+    }
+    
     public function threaddetailsAction()
     {
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
         $lang = $userPrefs[0]['lang'];
         
         $thread_id = $this->params()->fromRoute('id_thread',0);
+        $company  = $this->params()->fromRoute('company', 0);
+        $country  = $this->params()->fromRoute('country', 0);
+        $location  = $this->params()->fromRoute('location', 0);
 
         $queryPM = $this->getProcessThreadTable();
         $listDocuments = $queryPM->getThreadInfo($lang,$thread_id);
         //print_r($listDocuments);
         return array(
             'threadId'=>$thread_id,
+            'company'=>$company,
+            'country'=>$country,
+            'location'=>$location,
             'threadData'=>$listDocuments
         );
     }
@@ -445,6 +475,9 @@ class IndexController extends AbstractActionController
             //print_r($listDocuments);
             if(!empty($listDocuments)){
                 $data['success']=true;
+                $data['country']=$country;
+                $data['company']=$company;
+                $data['location']=$location;
                 $data['results']=$listDocuments;
                 $data['msg']="";
             }else{
@@ -454,6 +487,52 @@ class IndexController extends AbstractActionController
             $result = new JsonModel($data);
             return $result;
         }
+    }
+    
+    public function processrequestlistAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang = $userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        
+        $module = $request->getQuery('module');
+        $company= $request->getQuery('company');
+        $country= $request->getQuery('country');
+        $location= $request->getQuery('location');
+        if($module){
+            $sql = $this->getDocsRequestTable();
+            $listDocuments = $sql->getRequestByCCL($company,$country,$location);
+            //print_r($listDocuments);
+            if(!empty($listDocuments)){
+                $data['success']=true;
+                $data['results']=$listDocuments;
+                $data['msg']="";
+            }else{
+                $data['success']=false;
+                $data['msg']="Error trying to get the information...";
+            }
+            $result = new JsonModel($data);
+            return $result;
+        }
+    }
+    
+    public function processownerlistAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang = $userPrefs[0]['lang'];
+        
+        $sql = $this->getProcessOwnerTable();
+        $listDocuments = $sql->getOwners($lang);
+        //print_r($listDocuments);
+        if(!empty($listDocuments)){
+            $data['success']=true;
+            $data['results']=$listDocuments;
+            $data['msg']="";
+        }else{
+            $data['success']=false;
+            $data['msg']="Error trying to get the information...";
+        }
+        $result = new JsonModel($data);
+        return $result;
     }
     
     public function processdocshelpersAction()
@@ -489,16 +568,248 @@ class IndexController extends AbstractActionController
     {
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
         $userData = $this->getServiceLocator()->get('userSessionData');
+
         return array('data'=>'LLegamos!','userData'=>$userPrefs);
     }
     
-    public function requestdocchangeAction()
+    public function newdocumentAction() 
+    {
+         $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        
+        $data['success']=false;
+        $data['message']="Request Error";
+
+        $lang = $userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $module = $request->getPost('module');
+        $company= $request->getPost('company');
+        $country= $request->getPost('country');
+        $location= $request->getPost('location');
+        $files =  $request->getFiles()->toArray();
+        if($module==='imsnd'){
+            
+            $doc_class = (int) $request->getPost('doc_class');
+            $doc_type = (int) $request->getPost('doc_type');
+            $doc_review = (int) $request->getPost('doc_review');
+            $doc_protection = (int) $request->getPost('doc_protection');
+            $id_process = (int) $request->getPost('doc_process');
+            $doc_owner = (int) $request->getPost('doc_owner');
+            $doc_location = (int) $request->getPost('doc_location');
+            $doc_origin = (int) $request->getPost('doc_origin');
+            $doc_retention = (int) $request->getPost('doc_retention');
+            $description = (string) $request->getPost('description');
+            $record_0 = (string) $request->getPost('record_0');
+            $record_1 = (string) $request->getPost('record_1');
+            $date_version = $request->getPost('date_version');
+            $date_revision = $request->getPost('date_revision');
+            
+            $doc_record = (empty($record_0))?"":$record_0.'_'.$record_1;
+            
+            $tmpFile = $data['fileName']=$files['new_doc']['tmp_name'];
+            $typeFile = $data['fileName']=$files['new_doc']['type'];
+            $sizeFile = $data['fileName']=$files['new_doc']['size'];
+            $nameFile = $data['fileName']=$files['new_doc']['name'];
+            
+            $version = (empty($record_0))?$record_1:1;
+            
+            
+            
+            $valid = new File\Extension(array('pdf', 'PDF'), true);
+            if($valid->isValid($files['new_doc'])){
+                
+                $sqlLib = $this->getDocsLibraryTable();
+                $doc_id = $sqlLib->getNextDocId();
+                
+                $doc_file = 'library/docs/'.$doc_id.'_'.$version.date('Ymdhis').'.pdf';
+                
+                $object = new DocsLibrary();
+                $object->setDoc_id($doc_id)
+                        ->setLang($lang)
+                        ->setDoc_classification($doc_class)
+                        ->setDoc_desc($description)
+                        ->setDoc_file($doc_file)
+                        ->setDoc_type($doc_type)
+                        ->setDoc_review($doc_review)
+                        ->setDoc_protection($doc_protection)
+                        ->setDoc_owner($doc_owner)
+                        ->setDoc_location($doc_location)
+                        ->setDoc_origin($doc_origin)
+                        ->setDoc_retention($doc_retention)
+                        ->setDoc_record($doc_record)
+                        ->setDoc_version_number($version)
+                        ->setDoc_version_label('')
+                        ->setDoc_date_creation($date_version)
+                        ->setDoc_user_creation($userPrefs[0]['user_id'])
+                        ->setDoc_date_revision_next($date_revision)
+                        ->setDoc_status_general('A')
+                        ->setCountry($country)
+                        ->setCompany($company)
+                        ->setLocation($location)
+                        ->setId_process($id_process);
+                
+                if($sqlLib->save($object)){
+                    $docsPath = getcwd().DIRECTORY_SEPARATOR.'public'.DIRECTORY_SEPARATOR.$this->getConfig()['library']['docs_path'];
+                    if (!is_dir($docsPath)){
+                        mkdir($docsPath,0777,true);
+                    }
+                    move_uploaded_file($tmpFile, $docsPath.DIRECTORY_SEPARATOR.$doc_file);
+                }
+                
+                $data["success"]=true;
+                $data["result"]="Archivo Almacenado";
+                $data['fileName']=$files['new_doc']['name'];
+                $data['doc_owner']=$doc_owner;
+                $data['fileSize']=$files['new_doc']['size'];
+            }
+            return new JSonModel($data);
+        } else { 
+            return new JSonModel(array('success'=>false));
+        }
+    }
+    
+    public function requestchangeAction()
+    {
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        
+        $data['success']=false;
+        $data['message']="Request Error";
+        $request = $this->getRequest();
+        //echo $file['change_doc'];
+        $lang = $userPrefs[0]['lang'];
+        $request_info = htmlspecialchars($request->getPost('request_info'));
+        $docid = htmlspecialchars($request->getPost('doc_id'));
+        $module = $request->getPost('module');
+        $company= $request->getPost('company');
+        $country= $request->getPost('country');
+        $location= $request->getPost('location');
+
+        $files =  $request->getFiles()->toArray();
+        
+        $tmpFile = $data['fileName']=$files['change_doc']['tmp_name'];
+        $typeFile = $data['fileName']=$files['change_doc']['type'];
+        $sizeFile = $data['fileName']=$files['change_doc']['size'];
+        $nameFile = $data['fileName']=$files['change_doc']['name'];
+        
+        $fileNewName = $docid."_".$userPrefs[0]['user_id']."_request.pdf";
+        $petitioner = $request->getPost('petitioner');
+        $email = $request->getPost('email');
+        
+        $valid = new File\Extension(array('pdf', 'PDF'), true);
+        if($valid->isValid($files['change_doc'])){
+        
+            $data['petitioner'] = $petitioner;
+            $data['email'] = $email;
+            $data['request_info'] = $request_info;
+            $data['tmp_file'] = $tmpFile;
+            $data['type_file'] = $typeFile;
+
+            $docSql = $this->getDocsLibraryTable();
+            $docInfo = $docSql->getDocInfo($docid);
+            
+            $reqSql = $this->getDocsRequestTable();
+            $doc_newid = $reqSql->getNextId();
+            $requestPath = getcwd().DIRECTORY_SEPARATOR.'public'.DIRECTORY_SEPARATOR.$this->getConfig()['library']['request_path'];
+
+            if (is_dir($requestPath)){
+                move_uploaded_file($tmpFile, $requestPath.DIRECTORY_SEPARATOR.$fileNewName);
+            }else{
+                mkdir($requestPath,0777,true);
+            }
+            
+            $object = new DocsRequest();
+            $object->setDoc_id($docid)
+                    ->setLang($lang)
+                    ->setDoc_classification($docInfo[0]['doc_classification'])
+                    ->setDoc_file('library/request/'.$fileNewName)
+                    ->setDesc_request($request_info)
+                    ->setUser_request($userPrefs[0]['user_id'])
+                    ->setName_request($petitioner)
+                    ->setEmail_request($email)
+                    ->setDate_request(date('Y-m-d H:i:s'))
+                    ->setStatus('P')
+                    ->setDoc_newid($doc_newid)
+                    ->setCountry($country)
+                    ->setCompany($company)
+                    ->setLocation($location);
+                    
+            $sql = $this->getDocsRequestTable();
+            if($sql->saveRequest($object)){
+                $data["message"]=false;
+                $data["success"]=true;
+                $data["result"]="Solicitud enviada";
+                $data['fileName']=$nameFile;
+                $data['fileSize']=$sizeFile;
+                $data['doc_mod']=$docid;
+            }
+        }else{
+            $data['message']="File Extension is not Valid..";
+        }
+        
+        return new JSonModel($data);
+    }
+    
+    public function requesttreatmentAction()
     {
         $request = $this->getRequest();
-        $file = $request->getPost('change_doc');
-        //echo $file['NAME'];
+        $acceptanceParams = (int) $request->getPost('ack');
+        $reasonParams = htmlentities($request->getPost('reason'));
+        $country = (string) $request->getPost('country');
+        $company = (string) $request->getPost('company');
+        $location = (string) $request->getPost('location');
+        $doc_id = (int) $request->getPost('doc_id');
+        $doc_newid = (int) $request->getPost('doc_newid');
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $dateNow = date('Y-m-d H:i:s');
+        $dateFile = date('Ymdhis');
         
-        return new JsonModel(array('success'=>true,'result'=>'cambios aplicados ','result'=>'LLegamos!'));
+        $sql1 = $this->getDocsRequestTable();
+        $sql2 = $this->getDocsLibraryTable();
+        
+        $filesPath = getcwd().DIRECTORY_SEPARATOR.'public'.DIRECTORY_SEPARATOR;
+        
+        
+        $data['status']=($acceptanceParams===0)?"R":"A";
+        $data['user_auth']=$userPrefs[0]['user_id'];
+        $data['date_attention']=$dateNow;
+        $data['desc_attention']=$reasonParams;
+
+        $sql1->updateRequest($data,$doc_newid);
+        
+        if($data['status']==='A'){
+            $actualDoc = $sql2->getDocInfo($doc_id);
+            $reqDoc = $sql1->getRequestById($doc_newid);
+            $version = $actualDoc[0]['doc_version_number'];
+            $version++;
+            
+            $fileName = $doc_file = 'library/docs/'.$doc_id.'_'.$version.'_'.$dateFile.'.pdf';
+
+            
+            $upd['doc_version_number']=$version;
+            $upd['doc_date_modification']=$dateNow;
+            $upd['doc_file']=$fileName;
+            $upd['doc_reference']=$doc_newid;
+            $upd['doc_user_modification']=$userPrefs[0]['user_id'];
+            $upd['doc_user_revision_req']=$reqDoc[0]['user_request'];
+            
+            if(!$sql2->updateDoc($upd,$doc_id)){
+                $result['msg']="Hubo un error con el SQL";
+                $result['success']=false;
+            }
+            //copy($filesPath, $dest);
+            if(!rename($filesPath.$reqDoc[0]['doc_file'],$filesPath.$fileName)) {
+                $result['msg']="Hubo un error con el archivo";
+                $result['success']=false;
+            } else {
+                $result['success']=true;
+                $result['msg']="Request Procesado correctamente modificando.";
+            }
+        } else {
+            $result['success']=true;
+            $result['msg']="Request Procesado correctamente sin modificar.";
+        }
+        return new JsonModel($result);
+        
     }
     
     public function listhiraAction()
@@ -533,19 +844,37 @@ class IndexController extends AbstractActionController
     	return $result;   
     }
     
+    public function hiranctypeAction()
+    {
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang = $userPrefs[0]['lang'];
+        $hiraNCType = $this->getHiraNonConformityTypeTable();
+        $listDocuments = $hiraNCType->getNCTypeList($lang);
+        if(!empty($listDocuments)){
+            $data['success']=true;
+            $data['results']=$listDocuments;
+            $data['msg']="";
+        }else{
+            $data['success']=false;
+            $data['msg']="Error trying to get the information...";
+        }
+        $result = new JsonModel($data);
+    	return $result;   
+    }
+    
     public function hiradetailsAction()
     {
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
         $lang = $userPrefs[0]['lang'];
         
         $request = $this->getRequest();
-        
+        $companyParams = $request->getQuery('company');
         $countryParams = $request->getQuery('country');
         $locationParams = $request->getQuery('location');
         $dateParams = $request->getQuery('date_incident');
         
         $hiraIncidentDetail = $this->getHiraIncidentsListTable();
-        $listDocuments = $hiraIncidentDetail->getIncidentsDetails($countryParams,$locationParams,$dateParams);
+        $listDocuments = $hiraIncidentDetail->getIncidentsDetails($companyParams,$countryParams,$locationParams,$dateParams, $lang);
         
         if(!empty($listDocuments)){
             $data['success']=true;
@@ -566,7 +895,8 @@ class IndexController extends AbstractActionController
         $lang = $userPrefs[0]['lang'];
         $request = $this->getRequest();
         $hiraIncidentsList = $this->getHiraIncidentsListTable();
-        $resultList = $hiraIncidentsList->getIncidentsListFiltered($request->getQuery('countries'),$request->getQuery('locations'),$request->getQuery('monthfield'),$lang);
+        $resultList = $hiraIncidentsList->getIncidentsListResume($request->getQuery('companies'),$request->getQuery('countries'),$request->getQuery('locations'),$request->getQuery('monthfield'));
+        //$resultList = $hiraIncidentsList->getIncidentsListFiltered($request->getQuery('companies'),$request->getQuery('countries'),$request->getQuery('locations'),$request->getQuery('monthfield'));
         $data['results']=(!empty($resultList))?$resultList:"";
         $data['success']=(!empty($resultList))?true:false;
         $data['msg']=(!empty($resultList))?"":"Error trying to get the information...";
@@ -630,8 +960,40 @@ class IndexController extends AbstractActionController
     }
     
     public function hiraDocsAction() {
+        
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang = $userPrefs[0]['lang'];
+        
         $hiraDocuments = $this->getHiraDocumentsTable();
-        $listDocuments = $hiraDocuments->fetchAll();
+        //$listDocuments = $hiraDocuments->fetchAll();
+        $listDocuments = $hiraDocuments->fetchAllView($lang,$userData->country);
+        if(!empty($listDocuments)){
+            $data['success']=true;
+            $data['results']=$listDocuments;
+            $data['msg']="";
+        }else{
+            $data['success']=false;
+            $data['msg']="Error trying to get the information...";
+        }
+        $result = new JsonModel($data);
+    	return $result;
+    }
+    
+    public function hiraDocsByThreadAction() {
+        
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang = $userPrefs[0]['lang'];
+        $request = $this->getRequest();
+        //$moduleParams = explode('-',$this->params()->fromRoute('id', 0));
+        $tid = $request->getQuery('tid');
+        $company = $request->getQuery('company');
+        $country = $request->getQuery('country');
+        $location = $request->getQuery('location');
+        $hiraDocuments = $this->getHiraDocumentsTable();
+        //$listDocuments = $hiraDocuments->fetchAll();
+        $listDocuments = $hiraDocuments->fetchThreadDocuments($lang,$country,$company,$location,$tid);
         if(!empty($listDocuments)){
             $data['success']=true;
             $data['results']=$listDocuments;
@@ -653,13 +1015,22 @@ class IndexController extends AbstractActionController
     	return $this->docsHelpersTable;
     }
     
-    public function getDocsLibraryTable()
+    private function getDocsLibraryTable()
     {
     	if (!$this->docsLibraryTable) {
             $sm = $this->getServiceLocator();
             $this->docsLibraryTable = $sm->get('IMS\Model\DocsLibraryTable');
     	}
     	return $this->docsLibraryTable;
+    }
+    
+    private function getDocsRequestTable()
+    {
+    	if (!$this->docsRequestTable) {
+            $sm = $this->getServiceLocator();
+            $this->docsRequestTable = $sm->get('IMS\Model\DocsRequestTable');
+    	}
+    	return $this->docsRequestTable;
     }
     
     public function getAdminUserSubmodulesTable()
@@ -671,6 +1042,15 @@ class IndexController extends AbstractActionController
     	return $this->adminusersubmodulesTable;
     }
     
+    public function getHiraNonConformityTypeTable()
+    {
+    	if (!$this->hiraNonConformityTypeTable) {
+            $sm = $this->getServiceLocator();
+            $this->hiraNonConformityTypeTable = $sm->get('IMS\Model\hiraNonConformityTypeTable');
+    	}
+    	return $this->hiraNonConformityTypeTable;
+    }
+
     public function getHiraIncidentTypeTable()
     {
     	if (!$this->hiraIncidentTypeTable) {
@@ -776,6 +1156,15 @@ class IndexController extends AbstractActionController
         return $this->processRelationsTable;
     }
     
+    private function getProcessOwnerTable() {
+        if(!$this->processownerTable) {
+            $sm = $this->getServiceLocator();
+            $this->processownerTable = $sm->get('IMS\Model\ProcessOwnerTable');
+        }
+        return $this->processownerTable;
+    }
+    
+    
     public function getProcessThreadTable() {
         if(!$this->processThreadTable) {
             $sm = $this->getServiceLocator();
@@ -828,6 +1217,15 @@ class IndexController extends AbstractActionController
             $this->locationsTable = $sm->get('Application\Model\LocationsTable');
         }
         return $this->locationsTable;
+    }
+    
+    public function getConfig()
+    {
+    	if (!$this->systemConfig) {
+    		$sm = $this->getServiceLocator();
+    		$this->systemConfig = $sm->get('Config');
+    	}
+    	return $this->systemConfig;
     }
     
     protected function getViewHelper($helperName)

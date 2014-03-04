@@ -8,139 +8,204 @@ namespace IMS\Model;
 
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\TableGateway\AbstractTableGateway;
-//use Zend\Db\Sql\TableIdentifier;
+use Zend\Db\Sql\TableIdentifier;
+use Zend\Db\Sql\Select;
+use Zend\Db\Sql\Predicate\Expression;
+use Zend\Db\Sql\Predicate\Like;
+use Zend\Db\Sql\Predicate\IsNotNull;
 use IMS\Model\Entity\hiraDocuments;
-
 
 class hiraDocumentsTable extends AbstractTableGateway {
 
-    protected $table = 'ISOv2_IPER_Peligro_Riesgo';
+    protected $py_table_name = 'process_type';
+    protected $pr_table_name = 'process_relations';
+    protected $pyi_table_name = 'process_type_i18n';
+    protected $pmi_table_name = 'process_main_i18n';
+    protected $pti_table_name = 'process_thread_i18n';
+    
+    protected $hr_table_name = 'hira_risk';
+    protected $hd_table_name = 'hira_danger';
+    
+    protected $table_name = 'hira_documents';
+    protected $schema_name = 'ims';
 
+    private function countriesList($country)
+    {
+        if(is_array($country)){
+            $var_countries = "";
+            $counterCountries = 0;
+            foreach ($country as $value)
+            {
+                $separator = (count($country)==$counterCountries)?"":",";
+                $var_countries+="{$value}".$separator;
+            }
+        }else{
+            $var_countries = $country;
+        }
+        return $var_countries;
+    }
+    
+    private function locationsList($location)
+    {
+        if(is_array($location)){
+            $var_locations = "";
+            $counterLocations = 0;
+            foreach ($location as $value)
+            {
+                $separator = (count($location)==$counterLocations)?"":",";
+                $var_locations+="{$value}".$separator;
+            }
+        }else{
+            $var_locations = $location;
+        }
+        
+        return $var_locations;
+    }
+    
     public function __construct(Adapter $adapter) {
+        $this->table = new TableIdentifier($this->table_name, $this->schema_name);
         $this->adapter = $adapter;
-        $this->initialize();
     }
 
     public function fetchAll() {
-        //$resultSet = $this->select(array(new \Zend\Db\Sql\Predicate\IsNotNull('in_idProc')));
-        //echo "Laguna";
-        //$this->select($where=null);
-        //$resultSet = $this->select();
-        
-        $query1="SELECT [idProc]
-            ,[Proceso]
-            ,[idProcSup]
-        FROM [Proceso]
-        WHERE tipo = 't' 
-        order by idProc";
-        $result1 = $this->getAdapter()->query($query1,Adapter::QUERY_MODE_EXECUTE);
-        $bulkTypeProcess = $result1->toArray();
-        $listTypeProcess = array();
-        for ($index = 0; $index < count($bulkTypeProcess); $index++) {
-            $listTypeProcess[$bulkTypeProcess[$index]['idProc']]=$bulkTypeProcess[$index]['Proceso'];
-        }
-        
-        $query2="SELECT [idProc]
-            ,[Proceso]
-            ,[idProcSup]
-        FROM [Proceso]
-        WHERE tipo = 'p' 
-        order by idProc";
-        $result2 = $this->getAdapter()->query($query2,Adapter::QUERY_MODE_EXECUTE);
-        $bulkListProcess = $result2->toArray();
-        $listProcess = array();
-        for ($index = 0; $index < count($bulkListProcess); $index++) {
-            $listProcess[$bulkListProcess[$index]['idProc']]=array(
-                'idProcSup'=>$bulkListProcess[$index]['idProcSup'],
-                'idProcSupDesc'=>$listTypeProcess[$bulkListProcess[$index]['idProcSup']],
-                'idProcDesc'=>$bulkListProcess[$index]['Proceso']
-            );
-        }
-        
-        $query3="select 
-		iper_pr.[in_idPeligroRiesgo]
-                ,iper_pr.[in_idPeligro]
-                ,iper_p.[vc_Descripcion] as in_PeligroDesc
-                ,iper_pr.[in_idRiesgo]
-                ,iper_r.[vc_Descripcion] as in_RiesgoDesc
-                ,iper_proc.[idProcSup] as in_ProcesoSup
-                ,iper_pr.[in_idProc]
-                ,iper_proc.[Proceso] as in_ProcesoDesc
-                ,iper_pr.[in_EI_A]
-                ,iper_pr.[in_EI_M]
-                ,iper_pr.[in_EI_B]
-                ,iper_pr.[vc_MedidasControl]
-                ,iper_pr.[in_ER_A]
-                ,iper_pr.[in_ER_M]
-                ,iper_pr.[in_ER_B]
-                ,iper_pr.[dt_FechaCreacion]
-                ,iper_pr.[vc_UsuarioCreacion]
-                ,iper_pr.[dt_FechaModificacion]
-                ,iper_pr.[vc_UsuarioModificacion]
-                ,iper_pr.[in_Estado]
-                ,iper_pr.[in_idUbicacion]
-                ,iper_pr.[in_idMaquinaria] 
-            from 
-                [ISOv2_IPER_Peligro_Riesgo] as iper_pr,
-                [ISOv2_IPER_Peligro] as iper_p,
-                [ISOv2_IPER_Riesgo] as iper_r,
-                [Proceso] as iper_proc
-            where 
-                iper_pr.in_idProc IS NOT NULL and iper_pr.vc_MedidasControl !='' and 
-                iper_pr.vc_MedidasControl IS NOT NULL and iper_pr.in_Estado=1 and
-                iper_pr.in_idPeligro = iper_p.in_idPeligro and
-                iper_pr.in_idRiesgo = iper_r.in_idRiesgo and
-                iper_pr.in_idProc = iper_proc.idProc
-                order by iper_pr.in_idPeligroRiesgo";
-        $result3 = $this->getAdapter()->query($query3,Adapter::QUERY_MODE_EXECUTE);
-        
-        if (!$result3)
-            return false;
-        $listItems=array();
-        
-        $bulkData =$result3->toArray();
-        
-        for ($index = 0; $index < count($bulkData); $index++) {
-            $listItems[$index]['in_idPeligroRiesgo']=$bulkData[$index]['in_idPeligroRiesgo'];
-            $listItems[$index]['in_idPeligro']=$bulkData[$index]['in_idPeligro'];
-            $listItems[$index]['in_PeligroDesc']=$bulkData[$index]['in_PeligroDesc'];
-            $listItems[$index]['in_idRiesgo']=$bulkData[$index]['in_idRiesgo'];
-            $listItems[$index]['in_RiesgoDesc']=$bulkData[$index]['in_RiesgoDesc'];
-            $listItems[$index]['in_TypeProcess']=$listProcess[$bulkData[$index]['in_ProcesoSup']]['idProcSup'];
-            $listItems[$index]['in_TypeProcessDesc']=$listProcess[$bulkData[$index]['in_ProcesoSup']]['idProcSupDesc'];
-            $listItems[$index]['in_ProcessSup']=$bulkData[$index]['in_ProcesoSup'];
-            $listItems[$index]['in_ProcessSupDesc']=$listProcess[$bulkData[$index]['in_ProcesoSup']]['idProcDesc'];
-            $listItems[$index]['in_idProc']=$bulkData[$index]['in_idProc'];
-            $listItems[$index]['in_ProcesoDesc']=$bulkData[$index]['in_ProcesoDesc'];
-            $listItems[$index]['in_EI_A']=$bulkData[$index]['in_EI_A'];
-            $listItems[$index]['in_EI_M']=$bulkData[$index]['in_EI_M'];
-            $listItems[$index]['in_EI_B']=$bulkData[$index]['in_EI_B'];
-            $listItems[$index]['vc_MedidasControl']=strip_tags($bulkData[$index]['vc_MedidasControl']);
-            $listItems[$index]['in_ER_A']=$bulkData[$index]['in_ER_A'];
-            $listItems[$index]['in_ER_M']=$bulkData[$index]['in_ER_M'];
-            $listItems[$index]['in_ER_B']=$bulkData[$index]['in_ER_B'];
-            $listItems[$index]['dt_FechaCreacion']=$bulkData[$index]['dt_FechaCreacion'];
-            $listItems[$index]['vc_UsuarioCreacion']=$bulkData[$index]['vc_UsuarioCreacion'];
-            $listItems[$index]['dt_FechaModificacion']=$bulkData[$index]['dt_FechaModificacion'];
-            $listItems[$index]['vc_UsuarioModificacion']=$bulkData[$index]['vc_UsuarioModificacion'];
-            $listItems[$index]['in_Estado']=$bulkData[$index]['in_Estado'];
-            $listItems[$index]['in_idUbicacion']=$bulkData[$index]['in_idUbicacion'];
-            $listItems[$index]['in_idMaquinaria']=$bulkData[$index]['in_idMaquinaria'];
-        }
-        
-        return $listItems;
+        $resultSet = $this->select(function (Select $select) {
+            $select->order('date_creation ASC');
+        });
+        return $resultSet->toArray();
     }
     
-    /*
-     * Gets one severity values using id and lang
-     * 
-     * @param {int} ids Id of the severity
-     * @param {varchar(4)} lang Language id to get the corresponding description
-     * @return {object} Returns the object asociated to it: 
-     *                  id_severity, lang, description, status and order
-     */
-    public function getDocumentList() {
-        $row = $this->select(array(new \Zend\Db\Sql\Predicate\IsNotNull('in_idProc')));
+    public function fetchAllView($lang,$country) {
+        $row = $this->select(function (Select $select) use ($lang,$country){
+            //$select->columns(array('id','ordering','status'));
+            $select->join( array('pr'=>new TableIdentifier($this->pr_table_name, $this->schema_name)),
+                new Expression(
+                    $this->table_name.'.id_process_main = pr.id and type=\'s\' and pr.country=\''.$country.'\''), array('parent_id')
+                    );
+            $select->join(
+                array('pti'=>new TableIdentifier($this->pti_table_name, $this->schema_name)), 
+                new Expression(
+                    $this->table_name.'.id_process_main = pti.id AND pr.type=\'s\' and pti.lang=\''.$lang.'\''), array('process_main_desc'=>'value')
+            );
+            $select->join(
+                    array('p2'=>new TableIdentifier($this->pr_table_name, $this->schema_name)),
+                        new Expression('pr.parent_id = p2.id and p2.type=\'p\' and pr.country = p2.country '), array('type'=>'parent_id')
+                    );
+            $select->join(
+                    array('pti2'=>new TableIdentifier($this->pmi_table_name, $this->schema_name)),
+                        new Expression('p2.id = pti2.id and pti2.lang=\''.$lang.'\''), array('process_sup_desc'=>'value')
+                    );
+            $select->join(
+                    array('pti3'=>new TableIdentifier($this->pyi_table_name, $this->schema_name)),
+                        new Expression('p2.parent_id = pti3.id and pti3.lang=\''.$lang.'\''), array('type_desc'=>'value')
+                    );
+            $select->join(
+                    array('hr'=>new TableIdentifier($this->hr_table_name, $this->schema_name)),
+                        new Expression($this->table_name.'.id_risk = hr.id_risk and hr.lang=\''.$lang.'\''), array('desc_risk')
+                    );
+            $select->join(
+                    array('hd'=>new TableIdentifier($this->hd_table_name, $this->schema_name)),
+                        new Expression($this->table_name.'.id_danger = hd.id_danger and hd.lang=\''.$lang.'\''), array('desc_danger')
+                    );
+            //$select->where(array('lang' => (string) $lang, 'status'=>'A'));
+            $select->where(array(new IsNotNull('control_measures')));
+            $select->order('id_danger_risk ASC');
+            //echo $select->getSqlString();
+        });
+        return $row->toArray();
+    }
+
+    public function fetchThreadDocuments($lang,$country,$company,$location,$thread_id) {
+        $row = $this->select(function (Select $select) use ($lang,$country,$company,$location,$thread_id){
+            $select->join(
+                    array('hr'=>new TableIdentifier($this->hr_table_name, $this->schema_name)),
+                        new Expression($this->table_name.'.id_risk = hr.id_risk and hr.lang=\''.$lang.'\''), array('desc_risk')
+                    );
+            $select->join(
+                    array('hd'=>new TableIdentifier($this->hd_table_name, $this->schema_name)),
+                        new Expression($this->table_name.'.id_danger = hd.id_danger and hd.lang=\''.$lang.'\''), array('desc_danger')
+                    );
+            $select->where(array(new IsNotNull('control_measures'),'id_process_main'=>(int) $thread_id,'country'=>(string) $country,'company'=>(string) $company,'location'=>(string) $location));
+            $select->order('id_danger_risk ASC');
+            //echo $select->getSqlString();
+        });
+        return $row->toArray();
+    }
+    
+    public function getIncidentsListFiltered($country,$location,$dateValue,$lang) 
+    {
+        $var_countries = $this->countriesList($country);
+        $var_locations = $this->locationsList($location);
+        
+        $time=strtotime($dateValue);
+
+        $month=date("m",$time);
+        $year=date("Y",$time);
+        
+        $first = date('d-m-Y', mktime(0, 0, 0, $month, 1, $year));
+        $last = date('t-m-Y', mktime(0, 0, 0, $month, 1, $year));
+
+        $thisTime = strtotime($first);
+        $endTime = strtotime($last);
+        
+        
+        $resultSet = $this->select(function (Select $select) use ($var_countries, $var_locations, $year, $month) {
+            $select->where(array('country'=>$var_countries,'location'=>$var_locations,new Expression("date_incident::TEXT like '$year-$month-%'")));
+            $select->order('id_incident ASC');
+            //echo $select->getSqlString();
+        });
+        return $resultSet->toArray();
+        /*
+        $queryResumen="SELECT * FROM view_incidents_list 
+        WHERE in_idPais IN ($var_countries) AND in_idUbicacion IN ($var_locations) 
+        and (DATEPART(yy, dt_FechaCreacion) = $year
+         AND DATEPART(mm, dt_FechaCreacion) = $month ) ORDER BY dt_FechaCreacion ASC";
+        //echo $queryResumen;
+        $resultResumen = $this->getAdapter()->query($queryResumen,Adapter::QUERY_MODE_EXECUTE);
+        
+        $bulkIncidents = $resultResumen->toArray();
+        
+        $resumenIncidents = array();
+        
+        for ($idx=0; $idx < count($bulkIncidents); $idx++)
+        {
+            $resumenIncidents[$bulkIncidents[$idx]['dt_FechaCreacion']][$bulkIncidents[$idx]['in_IdTipoIncidente']]+=$bulkIncidents[$idx]['quantityIncidents'];
+        }
+        
+        
+        $listIncidents=array();
+        $counterList=0; $counterDate=array();
+        while($thisTime <= $endTime)
+        {
+            $thisDate = date('Y-m-d', $thisTime);
+            $listIncidents[$counterList]['dt_fechaCreacion']=$thisDate;
+            foreach($resumenIncidents[$thisDate] as $key=>$values){
+                $listIncidents[$counterList][$key]=$values;
+                $counterDate[$thisDate]+=$values;
+            }
+            //$listIncidents[$counterList]['summaryIncidents']=count($resumenIncidents[$thisDate]);
+            $listIncidents[$counterList]['summaryIncidents']=$counterDate[$thisDate];
+            $thisTime = strtotime('+1 day', $thisTime); // increment for loop
+            $counterList++;
+        }
+
+        //var_dump($listIncidents);
+        return $listIncidents;
+        */
+    }
+    
+    public function getIncidentValue($id_incident,$lang)
+    {
+        $row = $this->select(array('id_incident'=>(string) strtoupper($id_incident),'lang' => (string) $lang));
+        if (!$row)
+            return false;
+        return $row;
+    }
+    
+    public function getIncidentTypeList($lang) {
+        $row = $this->select(function (Select $select) use ($lang) {
+            $select->where(array('lang' => (string) $lang))->order('id_incident ASC');
+        });
+        //$row = $this->select(array('lang' => (string) $lang));
         if (!$row)
             return false;
         $listItems=array();
@@ -154,38 +219,40 @@ class hiraDocumentsTable extends AbstractTableGateway {
     public function save(hiraDocuments $object)
     {
         $data = array(
-            'id_severity' => $object->getId_severity(),
             'lang' => $object->getLang(),
-            'description' => $object->getDescription(),
+            'id_incident' => $object->getId_incident(),
+            'val_incident' => $object->getVal_incident(),
             'status' => $object->getStatus(),
-            'ordering' => $object->getOrdering()
+            'date_creation' => $object->getDate_creation(),
+            'date_modification' => $object->getDate_modification()
         );
 
-        $id_severity = (int) $object->id_severity;
+        $id_incident = (int) $object->id_incident;
         $lang = (string) $object->lang;
         
-        if (!$this->getSeverityValue($id_severity,$lang)) {
+        if (!$this->getIncidentValue($id_incident,$lang)) {
             if (!$this->insert($data))
                 throw new \Exception('insert statement can\'t be executed');
             return true;
-        } elseif ($this->getSeverityValue($id_severity,$lang)) {
+        } elseif ($this->getIncidentValue($id_incident,$lang)) {
             $this->update(
                 $data,
                 array(
-                    'id_severity' => $id_severity, 
+                    'id_incident' => $id_incident, 
                     'lang' => $lang,
                     )
             );
             return true;
         } else {
-            throw new \Exception('id_module, or id_submodule or lang in object ContentText does not exist');
+            throw new \Exception('id_incident or lang in object hiraIncidentType does not exist');
         }
     }
 
-    public function updateHiraDocuments($ids,$lang,$data)
+    public function updateHiraIncidentType($idi,$lang,$data)
     {
-        $id_severity = (int) $ids;
+        $id_incident = (int) $idi;
         $lang = (string) $lang;
-        $this->update($data, array('id_severity' => $id_severity, 'lang' => $lang));
+        $this->update($data, array('id_incident' => $id_incident, 'lang' => $lang));
     }
 }
+?>

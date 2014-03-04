@@ -8,7 +8,7 @@ Ext.define('Asgard.store.DocsLibrary', {
     model: 'Asgard.model.DocsLibrary',
     proxy: {
         type: 'ajax',
-        url: '/ims/processdocslist',
+        url: 'ims/processdocslist',
         reader: {
             type: 'json',
             root: 'results'

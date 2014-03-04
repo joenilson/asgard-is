@@ -25,7 +25,7 @@
 <script>
 var DocumentsStore<?=$this->threadId; ?> = Ext.create('Asgard.store.Companies');
     DocumentsStore<?=$this->threadId; ?>.load();
-    
+
 var DocumentsGrid<?=$this->threadId; ?> = Ext.create('Asgard.lib.GridPanel', {
     autoShow: true,
     autoDestroy: true,
@@ -55,10 +55,34 @@ var DocumentsGrid<?=$this->threadId; ?> = Ext.create('Asgard.lib.GridPanel', {
             }
         ]
     }
-});    
+});
+
+var HIRADocsStore<?=$this->threadId; ?> = Ext.create('Asgard.store.HiraDocumentsByThread');
+HIRADocsStore<?=$this->threadId; ?>.load({ params: { tid: <?=$this->threadId; ?>, 
+                                                company: '<?=$this->company; ?>', 
+                                                country: '<?=$this->country; ?>',
+                                                location: '<?=$this->location; ?>'
+                                            }
+                                            });
+
+var HIRAGrid<?=$this->threadId; ?> = Ext.create('Asgard.lib.grid.hira', {
+    //autoShow: true,
+    //autoDestroy: true,
+    //autoScroll: true,
+    //border: false,
+    //frame: false,
+    //region: 'west',
+    //collapsible: true,
+    //flex: 0.2,
+    //title: 'Documentos Asociados',
+    flex: 1,
+    store: HIRADocsStore<?=$this->threadId; ?>
+});
 
     
 var tabpanel<?=$this->threadId; ?> = Ext.create('Ext.tab.Panel', {
+    layout: 'fit',
+    //autoScroll: true,
     items: [
         {
             title: 'Detalles',
@@ -70,7 +94,8 @@ var tabpanel<?=$this->threadId; ?> = Ext.create('Ext.tab.Panel', {
             },
             defaults: {
                 frame: false,
-                padding: 2
+                padding: 2,
+                autoScroll: true
             },
             items: [{
                 title: 'Misión',
@@ -114,10 +139,14 @@ var tabpanel<?=$this->threadId; ?> = Ext.create('Ext.tab.Panel', {
             html: 'Listado de Documentos'
         },
         */
+        HIRAGrid<?=$this->threadId; ?>,
+        /*
         {
             title: 'IPER',
             html: 'IPER Will be here'
-        },{
+        },
+        */
+        {
             title: 'Aspectos Ambientales',
             html: 'Hello world 2'
         },{

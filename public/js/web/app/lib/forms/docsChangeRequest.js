@@ -23,8 +23,10 @@ Ext.define('Asgard.lib.forms.docsChangeRequest',{
     extend: 'Ext.form.Panel',
     method: 'post',
     frame: false,
+    url: 'ims/requestchange',
     bodyPadding: '5 5 0',
     width: 450,
+    baseParams: { module: 'imscr' },
     fieldDefaults: { 
         msgTarget: 'side',
         labelWidth: 150,
@@ -116,9 +118,9 @@ Ext.define('Asgard.lib.forms.docsChangeRequest',{
         this.submitButton = this.submitButton || []; 
         this.submitButton = Ext.Object.merge({
                 text: this.textSubmitButton,
-                name: 'apply',
+                name: 'request',
                 type: 'button',
-                itemId: 'apply',
+                itemId: 'request',
                 scope: me,
                 handler: fnSubmit
             }, this.submitButton);
@@ -130,7 +132,7 @@ Ext.define('Asgard.lib.forms.docsChangeRequest',{
                 type: 'button',
                 itemId: 'cancel',
                 scope: me,
-                handler: function() {this.form.reset();}
+                handler: function(button) { button.up('panel').getForm().reset(); }
             }, this.cancelButton);
 
         

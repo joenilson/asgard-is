@@ -3,6 +3,7 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'IMS\Controller\Index' => 'IMS\Controller\IndexController',
+            'IMS\Controller\CSI' => 'IMS\Controller\CSIController',
         ),
     ),
     'router' => array(
@@ -40,6 +41,20 @@ return array(
                         ),
                     ),
                     */
+                    'csi' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/csi[/:year[/:month]]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id_process' => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'csi'
+                            ),
+                        ),
+                    ),
                     'index' => array(
                         'type'    => 'Segment',
                         'options' => array(
@@ -96,6 +111,20 @@ return array(
                             ),
                         ),
                     ),
+                    'processlist' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/processlist[/:id_process]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'processlist'
+                            ),
+                        ),
+                    ),
                     'processmainlist' => array(
                         'type'    => 'Segment',
                         'options' => array(
@@ -124,17 +153,60 @@ return array(
                             ),
                         ),
                     ),
-                    'requestdocchange'  => array(
+                    'processownerlist' => array(
                         'type'    => 'Segment',
                         'options' => array(
-                            'route'    => '/requestdocchange',
+                            'route'    => '/processownerlist[/:id_process]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id_process' => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'processownerlist'
+                            ),
+                        ),
+                    ),
+                    
+                    'newdocument'  => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/newdocument',
                             'constraints' => array(
                                 'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'id'         => '[0-9_-]*',
                             ),
                             'defaults' => array(
-                                'action' => 'requestdocchange'
+                                'action' => 'newdocument'
+                            ),
+                        ),
+                    ),
+                    'requestchange'  => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/requestchange',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'requestchange'
+                            ),
+                        ),
+                    ),
+                    'requesttreatment'  => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/requesttreatment',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'requesttreatment'
                             ),
                         ),
                     ),
@@ -152,10 +224,24 @@ return array(
                             ),
                         ),
                     ),
+                    'processrequestlist' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/processrequestlist',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'processrequestlist'
+                            ),
+                        ),
+                    ),
                     'threaddetails' => array(
                         'type'    => 'Segment',
                         'options' => array(
-                            'route'    => '/threaddetails[/:id_thread]',
+                            'route'    => '/threaddetails[/:id_thread[/:country[/:company[/:location]]]]',
                             'constraints' => array(
                                 'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
@@ -236,6 +322,20 @@ return array(
                             ),
                         ),
                     ),
+                    'hiraDocsByThread' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/hiraDocsByThread[/:pid]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'hiraDocsByThread'
+                            ),
+                        ),
+                    ),
                     'listhira' => array(
                         'type'    => 'Segment',
                         'options' => array(
@@ -261,6 +361,20 @@ return array(
                             ),
                             'defaults' => array(
                                 'action' => 'hiralit'
+                            ),
+                        ),
+                    ),
+                    'hiranctype' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/hiranctype[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'hiranctype'
                             ),
                         ),
                     ),

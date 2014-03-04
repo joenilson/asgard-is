@@ -9,7 +9,7 @@ Ext.define('Asgard.store.ProcessThread', {
     model: 'Asgard.model.ProcessThread',
     proxy: {
         type: 'ajax',
-        url: '/ims/processthreadlist',
+        url: 'ims/processthreadlist',
         reader: {
             type: 'json',
             root: 'results'

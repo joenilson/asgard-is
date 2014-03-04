@@ -3,7 +3,7 @@ Ext.define('Asgard.store.Companies', {
     model: 'Asgard.model.Companies',
     proxy: {
         type: 'ajax',
-        url: '/commons/getcompanies',
+        url: 'commons/getcompanies',
         reader: {
             type: 'json',
             root: 'results'

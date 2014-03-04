@@ -57,7 +57,7 @@ class CommonsController extends AbstractActionController
     	   return $this->redirect()->toRoute('login');
     	}
         $request = $this->getRequest();
-        if ($request->isGet() AND $request->getQuery('cid')===''){
+        if ($request->isGet() AND $request->getQuery('cid')==='' OR !$request->getQuery('cid')){
             $Countries = $this->getCountriesTable()->fetchAll();
             $data=array('success'=>true,'results'=>$Countries);
         }elseif ($request->isGet() AND $request->getQuery('cid')!==''){

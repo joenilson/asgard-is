@@ -17,6 +17,7 @@ Ext.define('Asgard.model.ProcessMain', {
         'assignment',
         'company',
         'country',
-        'location'
+        'location',
+        'code'
     ]
 });

@@ -36,7 +36,8 @@ Ext.define('Asgard.lib.grid.documents',{
     recordText: 'Record',
     versionText: 'Version',
     statusText: 'Status',
-    dateActiveText: 'Date',
+    dateRevisionText: 'Revision Date',
+    dateVersionText: 'Version Date',
     reviewText: 'Review',
     protectionText: 'Protection',
     ownerText: 'Owner',
@@ -59,10 +60,12 @@ Ext.define('Asgard.lib.grid.documents',{
                 {text: this.documentText, flex: 3, sortable: true, filter: true, dataIndex: 'doc_desc', tdCls: 'wrapText'},
                 {text: this.recordText, flex: 1.5, sortable: true, filter: true, dataIndex: 'doc_record', tdCls: 'wrapText'},
                 {text: this.versionText, flex: 1, sortable: true, filter: true, dataIndex: 'doc_version_number', tdCls: 'wrapText'},
-                {text: this.statusText, flex: 1, sortable: true, filter: true, dataIndex: 'doc_status_general', tdCls: 'wrapText'},
-                {text: this.dateActiveText, flex: 1,  sortable: true, filter: true, dataIndex: 'doc_date_creation', tdCls: 'wrapText', 
+                {text: this.dateVersionText, flex: 1.5,  sortable: true, filter: true, dataIndex: 'doc_date_creation', tdCls: 'wrapText', 
                     xtype: 'datecolumn', format:'Y-m-d'
-                    //renderer: Ext.util.Format.dateRenderer('d/m/Y') 
+                },
+                {text: this.statusText, flex: 1, sortable: true, filter: true, dataIndex: 'doc_status_general', tdCls: 'wrapText'},
+                {text: this.dateRevisionText, flex: 1.5,  sortable: true, filter: true, dataIndex: 'doc_date_revision_next', tdCls: 'wrapText', 
+                    xtype: 'datecolumn', format:'Y-m-d'
                 },
                 {text: this.reviewText, flex: 1, sortable: true, filter: true, dataIndex: 'doc_review', tdCls: 'wrapText'},
                 {text: this.protectionText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'desc_protection', tdCls: 'wrapText'},

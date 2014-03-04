@@ -9,7 +9,7 @@ Ext.define('Asgard.store.HiraIncidentsList', {
     model: 'Asgard.model.HiraIncidentsList',
     proxy: {
         type: 'ajax',
-        url: '/ims/hirailist',
+        url: 'ims/hirailist',
         reader: {
             type: 'json',
             root: 'results'

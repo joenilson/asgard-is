@@ -78,7 +78,7 @@ class IndexController extends AbstractActionController
         }
         
     	$data['success']= false;
-    	$data['redirect']='/auth/login';
+    	$data['redirect']='auth/login';
         
     	$request = $this->getRequest();
     
@@ -126,7 +126,7 @@ class IndexController extends AbstractActionController
 
                 case Result::SUCCESS:
                     /** do stuff for successful authentication **/
-                    $data['redirect'] = '/';
+                    $data['redirect'] = $request->getBaseUrl();
                     $data['success'] = true;
                     $now = date('Y-m-d H:i:s.'). str_pad(substr((float)microtime(), 2), 6, '0', STR_PAD_LEFT);
                     //check if it has rememberMe :
@@ -134,9 +134,9 @@ class IndexController extends AbstractActionController
                     $UserPrefsTable = $this->getUserPreferencesTable();
                     if ($request->getPost('rememberme')){
                         if( $request->getPost('rememberme') == 'on' ) {
-                                    $this->getSessionStorage()->setRememberMe(1);
-                                    //set storage again
-                                    $this->getAuthService($userType)->setStorage($this->getSessionStorage());
+                            $this->getSessionStorage()->setRememberMe(1);
+                            //set storage again
+                            $this->getAuthService($userType)->setStorage($this->getSessionStorage());
                         }
                     }
                     //print_r($user_prefs);
@@ -163,11 +163,15 @@ class IndexController extends AbstractActionController
                             $UsersTable->updateById($userRegistry[0]['id'], $dataValues);
 
                         }else{
-                            $country=($userField[1]=='kolareal.com.do')?'DO':'PE';
-                            $country=($userField[1]=='kr.com.pe')?'PE':$country;
-                            $country=($userField[1]=='group-ism.com')?'PE':$country;
-                            $country=($userField[1]=='group-ism.com.br')?'BR':$country;
+                            $country=($userField[1]=='kolareal.com.do')?'0001':'0002';
+                            $country=($userField[1]=='kr.com.pe')?'0002':$country;
+                            $country=($userField[1]=='group-ism.com')?'0002':$country;
+                            $country=($userField[1]=='group-ism.com.br')?'0003':$country;
 
+                            $company=($country=='0001')?'0001':'0002';
+                            $company=($country=='0002')?'0002':$company;
+                            $company=($country=='0003')?'0003':$company;
+                            
                             $salt=md5($resultMessages->uid.$now.$country);
 
                             $prePassword = $this->getConfig()['salt'].$passAuth.$salt;
@@ -184,8 +188,8 @@ class IndexController extends AbstractActionController
                             ->setDate_created($now)
                             ->setDate_lastlogin(null)
                             ->setCountry($country)
-                            ->setCompany(null)
-                            ->setLocation($country)
+                            ->setCompany($company)
+                            ->setLocation("0001")
                             ->setAdmin('f')
                             ->setStatus('A')
                             ->setType('single')
@@ -193,6 +197,8 @@ class IndexController extends AbstractActionController
 
                             $newUserId=$UsersTable->save($user);
 
+                            $userMail = (is_array($resultMessages->mail))?$resultMessages->mail[0]:$resultMessages->mail;
+                            
                             $user->setId($newUserId);
                             /*
                              * User preferences first load
@@ -201,7 +207,7 @@ class IndexController extends AbstractActionController
                             $userPrefs = new UserPreferences();
                             $userPrefs->setUser_id($newUserId)
                             ->setLang($userLang)
-                            ->setEmail($resultMessages->mail[0])
+                            ->setEmail($userMail)
                             ->setAlias($resultMessages->givenname)
                             ->setAvatar(null)
                             ->setRegional($userTimezone)

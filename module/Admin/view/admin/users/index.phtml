@@ -1,0 +1,93 @@
+<?php
+
+/*
+ * Copyright (C) 2013 Joe Nilson <joenilson@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/**
+ * @application Asgard Information System :: asgard-is
+ * @version 1.0.0 devel
+ * @author Joe Nilson <joenilson@gmail.com>
+ */
+?>
+<script>
+Ext.require('Asgard.store.Users');
+var required = '<span style="color:red;font-weight:bold" data-qtip="Required">*</span>';
+
+var UsersStore<?= $this->panelId; ?> = Ext.create('Asgard.store.Users');
+UsersStore<?= $this->panelId; ?>.load();
+
+var toolsUsers = [{
+    type: 'plus',
+    tooltip: 'Add User',
+    handler: fnLibraryTool
+}];
+
+/*
+ * Form Panel to attach
+ */
+var formDataRequest<?=$this->panelId; ?> = Ext.create('Asgard.lib.forms.comboCCL');
+
+/*
+ * Grid to show the Docs Documents
+ */
+var DocumentsGrid<?=$this->panelId; ?> = Ext.create('Asgard.lib.grid.users',{
+    store: UsersStore<?= $this->panelId; ?>,
+    tools: toolsUsers
+});
+
+var libraryViewport<?=$this->panelId; ?> = Ext.create('Ext.panel.Panel', {
+    layout: {
+        type: 'vbox',
+        align : 'stretch',
+        pack  : 'start'
+    },
+    items: [
+        formDataRequest<?=$this->panelId; ?>,
+        DocumentsGrid<?=$this->panelId; ?>
+   ]
+});
+
+var windowUser = Ext.create('Ext.window.Window',{
+    closable: true,
+    closeAction: 'hide',
+    maximizable : true,
+    layout: 'fit'
+});
+
+function fnCCLProcess(){
+
+}
+
+function fnLibraryTool(me, e, object, tool) {
+    var panel = tool.up('panel');
+    //Ext.get('toolType').value=tool.type;
+    //Ext.get('processType').value=panel.name;
+    
+    windowUser.removeAll();
+    windowUser.setTitle('Add New User');
+    
+    var formRequest = new Ext.create('Asgard.lib.forms.usersNewUser',{
+        flex: 1
+    });
+    
+    windowUser.add(formRequest);
+    windowUser.show();
+    
+}
+
+    Ext.getCmp('content-panel').getActiveTab().add(libraryViewport<?= $this->panelId; ?>);
+
+</script>

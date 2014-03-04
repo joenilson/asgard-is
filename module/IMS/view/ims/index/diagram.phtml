@@ -238,19 +238,12 @@ function fnCCLProcess(button, opt, obj) {
     var companies = values['companiesCombo'];
     var countries = values['countriesCombo'];
     var locations = values['locationsCombo'];
-
-    storeProcessStrategic<?=$this->panelId; ?>.load({params: { type: '1', assigned: 'A', company: companies, country: countries, location: locations }});
-    storeProcessMain<?=$this->panelId; ?>.load({params: { type: '2', assigned: 'A', company: companies, country: countries, location: locations }});
-    storeProcessSupport<?=$this->panelId; ?>.load({params: { type: '3', assigned: 'A', company: companies, country: countries, location: locations }});
-
     diagramStrategicView.store.removeAll();
-    diagramStrategicView.store.load();
-
+    storeProcessStrategic<?=$this->panelId; ?>.load({params: { type: '1', assigned: 'A', company: companies, country: countries, location: locations }});
     diagramMainView.store.removeAll();
-    diagramMainView.store.load();
-
+    storeProcessMain<?=$this->panelId; ?>.load({params: { type: '2', assigned: 'A', company: companies, country: countries, location: locations }});
     diagramSupportView.store.removeAll();
-    diagramSupportView.store.load();
+    storeProcessSupport<?=$this->panelId; ?>.load({params: { type: '3', assigned: 'A', company: companies, country: countries, location: locations }});
 }
 
    

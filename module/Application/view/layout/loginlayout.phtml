@@ -9,7 +9,7 @@
             echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'))
         ?>
     <?php
-        $appPath =  $this->basepath(dirname(dirname(dirname(dirname(dirname(__FILE__))))));
+        $appPath = getcwd();
         $url = $appPath . '/public/images/backgrounds/';
         $counter=0;
         foreach (new DirectoryIterator($url) as $fileInfo) {
@@ -21,14 +21,14 @@
     ?>
 
     <!--  <link rel="stylesheet" type="text/css" href="/js/extjs/resources/css/ext-all.css" /> -->
-    <link rel="stylesheet" type="text/css" href="/js/extjs/resources/css/ext-all-neptune.css" />
-    <link rel="stylesheet" type="text/css" href="/css/logindialog/flags.css" />
-    <link rel="stylesheet" type="text/css" href="/css/logindialog/IconCombo.css" />
-    <link rel="stylesheet" type="text/css" href="/css/logindialog/LoginDialog.css" />
+    <link rel="stylesheet" type="text/css" href="<?=$this->basepath('/js/extjs/resources/css/ext-all-neptune.css'); ?>" />
+    <link rel="stylesheet" type="text/css" href="<?=$this->basepath('/css/logindialog/flags.css'); ?>" />
+    <link rel="stylesheet" type="text/css" href="<?=$this->basepath('/css/logindialog/IconCombo.css'); ?>" />
+    <link rel="stylesheet" type="text/css" href="<?=$this->basepath('/css/logindialog/LoginDialog.css'); ?>" />
     
     <style type='text/css'>
         .x-body {
-        	background: url('/images/backgrounds/<?php echo $backgroundFiles[$idxImage]; ?>');
+        	background: url('../images/backgrounds/<?=$backgroundFiles[$idxImage]; ?>');
         	background-repeat:no-repeat;
         	background-size: 100%;
         	background-position:center; 
@@ -36,13 +36,13 @@
         }
     </style>
     
-    <script type="text/javascript" src="/js/jstz.js"></script>
-    <script type="text/javascript" src="/js/extjs/ext-all-dev.js"></script>
-    <script type="text/javascript" src="/js/web/logindialog/overrides.js"></script>
-    <script type="text/javascript" src="/js/web/logindialog/IconCombo.js"></script>
-    <script type="text/javascript" src="/js/commons/logindialog/LoginDialogLanguages.js"></script>
-    <script type="text/javascript" src="/js/web/logindialog/LoginDialog.js"></script>
-    <script type="text/javascript" src="/js/web/logindialog/LoginDialogInit.js"></script>
+    <script type="text/javascript" src="<?=$this->basepath('/js/jstz.js'); ?>"></script>
+    <script type="text/javascript" src="<?=$this->basepath('/js/extjs/ext-all-dev.js'); ?>"></script>
+    <script type="text/javascript" src="<?=$this->basepath('/js/web/logindialog/overrides.js'); ?>"></script>
+    <script type="text/javascript" src="<?=$this->basepath('/js/web/logindialog/IconCombo.js'); ?>"></script>
+    <script type="text/javascript" src="<?=$this->basepath('/js/commons/logindialog/LoginDialogLanguages.js'); ?>"></script>
+    <script type="text/javascript" src="<?=$this->basepath('/js/web/logindialog/LoginDialog.js'); ?>"></script>
+    <script type="text/javascript" src="<?=$this->basepath('/js/web/logindialog/LoginDialogInit.js'); ?>"></script>
 </head>
 <body>
 </body>

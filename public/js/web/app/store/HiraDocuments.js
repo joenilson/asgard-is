@@ -10,7 +10,7 @@ Ext.define('Asgard.store.HiraDocuments', {
     // Overriding the model's default proxy
     proxy: {
         type: 'ajax',
-        url: '/ims/hiraDocs',
+        url: 'ims/hiraDocs',
         reader: {
             type: 'json',
             root: 'results'

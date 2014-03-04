@@ -13,24 +13,26 @@ namespace IMS\Model\Entity;
 
 class hiraDocuments {
     
-    protected $in_idPeligroRiesgo;
-    protected $in_idPeligro;
-    protected $in_idRiesgo;
-    protected $in_idProc;
-    protected $in_EI_A;
-    protected $in_EI_M;
-    protected $in_EI_B;
-    protected $vc_MedidasControl;
-    protected $in_ER_A;
-    protected $in_ER_M;
-    protected $in_ER_B;
-    protected $dt_FechaCreacion;
-    protected $vc_UsuarioCreacion;
-    protected $dt_FechaModificacion;
-    protected $vc_UsuarioModificacion;
-    protected $in_Estado;
-    protected $in_idUbicacion;
-    protected $in_idMaquinaria;
+    protected $id_danger_risk;
+    protected $id_danger;
+    protected $id_risk;
+    protected $id_process_main;
+    protected $eval_iper_h;
+    protected $eval_iper_m;
+    protected $eval_iper_l;
+    protected $control_measures;
+    protected $eval_risk_h;
+    protected $eval_risk_m;
+    protected $eval_risk_l;
+    protected $date_creation;
+    protected $user_creation;
+    protected $date_modification;
+    protected $user_modification;
+    protected $status;
+    protected $company;
+    protected $country;
+    protected $location;
+    protected $id_machine;
    
     public function __construct(array $options = null)
     {
@@ -69,166 +71,186 @@ class hiraDocuments {
     	return $this;
     }
     
-    public function getIn_idPeligroRiesgo() {
-        return $this->in_idPeligroRiesgo;
+    public function getId_danger_risk() {
+        return $this->id_danger_risk;
     }
 
-    public function setIn_idPeligroRiesgo($in_idPeligroRiesgo) {
-        $this->in_idPeligroRiesgo = $in_idPeligroRiesgo;
+    public function getId_danger() {
+        return $this->id_danger;
+    }
+
+    public function getId_risk() {
+        return $this->id_risk;
+    }
+
+    public function getId_process_main() {
+        return $this->id_process_main;
+    }
+
+    public function getEval_iper_h() {
+        return $this->eval_iper_h;
+    }
+
+    public function getEval_iper_m() {
+        return $this->eval_iper_m;
+    }
+
+    public function getEval_iper_l() {
+        return $this->eval_iper_l;
+    }
+
+    public function getControl_measures() {
+        return $this->control_measures;
+    }
+
+    public function getEval_risk_h() {
+        return $this->eval_risk_h;
+    }
+
+    public function getEval_risk_m() {
+        return $this->eval_risk_m;
+    }
+
+    public function getEval_risk_l() {
+        return $this->eval_risk_l;
+    }
+
+    public function getDate_creation() {
+        return $this->date_creation;
+    }
+
+    public function getUser_creation() {
+        return $this->user_creation;
+    }
+
+    public function getDate_modification() {
+        return $this->date_modification;
+    }
+
+    public function getUser_modification() {
+        return $this->user_modification;
+    }
+
+    public function getStatus() {
+        return $this->status;
+    }
+
+    public function getCompany() {
+        return $this->company;
+    }
+
+    public function getCountry() {
+        return $this->country;
+    }
+
+    public function getLocation() {
+        return $this->location;
+    }
+
+    public function getId_machine() {
+        return $this->id_machine;
+    }
+
+    public function setId_danger_risk($id_danger_risk) {
+        $this->id_danger_risk = $id_danger_risk;
         return $this;
     }
 
-    public function getIn_idPeligro() {
-        return $this->in_idPeligro;
-    }
-
-    public function setIn_idPeligro($in_idPeligro) {
-        $this->in_idPeligro = $in_idPeligro;
+    public function setId_danger($id_danger) {
+        $this->id_danger = $id_danger;
         return $this;
     }
 
-    public function getIn_idRiesgo() {
-        return $this->in_idRiesgo;
-    }
-
-    public function setIn_idRiesgo($in_idRiesgo) {
-        $this->in_idRiesgo = $in_idRiesgo;
+    public function setId_risk($id_risk) {
+        $this->id_risk = $id_risk;
         return $this;
     }
 
-    public function getIn_idProc() {
-        return $this->in_idProc;
-    }
-
-    public function setIn_idProc($in_idProc) {
-        $this->in_idProc = $in_idProc;
+    public function setId_process_main($id_process_main) {
+        $this->id_process_main = $id_process_main;
         return $this;
     }
 
-    public function getIn_EI_A() {
-        return $this->in_EI_A;
-    }
-
-    public function setIn_EI_A($in_EI_A) {
-        $this->in_EI_A = $in_EI_A;
+    public function setEval_iper_h($eval_iper_h) {
+        $this->eval_iper_h = $eval_iper_h;
         return $this;
     }
 
-    public function getIn_EI_M() {
-        return $this->in_EI_M;
-    }
-
-    public function setIn_EI_M($in_EI_M) {
-        $this->in_EI_M = $in_EI_M;
+    public function setEval_iper_m($eval_iper_m) {
+        $this->eval_iper_m = $eval_iper_m;
         return $this;
     }
 
-    public function getIn_EI_B() {
-        return $this->in_EI_B;
-    }
-
-    public function setIn_EI_B($in_EI_B) {
-        $this->in_EI_B = $in_EI_B;
+    public function setEval_iper_l($eval_iper_l) {
+        $this->eval_iper_l = $eval_iper_l;
         return $this;
     }
 
-    public function getVc_MedidasControl() {
-        return $this->vc_MedidasControl;
-    }
-
-    public function setVc_MedidasControl($vc_MedidasControl) {
-        $this->vc_MedidasControl = $vc_MedidasControl;
+    public function setControl_measures($control_measures) {
+        $this->control_measures = $control_measures;
         return $this;
     }
 
-    public function getIn_ER_A() {
-        return $this->in_ER_A;
-    }
-
-    public function setIn_ER_A($in_ER_A) {
-        $this->in_ER_A = $in_ER_A;
+    public function setEval_risk_h($eval_risk_h) {
+        $this->eval_risk_h = $eval_risk_h;
         return $this;
     }
 
-    public function getIn_ER_M() {
-        return $this->in_ER_M;
-    }
-
-    public function setIn_ER_M($in_ER_M) {
-        $this->in_ER_M = $in_ER_M;
+    public function setEval_risk_m($eval_risk_m) {
+        $this->eval_risk_m = $eval_risk_m;
         return $this;
     }
 
-    public function getIn_ER_B() {
-        return $this->in_ER_B;
-    }
-
-    public function setIn_ER_B($in_ER_B) {
-        $this->in_ER_B = $in_ER_B;
+    public function setEval_risk_l($eval_risk_l) {
+        $this->eval_risk_l = $eval_risk_l;
         return $this;
     }
 
-    public function getDt_FechaCreacion() {
-        return $this->dt_FechaCreacion;
-    }
-
-    public function setDt_FechaCreacion($dt_FechaCreacion) {
-        $this->dt_FechaCreacion = $dt_FechaCreacion;
+    public function setDate_creation($date_creation) {
+        $this->date_creation = $date_creation;
         return $this;
     }
 
-    public function getVc_UsuarioCreacion() {
-        return $this->vc_UsuarioCreacion;
-    }
-
-    public function setVc_UsuarioCreacion($vc_UsuarioCreacion) {
-        $this->vc_UsuarioCreacion = $vc_UsuarioCreacion;
+    public function setUser_creation($user_creation) {
+        $this->user_creation = $user_creation;
         return $this;
     }
 
-    public function getDt_FechaModificacion() {
-        return $this->dt_FechaModificacion;
-    }
-
-    public function setDt_FechaModificacion($dt_FechaModificacion) {
-        $this->dt_FechaModificacion = $dt_FechaModificacion;
+    public function setDate_modification($date_modification) {
+        $this->date_modification = $date_modification;
         return $this;
     }
 
-    public function getVc_UsuarioModificacion() {
-        return $this->vc_UsuarioModificacion;
-    }
-
-    public function setVc_UsuarioModificacion($vc_UsuarioModificacion) {
-        $this->vc_UsuarioModificacion = $vc_UsuarioModificacion;
+    public function setUser_modification($user_modification) {
+        $this->user_modification = $user_modification;
         return $this;
     }
 
-    public function getIn_Estado() {
-        return $this->in_Estado;
-    }
-
-    public function setIn_Estado($in_Estado) {
-        $this->in_Estado = $in_Estado;
+    public function setStatus($status) {
+        $this->status = $status;
         return $this;
     }
 
-    public function getIn_idUbicacion() {
-        return $this->in_idUbicacion;
-    }
-
-    public function setIn_idUbicacion($in_idUbicacion) {
-        $this->in_idUbicacion = $in_idUbicacion;
+    public function setCompany($company) {
+        $this->company = $company;
         return $this;
     }
 
-    public function getIn_idMaquinaria() {
-        return $this->in_idMaquinaria;
-    }
-
-    public function setIn_idMaquinaria($in_idMaquinaria) {
-        $this->in_idMaquinaria = $in_idMaquinaria;
+    public function setCountry($country) {
+        $this->country = $country;
         return $this;
     }
+
+    public function setLocation($location) {
+        $this->location = $location;
+        return $this;
+    }
+
+    public function setId_machine($id_machine) {
+        $this->id_machine = $id_machine;
+        return $this;
+    }
+
+
 
 }

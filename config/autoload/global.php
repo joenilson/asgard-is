@@ -22,9 +22,11 @@ return array(
     ),
     'mssql_db' => array(
         'driver'         => 'Pdo',
-        'dsn'            => 'dblib:host=SQLEXPRESS;dbname=bygweb_isov2kr3',
+        //'dsn'            => 'dblib:host=SQLEXPRESS;dbname=bygweb_isov2kr3',
+        //'dsn'            => 'odbc:Driver=FreeTDS;Server=192.168.3.100;Database=bygweb_isov2kr3',
+        'dsn'       => 'odbc:Driver=FreeTDS;Server=SQL100;Database=bygweb_isov2kr3',
         'charset'        =>  'UTF-8',
-        'pdotype'       => 'dblib',
+        //'pdotype'       => 'dblib',
     ),
     'service_manager' => array(
 		'factories' => array(

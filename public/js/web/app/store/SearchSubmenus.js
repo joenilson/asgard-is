@@ -6,7 +6,7 @@ Ext.define('Asgard.store.SearchSubmenus', {
     // Overriding the model's default proxy
     proxy: {
         type: 'ajax',
-        url: '/data/getsubmenus',
+        url: 'data/getsubmenus',
         reader: {
             type: 'json',
             root: 'results'

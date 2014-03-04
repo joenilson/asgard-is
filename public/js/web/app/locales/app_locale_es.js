@@ -133,14 +133,15 @@ Ext.define('Asgard.locales.lib.gridToolbarViewer',{
 
 Ext.define('Asgard.locales.lib.grid.documents',{
     override: 'Asgard.lib.grid.documents',
-    titleText: 'Control de Documentos',
+    titleText: 'Lista Maestra de Documentos y Registros',
     idText: 'Id',
     classDocText: 'Clase Doc',
     documentText: 'Documento',
     recordText: 'Registro',
     versionText: 'Version',
     statusText: 'Estado',
-    dateActiveText: 'Fecha',
+    dateRevisionText: 'Fecha de Revisión',
+    dateVersionText: 'Fecha de Versión',
     reviewText: 'Revision',
     protectionText: 'Proteccion',
     ownerText: 'Responsable',
@@ -194,12 +195,15 @@ Ext.define('Asgard.locales.lib.forms.docsNewDocument',{
     documentTypeText: 'Estado',
     documentReviewText: 'Revisión',
     documentProtectionText: 'Protección',
+    documentProcessText: 'Proceso',
     documentOwnerText: 'Responsable del Documento',
     documentLocationText: 'Ubicación',
     documentOriginText: 'Origen',
     documentRetentionText: 'Tiempo de Retención',
     documentDescText: 'Descripción del Documento',
     documentRecordText: 'Registro',
+    documentDVText: 'Fecha Inclusión',
+    documentDRText: 'Fecha Revisión',
     documentFileText: 'Documento',
     
     documentFieldEmptyText: 'Escoja un documento',
@@ -211,6 +215,94 @@ Ext.define('Asgard.locales.lib.forms.docsNewDocument',{
 Ext.define('Asgard.locales.lib.forms.DocsHelpers',{
     override: 'Asgard.lib.forms.DocsHelpers',
     emptyTextText: 'No hay datos elegidos'
+});
+
+Ext.define('Asgard.locales.lib.forms.OwnersCombo',{
+    override: 'Asgard.lib.forms.OwnersCombo',
+    fieldLabelText: 'Propietario',
+    emptyTextText: 'No hay datos elegidos'
+});
+
+Ext.define('Asgard.locales.lib.forms.ProcessCombo',{
+    override: 'Asgard.lib.forms.ProcessCombo',
+    fieldLabelText: 'Proceso',
+    emptyTextText: 'No hay datos elegidos'
+});
+
+Ext.define('Asgard.locales.lib.forms.ThreadsCombo',{
+    override: 'Asgard.lib.forms.ThreadsCombo',
+    fieldLabelText: 'Subproceso',
+    emptyTextText: 'No hay datos elegidos'
+});
+
+Ext.define('Asgard.locales.lib.forms.NonConformityCombo',{
+    override: 'Asgard.lib.forms.NonConformityCombo',
+    fieldLabelText: 'Tipo No Conformidad',
+    emptyTextText: 'No hay datos elegidos'
+});
+
+Ext.define('Asgard.locales.lib.forms.IncidentTypeCombo',{
+    override: 'Asgard.lib.forms.IncidentTypeCombo',
+    fieldLabelText: 'Tipo de Incidente',
+    emptyTextText: 'No hay datos elegidos'
+});
+
+Ext.define('Asgard.locales.lib.forms.usersNewUser',{
+    override: 'Asgard.lib.forms.usersNewUser',
+    
+    usernameText: 'Usuario',
+    passwordText: 'Clave',
+    realnameText: 'Nombre Completo',
+    emailText: 'Correo',
+    adminText: 'Es admin?',
+    langText: 'Idioma',
+    
+    textSubmitButton: 'Agregar',
+    textCancelButton: 'Cancelar',
+    warningTitle: 'Advertencia',
+    warningText: 'El usuario ya existe!, elija otro nombre de usuario'
+    
+});
+
+Ext.define('Asgard.locales.lib.grid.changeRequestQueue',{
+    override: 'Asgard.lib.grid.changeRequestQueue',
+    docAffectedText: 'Doc. Afectado',
+    descriptionText: 'Descripción',
+    userText: 'Solicitante',
+    dateText: 'Fecha',
+    statusText: 'Estado',
+    
+    toolViewDocText: 'Ver Propuesta',
+    toolViewOriginalText: 'Ver Original',
+    toolRequestText: 'Tratar Solicitud'
+});
+
+Ext.define('Asgard.locales.lib.forms.RequestTreatment',{
+    override: 'Asgard.lib.forms.RequestTreatment',
+    treatmentText: 'Se acepta?',
+    reasonText: 'Motivo',
+    treatmentYesText: 'Si',
+    treatmentNoText: 'No',
+    textSubmitButton: 'Enviar',
+    textCancelButton: 'Cancelar',
+    warningTitle: 'Advertencia'
+});
+
+Ext.define('Asgard.locales.lib.forms.hiraNewIncident',{
+    override: 'Asgard.lib.forms.hiraNewIncident',
+    objectRegisterCodeText: 'Codigo de Registro',
+    objectRegisterNameText: 'Nombre del Registrador',
+    objectRegisterSurnameText: 'Primer Apellido',
+    objectRegisterLastnameText: 'Segundo Apellido',
+    objectRegisterEmailText: 'Correo Electrónico',
+    objectIncidentDescText: 'Descripción del Incidente',
+    objectIncidentDateText: 'Fecha del Incidente'
+});
+
+Ext.define('Asgard.locales.lib.forms.yearMonthField',{
+    override: 'Asgard.lib.forms.yearMonthField',
+    emptyTextText: 'Elija una fecha',
+    fieldLabelText: 'Mes y Año'
 });
 
 

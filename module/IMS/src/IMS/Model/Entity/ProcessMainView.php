@@ -25,6 +25,7 @@ class ProcessMainView {
     protected $country;
     protected $location;
     protected $assignment;
+    protected $code;
     
     public function __construct(array $options = null)
     {
@@ -171,6 +172,13 @@ class ProcessMainView {
         return $this;
     }
 
+    public function getCode() {
+        return $this->code;
+    }
 
+    public function setCode($code) {
+        $this->code = $code;
+        return $this;
+    }
 
 }

@@ -29,11 +29,17 @@
         return formatedValue;
     }
     
+    
+    /*
+     * Store to get the List of Companies
+     */
+    var <?php echo 'CompaniesStore' . $this->panelId; ?> = Ext.create('Asgard.store.Companies');
+    <?php echo 'CompaniesStore' . $this->panelId . '.load();'; ?>
+    
     /*
      * Store to get the List of Countries
      */
     var <?php echo 'CountriesStore' . $this->panelId; ?> = Ext.create('Asgard.store.Countries');
-    <?php echo 'CountriesStore' . $this->panelId . '.load();'; ?>
 
     /*
      * Store to get the List of Locations
@@ -75,20 +81,20 @@
         }],
         columns: {
             items: [
-                {text: "Id", flex: 0.25, sortable: true, dataIndex: 'vc_TipoIncidente', filter: true, summaryType: 'count',
+                {text: "Id", flex: 0.25, sortable: true, dataIndex: 'val_incident', filter: true, summaryType: 'count',
                     summaryRenderer: function(value, summaryData, dataIndex) {
                         return ((value === 0 || value > 1) ? '(' + value + ' Incidents)' : '(1 Incident)');
                     }
                 },
-                {text: "Description", flex: 0.75, sortable: true, filter: 'combo', dataIndex: 'vc_Descripcion', tdCls: 'wrapText',
+                {text: "Description", flex: 0.75, sortable: true, filter: 'combo', dataIndex: 'description', tdCls: 'wrapText',
                     summaryType: 'count',
                     summaryRenderer: function(value, summaryData, dataIndex) {
                         return ((value === 0 || value > 1) ? '(' + value + ' Incidents)' : '(1 Incident)');
                     }
                 },
-                {text: "Author", flex: 0.45, sortable: true, filter: 'combo', dataIndex: 'vc_fullName', tdCls: 'wrapText'},
-                {text: "Date", flex: 0.45, sortable: true, filter: 'date', dataIndex: 'dt_FechaCreacion', tdCls: 'wrapText'},
-                {text: "Status", flex: 0.15, sortable: true, filter: true, dataIndex: 'in_IdEstadoNC'},
+                {text: "Author", flex: 0.45, sortable: true, filter: 'combo', dataIndex: 'owner_fullname', tdCls: 'wrapText'},
+                {text: "Date", flex: 0.45, sortable: true, filter: 'date', dataIndex: 'date_incident', tdCls: 'wrapText'},
+                {text: "Status", flex: 0.15, sortable: true, filter: true, dataIndex: 'status'},
             ]
         }
     });
@@ -102,7 +108,7 @@
 Ext.define('Asgard.model.HiraIncidentsList<?php echo $this->panelId; ?>', {
     extend: 'Ext.data.Model',
     fields: [
-        'dt_fechaCreacion',
+        'date_incident',
         <?php
         foreach($this->listIT as $values ){
             echo "{name: '".$values->id_incident."', type: 'int' },";
@@ -148,8 +154,6 @@ var <?php echo 'HIRAGridIT' . $this->panelId; ?> = Ext.create('Asgard.lib.GridPa
  * Grid to show the Incidents List
  */
 var <?php echo 'HIRAGridIL' . $this->panelId; ?> = Ext.create('Asgard.lib.GridPanel', {
-    //autoShow: true,
-    //autoDestroy: true,
     autoScroll: true,
     border: false,
     plain: false,
@@ -158,12 +162,14 @@ var <?php echo 'HIRAGridIL' . $this->panelId; ?> = Ext.create('Asgard.lib.GridPa
         ftype: 'fixedsummary',
     }],
     fixedsummarytips : true,
-    //region: 'west',
-    //collapsible: true,
-    //selType: 'cellmodel',
     flex: 1,
     title: 'Lista de Incidentes',
     store: <?php echo 'HIRAStoreIL' . $this->panelId; ?>,
+    tools: [{
+        type: 'plus',
+        tooltip: 'Add Incident',
+        handler: fnLibraryTool
+    }],
     columns: {
             /*
             plugins: [{
@@ -171,28 +177,43 @@ var <?php echo 'HIRAGridIL' . $this->panelId; ?> = Ext.create('Asgard.lib.GridPa
             }],
             */
         items: [
-            {text: "Fecha", flex: 0.45, sortable: true, dataIndex: 'dt_fechaCreacion', align: 'center', filter: false, 
+            {text: "Fecha", flex: 3, sortable: true, dataIndex: 'date_incident', align: 'center', filter: false, //format:'Y-m-d', 
                 fixedSummaryRenderer: function(){ return "<b>Incidentes</b>"; }},
             <?php
             foreach($this->listIT as $values ){
-                echo "{text: \"T{$values->id_incident}\", flex: 0.25, sortable: true, renderer :  riskleveler, dataIndex:'{$values->id_incident}', align: 'right', filter: false, "
+                echo "{text: \"T{$values->id_incident}\", flex: 1, sortable: true, renderer :  riskleveler, dataIndex:'{$values->id_incident}', align: 'right', filter: false, "
                 ."fixedSummaryType: 'sum', fixedSummaryRenderer: riskleveler"
                 ."},\n";
             }
             ?>
-            {text: "Total Incidentes Dia", flex: 0.75, sortable: true, dataIndex: 'summaryIncidents', renderer: riskleveler, align: 'right', filter: false, 
+            {text: "Total Incidentes Dia", flex: 2, sortable: true, dataIndex: 'summaryIncidents', renderer: riskleveler, align: 'right', filter: false, 
                 fixedSummaryType: 'sum', fixedSummaryRenderer: riskleveler 
             }
         ]
     }
 });
+
+
+function fnLibraryTool(action,mark,form,tool){
+    console.log(form);
+    console.log(tool);
+    if(tool.type==='plus'){
+        winAdd = Ext.create('Asgard.lib.window.windowGeneric',{
+            title: 'Crear Incidente',
+        });
+        winAdd.add(Ext.create('Asgard.lib.forms.hiraNewIncident'));
+        console.log('mostramos la ventana para agregar un incidente');
+        winAdd.show();
+    }
+}
   
   <?php echo 'HIRAGridIL' . $this->panelId; ?>.on('itemdblclick', function(me, record){
             //call window to show list of incidents
+            var companiesValue = <?php echo 'CompaniesCombo' . $this->panelId; ?>.getValue();
             var countriesValue = <?php echo 'CountriesCombo' . $this->panelId; ?>.getValue();
             var locationsValue = <?php echo 'LocationsCombo' . $this->panelId; ?>.getValue();
-            var dateValue = record.data.dt_fechaCreacion;
-            <?php echo 'HIRAStoreID' . $this->panelId; ?>.load({params: {'country': countriesValue, 'location': locationsValue, 'date_incident': dateValue}});
+            var dateValue = record.data.date_incident;
+            <?php echo 'HIRAStoreID' . $this->panelId; ?>.load({params: {'company': companiesValue,'country': countriesValue, 'location': locationsValue, 'date_incident': dateValue}});
             windowDetails<?php echo $this->panelId; ?>.show();
 
         });
@@ -216,6 +237,25 @@ var windowDetails<?php echo $this->panelId; ?> = Ext.create('Asgard.lib.hiraInci
     /*
      * 
      */
+    var <?php echo 'CompaniesCombo' . $this->panelId; ?> = Ext.create('Ext.form.ComboBox', {
+        fieldLabel: 'Compañia',
+        store: <?php echo 'CompaniesStore' . $this->panelId; ?>,
+        queryMode: 'local',
+        displayField: 'legal_name',
+        valueField: 'id',
+        anchor: '50%',
+        name: 'companiesCombo',
+        forceSelection: true,
+        emptyText: 'No values at this time',
+        listeners: {
+            select: function(combo, records, opts) {
+            <?php echo 'CountriesStore' . $this->panelId; ?>.load({params: {cid: combo.getValue('id')}});
+            }
+        }
+    });
+    /*
+     * 
+     */
     var <?php echo 'CountriesCombo' . $this->panelId; ?> = Ext.create('Ext.form.ComboBox', {
         fieldLabel: 'Pais',
         store: <?php echo 'CountriesStore' . $this->panelId; ?>,
@@ -228,7 +268,7 @@ var windowDetails<?php echo $this->panelId; ?> = Ext.create('Asgard.lib.hiraInci
         emptyText: 'No values at this time',
         listeners: {
             select: function(combo, records, opts) {
-<?php echo 'LocationsStore' . $this->panelId; ?>.load({params: {cid: combo.getValue('id')}});
+            <?php echo 'LocationsStore' . $this->panelId; ?>.load({params: {cid: combo.getValue('id')}});
             }
         }
     });
@@ -269,21 +309,23 @@ var windowDetails<?php echo $this->panelId; ?> = Ext.create('Asgard.lib.hiraInci
         },
         layout: 'hbox',
         items: [
-<?php echo 'CountriesCombo' . $this->panelId; ?>,
-<?php echo 'LocationsCombo' . $this->panelId; ?>, ,
-                    {
-                        xtype: 'monthfield', name: 'monthfield', submitFormat: 'Y-m-d', fieldLabel: 'Mes y Año', format: 'F, Y', anchor: '25%'
-                    }
+            <?php echo 'CompaniesCombo' . $this->panelId; ?>,
+            <?php echo 'CountriesCombo' . $this->panelId; ?>,
+            <?php echo 'LocationsCombo' . $this->panelId; ?>,
+            {
+                xtype: 'monthfield', name: 'monthfield', submitFormat: 'Y-m-d', fieldLabel: 'Mes y Año', format: 'F, Y', anchor: '25%'
+            }
         ],
         buttons: ['->', {
                 text: 'Consultar',
                 handler: function() {
                     var values = this.up('form').getForm().getValues();
                     //console.log(values);
+                    var companies = values['companiesCombo'];
                     var countries = values['countriesCombo'];
                     var locations = values['locationsCombo'];
                     var monthfield = values['monthfield'];
-<?php echo 'HIRAStoreIL' . $this->panelId; ?>.load({params: {'countries': countries, 'locations': locations, 'monthfield': monthfield}});
+<?php echo 'HIRAStoreIL' . $this->panelId; ?>.load({params: {'companies': companies,'countries': countries, 'locations': locations, 'monthfield': monthfield}});
                 }
             }]
     });

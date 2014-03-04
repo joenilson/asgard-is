@@ -16,6 +16,7 @@ class ProcessMain {
     protected $id;
     protected $ordering;
     protected $status;
+    protected $code;
     
     public function __construct(array $options = null)
     {
@@ -78,6 +79,15 @@ class ProcessMain {
 
     public function setStatus($status) {
         $this->status = $status;
+        return $this;
+    }
+
+    public function getCode() {
+        return $this->code;
+    }
+
+    public function setCode($code) {
+        $this->code = $code;
         return $this;
     }
 

@@ -41,6 +41,16 @@ class DocsLibraryTable extends AbstractTableGateway {
         });
         return $resultSet->toArray();
     }
+    
+    public function getNextDocId() {
+        $resultSet = $this->select(function (Select $select) {
+            $select->columns(array(new Expression('max(doc_id) as doc_id')));
+        });
+        $row = $resultSet->current();
+        $docid = $row->doc_id;
+        $docid++;
+        return $docid;
+    }
 
     public function getLibraryByCCL($id_subprocess)
     {
@@ -106,15 +116,15 @@ class DocsLibraryTable extends AbstractTableGateway {
         return $listItems;
     }
     
-    public function getThreadInfo($lang,$thread_id) {
+    public function getDocInfo($doc_id) {
         
-        $thread_id = $this->processArray($thread_id);
-        $row = $this->select(function (Select $select) use ($lang,$thread_id) {
-            $select->columns(array('id','ordering','status'));
-            $select->join( array('pti'=>new TableIdentifier($this->table_i18n, $this->schema_name)),
-                $this->table_name.'.id = pti.id', array('lang', 'value', 'mission', 'scope', 'rich_content'));
-            $select->where(array('lang' => (string) $lang, 'status'=>'A','process_thread.id'=>$thread_id));
-            $select->order('ordering ASC');
+        $doc_id = $this->processArray($doc_id);
+        $row = $this->select(function (Select $select) use ($doc_id) {
+            //$select->columns(array('id','ordering','status'));
+            //$select->join( array('pti'=>new TableIdentifier($this->table_i18n, $this->schema_name)),
+            //    $this->table_name.'.id = pti.id', array('lang', 'value', 'mission', 'scope', 'rich_content'));
+            $select->where(array('doc_id' => (int) $doc_id));
+            //$select->order('doc_date_creation ASC');
             //echo $select->getSqlString();
         });
         if (!$row)
@@ -144,33 +154,54 @@ class DocsLibraryTable extends AbstractTableGateway {
     }
     
     
-    public function save(ProcessThread $object)
+    public function save(DocsLibrary $object)
     {
         $data = array(
-            'lang' => $object->getLang(),
-            'id' => $object->getId(),
-            'value' => $object->getValue(),
-            'description' => $object->getDescription(),
-            'ordering' => $object->getOrdering(),
-            'status' => $object->getStatus(),
-            'type'=> $object->getType(),
-            'parent_id'=> $object->getParent_id(),
-            'assignment'=> $object->getAssignment()
+        'doc_id' => $object->getDoc_id(),
+        'lang' => $object->getLang(),
+        'doc_classification' => $object->getDoc_classification(),
+        'doc_desc' => $object->getDoc_desc(),
+        'doc_file' => $object->getDoc_file(),
+        'doc_type' => $object->getDoc_type(),
+        'doc_review' => $object->getDoc_review(),
+        'doc_protection' => $object->getDoc_protection(),
+        'doc_owner' => $object->getDoc_owner(),
+        'doc_location' => $object->getDoc_location(),
+        'doc_origin' => $object->getDoc_origin(),
+        'doc_retention' => $object->getDoc_retention(),
+        'doc_record' => $object->getDoc_record(),
+        'doc_version_number' => $object->getDoc_version_number(),
+        'doc_version_label' => $object->getDoc_version_label(),
+        'doc_date_creation' => $object->getDoc_date_creation(),
+        'doc_user_creation' => $object->getDoc_user_creation(),
+        'doc_date_modification' => $object->getDoc_date_modification(),
+        'doc_user_modification' => $object->getDoc_user_modification(),
+        'doc_date_revision_req' => $object->getDoc_date_revision_req(),
+        'doc_user_revision_req' => $object->getDoc_user_revision_req(),
+        'doc_date_revision_actual' => $object->getDoc_date_revision_actual(),
+        'doc_date_revision_next' => $object->getDoc_date_revision_next(),
+        'doc_status_general' => $object->getDoc_status_general(),
+        'doc_status_revision' => $object->getDoc_status_revision(),
+        'doc_reference' => $object->getDoc_reference(),
+        'country' => $object->getCountry(),
+        'company' => $object->getCompany(),
+        'location' => $object->getLocation(),
+        'id_process' => $object->getId_process(),
+        'id_thread' => $object->getId_thread(),
+        'id_activity' => $object->getId_activity()
         );
 
-        $id = (int) $object->getId();
-        $lang = (string) $object->getLang();
+        $id = (int) $object->getDoc_id();
         
-        if (!$this->getProcessValue($id,$lang)) {
+        if (!$this->getDocInfo($id)) {
             if (!$this->insert($data))
                 throw new \Exception('insert statement can\'t be executed');
             return true;
-        } elseif ($this->getProcessValue($id,$lang)) {
+        } elseif ($this->getDocInfo($id)) {
             $this->update(
                 $data,
                 array(
-                    'id_incident' => $id, 
-                    'lang' => $lang,
+                    'doc_id' => $id
                     )
             );
             return true;
@@ -179,11 +210,10 @@ class DocsLibraryTable extends AbstractTableGateway {
         }
     }
 
-    public function updateProcessMain($id,$lang,$data)
+    public function updateDoc($data,$id)
     {
         $id = (int) $id;
-        $lang = (string) $lang;
-        $this->update($data, array('id' => $id, 'lang' => $lang));
+        $this->update($data, array('doc_id' => $id));
     }
 }
-?>
+

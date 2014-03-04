@@ -5,7 +5,7 @@ Ext.define('Asgard.store.Menus', {
     //autoload: false,
     proxy: {
         type: 'ajax',
-        url: '/commons/getmenus',
+        url: 'commons/getmenus',
         reader: {
             type: 'json',
             root: 'results'

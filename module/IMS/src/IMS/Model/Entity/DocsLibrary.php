@@ -54,6 +54,9 @@ class DocsLibrary {
     protected $country;
     protected $company;
     protected $location;
+    protected $id_process;
+    protected $id_thread;
+    protected $id_activity;
    
     public function __construct(array $options = null)
     {
@@ -352,5 +355,34 @@ class DocsLibrary {
         $this->location = $location;
         return $this;
     }
+    
+    public function getId_process() {
+        return $this->id_process;
+    }
+
+    public function getId_thread() {
+        return $this->id_thread;
+    }
+
+    public function getId_activity() {
+        return $this->id_activity;
+    }
+
+    public function setId_process($id_process) {
+        $this->id_process = $id_process;
+        return $this;
+    }
+
+    public function setId_thread($id_thread) {
+        $this->id_thread = $id_thread;
+        return $this;
+    }
+
+    public function setId_activity($id_activity) {
+        $this->id_activity = $id_activity;
+        return $this;
+    }
+
+
 
 }

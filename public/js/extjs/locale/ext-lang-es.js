@@ -312,12 +312,12 @@ Ext.define("Ext.locale.es.form.field.Time", {
 
 Ext.define("Ext.locale.es.form.CheckboxGroup", {
     override: "Ext.form.CheckboxGroup",
-    blankText: "Debe seleccionar al menos un étem de este grupo"
+    blankText: "Debe seleccionar al menos un ítem de este grupo"
 });
 
 Ext.define("Ext.locale.es.form.RadioGroup", {
     override: "Ext.form.RadioGroup",
-    blankText: "Debe seleccionar un étem de este grupo"
+    blankText: "Debe seleccionar un ítem de este grupo"
 });
 
 // This is needed until we can refactor all of the locales into individual files

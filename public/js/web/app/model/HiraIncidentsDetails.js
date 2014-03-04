@@ -10,18 +10,20 @@
 Ext.define('Asgard.model.HiraIncidentsDetails', {
     extend: 'Ext.data.Model',
     fields: [
-        'in_IdIdentificacionNC',
-        'in_IdTipoNC', 
-        'in_IdEstadoNC',
-        'vc_TipoIncidente',
-        'in_IdTipoIncidente', 
-        'in_IdPais',
-        'in_IdUbicacion',
-        'vc_Descripcion',
-        'vc_fullName', 
-        'vc_Email', 
-        'vc_UsuarioCreacion', 
-        'dt_FechaCreacion', 
-        'in_Estado'
+        'id_incident',
+        'nonconformity_type', 
+        'status',
+        'val_incident',
+        'id_type', 
+        'country',
+        'company',
+        'location',
+        'description',
+        'owner_fullname', 
+        'owner_email', 
+        'user_create', 
+        'date_incident', 
+        'date_creation', 
+        'general_status'
     ]
 });

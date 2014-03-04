@@ -29,7 +29,7 @@
 
 .app-header-logout a {
   padding: 30px 10px 10px 30px;
-  background: url(/images/default/logout.png) no-repeat 10px 30px;
+  background: url(../../images/default/logout.png) no-repeat 10px 30px;
   color: yellow;
   font-size: 12px;
   font-weight: bold;

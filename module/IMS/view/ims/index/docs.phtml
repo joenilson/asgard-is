@@ -26,7 +26,13 @@ var required = '<span style="color:red;font-weight:bold" data-qtip="Required">*<
 
 var DocsLibraryStore<?= $this->panelId; ?> = Ext.create('Asgard.store.DocsLibrary');
 
+var innerStore = new Ext.create('Asgard.store.DocsRequest');
+ 
 var toolsLibrary = [{
+    type: 'gear',
+    tooltip: 'View Change Requests Queue',
+    handler: fnLibraryTool
+},{
     type: 'plus',
     tooltip: 'Add Document',
     handler: fnLibraryTool
@@ -44,7 +50,7 @@ var DocumentsGrid<?=$this->panelId; ?> = Ext.create('Asgard.lib.grid.documents',
     store: DocsLibraryStore<?= $this->panelId; ?>,
     tools: toolsLibrary
 });
-    
+
 var libraryViewport<?=$this->panelId; ?> = Ext.create('Ext.panel.Panel', {
     layout: {
         type: 'vbox',
@@ -61,26 +67,69 @@ var windowDoc = Ext.create('Ext.window.Window',{
     closable: true,
     closeAction: 'hide',
     maximizable : true,
-    layout: 'fit'
+    layout: 'fit',
+    height : document.documentElement.clientHeight - 50
+    //height : document.documentElement.clientHeight - 50
 });
+
 
 function fnLibraryTool(me, e, object, tool) {
     var panel = tool.up('panel');
+    
     //Ext.get('toolType').value=tool.type;
     //Ext.get('processType').value=panel.name;
-    
-    windowDoc.removeAll();
-    windowDoc.setTitle('Add New Document');
-    
-    var formRequest = new Ext.create('Asgard.lib.forms.docsNewDocument',{
-        flex: 1
-        //width: '100%',
-        //petitionerFieldValue: '<?=$this->userData[0]['alias']; ?>',
-        //emailFieldValue: '<?=$this->userData[0]['alias']; ?>'
-    });
-    
-    windowDoc.add(formRequest);
-    windowDoc.show();
+    var formCCL = formDataRequest<?=$this->panelId; ?>;
+    var values = formCCL.getForm().getValues();
+    var companies = values['companiesCombo'];
+    var countries = values['countriesCombo'];
+    var locations = values['locationsCombo'];
+    var winContent;
+        if(companies.length !== 4){
+            Ext.Msg.alert('Advertencia','Escoja primero Compañia, Pais y Ubicacion');
+        }else{
+            windowDoc.removeAll();
+            if(tool.type==='plus'){
+                windowDoc.setTitle('Add New Document');
+                winContent = new Ext.create('Asgard.lib.forms.docsNewDocument',{
+                    flex: 1
+                });
+            }else{
+                windowDoc.setTitle('Change Request Queue');
+                innerStore.load({ params: { module: 'master', company: companies, country: countries, location: locations } });
+                grid = new Ext.create('Asgard.lib.grid.changeRequestQueue',{
+                        store: innerStore,
+                        flex: 1,
+                        region: 'north'
+                    });
+                    
+                winContent = Ext.create('Ext.Panel', {
+                    frame: false,
+                    width: 580,
+                    //height: 400,
+                    //flex: 1,
+                    layout: 'border',
+                    items: [
+                        grid, {
+                        id: 'detailPanel',
+                        region: 'center',
+                        bodyPadding: 7,
+                        bodyStyle: "background: #ffffff;",
+                        html: 'Please Select a request to see the details.'
+                    }]
+                });
+                
+                grid.getSelectionModel().on('selectionchange', function(sm, selectedRecord) {
+                    if (selectedRecord.length) {
+                        var detailPanel = Ext.getCmp('detailPanel');
+                        detailPanel.update(Ext.htmlDecode(selectedRecord[0].data.desc_request));
+                    }
+                });
+                
+            }
+            windowDoc.add(winContent);
+
+            windowDoc.show();
+        }
     
 }
 
@@ -96,24 +145,18 @@ function fnCCLProcess(button, opt, obj) {
 
 function showDocument(obj, id, component, icon, event, record){
     windowDoc.removeAll();
-    windowDoc.setTitle('Document Viewer');
-    var document = Ext.create('Ext.ux.panel.PDF', {
+    windowDoc.setTitle(record.data.doc_desc);
+    var documentFile = Ext.create('Ext.ux.panel.PDF', {
         flex: 1,
-        //width    : 450,
-        height   : 500,
+        //layout: 'border',
+        width    : document.documentElement.clientWidth - 50,
+        //height   : document.documentElement.clientHeight - 50,
         pageScale: 1,                                           // Initial scaling of the PDF. 1 = 100%
         src      : record.data.doc_file, // URL to the PDF - Same Domain or Server with CORS Support
+        loadingMessage: 'Cargando Documento'
     });
-    windowDoc.add(document);
+    windowDoc.add(documentFile);
     windowDoc.show();
-    /*
-    console.log(obj);
-    console.log(id);
-    console.log(component);
-    console.log(icon);
-    console.log(event);
-    console.log(record.data.doc_file);
-    */
 }
 
 function showRequest(obj, id, component, icon, event, record){
@@ -122,89 +165,63 @@ function showRequest(obj, id, component, icon, event, record){
     
     var formRequest = new Ext.create('Asgard.lib.forms.docsChangeRequest',{
         flex: 1,
+        baseParams: { doc_id: record.data.doc_id },
         petitionerFieldValue: '<?=$this->userData[0]['alias']; ?>',
-        emailFieldValue: '<?=$this->userData[0]['alias']; ?>'
+        emailFieldValue: '<?=$this->userData[0]['email']; ?>'
     });
     
     windowDoc.add(formRequest);
     windowDoc.show();
-        /*
-    console.log(obj);
-    console.log(id);
-    console.log(component);
-    console.log(icon);
-    console.log(event);
-    console.log(record.data.doc_file);
-    */
+
 }
 
  var tpl = new Ext.XTemplate(
-        'File processed on the server.<br />',
+        'File processed on the server.{result}<br />',
         'Name: {fileName}<br />',
         'Size: {fileSize:fileSize}'
     );
 
 function fnSubmit (button, object)
-{
-    //var m = sm.getSelection();
-    var form = fsf;
-    if(form.getForm().isValid()){
-        form.submit({
-            url: 'ims/requestdocchange',
-            waitMsg: 'Uploading your photo...',
-            success: function(fp, o, m, r) {
-                console.log('bueno');
-                console.log(fp);
-                console.log(o);
-                console.log(m);
-                console.log(r);
-                Ext.Msg.alert('Success', tpl.apply(o.result));
-            },
-            failure: function(fp, o, u){
-                console.log('malo');
-                console.log(fp);
-                console.log(o);
-                console.log(u);
-            }
-            
-        });
-        
-    }
-    /*
-    var values = form.getForm().getValues();
+{   
+    var formCCL = formDataRequest<?=$this->panelId; ?>;
+    var values = formCCL.getForm().getValues();
     var companies = values['companiesCombo'];
     var countries = values['countriesCombo'];
     var locations = values['locationsCombo'];
 
-    this.selectedIds = [];
-    this.parentId = "";
-    Ext.each(m, function(rec) {
-        this.selectedIds.push(rec.get("id"));
-    }, this);
-    
-    var actionType = Ext.get('toolType').value;
-    var processType = Ext.get('processType').value;
-    
-    Ext.Ajax.request({
-        url: 'ims/processdiagram',
-        params: {
-            company: companies, 
-            country: countries, 
-            location: locations,
-            type: actionType,
-            process: processType,
-            type_process: 'p',
-            values: Ext.encode(this.selectedIds),
-            module: 'diagram'
-        },
-        success: function(response){
-            fnStoreReload(processType,'A',companies,countries,locations,processType);
-            storeProcessList<?=$this->panelId; ?>.reload();
-            processWindow<?=$this->panelId; ?>.hide();
-        }
-    });
-    */
-    
+    console.log(button);
+    console.log(object);
+    var form = button.up('panel');
+    if(form.getForm().isValid()){
+        form.submit({
+            params: {
+                company: companies, 
+                country: countries, 
+                location: locations
+            },
+            waitMsg: 'Uploading your document...',
+            success: function(fp, o) {
+                console.log(fp);
+                console.log(o);
+                Ext.Msg.alert('Success', tpl.apply(o.result));
+                win = button.up('panel');
+                win.getForm().reset();
+                windowDoc.hide();
+                if(button.name==='add'){
+                    DocumentsGrid<?=$this->panelId; ?>.suspendEvents();
+                    DocsLibraryStore<?= $this->panelId; ?>.load({ params: { module: 'master', company: companies, country: countries, location: locations}});
+                    DocumentsGrid<?=$this->panelId; ?>.reconfigure(DocsLibraryStore<?= $this->panelId; ?>);
+                    DocumentsGrid<?=$this->panelId; ?>.resumeEvents();
+                }
+            },
+            failure: function(fp, o){
+                Ext.Msg.alert('Failure', o.result.message);
+                console.log(fp);
+                console.log(o);
+            }
+        });
+        
+    }
 }
     Ext.getCmp('content-panel').getActiveTab().add(libraryViewport<?= $this->panelId; ?>);
 

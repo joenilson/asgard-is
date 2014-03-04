@@ -5,7 +5,7 @@ Ext.define('Asgard.store.Countries', {
     //autoload: false,
     proxy: {
         type: 'ajax',
-        url: '/commons/getcountries',
+        url: 'commons/getcountries',
         reader: {
             type: 'json',
             root: 'results'

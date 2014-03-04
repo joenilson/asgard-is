@@ -58,7 +58,7 @@ Ext.define('Asgard.view.Header', {
             ref: 'headerLogout',
             name: 'headerLogout',
 	    flex: 0,
-            html: "<a href='/auth/logout'>"+this.appHeaderLogoutText+"</a>",
+            html: "<a href='auth/logout'>"+this.appHeaderLogoutText+"</a>",
         }, this.headerLogout);
 	
 	this.items = this.items || [];

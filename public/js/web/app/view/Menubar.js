@@ -23,7 +23,7 @@ Ext.define('Asgard.view.Menubar' ,{
     initComponent: function() {
 	
     	Ext.Ajax.request({
-    	    url: '/commons/getusermenus',
+    	    url: 'commons/getusermenus',
     	    params: {
     	        module: 'menu'
     	    },
@@ -36,7 +36,7 @@ Ext.define('Asgard.view.Menubar' ,{
                             model: 'Asgard.model.Submenus',
                             proxy: {
                                 type: 'ajax',
-                                url: '/commons/getusersubmenus',
+                                url: 'commons/getusersubmenus',
 				extraParams: {
 				    idmenu: data.results[key].mid,
 				    module: 'submenu'

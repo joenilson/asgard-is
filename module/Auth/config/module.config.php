@@ -1,4 +1,5 @@
 <?php
+
 return array(
     'controllers' => array(
         'invokables' => array(
@@ -8,16 +9,16 @@ return array(
     'router' => array(
         'routes' => array(
             'auth' => array(
-                'type'    => 'Zend\Mvc\Router\Http\Literal',
+                'type' => 'Zend\Mvc\Router\Http\Literal',
                 'options' => array(
                     // Change this to something specific to your module
-                    'route'    => '/auth',
+                    'route' => '/auth',
                     'defaults' => array(
                         // Change this value to reflect the namespace in which
                         // the controllers for your module are found
                         //'__NAMESPACE__' => 'Auth\Controller',
-                        'controller'    => 'Auth\Controller\Index',
-                        'action'        => 'index',
+                        'controller' => 'Auth\Controller\Index',
+                        'action' => 'index',
                     ),
                 ),
                 'may_terminate' => true,
@@ -27,57 +28,57 @@ return array(
                     // you may want to remove it and replace it with more
                     // specific routes.
                     /*
-                    'default' => array(
-                        'type'    => 'Segment',
+                      'default' => array(
+                      'type'    => 'Segment',
+                      'options' => array(
+                      'route'    => '[/:action]',
+                      'constraints' => array(
+                      'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                      'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                      ),
+                      'defaults' => array(
+                      ),
+                      ),
+                      ),
+                     */
+                    'login' => array(
+                        'type' => 'Segment',
                         'options' => array(
-                            'route'    => '[/:action]',
+                            'route' => '/login',
                             'constraints' => array(
                                 'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                             ),
                             'defaults' => array(
+                                'action' => 'login'
                             ),
                         ),
                     ),
-                    */
-                    'login' => array(
-                		'type'    => 'Segment',
-                		'options' => array(
-            				'route'    => '/login',
-            				'constraints' => array(
-        						'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-        						'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
-            				),
-            				'defaults' => array(
-                                'action' => 'login'
-            				),
-                		),
-                    ),
                     'authenticate' => array(
-                		'type'    => 'Segment',
-                		'options' => array(
-            				'route'    => '/authenticate',
-            				'constraints' => array(
-        						'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-        						'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
-            				),
-            				'defaults' => array(
-        						'action' => 'authenticate'
-            				),
-                		),
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/authenticate',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'authenticate'
+                            ),
+                        ),
                     ),
                     'logout' => array(
-                		'type'    => 'Segment',
-                		'options' => array(
-            				'route'    => '/logout',
-            				'constraints' => array(
-        						'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-        						'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
-            				),
-            				'defaults' => array(
-        				        'action' => 'logout'
-            				),
-                		),
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/logout',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'logout'
+                            ),
+                        ),
                     ),
                 ),
             ),
