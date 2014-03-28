@@ -30,6 +30,11 @@ use IMS\Model\ProcessMainView;
 use IMS\Model\ProcessRelationsTable;
 use IMS\Model\ProcessThreadTable;
 use IMS\Model\ProcessOwnerTable;
+use IMS\Model\CSBTable;
+use IMS\Model\CSITable;
+use IMS\Model\CSRTable;
+use IMS\Model\CSSTable;
+use IMS\Model\ManagementIndicatorsTable;
 
 class Module implements AutoloaderProviderInterface
 {
@@ -76,20 +81,31 @@ class Module implements AutoloaderProviderInterface
     {
         return array(
             'factories' => array(
-                
-                /*
-                'IMS\Model\hiraDocumentsTable'=> function($sm){
-                    $dbAdapter = $sm->get('Application\Db\AdapterTwo');
-                    $table = new hiraDocumentsTable($dbAdapter);
+                'IMS\Model\CSBTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new CSBTable($dbAdapter);
                     return $table;
                 },
-                
-                'IMS\Model\hiraIncidentsTable'=> function($sm){
-                    $dbAdapter = $sm->get('Application\Db\AdapterTwo');
-                    $table = new hiraIncidentsTable($dbAdapter);
+                'IMS\Model\CSITable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new CSITable($dbAdapter);
                     return $table;
                 },
-                 * */
+                'IMS\Model\CSRTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new CSRTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\CSSTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new CSSTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\ManagementIndicatorsTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new ManagementIndicatorsTable($dbAdapter);
+                    return $table;
+                },
                 'IMS\Model\DocsLibraryTable'=> function($sm){
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new DocsLibraryTable($dbAdapter);

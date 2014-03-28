@@ -50,8 +50,14 @@ class CSIController extends AbstractActionController {
     protected $countriesTable;
     protected $locationsTable;
     protected $systemConfig;
+    protected $managementindicatorsTable;
+    protected $csbTable;
+    protected $csiTable;
+    protected $csrTable;
+    protected $cssTable;
+    
 
-    public function csiAction(){
+    public function indexAction(){
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
         $userData = $this->getServiceLocator()->get('userSessionData');
         $lang = $userPrefs[0]['lang'];
@@ -82,6 +88,12 @@ class CSIController extends AbstractActionController {
     public function csbAction(){
         $dataResult = array();
         $dataResult['success'] = true;
+        return new ViewModel($dataResult); 
+    }
+    
+    public function csbjsonAction(){
+        $dataResult = array();
+        $dataResult['success'] = true;
         return new JsonModel($dataResult); 
     }
     
@@ -89,6 +101,51 @@ class CSIController extends AbstractActionController {
         $dataResult = array();
         $dataResult['success'] = true;
         return new JsonModel($dataResult); 
+    }
+    
+    private function getCSBTable()
+    {
+        if(!$this->csbTable){
+            $sm = $this->getServiceLocator();
+            $this->csbTable = $sm->get('IMS\Model\CSBTable');
+        }
+        return $this->csbTable;
+    }
+    
+    private function getCSITable()
+    {
+        if(!$this->csiTable){
+            $sm = $this->getServiceLocator();
+            $this->csiTable = $sm->get('IMS\Model\CSITable');
+        }
+        return $this->csiTable;
+    }
+
+    private function getCSRTable()
+    {
+        if(!$this->csrTable){
+            $sm = $this->getServiceLocator();
+            $this->csrTable = $sm->get('IMS\Model\CSRTable');
+        }
+        return $this->csrTable;
+    }
+
+    private function getCSSTable()
+    {
+        if(!$this->cssTable){
+            $sm = $this->getServiceLocator();
+            $this->cssTable = $sm->get('IMS\Model\CSSTable');
+        }
+        return $this->cssTable;
+    }
+    
+    private function getManagementIndicatorsTable()
+    {
+        if(!$this->managementindicatorsTable){
+            $sm = $this->getServiceLocator();
+            $this->managementindicatorsTable = $sm->get('IMS\Model\ManagementIndicatorsTable');
+        }
+        return $this->managementindicatorsTable;
     }
     
     private function getDocsHelpersTable()
