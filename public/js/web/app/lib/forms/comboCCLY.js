@@ -19,7 +19,7 @@
  * @version 1.0.0 devel
  * @author Joe Nilson <joenilson@gmail.com>
  */
-Ext.define('Asgard.lib.forms.comboCCL', { 
+Ext.define('Asgard.lib.forms.comboCCLY', { 
     extend: 'Ext.form.Panel',
     border: false,
     plain: false,
@@ -42,6 +42,7 @@ Ext.define('Asgard.lib.forms.comboCCL', {
     companiesField: undefined,
     countriesField: undefined,
     locationsField: undefined,
+    dateField: undefined,
     submitButton: undefined,
 
     initComponent: function(){
@@ -78,21 +79,34 @@ Ext.define('Asgard.lib.forms.comboCCL', {
             store: new Ext.create('Asgard.store.Locations')
         }, this.locationsField);
         
+        this.dateField = this.dateField || [];
+        this.dateField = Ext.Object.merge({
+            xtype: 'yearscombo',
+            width: 120
+        }, this.dateField);
+        
         this.submitButton = this.submitButton || []; 
         this.submitButton = Ext.Object.merge({
                 text: this.textSubmitButton,
                 name: 'search',
                 type: 'button',
                 scope: me,
-                handler: fnCCLProcess
+                handler: this.fnCCLDProcess
             }, this.submitButton);
         
         this.items = this.items || [];
-        this.items = this.items.concat([ this.companiesField, this.countriesField, this.locationsField ]);
+        this.items = this.items.concat([ this.companiesField, this.countriesField, this.locationsField, this.dateField ]);
         
         this.buttons = this.buttons || [];
         this.buttons = this.buttons.concat([ '->', this.submitButton ]);
         
         this.callParent();
+    },
+    fnCCLDProcess: function(button, event) {
+        panel = button.up('panel');
+        form = panel.getForm();
+        panelGrid = panel.innerGrid;
+        console.log(form.getValues());
+        console.log(panelGrid);
     }
 });

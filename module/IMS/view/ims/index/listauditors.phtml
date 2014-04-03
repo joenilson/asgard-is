@@ -1,0 +1,53 @@
+<?php
+
+/* 
+ * Copyright (C) 2014 Joe Nilson <joenilson at gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+?>
+<script>
+function deployCombos(comboField,comboValue){
+    var combo = formAuditores<?=$this->panelId;?>.getForm().findField(comboField);
+    var store = combo.store;
+    store.on("load", function(store, records, state, operation, opts) {
+            combo.setValue(comboValue);
+    });
+}
+
+function fnCCLProcess (){
+
+}
+
+var formAuditores<?=$this->panelId;?> = Ext.create('Asgard.lib.forms.comboCCLY', { innerGrid: 'gridAuditores' });
+//var gridAuditores<?=$this->panelId;?> = Ext.create('Asgard.lib.grid.csi', { id: 'gridAuditores' });
+
+deployCombos('companiesCombo','<?=$this->companyId;?>');
+deployCombos('countriesCombo','<?=$this->countryId;?>');
+deployCombos('locationsCombo','<?=$this->locationId;?>');
+
+var libraryViewport<?=$this->panelId; ?> = Ext.create('Ext.panel.Panel', {
+    layout: {
+        type: 'vbox',
+        align : 'stretch',
+        pack  : 'start'
+    },
+    items: [
+        formAuditores<?=$this->panelId; ?>
+   ]
+});
+
+Ext.getCmp('content-panel').getActiveTab().add(libraryViewport<?= $this->panelId; ?>);
+</script>

@@ -20,7 +20,7 @@ Ext.define('Asgard.view.Viewport', {
     'Asgard.lib.forms.RequestTreatment','Asgard.lib.gridToolbarViewer','Asgard.lib.grid.hira',
     'Asgard.store.HiraNCType','Asgard.lib.forms.IncidentTypeCombo','Asgard.lib.forms.NonConformityCombo',
     'Asgard.lib.window.windowGeneric','Asgard.lib.forms.hiraNewIncident','Asgard.lib.forms.comboCCLD','Asgard.lib.forms.yearMonthField',
-    'Asgard.lib.grid.csi'
+    'Asgard.lib.grid.csi','Asgard.lib.forms.YearsCombo','Asgard.lib.forms.comboCCLY'
   ],
   menuTitleText: 'Main Menu',
     defaults: {

@@ -88,6 +88,20 @@ return array(
                             ),
                         ),
                     ),
+                    'listauditors' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/listauditors[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'listauditors'
+                            ),
+                        ),
+                    ),
                     'diagram' => array(
                         'type'    => 'Segment',
                         'options' => array(

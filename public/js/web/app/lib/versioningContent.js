@@ -40,6 +40,7 @@ Ext.define('Asgard.lib.versioningContent', {
         //layout: 'anchor',
         //flex: 3
     },
+
     initComponent: function() {
         
         this.registryField = this.registryField || {};

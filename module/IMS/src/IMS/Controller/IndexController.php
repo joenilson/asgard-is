@@ -141,6 +141,20 @@ class IndexController extends AbstractActionController
         );
     }
     
+    public function listauditorsAction()
+    {
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        return array(
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'lang'=>$lang,
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
+        );
+    }
+    
     public function hiraspecsAction()
     {
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
