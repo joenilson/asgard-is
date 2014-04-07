@@ -102,6 +102,62 @@ return array(
                             ),
                         ),
                     ),
+                    'getauditors' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/getauditors[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'getauditors'
+                            ),
+                        ),
+                    ),
+                    'saveauditor' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/saveauditor[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'saveauditor'
+                            ),
+                        ),
+                    ),
+                    'formauditor' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/formauditor[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'formauditor'
+                            ),
+                        ),
+                    ),
+                    'deleteauditor' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/deleteauditor[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'deleteauditor'
+                            ),
+                        ),
+                    ),
                     'diagram' => array(
                         'type'    => 'Segment',
                         'options' => array(

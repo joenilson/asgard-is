@@ -91,7 +91,7 @@ Ext.define('Asgard.lib.forms.comboCCLY', {
                 name: 'search',
                 type: 'button',
                 scope: me,
-                handler: this.fnCCLDProcess
+                handler: fnCCLYProcess
             }, this.submitButton);
         
         this.items = this.items || [];
@@ -101,12 +101,5 @@ Ext.define('Asgard.lib.forms.comboCCLY', {
         this.buttons = this.buttons.concat([ '->', this.submitButton ]);
         
         this.callParent();
-    },
-    fnCCLDProcess: function(button, event) {
-        panel = button.up('panel');
-        form = panel.getForm();
-        panelGrid = panel.innerGrid;
-        console.log(form.getValues());
-        console.log(panelGrid);
     }
 });

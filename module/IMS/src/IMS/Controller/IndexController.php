@@ -24,6 +24,7 @@ use AsgardLib\Versioning\Scope;
 
 class IndexController extends AbstractActionController
 {
+    protected $auditorsTable;
     protected $adminusersubmodulesTable;
     protected $contentTextTable;
     protected $hiraMatrixTable;
@@ -153,6 +154,129 @@ class IndexController extends AbstractActionController
             'lang'=>$lang,
             'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
         );
+    }
+    
+    public function getauditorsAction()
+    {
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $company = $request->getQuery('company');
+        $country = $request->getQuery('country');
+        $location = $request->getQuery('location');
+        $year = $request->getQuery('year');
+
+        $sql = $this->getAuditorsTable();
+        $dataAuditors = $sql->getAuditorsByCCLY($company,$country,$location,$year);
+        if($dataAuditors){
+            $dataResult['success']=true;
+            $dataResult['results']=$dataAuditors;
+        }else{
+            $dataResult['success']=false;
+            $dataResult['results']="";
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function saveauditorAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $company = $request->getPost('companiesCombo');
+        $country = $request->getPost('countriesCombo');
+        $location = $request->getPost('locationsCombo');
+        $year = $request->getPost('yearsCombo');
+        $auditorName = $request->getPost('auditorname');
+        $auditorDip = $request->getPost('auditordip');
+        $id = $request->getPost('auditor_id');
+        $date_creation = \date('Y-m-d h:i:s');
+        
+        $dataResult = array();
+        
+        $sql = $this->getAuditorsTable();
+        
+        $auditor = new \IMS\Model\Entity\Auditors();
+        $auditor->setAuditor_name($auditorName)
+                ->setAuditor_dip($auditorDip)
+                ->setYear($year)
+                ->setCompany($company)
+                ->setCountry($country)
+                ->setLocation($location)
+                ->setUser_id($userData->id)
+                ->setDate_creation($date_creation);
+        if($id){
+            $auditor->setId($id);
+        }
+        
+        $dataResult['success'] = true; 
+        try {
+            $sql->save($auditor);
+            
+        } catch (\Exception $ex) {
+            //$error = $ex;
+            
+            $dataResult['success'] = false; 
+            $dataResult['message'] = $ex; 
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function formauditorAction(){
+        $request = $this->getRequest();
+        $auditor_id = $request->getPost('id');
+        $company = $request->getPost('company');
+        $country = $request->getPost('country');
+        $location = $request->getPost('location');
+        $year = $request->getPost('year');
+        
+        $sql = $this->getAuditorsTable();
+        $AuditorData = $sql->getAuditorsByCCLYId($company,$country,$location,$year,$auditor_id);
+        $dataResult = array();
+        foreach($AuditorData as $key=>$values){
+            $dataResult['companiesCombo']=$values['company'];
+            $dataResult['countriesCombo']=$values['country'];
+            $dataResult['locationsCombo']=$values['location'];
+            $dataResult['yearsCombo']=$values['year'];
+            $dataResult['auditorname']=$values['auditor_name'];
+            $dataResult['auditordip']=$values['auditor_dip'];
+        }
+        $data = array();
+        if(count($dataResult>0)){
+            $data['success']=true;
+            $data['data']=$dataResult;
+        }else{
+            $data['success']=false;
+            $data['data']="";
+        }
+        
+        return new JsonModel($data);
+    }
+    
+    public function deleteauditorAction(){
+        $request = $this->getRequest();
+        $auditor_id = $request->getPost('id');
+        $company = $request->getPost('company');
+        $country = $request->getPost('country');
+        $location = $request->getPost('location');
+        $year = $request->getPost('year');
+        $sql = $this->getAuditorsTable();
+        $AuditorData = $sql->getAuditorsByCCLYId($company,$country,$location,$year,$auditor_id);
+        $dataRemove = array();
+        if(count($AuditorData)>0){
+            $dataRemove['company']=$company;
+            $dataRemove['country']=$country;
+            $dataRemove['location']=$location;
+            $dataRemove['year']=$year;
+            $dataRemove['id']=$auditor_id;
+            $sql->delete($dataRemove);
+        }
+        
+        
+        return new JsonModel(array('success'=>true));
     }
     
     public function hiraspecsAction()
@@ -1020,7 +1144,16 @@ class IndexController extends AbstractActionController
     	return $result;
     }
     
-    public function getDocsHelpersTable()
+    private function getAuditorsTable()
+    {
+    	if (!$this->auditorsTable) {
+            $sm = $this->getServiceLocator();
+            $this->auditorsTable = $sm->get('IMS\Model\AuditorsTable');
+    	}
+    	return $this->auditorsTable;
+    }
+    
+    private function getDocsHelpersTable()
     {
     	if (!$this->docsHelpersTable) {
             $sm = $this->getServiceLocator();
