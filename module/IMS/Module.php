@@ -36,6 +36,8 @@ use IMS\Model\CSRTable;
 use IMS\Model\CSSTable;
 use IMS\Model\ManagementIndicatorsTable;
 use IMS\Model\AuditorsTable;
+use IMS\Model\AuditsTable;
+use IMS\Model\AuditTypeTable;
 
 class Module implements AutoloaderProviderInterface
 {
@@ -85,6 +87,16 @@ class Module implements AutoloaderProviderInterface
                 'IMS\Model\AuditorsTable'=> function($sm){
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new AuditorsTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\AuditsTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new AuditsTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\AuditTypeTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new AuditTypeTable($dbAdapter);
                     return $table;
                 },
                 'IMS\Model\CSBTable'=> function($sm){

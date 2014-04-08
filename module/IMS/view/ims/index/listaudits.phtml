@@ -20,7 +20,7 @@
 ?>
 <script>
 function deployCombos(comboField,comboValue){
-    var combo = formAuditores<?=$this->panelId;?>.getForm().findField(comboField);
+    var combo = formAudits<?=$this->panelId;?>.getForm().findField(comboField);
     var store = combo.store;
     store.on("load", function(store, records, state, operation, opts) {
             combo.setValue(comboValue);
@@ -33,15 +33,15 @@ function fnCCLProcess(button, opt, obj) {
     var countries = values['countriesCombo'];
     var locations = values['locationsCombo'];
 
-    AuditorsStore<?= $this->panelId; ?>.load({ params: { module: 'master', company: companies, country: countries, location: locations, year: years }});
+    AuditsStore<?= $this->panelId; ?>.load({ params: { module: 'master', company: companies, country: countries, location: locations }});
 
 }
-var AuditorsStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.Auditors');
+var AuditsStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.Audits');
 
-var formAuditores<?=$this->panelId;?> = Ext.create('Asgard.lib.forms.comboCCLY', { innerGrid: 'gridAuditores' });
-var gridAuditores<?=$this->panelId;?> = Ext.create('Asgard.lib.grid.auditors', { 
-    store: AuditorsStore<?= $this->panelId; ?>, 
-    id: 'gridAuditores'
+var formAudits<?=$this->panelId;?> = Ext.create('Asgard.lib.forms.comboCCL', { innerGrid: 'gridAudits' });
+var gridAudits<?=$this->panelId;?> = Ext.create('Asgard.lib.grid.audits', { 
+    store: AuditsStore<?= $this->panelId; ?>, 
+    id: 'gridAudits'
 });
 
 
@@ -57,8 +57,8 @@ var libraryViewport<?=$this->panelId; ?> = Ext.create('Ext.panel.Panel', {
         pack  : 'start'
     },
     items: [
-        formAuditores<?=$this->panelId; ?>,
-        gridAuditores<?=$this->panelId; ?>
+        formAudits<?=$this->panelId; ?>,
+        gridAudits<?=$this->panelId; ?>
    ]
 });
 

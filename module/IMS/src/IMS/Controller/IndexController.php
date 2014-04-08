@@ -25,6 +25,8 @@ use AsgardLib\Versioning\Scope;
 class IndexController extends AbstractActionController
 {
     protected $auditorsTable;
+    protected $auditsTable;
+    protected $audittypeTable;
     protected $adminusersubmodulesTable;
     protected $contentTextTable;
     protected $hiraMatrixTable;
@@ -277,6 +279,99 @@ class IndexController extends AbstractActionController
         
         
         return new JsonModel(array('success'=>true));
+    }
+    
+    public function listauditsAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        return array(
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'lang'=>$lang,
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
+        );
+    }
+    
+    public function getauditsAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $company = $request->getQuery('company');
+        $country = $request->getQuery('country');
+        $location = $request->getQuery('location');
+
+        $sql = $this->getAuditsTable();
+        $dataAudits = $sql->getAuditsByCCL($company,$country,$location,$lang);
+        if($dataAudits){
+            $dataResult['success']=true;
+            $dataResult['results']=$dataAudits;
+        }else{
+            $dataResult['success']=false;
+            $dataResult['results']="";
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function saveauditAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $company = $request->getPost('companiesCombo');
+        $country = $request->getPost('countriesCombo');
+        $location = $request->getPost('locationsCombo');
+        $auditDesc = $request->getPost('auditdesc');
+        $auditType = $request->getPost('audittype');
+        $auditDate = $request->getPost('auditdate');
+        $auditFile = $request->getPost('auditfile');
+        $id = $request->getPost('audit_id');
+        $date_creation = \date('Y-m-d h:i:s');
+        
+        $dataResult = array();
+        
+        $sql = $this->getAuditorsTable();
+        
+        $auditor = new \IMS\Model\Entity\Auditors();
+        $auditor->setAuditor_name($auditorName)
+                ->setAuditor_dip($auditorDip)
+                ->setYear($year)
+                ->setCompany($company)
+                ->setCountry($country)
+                ->setLocation($location)
+                ->setUser_id($userData->id)
+                ->setDate_creation($date_creation);
+        if($id){
+            $auditor->setId($id);
+        }
+        
+        $dataResult['success'] = true; 
+        try {
+            $sql->save($auditor);
+            
+        } catch (\Exception $ex) {
+            //$error = $ex;
+            
+            $dataResult['success'] = false; 
+            $dataResult['message'] = $ex; 
+        }
+        return new JsonModel($dataResult);        
+    }
+    
+    public function removeauditAction(){
+        
+    }
+    
+    public function formauditAction(){
+        
+    }
+    
+    public function getaudittypeAction(){
+        
     }
     
     public function hiraspecsAction()
@@ -1151,6 +1246,24 @@ class IndexController extends AbstractActionController
             $this->auditorsTable = $sm->get('IMS\Model\AuditorsTable');
     	}
     	return $this->auditorsTable;
+    }
+    
+    private function getAuditsTable()
+    {
+    	if (!$this->auditsTable) {
+            $sm = $this->getServiceLocator();
+            $this->auditsTable = $sm->get('IMS\Model\AuditsTable');
+    	}
+    	return $this->auditsTable;
+    }
+    
+    private function getAuditTypeTable()
+    {
+    	if (!$this->audittypeTable) {
+            $sm = $this->getServiceLocator();
+            $this->audittypeTable = $sm->get('IMS\Model\AuditTypeTable');
+    	}
+    	return $this->audittypeTable;
     }
     
     private function getDocsHelpersTable()

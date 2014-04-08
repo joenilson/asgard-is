@@ -158,6 +158,90 @@ return array(
                             ),
                         ),
                     ),
+                    'getaudits' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/getaudits[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'getaudits'
+                            ),
+                        ),
+                    ),
+                    'saveaudit' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/saveaudit[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'saveaudit'
+                            ),
+                        ),
+                    ),
+                    'listaudits' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/listaudits[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'listaudits'
+                            ),
+                        ),
+                    ),
+                    'removeaudit' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/removeaudit[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'removeaudit'
+                            ),
+                        ),
+                    ),
+                    'formaudit' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/formaudit[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'formaudit'
+                            ),
+                        ),
+                    ),
+                    'getaudittype' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/getaudittype[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'getaudittype'
+                            ),
+                        ),
+                    ),
                     'diagram' => array(
                         'type'    => 'Segment',
                         'options' => array(
