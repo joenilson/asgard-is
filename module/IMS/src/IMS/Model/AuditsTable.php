@@ -82,6 +82,21 @@ class AuditsTable extends AbstractTableGateway {
             return false;
         return $row->toArray();
     }
+
+    public function getAuditByCCLI($company,$country,$location,$id)
+    {
+        $row = $this->select(function (Select $select) use ($company,$country,$location,$id){
+            $select->where(array('company'=>(string) $company,
+                                'country'=>(string) $country,
+                                'location'=>(string) $location,
+                                'id'=>(int) $id));
+            $select->order('audit_date DESC');
+        });
+        if (!$row)
+            return false;
+        return $row->toArray();
+    }
+
     
     public function getNextId() {
         $resultSet = $this->select(function (Select $select) {
@@ -121,17 +136,17 @@ class AuditsTable extends AbstractTableGateway {
             $data['id'] = $id;
         }
         
-        if (!$this->getAuditByCCLId($company,$country,$location,$id)) {
+        if (!$this->getAuditByCCLI($company,$country,$location,$id)) {
             if (!$this->insert($data)){
                 throw new \Exception('insert statement can\'t be executed');
             }
-            return true;
+            return $data['id'];
         } elseif ($this->getAuditByCCLId($company,$country,$location,$id)) {
             $data['date_modification']=date('Y-m-d h:i:s');
             $data['user_mod'] = $data['user_id'];
             $this->update( $data, 
                     array('company'=> $company,'country'=> $country,'location'=>$location,'id' => $id) );
-            return true;
+            return $data['id'];
         } else {
             throw new \Exception('company or country or location or id in object Audits does not exist');
         }

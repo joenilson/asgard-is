@@ -158,7 +158,6 @@ Ext.define('Asgard.lib.forms.docsNewDocument',{
                 }
             }
         }, this.documentProcessField);
-
         
         this.documentOwnerField = this.documentOwnerField || [];
         this.documentOwnerField = Ext.Object.merge({

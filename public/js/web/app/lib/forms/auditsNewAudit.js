@@ -77,15 +77,42 @@ Ext.define('Asgard.lib.forms.auditsNewAudit',{
             allowBlank:false
         }, this.auditdescField);
         
-        this.audittypeField = this.auditdescField || [];
-        this.auditordipField = Ext.Object.merge({
-            fieldLabel: this.auditordipText,
-            afterLabelTextTpl: this.required,
-            xtype: 'textfield',
-            name: 'auditordip',
+        this.audittypeField = this.audittypeField || [];
+        this.audittypeField = Ext.Object.merge({
+            xtype: 'audittypecombo',
             anchor: '100%',
-            allowBlank:false
-        }, this.auditordipField);
+            store: new Ext.create('Asgard.store.AuditType')
+        }, this.audittypeField);
+        
+        this.auditdateField = this.auditdateField || [];
+        this.auditdateField = Ext.Object.merge({
+            fieldLabel: this.auditdateText,
+            xtype: 'vdatefield',
+            name: 'auditdate',
+            width: 350,
+            allowBlank:true
+        }, this.auditdateField);
+        
+        this.auditfileField = this.auditfileField || [];
+        this.auditfileField = Ext.Object.merge({
+            fieldLabel: this.auditfileText,
+            allowBlank:false,
+            xtype: 'filefield',
+            anchor: '100%',
+            emptyText: this.fileFieldEmptyText,
+            name: 'audit_file',
+            listeners:{
+                afterrender:function(cmp){
+                    cmp.fileInputEl.set({
+                        accept:'application/pdf'
+                    });
+                }
+            },
+            buttonText: '',
+            buttonConfig: {
+                iconCls: 'upload-icon'
+            }
+        }, this.documentFileField);        
         
         this.companiesField = this.companiesField || [];
         this.companiesField = Ext.Object.merge({
@@ -127,13 +154,7 @@ Ext.define('Asgard.lib.forms.auditsNewAudit',{
             anchor: '100%',
             store: new Ext.create('Asgard.store.Locations')
         }, this.locationsField);
-        
-        this.yearsField = this.yearsField || [];
-        this.yearsField = Ext.Object.merge({
-            xtype: 'yearscombo',
-            anchor: '100%'
-        }, this.yearsField);
-        
+
         this.submitButton = this.submitButton || []; 
         this.submitButton = Ext.Object.merge({
                 text: this.textSubmitButton,
@@ -159,9 +180,10 @@ Ext.define('Asgard.lib.forms.auditsNewAudit',{
             this.companiesField,
             this.countriesField,
             this.locationsField,
-            this.yearsField,
-            this.auditornameField,
-            this.auditordipField
+            this.auditdescField,
+            this.audittypeField,
+            this.auditdateField,
+            this.auditfileField
         ]);
         
         this.buttons = this.buttons || [];

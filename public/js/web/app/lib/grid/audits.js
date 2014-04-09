@@ -146,7 +146,7 @@ Ext.define('Asgard.lib.grid.audits',{
             windowDoc.removeAll();
             if(tool.type==='plus'){
                 windowDoc.setTitle(this.titleNewAuditor);
-                winContent = new Ext.create('Asgard.lib.forms.auditorsNewAuditor',{
+                winContent = new Ext.create('Asgard.lib.forms.auditsNewAudit',{
                     flex: 1,
                     innerPanel: panel
                 });

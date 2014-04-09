@@ -24,7 +24,6 @@ Ext.define('Asgard.lib.forms.AuditTypeCombo',{
     extend: 'Ext.form.ComboBox',
     alias: 'widget.audittypecombo',
     fieldLabelText: 'Audit Type',
-    store: Ext.create('Asgard.store.AuditType'),
     queryMode: 'local',
     displayField: 'description',
     valueField: 'id',

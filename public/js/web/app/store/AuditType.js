@@ -6,6 +6,7 @@
 Ext.define('Asgard.store.AuditType', {
     extend: 'Ext.data.Store',
     model: 'Asgard.model.AuditType',
+    autoLoad: true,
     proxy: {
         type: 'ajax',
         url: 'ims/getaudittype',

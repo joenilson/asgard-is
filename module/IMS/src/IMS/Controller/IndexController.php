@@ -326,38 +326,44 @@ class IndexController extends AbstractActionController
         $country = $request->getPost('countriesCombo');
         $location = $request->getPost('locationsCombo');
         $auditDesc = $request->getPost('auditdesc');
-        $auditType = $request->getPost('audittype');
+        $auditType = $request->getPost('audittypeCombo');
         $auditDate = $request->getPost('auditdate');
-        $auditFile = $request->getPost('auditfile');
+        $files =  $request->getFiles()->toArray();
         $id = $request->getPost('audit_id');
         $date_creation = \date('Y-m-d h:i:s');
-        
+
         $dataResult = array();
         
-        $sql = $this->getAuditorsTable();
+        $sql = $this->getAuditsTable();
         
-        $auditor = new \IMS\Model\Entity\Auditors();
-        $auditor->setAuditor_name($auditorName)
-                ->setAuditor_dip($auditorDip)
-                ->setYear($year)
+        $audit = new \IMS\Model\Entity\Audits();
+        $audit->setAudit_desc($auditDesc)
+                ->setAudit_type($auditType)
+                ->setAudit_date($auditDate)
                 ->setCompany($company)
                 ->setCountry($country)
                 ->setLocation($location)
                 ->setUser_id($userData->id)
+                ->setStatus('A')
                 ->setDate_creation($date_creation);
         if($id){
-            $auditor->setId($id);
+            $audit->setId($id);
         }
-        
         $dataResult['success'] = true; 
         try {
-            $sql->save($auditor);
+            $newId = $sql->save($audit);
             
         } catch (\Exception $ex) {
             //$error = $ex;
             
             $dataResult['success'] = false; 
-            $dataResult['message'] = $ex; 
+            $dataResult['message'] = $ex->getMessage(); 
+        }
+        
+        if($newId!=0){
+            $fileName = "audit_{$company}_{$country}_{$location}_".$newId.".pdf";
+            $this->savefile('library/audits', $files['audit_file'], $fileName, false, null);
+            $sql->update(array('audit_file'=>'library/audits/'.$fileName),array('id'=>$newId));
         }
         return new JsonModel($dataResult);        
     }
@@ -371,7 +377,20 @@ class IndexController extends AbstractActionController
     }
     
     public function getaudittypeAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang=$userPrefs[0]['lang'];
         
+
+        $sql = $this->getAuditTypeTable();
+        $dataAuditTypes = $sql->getAuditTypeByLang($lang);
+        if($dataAuditTypes){
+            $dataResult['success']=true;
+            $dataResult['results']=$dataAuditTypes;
+        }else{
+            $dataResult['success']=false;
+            $dataResult['results']="";
+        }
+        return new JsonModel($dataResult);
     }
     
     public function hiraspecsAction()
@@ -1238,6 +1257,55 @@ class IndexController extends AbstractActionController
         $result = new JsonModel($data);
     	return $result;
     }
+    
+    private function savefile($path,$file,$filename,$thumb,$thumbname){
+        $filesPath = getcwd().DIRECTORY_SEPARATOR.'public'.DIRECTORY_SEPARATOR.$path.DIRECTORY_SEPARATOR;
+        
+        if (!is_dir($filesPath)){
+            mkdir($filesPath,0777,true);
+        }
+        
+        if(!move_uploaded_file($file['tmp_name'],$filesPath.$filename)) {
+            return false;
+        } else {
+            if($thumb){
+                move_uploaded_file($file,$filesPath.$thumbname);
+                //queda pendiente la creación del thumbnail
+                $this->imageResize($filesPath.$thumbname);
+            }
+            return true;
+        }
+    }
+    
+    private function imageResize($file)
+    {
+        $imagine = new \Imagine\Gd\Imagine();
+
+        $imagine->open($file)
+        ->thumbnail(new \Imagine\Image\Box(150,150))
+        ->save($file);
+    }
+
+    private function imageProcess($file,$dst)
+    {
+        $maxHeight = 640;
+        $imagine = new \Imagine\Gd\Imagine();
+        list($width, $height, $type, $attribs) = getimagesize($file);
+
+        if($height>$maxHeight){
+            $newWidth = ceil(($maxHeight*$height)/$width);
+
+            $imagine->open($file)
+                    ->thumbnail(new \Imagine\Image\Box($newWidth,$maxHeight))
+                    ->save($file);
+        }
+
+        $mode = \Imagine\Image\ImageInterface::THUMBNAIL_OUTBOUND;
+        $imagine->open($file)
+                ->thumbnail(new \Imagine\Image\Box(150,150),$mode)
+                ->save($dst);
+    }
+
     
     private function getAuditorsTable()
     {
