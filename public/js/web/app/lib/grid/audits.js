@@ -38,11 +38,12 @@ Ext.define('Asgard.lib.grid.audits',{
     toolAddText: 'Add Values',
     toolRemoveText: 'Remove Entry',
     toolChangeText: 'Change Entry',
-    
-    titleNewAuditor: 'Add new Audit',
-    titleEditAuditor: 'Edit Audit data',
-    
+    toolViewDocText: 'View File',
+    titleNewAudit: 'Add new Audit',
+    titleEditAudit: 'Edit Audit data',
+    loadingFileText: 'Loading Document.. please wait...',
     chooseTitleText: 'Warning',
+    emptyFileMessage: 'No document is linked to this record...',
     chooseTitleBodyDelete: 'You are choosing delete this item. <br />Would you like to save your changes?',
     chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?',
     
@@ -73,9 +74,17 @@ Ext.define('Asgard.lib.grid.audits',{
             items: [
                 {text: this.idText, flex: 1, sortable: false, hidden: false, dataIndex: 'id', filter: true},
                 {text: this.nameText, flex: 3, sortable: false, hidden: false, dataIndex: 'audit_desc', filter: true},
-                {text: this.typeText, flex: 1, sortable: false, hidden: false, dataIndex: 'audit_type', filter: true},
-                {text: this.dateText, flex: 2, sortable: false, hidden: false, dataIndex: 'audit_date', filter: true},
-                {text: this.fileText, flex: 1, sortable: false, hidden: false, dataIndex: 'audit_file', filter: true}
+                {text: this.typeText, flex: 1, sortable: false, hidden: false, dataIndex: 'desc_type', filter: true},
+                {text: this.dateText, flex: 1, sortable: false, hidden: false, dataIndex: 'audit_date', renderer : Ext.util.Format.dateRenderer('Y-m-d'), filter: true},
+                {xtype: 'actioncolumn', flex: 1, sortable: false, menuDisabled: true,
+                    items: [
+                        {
+                            icon: 'images/default/16x16/view.png',
+                            tooltip: this.toolViewDocText,
+                            scope: this,
+                            handler: this.showDocument
+                        }]
+                }
             ]
         };
         
@@ -124,10 +133,6 @@ Ext.define('Asgard.lib.grid.audits',{
         if(event!=='yes'){
             this.processChangeValue.setValue('no');
         }
-        console.log(event);
-        console.log(e);
-        console.log(object);
-        console.log(tool);
     },
     
     fnLibraryTool: function(event, e, object, tool) {
@@ -145,7 +150,7 @@ Ext.define('Asgard.lib.grid.audits',{
         }else{
             windowDoc.removeAll();
             if(tool.type==='plus'){
-                windowDoc.setTitle(this.titleNewAuditor);
+                windowDoc.setTitle(this.titleNewAudit);
                 winContent = new Ext.create('Asgard.lib.forms.auditsNewAudit',{
                     flex: 1,
                     innerPanel: panel
@@ -179,13 +184,13 @@ Ext.define('Asgard.lib.grid.audits',{
                     this
                 );
             }else if(tool.type==='gear'){
-                windowDoc.setTitle(this.titleEditAuditor);
+                windowDoc.setTitle(this.titleEditAudit);
                 var selGrid = panel.getSelectionModel().getSelection();
                 var AuditId = selGrid[0].data.id;
                 var AuditCompany = selGrid[0].data.company;
                 var AuditCountry = selGrid[0].data.country;
                 var AuditLocation = selGrid[0].data.location;
-                var editAudit = Ext.create('Asgard.lib.forms.auditNewAudit', { innerPanel: panel, baseParams: { audit_id: AuditId }});
+                var editAudit = Ext.create('Asgard.lib.forms.auditsNewAudit', { innerPanel: panel, baseParams: { audit_id: AuditId }});
                 editAudit.getForm().load({
                     url: 'ims/formaudit',
                     params: { id: AuditId, country: AuditCountry, company: AuditCompany, location: AuditLocation },
@@ -197,5 +202,31 @@ Ext.define('Asgard.lib.grid.audits',{
                 windowDoc.show();
             }
         }  
-    }    
+    },
+    showDocument: function(obj, id, component, icon, event, record){
+        if(record.data.audit_file!==''){
+            var windowDoc = this.createWindow();
+            //windowDoc.removeAll();
+            windowDoc.setTitle(record.data.audit_desc);
+            var documentFile = Ext.create('Ext.ux.panel.PDF', {
+                flex: 1,
+                //layout: 'border',
+                //width    : document.documentElement.clientWidth - 50,
+                height   : document.documentElement.clientHeight - 50,
+                pageScale: 1,                                           // Initial scaling of the PDF. 1 = 100%
+                src      : '/'+record.data.audit_file, // URL to the PDF - Same Domain or Server with CORS Support
+                loadingMessage: this.loadingFileText
+            });
+            windowDoc.add(documentFile);
+            windowDoc.show();
+        }else{
+            Ext.MessageBox.alert({
+                title: this.chooseTitleText,
+                msg: this.emptyFileMessage,
+                icon: Ext.MessageBox.WARNING,
+                buttons: Ext.MessageBox.OK,
+                scope: this
+            });
+        }
+    }
 });

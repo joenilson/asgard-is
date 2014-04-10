@@ -53,7 +53,7 @@ Ext.define('Asgard.lib.forms.auditsNewAudit',{
     width: 540,
     
     initComponent: function(){
-        
+        var me = this;
         var audits = new Ext.create('Asgard.store.Audits');
         this.auditdescField = this.auditdescField || [];
         this.auditdescField = Ext.Object.merge({
@@ -96,7 +96,7 @@ Ext.define('Asgard.lib.forms.auditsNewAudit',{
         this.auditfileField = this.auditfileField || [];
         this.auditfileField = Ext.Object.merge({
             fieldLabel: this.auditfileText,
-            allowBlank:false,
+            allowBlank:true,
             xtype: 'filefield',
             anchor: '100%',
             emptyText: this.fileFieldEmptyText,

@@ -29,7 +29,7 @@ Ext.define('Asgard.model.Audits', {
         {name: 'audit_type', type: 'float' }, 
         {name: 'desc_type', type: 'tring' }, 
         {name: 'audit_desc', type: 'string' }, 
-        {name: 'audit_date', type: 'date', format: 'c' }, 
+        {name: 'audit_date', type: 'date', format: 'Y-m-d' }, 
         {name: 'audit_file', type: 'string' }, 
         {name: 'status', type: 'string' },
         {name: 'user_id', type: 'float' },

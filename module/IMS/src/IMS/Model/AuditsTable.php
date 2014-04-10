@@ -75,7 +75,7 @@ class AuditsTable extends AbstractTableGateway {
             $select->where(array('company'=>(string) $company,
                                 'country'=>(string) $country,
                                 'location'=>(string) $location,
-                                'id'=>(int) $id));
+                                $this->table_name.'.id'=>(int) $id));
             $select->order('audit_date DESC');
         });
         if (!$row)
@@ -118,7 +118,6 @@ class AuditsTable extends AbstractTableGateway {
             'audit_type' => $object->getAudit_type(),
             'audit_desc' => $object->getAudit_desc(),
             'audit_date' => $object->getAudit_date(),
-            'audit_file' => $object->getAudit_file(),
             'status' => $object->getStatus(),
             'user_id' => $object->getUser_id(),
             'date_creation' => $object->getDate_creation(),
@@ -130,10 +129,14 @@ class AuditsTable extends AbstractTableGateway {
         $company = (string) $object->getCompany();
         $country = (string) $object->getCountry();
         $location = (string) $object->getLocation();
-        
+        $file = (string) $object->getAudit_file();
         if(empty($id)){
             $id = $this->getNextId();
             $data['id'] = $id;
+        }
+        
+        if(!empty($file)){
+            $data['audit_file'] = $file;
         }
         
         if (!$this->getAuditByCCLI($company,$country,$location,$id)) {
@@ -141,7 +144,7 @@ class AuditsTable extends AbstractTableGateway {
                 throw new \Exception('insert statement can\'t be executed');
             }
             return $data['id'];
-        } elseif ($this->getAuditByCCLId($company,$country,$location,$id)) {
+        } elseif ($this->getAuditByCCLI($company,$country,$location,$id)) {
             $data['date_modification']=date('Y-m-d h:i:s');
             $data['user_mod'] = $data['user_id'];
             $this->update( $data, 
@@ -160,4 +163,5 @@ class AuditsTable extends AbstractTableGateway {
         $id = (int) $id;
         $this->update($data, array('company'=> $company,'country'=> $country,'location'=>$location,'id' => $id));
     }
+
 }

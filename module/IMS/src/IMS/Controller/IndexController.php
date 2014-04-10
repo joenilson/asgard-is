@@ -359,8 +359,10 @@ class IndexController extends AbstractActionController
             $dataResult['success'] = false; 
             $dataResult['message'] = $ex->getMessage(); 
         }
+
+        $valid = new \Zend\Validator\File\UploadFile();
         
-        if($newId!=0){
+        if(isset($newId) AND $valid->isValid($files['audit_file'])){
             $fileName = "audit_{$company}_{$country}_{$location}_".$newId.".pdf";
             $this->savefile('library/audits', $files['audit_file'], $fileName, false, null);
             $sql->update(array('audit_file'=>'library/audits/'.$fileName),array('id'=>$newId));
@@ -369,11 +371,61 @@ class IndexController extends AbstractActionController
     }
     
     public function removeauditAction(){
-        
+        $request = $this->getRequest();
+        $audit_id = $request->getPost('id');
+        $company = $request->getPost('company');
+        $country = $request->getPost('country');
+        $location = $request->getPost('location');
+        $sql = $this->getAuditsTable();
+        $AuditData = $sql->getAuditByCCLI($company,$country,$location,$audit_id);
+        $dataRemove = array();
+        $dataResult = array();
+        $dataResult['success'] = false;
+        if(count($AuditData)>0){
+            $dataRemove['company']=$company;
+            $dataRemove['country']=$country;
+            $dataRemove['location']=$location;
+            $dataRemove['id']=$audit_id;
+            $sql->delete($dataRemove);
+            $this->removefile($AuditData[0]['audit_file']);
+            $dataResult['success'] = true;
+        }
+        return new JsonModel($dataResult);
     }
     
     public function formauditAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+
+        $request = $this->getRequest();
+        $audit_id = $request->getPost('id');
+        $company = $request->getPost('company');
+        $country = $request->getPost('country');
+        $location = $request->getPost('location');
         
+        $sql = $this->getAuditsTable();
+        $AuditData = $sql->getAuditByCCLId($company,$country,$location,$audit_id,$lang);
+        $dataResult = array();
+        foreach($AuditData as $key=>$values){
+            $dataResult['companiesCombo']=$values['company'];
+            $dataResult['countriesCombo']=$values['country'];
+            $dataResult['locationsCombo']=$values['location'];
+            $dataResult['audittypeCombo']=$values['audit_type'];
+            $dataResult['auditdesc']=$values['audit_desc'];
+            $dataResult['auditdate']=$values['audit_date'];
+            //$dataResult['auditfile']=$values['audit_file'];
+        }
+        $data = array();
+        if(count($dataResult>0)){
+            $data['success']=true;
+            $data['data']=$dataResult;
+        }else{
+            $data['success']=false;
+            $data['data']="";
+        }
+        
+        return new JsonModel($data);
     }
     
     public function getaudittypeAction(){
@@ -1276,6 +1328,18 @@ class IndexController extends AbstractActionController
             return true;
         }
     }
+    
+    private function removefile($filename){
+        $filesPath = getcwd().DIRECTORY_SEPARATOR.'public'.DIRECTORY_SEPARATOR;
+        
+        if(is_file($filesPath.$filename)){
+            unlink($filesPath.$filename);
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
     
     private function imageResize($file)
     {
