@@ -242,6 +242,76 @@ return array(
                             ),
                         ),
                     ),
+                    'getauditplan' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/getauditplan[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'getauditplan'
+                            ),
+                        ),
+                    ),
+                    'saveauditplan' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/saveauditplan[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'saveauditplan'
+                            ),
+                        ),
+                    ),
+                    'auditplan' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/auditplan[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'auditplan'
+                            ),
+                        ),
+                    ),
+                    'removeauditplan' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/removeauditplan[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'removeauditplan'
+                            ),
+                        ),
+                    ),
+                    'formauditplan' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/formauditplan[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'formauditplan'
+                            ),
+                        ),
+                    ),
                     'diagram' => array(
                         'type'    => 'Segment',
                         'options' => array(

@@ -27,6 +27,7 @@ class IndexController extends AbstractActionController
     protected $auditorsTable;
     protected $auditsTable;
     protected $audittypeTable;
+    protected $auditplanTable;
     protected $adminusersubmodulesTable;
     protected $contentTextTable;
     protected $hiraMatrixTable;
@@ -443,6 +444,160 @@ class IndexController extends AbstractActionController
             $dataResult['results']="";
         }
         return new JsonModel($dataResult);
+    }
+    
+    public function auditplanAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        return array(
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'lang'=>$lang,
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
+        );        
+    }
+    
+    public function getauditplanAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $company = $request->getQuery('company');
+        $country = $request->getQuery('country');
+        $location = $request->getQuery('location');
+        $audit_date = $request->getQuery('monthfield');
+        
+        $time=strtotime($audit_date);
+        $month=date("m",$time);
+        $year=date("Y",$time);
+        
+        $date = "{$year}-{$month}";
+        
+        $sql = $this->getAuditPlanTable();
+        $dataAuditPlan = $sql->getAuditPlanByCCL($company,$country,$location,$date);
+        if($dataAuditPlan){
+            $dataResult['success']=true;
+            $dataResult['results']=$dataAuditPlan;
+        }else{
+            $dataResult['success']=false;
+            $dataResult['results']="";
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function saveauditplanAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $company = $request->getPost('companiesCombo');
+        $country = $request->getPost('countriesCombo');
+        $location = $request->getPost('locationsCombo');
+        $auditDesc = $request->getPost('auditdesc');
+        $auditDateBegin = $request->getPost('auditdatebegin');
+        $auditDateEnd = $request->getPost('auditdateend');
+        $files =  $request->getFiles()->toArray();
+        $id = $request->getPost('auditplan_id');
+        $date_creation = \date('Y-m-d h:i:s');
+
+        $dataResult = array();
+        
+        $sql = $this->getAuditPlanTable();
+        
+        $audit = new \IMS\Model\Entity\AuditPlan();
+        $audit->setDescription($auditDesc)
+                ->setAudit_begin($auditDateBegin)
+                ->setAudit_end($auditDateEnd)
+                ->setCompany($company)
+                ->setCountry($country)
+                ->setLocation($location)
+                ->setUser_id($userData->id)
+                ->setStatus('A')
+                ->setDate_creation($date_creation);
+        if($id){
+            $audit->setId($id);
+        }
+        $dataResult['success'] = true; 
+        try {
+            $newId = $sql->save($audit);
+            
+        } catch (\Exception $ex) {
+            //$error = $ex;
+            
+            $dataResult['success'] = false; 
+            $dataResult['message'] = $ex->getMessage(); 
+        }
+
+        $valid = new \Zend\Validator\File\UploadFile();
+        
+        if(isset($newId) AND $valid->isValid($files['auditplan_file'])){
+            $fileName = "auditplan_{$company}_{$country}_{$location}_".$newId.".pdf";
+            $this->savefile('library/audits', $files['auditplan_file'], $fileName, false, null);
+            $sql->update(array('audit_file'=>'library/audits/'.$fileName),array('id'=>$newId));
+        }
+        return new JsonModel($dataResult);        
+        
+    }
+    
+    public function removeauditplanAction(){
+        $request = $this->getRequest();
+        $auditplan_id = $request->getPost('id');
+        $company = $request->getPost('company');
+        $country = $request->getPost('country');
+        $location = $request->getPost('location');
+        $sql = $this->getAuditPlanTable();
+        $AuditData = $sql->getAuditPlanByCCLId($company,$country,$location,$auditplan_id);
+        $dataRemove = array();
+        $dataResult = array();
+        $dataResult['success'] = false;
+        if(count($AuditData)>0){
+            $dataRemove['company']=$company;
+            $dataRemove['country']=$country;
+            $dataRemove['location']=$location;
+            $dataRemove['id']=$auditplan_id;
+            $sql->delete($dataRemove);
+            $this->removefile($AuditData[0]['audit_file']);
+            $dataResult['success'] = true;
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function formauditplanAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+
+        $request = $this->getRequest();
+        $auditplan_id = $request->getPost('id');
+        $company = $request->getPost('company');
+        $country = $request->getPost('country');
+        $location = $request->getPost('location');
+        
+        $sql = $this->getAuditPlanTable();
+        $AuditData = $sql->getAuditPlanByCCLId($company,$country,$location,$auditplan_id);
+        $dataResult = array();
+        foreach($AuditData as $key=>$values){
+            $dataResult['companiesCombo']=$values['company'];
+            $dataResult['countriesCombo']=$values['country'];
+            $dataResult['locationsCombo']=$values['location'];
+            $dataResult['auditdesc']=$values['description'];
+            $dataResult['auditdatebegin']=$values['audit_begin'];
+            $dataResult['auditdateend']=$values['audit_end'];
+        }
+        $data = array();
+        if(count($dataResult>0)){
+            $data['success']=true;
+            $data['data']=$dataResult;
+        }else{
+            $data['success']=false;
+            $data['data']="";
+        }
+        
+        return new JsonModel($data);
     }
     
     public function hiraspecsAction()
@@ -1396,6 +1551,15 @@ class IndexController extends AbstractActionController
             $this->audittypeTable = $sm->get('IMS\Model\AuditTypeTable');
     	}
     	return $this->audittypeTable;
+    }
+    
+    private function getAuditPlanTable()
+    {
+    	if (!$this->auditplanTable) {
+            $sm = $this->getServiceLocator();
+            $this->auditplanTable = $sm->get('IMS\Model\AuditPlanTable');
+    	}
+    	return $this->auditplanTable;
     }
     
     private function getDocsHelpersTable()

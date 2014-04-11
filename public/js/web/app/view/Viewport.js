@@ -21,8 +21,9 @@ Ext.define('Asgard.view.Viewport', {
     'Asgard.store.HiraNCType','Asgard.lib.forms.IncidentTypeCombo','Asgard.lib.forms.NonConformityCombo',
     'Asgard.lib.window.windowGeneric','Asgard.lib.forms.hiraNewIncident','Asgard.lib.forms.comboCCLD','Asgard.lib.forms.yearMonthField',
     'Asgard.lib.grid.csi','Asgard.lib.forms.YearsCombo','Asgard.lib.forms.comboCCLY','Asgard.lib.grid.auditors',
-    'Asgard.store.Auditors','Asgard.lib.forms.auditorsNewAuditor',,'Asgard.lib.forms.auditsNewAudit',
-    'Asgard.lib.grid.audits','Asgard.store.Audits','Asgard.lib.forms.AuditTypeCombo','Asgard.store.AuditType'
+    'Asgard.store.Auditors','Asgard.lib.forms.auditorsNewAuditor','Asgard.lib.forms.auditsNewAudit',
+    'Asgard.lib.grid.audits','Asgard.store.Audits','Asgard.lib.forms.AuditTypeCombo','Asgard.store.AuditType',
+    'Asgard.lib.grid.auditplan','Asgard.store.AuditPlan','Asgard.lib.forms.auditsNewAuditPlan'
   ],
   menuTitleText: 'Main Menu',
     defaults: {

@@ -38,6 +38,7 @@ use IMS\Model\ManagementIndicatorsTable;
 use IMS\Model\AuditorsTable;
 use IMS\Model\AuditsTable;
 use IMS\Model\AuditTypeTable;
+use IMS\Model\AuditPlanTable;
 
 class Module implements AutoloaderProviderInterface
 {
@@ -97,6 +98,11 @@ class Module implements AutoloaderProviderInterface
                 'IMS\Model\AuditTypeTable'=> function($sm){
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new AuditTypeTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\AuditPlanTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new AuditPlanTable($dbAdapter);
                     return $table;
                 },
                 'IMS\Model\CSBTable'=> function($sm){
