@@ -36,6 +36,9 @@ Ext.define('Asgard.lib.forms.hiraNewIncident',{
     
     textSubmitButton: 'Send',
     textCancelButton: 'Cancel',
+
+    successText: 'Incident loaded succefully!',
+    failureText: 'Something is wrong, please try it again',
     
     objectRegisterCodeField: undefined,
     objectCompanyField: undefined,
@@ -144,7 +147,9 @@ Ext.define('Asgard.lib.forms.hiraNewIncident',{
                     var countryCombo = panel.getForm().findField('countriesCombo').getValue();
                     var locationCombo = panel.getForm().findField('locationsCombo').getValue();
                     var threadCombo = panel.getForm().findField('threadsCombo');
-                    threadCombo.store.load({params: {pid: combo.getValue('id'), company: companyCombo, country: countryCombo, location: locationCombo }});
+                    var ownerCombo = panel.getForm().findField('doc_owner');
+                    threadCombo.store.load({params: { pid: combo.getValue('id'), company: companyCombo, country: countryCombo, location: locationCombo }});
+                    ownerCombo.store.load({params: { pid: combo.getValue('id') }});
                 }
             }
             
@@ -289,7 +294,32 @@ Ext.define('Asgard.lib.forms.hiraNewIncident',{
 
         this.callParent();
     },
-    fnSubmit: function(){
-        console.log('submit here!');
+    fnSubmit: function(button, event) {
+        var me = this;
+        var form = button.up('panel').getForm();
+        var panel = button.up('panel');
+        var companyId = panel.items.getAt(0).getValue();
+        var countryId = panel.items.getAt(1).getValue();
+        var locationId = panel.items.getAt(2).getValue();
+        var yearmonth = panel.items.getAt(3).getValue();
+        var grid = panel.innerPanel;
+        console.log(grid);
+        if(form.isValid()){
+            form.submit({
+                params: {
+                    module: 'imsincidents'
+                },
+                success: function(fp, o, m, r) {
+                    form.reset();
+                    var winActive = Ext.WindowManager.getActive();
+                    winActive.hide();
+                    //grid.getStore().load({params: { company: companyId, country: countryId, location: locationId, monthfield: yearmonth }});
+                    Ext.Msg.alert('Success', me.successText);
+                },
+                failure: function(fp, o, u){
+                    Ext.Msg.alert('Failure', me.failureText);
+                }
+            });
+        }
     }
 });

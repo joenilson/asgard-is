@@ -199,10 +199,12 @@ function fnLibraryTool(action,mark,form,tool){
     console.log(tool);
     if(tool.type==='plus'){
         winAdd = Ext.create('Asgard.lib.window.windowGeneric',{
+            height: document.documentElement.clientHeight - 50,
             title: 'Crear Incidente',
+            innerPanel : <?php echo 'HIRAGridIL' . $this->panelId; ?>
         });
         winAdd.add(Ext.create('Asgard.lib.forms.hiraNewIncident'));
-        console.log('mostramos la ventana para agregar un incidente');
+        //console.log('mostramos la ventana para agregar un incidente');
         winAdd.show();
     }
 }

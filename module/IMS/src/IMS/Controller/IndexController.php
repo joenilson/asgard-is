@@ -961,7 +961,6 @@ class IndexController extends AbstractActionController
         if($module){
             $sql = $this->getDocsRequestTable();
             $listDocuments = $sql->getRequestByCCL($company,$country,$location);
-            //print_r($listDocuments);
             if(!empty($listDocuments)){
                 $data['success']=true;
                 $data['results']=$listDocuments;
@@ -979,9 +978,13 @@ class IndexController extends AbstractActionController
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
         $lang = $userPrefs[0]['lang'];
         
+        $request = $this->getRequest();
+        $pid = $request->getQuery('pid');
+        
         $sql = $this->getProcessOwnerTable();
-        $listDocuments = $sql->getOwners($lang);
-        //print_r($listDocuments);
+        
+        $listDocuments = (isset($pid) and !empty($pid))?$sql->getOwnersByProcess($pid,$lang):$sql->getOwners($lang);
+        //var_dump($listDocuments);
         if(!empty($listDocuments)){
             $data['success']=true;
             $data['results']=$listDocuments;
@@ -1363,6 +1366,50 @@ class IndexController extends AbstractActionController
         return $result;
     }
 
+    public function newincidentAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        
+        $request = $this->getRequest();
+        $date_create = $request->getPost('IncidentDate');//	2014-02-12
+        $description = $request->getPost('IncidentDesc');//	Se paso de pistolas el inge<br>
+        $company = $request->getPost('companiesCombo');//	0001
+        $country = $request->getPost('countriesCombo');//	0001
+        $request->getPost('doc_owner');//	47
+        $request->getPost('doc_process');//	11
+        $id_type = $request->getPost('incidenttypeCombo');//-1127-in...	7
+        $location = $request->getPost('locationsCombo');//	0008
+        $request->getPost('module');//	imsincidents
+        $nonconformity_type = $request->getPost('nonconformityCombo');//	3
+        $request->getPost('registerCode');//	SGI/REG/18/01AA
+        $owner_email = $request->getPost('registerEmail');//	spozo@kolareal.com.do
+        $lastname = $request->getPost('registerLastname');//	Pozo
+        $firstname = $request->getPost('registerName');// Samuel
+        $surname = $request->getPost('registerSurname');//	Del
+        $request->getPost('threadsCombo');//	34
+        $owner_fullname = "$surname $lastname, $firstname";
+        $dataResult = array();
+        
+        $sql = $this->getHiraIncidentsListTable();
+        
+        $incident = new \IMS\Model\Entity\hiraIncidents();
+        $incident->setCompany($company)
+                ->setCountry($country)
+                ->setLocation($location)
+                ->setDate_incident($date_create)
+                ->setDescription($description)
+                ->setNonconformity_type($nonconformity_type)
+                ->setId_type($id_type)
+                ->setOwner_fullname($owner_fullname)
+                ->setOwner_email($owner_email)
+                ->setUser_create($userData->id)
+                ->setStatus('R');
+        $sql->save($incident);
+        
+        $dataResult['success'] = true;
+        return new JsonModel($dataResult);
+    }
+    
     public function saveContentAction()
     {
         $userPrefs = $this->getServiceLocator()->get('userPreferences');

@@ -28,6 +28,7 @@ Ext.define('Asgard.lib.forms.IncidentTypeCombo',{
     anchor: '100%',
     flex: 1,
     forceSelection: true,
+    name: 'incidenttypeCombo',
     fieldLabelText: 'Incident Type',
     emptyTextText: 'No values at this time',
     initComponent: function() {

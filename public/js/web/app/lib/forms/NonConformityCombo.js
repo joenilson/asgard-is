@@ -27,6 +27,7 @@ Ext.define('Asgard.lib.forms.NonConformityCombo',{
     valueField: 'id',
     anchor: '100%',
     flex: 1,
+    name: 'nonconformityCombo',
     forceSelection: true,
     fieldLabelText: 'Non Conformity',
     emptyTextText: 'No values at this time',

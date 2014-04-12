@@ -26,11 +26,13 @@ use Zend\Db\Adapter\Adapter;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Sql\TableIdentifier;
 use Zend\Db\Sql\Select;
+use Zend\Db\Sql\Predicate\Expression;
 use IMS\Model\Entity\ProcessOwner;
 
 class ProcessOwnerTable extends AbstractTableGateway {
 
     protected $table_name = 'process_owner';
+    protected $link_table = 'pld_processowners';
     protected $schema_name = 'ims';
     protected $empty_value = '0000';
 
@@ -58,7 +60,22 @@ class ProcessOwnerTable extends AbstractTableGateway {
         return $rows->toArray();
     }
     
-    public function save(ProcessRelations $object)
+    public function getOwnersByProcess($pid,$lang)
+    {
+        $rows = $this->select(function (Select $select) use ($pid,$lang) {
+            $select->join(
+                array('lt'=>new TableIdentifier($this->link_table, $this->schema_name)), 
+                new Expression ( $this->table_name.'.id = lt.idowner AND lt.id_process='.$pid),
+                array('id_process'=>'id_process'));
+            $select->where(array('lang'=>(string) $lang, 'status'=>'A'));
+            $select->order('id ASC');
+        });
+        if (!$rows)
+            return false;
+        return $rows->toArray();
+    }
+    
+    public function save(ProcessOwner $object)
     {
         $data = array(
             'type' => $object->getType(),

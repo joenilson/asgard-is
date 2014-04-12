@@ -168,6 +168,17 @@ class hiraIncidentsTable extends AbstractTableGateway {
             return false;
         return $row;
     }
+ 
+    public function getNextId() {
+        $resultSet = $this->select(function (Select $select) {
+            $select->columns(array(new Expression('max(id_incident) as id_incident')));
+        });
+        $row = $resultSet->current();
+        $id = $row->id_incident;
+        $id++;
+        return $id;
+    }
+
     
     public function getIncidentTypeList($lang) {
         $row = $this->select(function (Select $select) use ($lang) {
@@ -195,6 +206,8 @@ class hiraIncidentsTable extends AbstractTableGateway {
             'date_modification' => $object->getDate_modification()
         );
 
+        
+        
         $id_incident = (int) $object->id_incident;
         $lang = (string) $object->lang;
         
@@ -216,11 +229,4 @@ class hiraIncidentsTable extends AbstractTableGateway {
         }
     }
 
-    public function updateHiraIncidentType($idi,$lang,$data)
-    {
-        $id_incident = (int) $idi;
-        $lang = (string) $lang;
-        $this->update($data, array('id_incident' => $id_incident, 'lang' => $lang));
-    }
 }
-?>
