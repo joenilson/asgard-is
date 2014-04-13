@@ -66,7 +66,7 @@ Ext.define('Asgard.lib.forms.hiraNewIncident',{
     autoScroll: true,
     bodyStyle: 'padding: 10px;',
     initComponent: function(){
-        
+        var me = this;
         this.objectRegisterCodeField = this.objectRegisterCodeField || [];
         this.objectRegisterCodeField = Ext.Object.merge({
             fieldLabel: this.objectRegisterCodeText,
@@ -317,6 +317,8 @@ Ext.define('Asgard.lib.forms.hiraNewIncident',{
                     Ext.Msg.alert('Success', me.successText);
                 },
                 failure: function(fp, o, u){
+                    console.log(o);
+                    console.log(u);
                     Ext.Msg.alert('Failure', me.failureText);
                 }
             });

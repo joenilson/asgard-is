@@ -312,6 +312,76 @@ return array(
                             ),
                         ),
                     ),
+                    'safetycommittee' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/safetycommittee[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'safetycommittee'
+                            ),
+                        ),
+                    ),
+                    'getsafetycommittee' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/getsafetycommittee[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'getsafetycommittee'
+                            ),
+                        ),
+                    ),
+                    'addsafetycommittee' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/addsafetycommittee[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'addsafetycommittee'
+                            ),
+                        ),
+                    ),
+                    'removesafetycommittee' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/removesafetycommittee[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'removesafetycommittee'
+                            ),
+                        ),
+                    ),
+                    'formsafetycommittee' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/formsafetycommittee[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'formsafetycommittee'
+                            ),
+                        ),
+                    ),
                     'diagram' => array(
                         'type'    => 'Segment',
                         'options' => array(

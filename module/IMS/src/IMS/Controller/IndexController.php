@@ -223,7 +223,7 @@ class IndexController extends AbstractActionController
             //$error = $ex;
             
             $dataResult['success'] = false; 
-            $dataResult['message'] = $ex; 
+            $dataResult['message'] = $ex->getMessage();
         }
         return new JsonModel($dataResult);
     }
@@ -598,6 +598,35 @@ class IndexController extends AbstractActionController
         }
         
         return new JsonModel($data);
+    }
+    
+    public function safetycommitteeAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        return array(
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'lang'=>$lang,
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
+        );
+    }
+    
+    public function getsafetycommitteeAction(){
+        
+    }
+    
+    public function addsafetycommitteeAction(){
+        
+    }
+    
+    public function removesafetycommitteeAction(){
+        
+    }
+    
+    public function formsafetycommitteeAction(){
+        
     }
     
     public function hiraspecsAction()
@@ -1277,15 +1306,19 @@ class IndexController extends AbstractActionController
     public function listhiraAction()
     {
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
         $lang = $userPrefs[0]['lang'];
         $incidentTypeList = $this->getHiraIncidentTypeTable();
         $listIT = $incidentTypeList->getIncidentTypeList($lang);
         
         return array(
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'lang'=>$lang,
             'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0)),
             'listIT'=>$listIT
         );
-        
     }
     
     public function hiralitAction()
@@ -1372,23 +1405,24 @@ class IndexController extends AbstractActionController
         
         $request = $this->getRequest();
         $date_create = $request->getPost('IncidentDate');//	2014-02-12
-        $description = $request->getPost('IncidentDesc');//	Se paso de pistolas el inge<br>
+        $description = htmlspecialchars($request->getPost('IncidentDesc'));//	Se paso de pistolas el inge<br>
         $company = $request->getPost('companiesCombo');//	0001
         $country = $request->getPost('countriesCombo');//	0001
-        $request->getPost('doc_owner');//	47
-        $request->getPost('doc_process');//	11
+        $incident_owner = $request->getPost('doc_owner');//	47
+        $incident_process = $request->getPost('doc_process');//	11
         $id_type = $request->getPost('incidenttypeCombo');//-1127-in...	7
         $location = $request->getPost('locationsCombo');//	0008
-        $request->getPost('module');//	imsincidents
+        $callModule = $request->getPost('module');//	imsincidents
         $nonconformity_type = $request->getPost('nonconformityCombo');//	3
-        $request->getPost('registerCode');//	SGI/REG/18/01AA
-        $owner_email = $request->getPost('registerEmail');//	spozo@kolareal.com.do
-        $lastname = $request->getPost('registerLastname');//	Pozo
-        $firstname = $request->getPost('registerName');// Samuel
-        $surname = $request->getPost('registerSurname');//	Del
-        $request->getPost('threadsCombo');//	34
+        $nonconformity_registry = $request->getPost('registerCode');//	SGI/REG/18/01AA
+        $owner_email = htmlspecialchars(trim($request->getPost('registerEmail')));//	spozo@kolareal.com.do
+        $lastname = $this->PersonName($request->getPost('registerLastname'));//	Pozo
+        $firstname = $this->PersonName($request->getPost('registerName'));// Samuel
+        $surname = $this->PersonName($request->getPost('registerSurname'));//	Del
+        $incident_thread = $request->getPost('threadsCombo');//	34
         $owner_fullname = "$surname $lastname, $firstname";
         $dataResult = array();
+        $date_creation = \date('Y-m-d H:i:s');
         
         $sql = $this->getHiraIncidentsListTable();
         
@@ -1397,16 +1431,28 @@ class IndexController extends AbstractActionController
                 ->setCountry($country)
                 ->setLocation($location)
                 ->setDate_incident($date_create)
+                ->setDate_creation($date_creation)
                 ->setDescription($description)
                 ->setNonconformity_type($nonconformity_type)
                 ->setId_type($id_type)
                 ->setOwner_fullname($owner_fullname)
                 ->setOwner_email($owner_email)
                 ->setUser_create($userData->id)
-                ->setStatus('R');
-        $sql->save($incident);
-        
-        $dataResult['success'] = true;
+                ->setUser_id($userData->id)
+                ->setStatus(1)
+                ->setGeneral_status(1)
+                ->setNonconformity_registry($nonconformity_registry)
+                ->setIncident_process($incident_process)
+                ->setIncident_thread($incident_thread)
+                ->setIncident_owner($incident_owner);
+        try {
+            $savedId = $sql->save($incident);
+            $dataResult['success'] = true;
+            $dataResult['id_created'] = $savedId;
+        } catch (Exception $ex) {
+            $dataResult['success'] = false;
+            $dataResult['message'] = $ex->getMessage();
+        }
         return new JsonModel($dataResult);
     }
     
@@ -1510,6 +1556,10 @@ class IndexController extends AbstractActionController
         }
         $result = new JsonModel($data);
     	return $result;
+    }
+    
+    private function PersonName($name){
+        return ucwords(strtolower(htmlspecialchars(trim($name))));
     }
     
     private function savefile($path,$file,$filename,$thumb,$thumbname){

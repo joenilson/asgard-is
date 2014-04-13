@@ -23,7 +23,8 @@ Ext.define('Asgard.view.Viewport', {
     'Asgard.lib.grid.csi','Asgard.lib.forms.YearsCombo','Asgard.lib.forms.comboCCLY','Asgard.lib.grid.auditors',
     'Asgard.store.Auditors','Asgard.lib.forms.auditorsNewAuditor','Asgard.lib.forms.auditsNewAudit',
     'Asgard.lib.grid.audits','Asgard.store.Audits','Asgard.lib.forms.AuditTypeCombo','Asgard.store.AuditType',
-    'Asgard.lib.grid.auditplan','Asgard.store.AuditPlan','Asgard.lib.forms.auditsNewAuditPlan'
+    'Asgard.lib.grid.auditplan','Asgard.store.AuditPlan','Asgard.lib.forms.auditsNewAuditPlan',
+    'Asgard.lib.grid.hira_incidents_type','Asgard.lib.grid.hira_incidents_details'
   ],
   menuTitleText: 'Main Menu',
     defaults: {

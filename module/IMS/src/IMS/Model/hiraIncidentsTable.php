@@ -115,58 +115,22 @@ class hiraIncidentsTable extends AbstractTableGateway {
         $resultSet = $this->select(function (Select $select) use ($var_companies, $var_countries, $var_locations, $dateValue, $lang) {
             $select->join(
                     array('ht'=>new TableIdentifier($this->ht_table_name, $this->schema_name)),
-                        new Expression($this->table_name.'.id_type::INT = ht.id_incident and ht.lang=\''.$lang.'\''), array('val_incident')
+                        new Expression($this->table_name.'.id_type::INT = ht.id_incident and ht.lang =\''.$lang.'\''), array('val_incident')
                     );
             $select->where(array('company'=>$var_companies,'country'=>$var_countries,'location'=>$var_locations,new Expression("date_incident::TEXT like '$dateValue%'")));
             $select->order('date_incident ASC');
-            //echo $select->getSqlString();
         });
         return $resultSet->toArray();
-        /*
-        $queryResumen="SELECT * FROM view_incidents_list 
-        WHERE in_idPais IN ($var_countries) AND in_idUbicacion IN ($var_locations) 
-        and (DATEPART(yy, dt_FechaCreacion) = $year
-         AND DATEPART(mm, dt_FechaCreacion) = $month ) ORDER BY dt_FechaCreacion ASC";
-        //echo $queryResumen;
-        $resultResumen = $this->getAdapter()->query($queryResumen,Adapter::QUERY_MODE_EXECUTE);
-        
-        $bulkIncidents = $resultResumen->toArray();
-        
-        $resumenIncidents = array();
-        
-        for ($idx=0; $idx < count($bulkIncidents); $idx++)
-        {
-            $resumenIncidents[$bulkIncidents[$idx]['dt_FechaCreacion']][$bulkIncidents[$idx]['in_IdTipoIncidente']]+=$bulkIncidents[$idx]['quantityIncidents'];
-        }
-        
-        
-        $listIncidents=array();
-        $counterList=0; $counterDate=array();
-        while($thisTime <= $endTime)
-        {
-            $thisDate = date('Y-m-d', $thisTime);
-            $listIncidents[$counterList]['dt_fechaCreacion']=$thisDate;
-            foreach($resumenIncidents[$thisDate] as $key=>$values){
-                $listIncidents[$counterList][$key]=$values;
-                $counterDate[$thisDate]+=$values;
-            }
-            //$listIncidents[$counterList]['summaryIncidents']=count($resumenIncidents[$thisDate]);
-            $listIncidents[$counterList]['summaryIncidents']=$counterDate[$thisDate];
-            $thisTime = strtotime('+1 day', $thisTime); // increment for loop
-            $counterList++;
-        }
-
-        //var_dump($listIncidents);
-        return $listIncidents;
-        */
     }
     
-    public function getIncidentValue($id_incident,$lang)
+    public function getIncidentValue($id_incident)
     {
-        $row = $this->select(array('id_incident'=>(string) strtoupper($id_incident),'lang' => (string) $lang));
+        $row = $this->select(function (Select $select) use ($id_incident){
+            $select->where(array('id_incident'=>(int) $id_incident));
+        });
         if (!$row)
             return false;
-        return $row;
+        return $row->toArray();
     }
  
     public function getNextId() {
@@ -178,54 +142,46 @@ class hiraIncidentsTable extends AbstractTableGateway {
         $id++;
         return $id;
     }
-
-    
-    public function getIncidentTypeList($lang) {
-        $row = $this->select(function (Select $select) use ($lang) {
-            $select->where(array('lang' => (string) $lang))->order('id_incident ASC');
-        });
-        //$row = $this->select(array('lang' => (string) $lang));
-        if (!$row)
-            return false;
-        $listItems=array();
-        for ($index = 0; $index < $row->count(); $index++) {
-            $listItems[]=$row->current();
-            $row->next();
-        }
-        return $listItems;
-    }
     
     public function save(hiraIncidents $object)
     {
         $data = array(
-            'lang' => $object->getLang(),
-            'id_incident' => $object->getId_incident(),
-            'val_incident' => $object->getVal_incident(),
+            'nonconformity_type' => $object->getNonconformity_type(),
             'status' => $object->getStatus(),
+            'id_type' => $object->getId_type(),
+            'company' => $object->getCompany(),
+            'country' => $object->getCountry(),
+            'location' => $object->getLocation(),
+            'description' => $object->getDescription(),
+            'owner_fullname' => $object->getOwner_fullname(),
+            'owner_email' => $object->getOwner_email(),
+            'user_create' => $object->getUser_create(),
+            'date_incident' => $object->getDate_incident(),
+            'general_status' => $object->getGeneral_status(),
             'date_creation' => $object->getDate_creation(),
-            'date_modification' => $object->getDate_modification()
+            'nonconformity_registry' => $object->getNonconformity_registry(),
+            'incident_process' => $object->getIncident_process(),
+            'incident_thread' => $object->getIncident_thread(),
+            'incident_owner' => $object->getIncident_owner(),
+            'user_id' => $object->getUser_id()
         );
-
         
+        $id_incident = (int) $object->getId_incident();
+        $user_id = (string) $object->getUser_id();
         
-        $id_incident = (int) $object->id_incident;
-        $lang = (string) $object->lang;
-        
-        if (!$this->getIncidentValue($id_incident,$lang)) {
+        if (!$this->getIncidentValue($id_incident)) {
+            $id_incident = $this->getNextId();
+            $data['id_incident'] = $id_incident;
             if (!$this->insert($data))
                 throw new \Exception('insert statement can\'t be executed');
-            return true;
-        } elseif ($this->getIncidentValue($id_incident,$lang)) {
-            $this->update(
-                $data,
-                array(
-                    'id_incident' => $id_incident, 
-                    'lang' => $lang,
-                    )
-            );
-            return true;
+            return $id_incident;
+        } elseif ($this->getIncidentValue($id_incident)) {
+            $data['user_modification'] = $user_id;
+            $data['date_modification'] = date('Y-m-d H:i:s');
+            $this->update($data, array('id_incident' => $id_incident));
+            return $id_incident;
         } else {
-            throw new \Exception('id_incident or lang in object hiraIncidentType does not exist');
+            throw new \Exception('id_incident in object hiraIncident does not exist or is wrong format');
         }
     }
 

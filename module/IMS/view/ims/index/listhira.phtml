@@ -28,78 +28,6 @@
         //return Ext.String.format("<span style=\'float:right;\'>{0}</span>",formatedValue);
         return formatedValue;
     }
-    
-    
-    /*
-     * Store to get the List of Companies
-     */
-    var <?php echo 'CompaniesStore' . $this->panelId; ?> = Ext.create('Asgard.store.Companies');
-    <?php echo 'CompaniesStore' . $this->panelId . '.load();'; ?>
-    
-    /*
-     * Store to get the List of Countries
-     */
-    var <?php echo 'CountriesStore' . $this->panelId; ?> = Ext.create('Asgard.store.Countries');
-
-    /*
-     * Store to get the List of Locations
-     */
-    var <?php echo 'LocationsStore' . $this->panelId; ?> = Ext.create('Asgard.store.Locations');
-
-    /*
-     * Store to get the List of Incidents Type
-     */
-    var <?php echo 'HIRAStoreIT' . $this->panelId; ?> = Ext.create('Asgard.store.HiraIncidentsType');
-<?php echo 'HIRAStoreIT' . $this->panelId . '.load();'; ?>
-
-    /*
-     * Store to get the Incidents' Details
-     */
-    var <?php echo 'HIRAStoreID' . $this->panelId; ?> = Ext.create('Asgard.store.HiraIncidentsDetails');
-
-    /*
-     * Grid to show the Store HIRAStoreID
-     */
-    var showSummary = true;
-    var <?php echo 'HIRAGridID' . $this->panelId; ?> = Ext.create('Asgard.lib.GridPanel', {
-        autoShow: true,
-        autoDestroy: true,
-        autoScroll: true,
-        border: false,
-        frame: false,
-        //region: 'west',
-        //collapsible: true,
-        flex: 1,
-        title: 'Detalles de Incidentes',
-        store: <?php echo 'HIRAStoreID' . $this->panelId; ?>,
-        features: [{
-            id: 'group',
-            ftype: 'groupingsummary',
-            groupHeaderTpl: '{name}',
-            hideGroupedHeader: true,
-            enableGroupingMenu: true
-        }],
-        columns: {
-            items: [
-                {text: "Id", flex: 0.25, sortable: true, dataIndex: 'val_incident', filter: true, summaryType: 'count',
-                    summaryRenderer: function(value, summaryData, dataIndex) {
-                        return ((value === 0 || value > 1) ? '(' + value + ' Incidents)' : '(1 Incident)');
-                    }
-                },
-                {text: "Description", flex: 0.75, sortable: true, filter: 'combo', dataIndex: 'description', tdCls: 'wrapText',
-                    summaryType: 'count',
-                    summaryRenderer: function(value, summaryData, dataIndex) {
-                        return ((value === 0 || value > 1) ? '(' + value + ' Incidents)' : '(1 Incident)');
-                    }
-                },
-                {text: "Author", flex: 0.45, sortable: true, filter: 'combo', dataIndex: 'owner_fullname', tdCls: 'wrapText'},
-                {text: "Date", flex: 0.45, sortable: true, filter: 'date', dataIndex: 'date_incident', tdCls: 'wrapText'},
-                {text: "Status", flex: 0.15, sortable: true, filter: true, dataIndex: 'status'},
-            ]
-        }
-    });
-  
-
 
 /*
  * 
@@ -125,34 +53,10 @@ var <?php echo 'HIRAStoreIL' . $this->panelId; ?> = Ext.create('Asgard.store.Hir
     model: 'Asgard.model.HiraIncidentsList<?php echo $this->panelId; ?>'
 });
 
-/*
- * Grid to show the Store HIRAStoreIT
- */
-var <?php echo 'HIRAGridIT' . $this->panelId; ?> = Ext.create('Asgard.lib.GridPanel', {
-    autoShow: true,
-    autoDestroy: true,
-    autoScroll: true,
-    border: false,
-    frame: false,
-    region: 'west',
-    collapsible: true,
-    flex: 0.2,
-    title: 'Tipo de Incidente',
-    store: <?php echo 'HIRAStoreIT' . $this->panelId; ?>,
-    columns: {
-        plugins: [{
-                ptype: 'gridautoresizer'
-            }],
-        items: [
-            {text: "Id", flex: 0.25, sortable: true, dataIndex: 'id_incident', filter: true},
-            {text: "Description", flex: 0.75, sortable: true, filter: 'combo', dataIndex: 'val_incident', tdCls: 'wrapText'}
-        ]
-    }
-});
-
  /*
  * Grid to show the Incidents List
  */
+
 var <?php echo 'HIRAGridIL' . $this->panelId; ?> = Ext.create('Asgard.lib.GridPanel', {
     autoScroll: true,
     border: false,
@@ -193,15 +97,13 @@ var <?php echo 'HIRAGridIL' . $this->panelId; ?> = Ext.create('Asgard.lib.GridPa
     }
 });
 
-
 function fnLibraryTool(action,mark,form,tool){
     console.log(form);
     console.log(tool);
     if(tool.type==='plus'){
         winAdd = Ext.create('Asgard.lib.window.windowGeneric',{
             height: document.documentElement.clientHeight - 50,
-            title: 'Crear Incidente',
-            innerPanel : <?php echo 'HIRAGridIL' . $this->panelId; ?>
+            innerPanel : HIRAGridIL<?=$this->panelId; ?>
         });
         winAdd.add(Ext.create('Asgard.lib.forms.hiraNewIncident'));
         //console.log('mostramos la ventana para agregar un incidente');
@@ -209,15 +111,19 @@ function fnLibraryTool(action,mark,form,tool){
     }
 }
   
-  <?php echo 'HIRAGridIL' . $this->panelId; ?>.on('itemdblclick', function(me, record){
+        HIRAGridIL<?=$this->panelId; ?>.on('itemdblclick', function(me, record){
             //call window to show list of incidents
-            var companiesValue = <?php echo 'CompaniesCombo' . $this->panelId; ?>.getValue();
-            var countriesValue = <?php echo 'CountriesCombo' . $this->panelId; ?>.getValue();
-            var locationsValue = <?php echo 'LocationsCombo' . $this->panelId; ?>.getValue();
+            grid = me.up('panel');
+            panel = grid.up('panel');
+            form = panel.items.getAt(0).getForm();
+            var companiesValue = form.findField('companiesCombo').getValue();
+            var countriesValue = form.findField('countriesCombo').getValue();
+            var locationsValue = form.findField('locationsCombo').getValue();
             var dateValue = record.data.date_incident;
-            <?php echo 'HIRAStoreID' . $this->panelId; ?>.load({params: {'company': companiesValue,'country': countriesValue, 'location': locationsValue, 'date_incident': dateValue}});
+            var detailsGrid = Ext.create('Asgard.lib.grid.hira_incidents_details');
+            detailsGrid.getStore().load({params: {'company': companiesValue,'country': countriesValue, 'location': locationsValue, 'date_incident': dateValue}});
+            windowDetails<?php echo $this->panelId; ?>.add(detailsGrid);
             windowDetails<?php echo $this->panelId; ?>.show();
-
         });
 
 
@@ -229,132 +135,54 @@ var windowDetails<?php echo $this->panelId; ?> = Ext.create('Asgard.lib.hiraInci
     title: 'Details',
     closeAction: 'hide',
     height: '450px',
-    width: '80%',
-    items: [
-        <?php echo 'HIRAGridID' . $this->panelId; ?>
-    ]
-
+    width: '80%'
 });
-  
-    /*
-     * 
-     */
-    var <?php echo 'CompaniesCombo' . $this->panelId; ?> = Ext.create('Ext.form.ComboBox', {
-        fieldLabel: 'Compañia',
-        store: <?php echo 'CompaniesStore' . $this->panelId; ?>,
-        queryMode: 'local',
-        displayField: 'legal_name',
-        valueField: 'id',
-        anchor: '50%',
-        name: 'companiesCombo',
-        forceSelection: true,
-        emptyText: 'No values at this time',
-        listeners: {
-            select: function(combo, records, opts) {
-            <?php echo 'CountriesStore' . $this->panelId; ?>.load({params: {cid: combo.getValue('id')}});
-            }
-        }
-    });
-    /*
-     * 
-     */
-    var <?php echo 'CountriesCombo' . $this->panelId; ?> = Ext.create('Ext.form.ComboBox', {
-        fieldLabel: 'Pais',
-        store: <?php echo 'CountriesStore' . $this->panelId; ?>,
-        queryMode: 'local',
-        displayField: 'name',
-        valueField: 'id',
-        anchor: '50%',
-        name: 'countriesCombo',
-        forceSelection: true,
-        emptyText: 'No values at this time',
-        listeners: {
-            select: function(combo, records, opts) {
-            <?php echo 'LocationsStore' . $this->panelId; ?>.load({params: {cid: combo.getValue('id')}});
-            }
-        }
-    });
 
-    /*
-     * 
-     */
-    var <?php echo 'LocationsCombo' . $this->panelId; ?> = Ext.create('Ext.form.ComboBox', {
-        fieldLabel: 'Ubicación',
-        store: <?php echo 'LocationsStore' . $this->panelId; ?>,
-        queryMode: 'local',
-        forceSelection: true,
-        required: true,
-        displayField: 'location_name',
-        valueField: 'id',
-        name: 'locationsCombo',
-        anchor: '25%',
-        emptyText: 'No values at this time',
+function deployCombos(form,comboField,comboValue){
+    var combo = form.getForm().findField(comboField);
+    var store = combo.store;
+    store.on("load", function(store, records, state, operation, opts) {
+            combo.setValue(comboValue);
     });
+}
 
-    /*
-     * Form Panel to attach
-     */
-    var <?php echo 'formHiraIL' . $this->panelId; ?> = Ext.create('Ext.form.Panel', {
-        border: false,
-        plain: false,
-        width: '100%',
-        fieldDefaults: {
-            labelAlign: 'top',
-            msgTarget: 'side'
-        },
-        bodyStyle: 'padding:5px 5px 5px',
-        defaults: {
-            border: false,
-            xtype: 'panel',
-            flex: 1,
-            layout: 'anchor'
-        },
-        layout: 'hbox',
-        items: [
-            <?php echo 'CompaniesCombo' . $this->panelId; ?>,
-            <?php echo 'CountriesCombo' . $this->panelId; ?>,
-            <?php echo 'LocationsCombo' . $this->panelId; ?>,
-            {
-                xtype: 'monthfield', name: 'monthfield', submitFormat: 'Y-m-d', fieldLabel: 'Mes y Año', format: 'F, Y', anchor: '25%'
-            }
-        ],
-        buttons: ['->', {
-                text: 'Consultar',
-                handler: function() {
-                    var values = this.up('form').getForm().getValues();
-                    //console.log(values);
-                    var companies = values['companiesCombo'];
-                    var countries = values['countriesCombo'];
-                    var locations = values['locationsCombo'];
-                    var monthfield = values['monthfield'];
-<?php echo 'HIRAStoreIL' . $this->panelId; ?>.load({params: {'companies': companies,'countries': countries, 'locations': locations, 'monthfield': monthfield}});
-                }
-            }]
-    });
+function fnCCLDProcess(button, opt, obj) {
+    var values = button.up('form').getForm().getValues();
+    var companies = values['companiesCombo'];
+    var countries = values['countriesCombo'];
+    var locations = values['locationsCombo'];
+    var monthfield = values['monthfield'];
+    HIRAStoreIL<?= $this->panelId; ?>.load({params: {'companies': companies,'countries': countries, 'locations': locations, 'monthfield': monthfield}});
+}
 
+var formHiraIL<?=$this->panelId;?> = Ext.create('Asgard.lib.forms.comboCCLD', { width: '100%',innerGrid: HIRAGridIL<?=$this->panelId;?> });
+
+deployCombos(formHiraIL<?=$this->panelId;?>,'companiesCombo','<?=$this->companyId;?>');
+deployCombos(formHiraIL<?=$this->panelId;?>,'countriesCombo','<?=$this->countryId;?>');
+deployCombos(formHiraIL<?=$this->panelId;?>,'locationsCombo','<?=$this->locationId;?>');
 
     /*
      * Viewport to show the Incidents Type and the Incidents List
      */
-    var <?php echo 'viewportHiraIL' . $this->panelId; ?> = Ext.create('Ext.Panel', {
+    var viewportHiraIL<?=$this->panelId; ?> = Ext.create('Ext.Panel', {
         title: 'Analisis de Incidentes',
         layout: {
             type: 'border',
             padding: 0
         },
         items: [
-<?php echo 'HIRAGridIT' . $this->panelId; ?>,
+            new Ext.create('Asgard.lib.grid.hira_incidents_type'),
             {
                 region: 'center',
                 layout: 'vbox',
                 flex: 0.8,
                 items: [
-                    <?php echo 'formHiraIL' . $this->panelId; ?>,
-                    <?php echo 'HIRAGridIL' . $this->panelId; ?>
+                    formHiraIL<?=$this->panelId;?>,
+                    HIRAGridIL<?=$this->panelId;?>
                     
                 ]
             },
         ]
     });
-    Ext.getCmp('content-panel').getActiveTab().add(<?php echo 'viewportHiraIL' . $this->panelId; ?>);
+    Ext.getCmp('content-panel').getActiveTab().add(viewportHiraIL<?=$this->panelId;?>);
 </script>

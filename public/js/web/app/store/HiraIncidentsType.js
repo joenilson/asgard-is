@@ -7,6 +7,7 @@ Ext.define('Asgard.store.HiraIncidentsType', {
     extend: 'Ext.data.Store',
     requires: 'Asgard.model.HiraIncidentsType',
     model: 'Asgard.model.HiraIncidentsType',
+    autoLoad: true,
     proxy: {
         type: 'ajax',
         url: 'ims/hiralit',

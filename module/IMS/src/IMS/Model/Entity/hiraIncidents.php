@@ -24,8 +24,16 @@ class hiraIncidents {
     protected $owner_fullname;
     protected $owner_email;
     protected $user_create;
-    protected $date_create;
+    protected $date_incident;
     protected $general_status;
+    protected $date_creation;
+    protected $user_modification;
+    protected $date_modification;
+    protected $nonconformity_registry;
+    protected $incident_process;
+    protected $incident_thread;
+    protected $incident_owner;
+    protected $user_id;
     
     public function __construct(array $options = null)
     {
@@ -108,12 +116,44 @@ class hiraIncidents {
         return $this->user_create;
     }
 
-    public function getDate_create() {
-        return $this->date_create;
+    public function getDate_incident() {
+        return $this->date_incident;
     }
 
     public function getGeneral_status() {
         return $this->general_status;
+    }
+
+    public function getDate_creation() {
+        return $this->date_creation;
+    }
+
+    public function getUser_modification() {
+        return $this->user_modification;
+    }
+
+    public function getDate_modification() {
+        return $this->date_modification;
+    }
+
+    public function getNonconformity_registry() {
+        return $this->nonconformity_registry;
+    }
+
+    public function getIncident_process() {
+        return $this->incident_process;
+    }
+
+    public function getIncident_thread() {
+        return $this->incident_thread;
+    }
+
+    public function getIncident_owner() {
+        return $this->incident_owner;
+    }
+
+    public function getUser_id() {
+        return $this->user_id;
     }
 
     public function setId_incident($id_incident) {
@@ -171,8 +211,8 @@ class hiraIncidents {
         return $this;
     }
 
-    public function setDate_create($date_create) {
-        $this->date_create = $date_create;
+    public function setDate_incident($date_incident) {
+        $this->date_incident = $date_incident;
         return $this;
     }
 
@@ -181,6 +221,45 @@ class hiraIncidents {
         return $this;
     }
 
+    public function setDate_creation($date_creation) {
+        $this->date_creation = $date_creation;
+        return $this;
+    }
+
+    public function setUser_modification($user_modification) {
+        $this->user_modification = $user_modification;
+        return $this;
+    }
+
+    public function setDate_modification($date_modification) {
+        $this->date_modification = $date_modification;
+        return $this;
+    }
+
+    public function setNonconformity_registry($nonconformity_registry) {
+        $this->nonconformity_registry = $nonconformity_registry;
+        return $this;
+    }
+
+    public function setIncident_process($incident_process) {
+        $this->incident_process = $incident_process;
+        return $this;
+    }
+
+    public function setIncident_thread($incident_thread) {
+        $this->incident_thread = $incident_thread;
+        return $this;
+    }
+
+    public function setIncident_owner($incident_owner) {
+        $this->incident_owner = $incident_owner;
+        return $this;
+    }
+
+    public function setUser_id($user_id) {
+        $this->user_id = $user_id;
+        return $this;
+    }
 
 
 }
