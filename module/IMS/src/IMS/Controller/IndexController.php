@@ -28,6 +28,8 @@ class IndexController extends AbstractActionController
     protected $auditsTable;
     protected $audittypeTable;
     protected $auditplanTable;
+    protected $committeepositionsTable;
+    protected $safetycommitteeTable;
     protected $adminusersubmodulesTable;
     protected $contentTextTable;
     protected $hiraMatrixTable;
@@ -614,19 +616,157 @@ class IndexController extends AbstractActionController
     }
     
     public function getsafetycommitteeAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang=$userPrefs[0]['lang'];
+
+        $request = $this->getRequest();
+        $company = $request->getQuery('company');
+        $country = $request->getQuery('country');
+        $location = $request->getQuery('location');
+
+        $sql = $this->getSafetyCommitteeTable();
+        $dataPositions = $sql->getCommitteeByCCL($company,$country,$location,$lang);
+        if($dataPositions){
+            $dataResult['success']=true;
+            $dataResult['images']=$dataPositions;
+        }else{
+            $dataResult['success']=false;
+            $dataResult['images']="";
+        }
+        return new JsonModel($dataResult);
         
     }
     
+    public function getcommitteepositionsAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang=$userPrefs[0]['lang'];
+        
+
+        $sql = $this->getCommitteePositionsTable();
+        $dataPositions = $sql->getPositionsByLang($lang);
+        if($dataPositions){
+            $dataResult['success']=true;
+            $dataResult['results']=$dataPositions;
+        }else{
+            $dataResult['success']=false;
+            $dataResult['results']="";
+        }
+        return new JsonModel($dataResult);
+    }
+    
     public function addsafetycommitteeAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $company = (string) $request->getPost('companiesCombo');
+        $country = (string) $request->getPost('countriesCombo');
+        $location = (string) $request->getPost('locationsCombo');
+        $id_position = (int) $request->getPost('committeepositionsCombo');
+        $fullname = (string) $this->PersonName($request->getPost('fullname'));
+        $email = (string) $request->getPost('email');
+        $phone = (int) trim($request->getPost('phone'));
+        $files =  $request->getFiles()->toArray();
+        $id = (int) $request->getPost('id');
+        $date_creation = \date('Y-m-d h:i:s');
+
+        $dataResult = array();
+        
+        $sql = $this->getSafetyCommitteeTable();
+        
+        $object = new \IMS\Model\Entity\SafetyCommittee();
+        $object->setFullname($fullname)
+                ->setId_position($id_position)
+                ->setEmail($email)
+                ->setPhone($phone)
+                ->setCompany($company)
+                ->setCountry($country)
+                ->setLocation($location)
+                ->setUser_id($userData->id)
+                ->setStatus('A')
+                ->setDate_creation($date_creation);
+        if($id){
+            $object->setId($id);
+        }
+        $dataResult['success'] = true; 
+        try {
+            $newId = $sql->save($object);
+        } catch (\Exception $ex) {
+            $dataResult['success'] = false; 
+            $dataResult['message'] = $ex->getMessage(); 
+        }
+
+        $valid1 = new \Zend\Validator\File\UploadFile();
+        $valid2 = new \Zend\Validator\File\IsImage();
+        if(isset($newId) AND $valid1->isValid($files['photo']) and $valid2->isValid($files['photo'])){
+            $fileName = "safetycommittee_{$company}_{$country}_{$location}_".$newId.".jpg";
+            $this->savefile('library/safetycommittee', $files['photo'], $fileName, true, 'thumb_'.$fileName);
+            $sql->update(array('photo'=>'library/safetycommittee/'.$fileName,
+                'thumbnail'=>'library/safetycommittee/thumb_'.$fileName),array('id'=>$newId));
+        }
+        return new JsonModel($dataResult);        
         
     }
     
     public function removesafetycommitteeAction(){
+        $request = $this->getRequest();
+        $committee_id = $request->getPost('id');
+        $company = $request->getPost('company');
+        $country = $request->getPost('country');
+        $location = $request->getPost('location');
+        $sql = $this->getSafetyCommitteeTable();
+        $CommitteeData = $sql->getCommitteeByCCLId($company,$country,$location,$committee_id);
+        $dataRemove = array();
+        $dataResult = array();
+        $dataResult['success'] = false;
+        if(count($CommitteeData)>0){
+            $dataRemove['company']=$company;
+            $dataRemove['country']=$country;
+            $dataRemove['location']=$location;
+            $dataRemove['id']=$committee_id;
+            $sql->delete($dataRemove);
+            $this->removefile($CommitteeData[0]['photo']);
+            $this->removefile($CommitteeData[0]['thumbnail']);
+            $dataResult['success'] = true;
+        }
+        return new JsonModel($dataResult);
         
     }
     
     public function formsafetycommitteeAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+
+        $request = $this->getRequest();
+        $committee_id = $request->getPost('id');
+        $company = $request->getPost('company');
+        $country = $request->getPost('country');
+        $location = $request->getPost('location');
         
+        $sql = $this->getSafetyCommitteeTable();
+        $CommitteeData = $sql->getCommitteeByCCLId($company,$country,$location,$committee_id);
+        $dataResult = array();
+        foreach($CommitteeData as $key=>$values){
+            $dataResult['companiesCombo']=$values['company'];
+            $dataResult['countriesCombo']=$values['country'];
+            $dataResult['locationsCombo']=$values['location'];
+            $dataResult['committeepositionsCombo']=$values['id_position'];
+            $dataResult['fullname']=$values['fullname'];
+            $dataResult['phone']=$values['phone'];
+            $dataResult['email']=$values['email'];
+        }
+        $data = array();
+        if(count($dataResult>0)){
+            $data['success']=true;
+            $data['data']=$dataResult;
+        }else{
+            $data['success']=false;
+            $data['data']="";
+        }
+        
+        return new JsonModel($data);
     }
     
     public function hiraspecsAction()
@@ -1538,13 +1678,11 @@ class IndexController extends AbstractActionController
         $userData = $this->getServiceLocator()->get('userSessionData');
         $lang = $userPrefs[0]['lang'];
         $request = $this->getRequest();
-        //$moduleParams = explode('-',$this->params()->fromRoute('id', 0));
         $tid = $request->getQuery('tid');
         $company = $request->getQuery('company');
         $country = $request->getQuery('country');
         $location = $request->getQuery('location');
         $hiraDocuments = $this->getHiraDocumentsTable();
-        //$listDocuments = $hiraDocuments->fetchAll();
         $listDocuments = $hiraDocuments->fetchThreadDocuments($lang,$country,$company,$location,$tid);
         if(!empty($listDocuments)){
             $data['success']=true;
@@ -1573,9 +1711,7 @@ class IndexController extends AbstractActionController
             return false;
         } else {
             if($thumb){
-                move_uploaded_file($file,$filesPath.$thumbname);
-                //queda pendiente la creación del thumbnail
-                $this->imageResize($filesPath.$thumbname);
+                $this->imageResize($filesPath.$filename,$filesPath.$thumbname);
             }
             return true;
         }
@@ -1593,18 +1729,18 @@ class IndexController extends AbstractActionController
     }
     
     
-    private function imageResize($file)
+    private function imageResize($file,$dst)
     {
         $imagine = new \Imagine\Gd\Imagine();
-
+        $mode = \Imagine\Image\ImageInterface::THUMBNAIL_OUTBOUND;
         $imagine->open($file)
-        ->thumbnail(new \Imagine\Image\Box(150,150))
-        ->save($file);
+        ->thumbnail(new \Imagine\Image\Box(171,180), $mode)
+        ->save($dst);
     }
 
     private function imageProcess($file,$dst)
     {
-        $maxHeight = 640;
+        $maxHeight = 480;
         $imagine = new \Imagine\Gd\Imagine();
         list($width, $height, $type, $attribs) = getimagesize($file);
 
@@ -1618,10 +1754,27 @@ class IndexController extends AbstractActionController
 
         $mode = \Imagine\Image\ImageInterface::THUMBNAIL_OUTBOUND;
         $imagine->open($file)
-                ->thumbnail(new \Imagine\Image\Box(150,150),$mode)
+                ->thumbnail(new \Imagine\Image\Box(171,180),$mode)
                 ->save($dst);
     }
 
+    private function getSafetyCommitteeTable()
+    {
+    	if (!$this->safetycommitteeTable) {
+            $sm = $this->getServiceLocator();
+            $this->safetycommitteeTable = $sm->get('IMS\Model\SafetyCommitteeTable');
+    	}
+    	return $this->safetycommitteeTable;
+    }
+    
+    private function getCommitteePositionsTable()
+    {
+    	if (!$this->committeepositionsTable) {
+            $sm = $this->getServiceLocator();
+            $this->committeepositionsTable = $sm->get('IMS\Model\CommitteePositionsTable');
+    	}
+    	return $this->committeepositionsTable;
+    }
     
     private function getAuditorsTable()
     {

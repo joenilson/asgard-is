@@ -27,11 +27,12 @@ function deployCombos(comboField,comboValue){
     });
 }
 
-function fnCCLProcess(button, opt, obj) {
+function fnCCLYProcess(button, opt, obj) {
     var values = button.up('form').getForm().getValues();
     var companies = values['companiesCombo'];
     var countries = values['countriesCombo'];
     var locations = values['locationsCombo'];
+    var years = values['yearsCombo'];
 
     AuditorsStore<?= $this->panelId; ?>.load({ params: { module: 'master', company: companies, country: countries, location: locations, year: years }});
 

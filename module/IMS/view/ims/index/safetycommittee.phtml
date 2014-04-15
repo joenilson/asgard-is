@@ -18,6 +18,63 @@
  */
 
 ?>
+<style>
+.thumb{
+    background: #dddddd;
+    padding: 3px;
+    padding-bottom: 0;
+}
+
+.thumb {
+    padding-bottom: 3px;
+}
+
+//#images-view .thumb-wrap{
+.thumb-wrap{
+    float: left;
+    margin: 4px;
+    margin-right: 0;
+    padding: 5px;
+}
+.thumb-wrap span {
+    display: block;
+    overflow: hidden;
+    text-align: center;
+    width: 171px; /* for ie to ensure that the text is centered */
+}
+
+.x-item-over{
+    border:1px solid #dddddd;
+    background: #efefef;
+    //url(over.gif) repeat-x left top;
+    padding: 4px;
+}
+
+.x-item-selected{
+    background: #eff5fb;
+    //url(selected.gif) no-repeat right bottom;
+    border:1px solid #99bbe8;
+    padding: 4px;
+}
+.x-item-selected .thumb{
+    background:transparent;
+}
+/*
+.x-view-selector {
+    position:absolute;
+    left:0;
+    top:0;
+    width:0;
+    border:1px dotted;
+    opacity: .5;
+    -moz-opacity: .5;
+    filter:alpha(opacity=50);
+    zoom:1;
+    background-color:#c3daf9;
+    border-color:#3399bb;
+}
+*/
+</style>
 <script>
 function deployCombos(comboField,comboValue){
     var combo = formCommittee<?=$this->panelId;?>.getForm().findField(comboField);
@@ -37,25 +94,27 @@ function fnCCLProcess(button, opt, obj) {
 
 }
 
-var CommitteeStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.CommitteeStore');
-/*
-var gridAudits<?=$this->panelId;?> = Ext.create('Asgard.lib.grid.audits', { 
-    store: AuditsStore<?= $this->panelId; ?>, 
-    id: 'gridAudits'
-});
-*/
-   
-var formCommittee<?=$this->panelId;?> = Ext.create('Asgard.lib.forms.comboCCL', { innerGrid: 'gridCommittee' });
+var CommitteeStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.SafetyCommittee');
 
-var content = [{ 
-    xtype: 'panel',
-    id: 'images-view',
-    region: 'south',
+var viewCommittee<?=$this->panelId;?> = Ext.create('Asgard.lib.dataview.safetycommittee', { 
+    store: CommitteeStore<?= $this->panelId; ?>, 
+    id: 'viewCommittee'
+});
+
+   
+var formCommittee<?=$this->panelId;?> = Ext.create('Asgard.lib.forms.comboCCL', { innerPanel: viewCommittee<?=$this->panelId;?> });
+
+var content = Ext.create('Asgard.lib.Panels.CommitteePanel',{
+    items: viewCommittee<?=$this->panelId;?>
+});
+/*
+var content = Ext.create('Ext.Panel', {
+    //id: 'images-view',
     bodyPadding: 7,
     heigth: '100%',
-    //flex: 1,
+    flex: 1,
     autoScroll: true,
-    layout: 'fit',
+    //layout: 'fit',
     bodyStyle: "background: #ffffff;",
     tbar: [{ 
             text: 'Agregar Imagenes',
@@ -66,7 +125,7 @@ var content = [{
                     width: '40%',
                     layout: 'anchor'
                 });
-                var contentWin = Ext.create('AdamaWS.form.Images',{ url: 'admin/saveimages'});
+                var contentWin = Ext.create('Asgard.lib.forms.committeeNewMember',{ url: 'admin/saveimages'});
                 window.items.add(contentWin);
                 window.show();
             }
@@ -97,26 +156,9 @@ var content = [{
                 });
             }
         }],
-    items: Ext.create('Ext.view.View', {
-        store: CommitteeStore<?=$this->panelId;?>,
-        tpl: [
-            '<tpl for=".">',
-                '<div class="thumb-wrap" style="float: left; padding: 5px; width: 160px; height: 160px;" id="{id:stripTags}">',
-                    '<div class="thumb"><img src="{thumbnail}"></div>',
-                '</div>',
-            '</tpl>',
-            '<div class="x-clear"></div>'
-        ],
-        multiSelect: true,
-        height: '100%',
-        flex: 1,
-        trackOver: true,
-        //autoScroll  : true,
-        overItemCls: 'x-item-over',
-        itemSelector: 'div.thumb-wrap',
-        emptyText: 'No hay imagenes en este momento.'
-    })
-}];
+    items: viewCommittee<?=$this->panelId;?>
+});
+*/
 
 deployCombos('companiesCombo','<?=$this->companyId;?>');
 deployCombos('countriesCombo','<?=$this->countryId;?>');
@@ -130,9 +172,7 @@ var libraryViewport<?=$this->panelId; ?> = Ext.create('Ext.panel.Panel', {
     },
     items: [
         formCommittee<?=$this->panelId; ?>,
-        /*
-        gridAudits<?=$this->panelId; ?>
-        */
+        content
    ]
 });
 

@@ -39,6 +39,9 @@ use IMS\Model\AuditorsTable;
 use IMS\Model\AuditsTable;
 use IMS\Model\AuditTypeTable;
 use IMS\Model\AuditPlanTable;
+use IMS\Model\SafetyCommitteeTable;
+use IMS\Model\SafetyCommitteePositionsTable;
+
 
 class Module implements AutoloaderProviderInterface
 {
@@ -85,6 +88,16 @@ class Module implements AutoloaderProviderInterface
     {
         return array(
             'factories' => array(
+                'IMS\Model\CommitteePositionsTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new SafetyCommitteePositionsTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\SafetyCommitteeTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new SafetyCommitteeTable($dbAdapter);
+                    return $table;
+                },
                 'IMS\Model\AuditorsTable'=> function($sm){
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new AuditorsTable($dbAdapter);
