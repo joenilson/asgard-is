@@ -188,3 +188,52 @@ body {
 .wrapText .x-grid-cell-inner {
     white-space: normal;
 }
+
+.thumb-wrap {
+    float: left; 
+    padding: 5px; 
+    width: 185px; 
+    height: 270px;
+}
+
+.thumb {
+    padding: 3px;
+}
+
+.x-item-over {
+    border: 1px solid #dddddd;
+    background: #efefef;
+    padding: 4px;
+}
+
+.x-item-selected{
+    background: #eff5fb;
+    border:1px solid #99bbe8;
+    padding: 4px;
+}
+.thumb-wrap span {
+    padding: 5px;
+    text-align: center;
+    color: #3399bb;
+}
+
+.x-item-selected .thumb{
+    background:transparent;
+}
+.x-view-selector {
+    position:absolute;
+    left:0;
+    top:0;
+    width:0;
+    border:1px dotted;
+    opacity: .5;
+    -moz-opacity: .5;
+    filter:alpha(opacity=50);
+    zoom:1;
+    background-color:#c3daf9;
+    border-color:#3399bb;
+}
+.ext-strict .ext-ie .x-tree .x-panel-bwrap{
+    position:relative;
+    overflow:hidden;
+}

@@ -30,6 +30,7 @@ class IndexController extends AbstractActionController
     protected $auditplanTable;
     protected $committeepositionsTable;
     protected $safetycommitteeTable;
+    protected $committeeproceedingsTable;
     protected $adminusersubmodulesTable;
     protected $contentTextTable;
     protected $hiraMatrixTable;
@@ -633,8 +634,7 @@ class IndexController extends AbstractActionController
             $dataResult['success']=false;
             $dataResult['images']="";
         }
-        return new JsonModel($dataResult);
-        
+        return new JsonModel($dataResult);        
     }
     
     public function getcommitteepositionsAction(){
@@ -711,27 +711,46 @@ class IndexController extends AbstractActionController
     
     public function removesafetycommitteeAction(){
         $request = $this->getRequest();
-        $committee_id = $request->getPost('id');
+        $committee_ids = json_decode($this->cleanTags($request->getPost('ids')));
         $company = $request->getPost('company');
         $country = $request->getPost('country');
         $location = $request->getPost('location');
         $sql = $this->getSafetyCommitteeTable();
-        $CommitteeData = $sql->getCommitteeByCCLId($company,$country,$location,$committee_id);
-        $dataRemove = array();
-        $dataResult = array();
-        $dataResult['success'] = false;
-        if(count($CommitteeData)>0){
-            $dataRemove['company']=$company;
-            $dataRemove['country']=$country;
-            $dataRemove['location']=$location;
-            $dataRemove['id']=$committee_id;
-            $sql->delete($dataRemove);
-            $this->removefile($CommitteeData[0]['photo']);
-            $this->removefile($CommitteeData[0]['thumbnail']);
-            $dataResult['success'] = true;
-        }
-        return new JsonModel($dataResult);
         
+        if(is_array($committee_ids) and count($committee_ids)>0){
+            $dataResult = array();
+            foreach ($committee_ids as $committee_id){
+                $CommitteeData = $sql->getCommitteeByCCLI($company,$country,$location,$committee_id);
+                $dataRemove = array();
+                $dataVars = array();
+                $dataResult['success'] = false;
+                if(count($CommitteeData)>0){
+                    $dataVars['company']=$company;
+                    $dataVars['country']=$country;
+                    $dataVars['location']=$location;
+                    $dataVars['id']=$committee_id;
+                    $dataRemove['status']="I";
+                    $sql->update($dataRemove,$dataVars);
+                    $dataResult['success'] = true;
+                }
+            }
+        }elseif($committee_ids>0){
+            $CommitteeData = $sql->getCommitteeByCCLI($company,$country,$location,$committee_ids);
+            $dataRemove = array();
+            $dataVars = array();
+            $dataResult['success'] = false;
+            if(count($CommitteeData)>0){
+                $dataVars['company']=$company;
+                $dataVars['country']=$country;
+                $dataVars['location']=$location;
+                $dataVars['id']=$committee_id;
+                $dataRemove['status']="I";
+                $sql->update($dataRemove,$dataVars);
+                $dataResult['success'] = true;
+            }
+        }
+        
+        return new JsonModel($dataResult);
     }
     
     public function formsafetycommitteeAction(){
@@ -766,6 +785,149 @@ class IndexController extends AbstractActionController
             $data['data']="";
         }
         
+        return new JsonModel($data);
+    }
+    
+    public function committeeproceedingsAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        return array(
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'lang'=>$lang,
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
+        );
+    }
+    
+    public function getcommitteeproceedingsAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang=$userPrefs[0]['lang'];
+
+        $request = $this->getRequest();
+        $company = $request->getQuery('company');
+        $country = $request->getQuery('country');
+        $location = $request->getQuery('location');
+
+        $sql = $this->getCommitteeProceedingsTable();
+        $dataProceedings = $sql->getProceedingsByCCL($company,$country,$location);
+        if($dataProceedings){
+            $dataResult['success']=true;
+            $dataResult['results']=$dataProceedings;
+        }else{
+            $dataResult['success']=false;
+            $dataResult['results']="";
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function addcommitteeproceedingsAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $company = $request->getPost('companiesCombo');
+        $country = $request->getPost('countriesCombo');
+        $location = $request->getPost('locationsCombo');
+        $description = $this->cleanTags($request->getPost('description'));
+        $date_proceeding = $request->getPost('auditdatebegin');
+        $files =  $request->getFiles()->toArray();
+        $id = $request->getPost('proceeding_id');
+        $date_creation = \date('Y-m-d h:i:s');
+
+        $dataResult = array();
+        
+        $sql = $this->getCommitteeProceedingsTable();
+        
+        $insert = new \IMS\Model\Entity\SafetyCommitteeProceedings();
+        $insert->setDescription($description)
+                ->setDate_proceeding($date_proceeding)
+                ->setCompany($company)
+                ->setCountry($country)
+                ->setLocation($location)
+                ->setUser_id($userData->id)
+                ->setStatus('A')
+                ->setDate_creation($date_creation);
+        if($id){
+            $insert->setId($id);
+        }
+        $dataResult['success'] = true; 
+        try {
+            $newId = $sql->save($insert);
+            
+        } catch (\Exception $ex) {
+            //$error = $ex;
+            
+            $dataResult['success'] = false; 
+            $dataResult['message'] = $ex->getMessage(); 
+        }
+
+        $valid = new \Zend\Validator\File\UploadFile();
+        
+        if(isset($newId) AND $valid->isValid($files['proceeding_file'])){
+            $fileName = "proceeding_{$company}_{$country}_{$location}_".$newId.".pdf";
+            $this->savefile('library/proceedings', $files['proceeding_file'], $fileName, false, null);
+            $sql->update(array('proceeding'=>'library/proceedings/'.$fileName),array('id'=>$newId));
+        }
+        return new JsonModel($dataResult);        
+        
+    }
+    
+    public function removecommitteeproceedingsAction(){
+        $request = $this->getRequest();
+        $proceeding_id = $request->getPost('id');
+        $company = $request->getPost('company');
+        $country = $request->getPost('country');
+        $location = $request->getPost('location');
+        $sql = $this->getCommitteeProceedingsTable();
+        $proceedingData = $sql->getProceedingsByCCLId($company,$country,$location,$proceeding_id);
+        $dataRemove = array();
+        $dataResult = array();
+        $dataResult['success'] = false;
+        if(count($proceedingData)>0){
+            $dataRemove['company']=$company;
+            $dataRemove['country']=$country;
+            $dataRemove['location']=$location;
+            $dataRemove['id']=$proceeding_id;
+            $sql->update(array('status'=>'X'),$dataRemove);
+            $this->removefile($proceedingData[0]['proceeding']);
+            $dataResult['success'] = true;
+        }
+        return new JsonModel($dataResult);
+        
+    }
+    
+    public function formcommitteeproceedingsAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+
+        $request = $this->getRequest();
+        $proceeding_id = $request->getPost('id');
+        $company = $request->getPost('company');
+        $country = $request->getPost('country');
+        $location = $request->getPost('location');
+        
+        $sql = $this->getCommitteeProceedingsTable();
+        $proceedingData = $sql->getProceedingsByCCLId($company,$country,$location,$proceeding_id);
+        $dataResult = array();
+        foreach($proceedingData as $key=>$values){
+            $dataResult['companiesCombo']=$values['company'];
+            $dataResult['countriesCombo']=$values['country'];
+            $dataResult['locationsCombo']=$values['location'];
+            $dataResult['description']=$values['description'];
+            $dataResult['date_proceeding']=$values['date_proceeding'];
+        }
+        $data = array();
+        if(count($dataResult>0)){
+            $data['success']=true;
+            $data['data']=$dataResult;
+        }else{
+            $data['success']=false;
+            $data['data']="";
+        }
         return new JsonModel($data);
     }
     
@@ -1696,6 +1858,16 @@ class IndexController extends AbstractActionController
     	return $result;
     }
     
+    private function cleanTags($value){
+        return strip_tags($value);
+    }
+    
+    private function cleanSlashes($value){
+        //return stripslashes($value);
+        return htmlspecialchars($value);
+    }
+
+    
     private function PersonName($name){
         return ucwords(strtolower(htmlspecialchars(trim($name))));
     }
@@ -1774,6 +1946,15 @@ class IndexController extends AbstractActionController
             $this->committeepositionsTable = $sm->get('IMS\Model\CommitteePositionsTable');
     	}
     	return $this->committeepositionsTable;
+    }
+    
+    private function getCommitteeProceedingsTable()
+    {
+    	if (!$this->committeeproceedingsTable) {
+            $sm = $this->getServiceLocator();
+            $this->committeeproceedingsTable = $sm->get('IMS\Model\CommitteeProceedingsTable');
+    	}
+    	return $this->committeeproceedingsTable;
     }
     
     private function getAuditorsTable()

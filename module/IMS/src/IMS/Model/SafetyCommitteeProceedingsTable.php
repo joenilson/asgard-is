@@ -11,9 +11,9 @@ use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Sql\TableIdentifier;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Predicate\Expression;
-use IMS\Model\Entity\SafetyCommittee;
+use IMS\Model\Entity\SafetyCommitteeProceedings;
 
-class SafetyCommitteeTable extends AbstractTableGateway {
+class SafetyCommitteeProceedingsTable extends AbstractTableGateway {
 
     protected $table_name = 'safetycommittee';
     protected $at_table_name = 'committee_positions';
@@ -47,57 +47,33 @@ class SafetyCommitteeTable extends AbstractTableGateway {
         return $resultSet->toArray();
     }
     
-    public function getCommitteeByCCL($company,$country,$location,$lang)
+    public function getProceedingsByCCL($company,$country,$location)
     {
-        $row = $this->select(function (Select $select) use ($company,$country,$location,$lang){
-            $select->join(
-                array('cp'=>new TableIdentifier($this->at_table_name, $this->schema_name)), 
-                new Expression ( $this->table_name.'.id_position = cp.id AND cp.lang=\''.$lang.'\''),
-                array('description','ordering'));
-
+        $row = $this->select(function (Select $select) use ($company,$country,$location){
             $select->where(array('company'=>(string) $company,
                                 'country'=>(string) $country,
                                 'location'=>(string) $location,
-                                $this->table_name.'.status'=>'A'));
-            $select->order('cp.ordering ASC');
+                                'status'=>'A'));
+            $select->order('date_proceeding DESC');
         });
         if (!$row)
             return false;
         return $row->toArray();
     }
     
-    public function getCommitteeByCCLId($company,$country,$location,$id,$lang)
-    {
-        $row = $this->select(function (Select $select) use ($company,$country,$location,$id,$lang){
-            $select->join(
-                array('cp'=>new TableIdentifier($this->at_table_name, $this->schema_name)), 
-                new Expression ( $this->table_name.'.id_position = cp.id AND cp.lang=\''.$lang.'\''),
-                array('description'));
-            $select->where(array('company'=>(string) $company,
-                                'country'=>(string) $country,
-                                'location'=>(string) $location,
-                                $this->table_name.'.id'=>(int) $id,
-                                $this->table_name.'.status'=>'A'));
-        });
-        if (!$row)
-            return false;
-        return $row->toArray();
-    }
-
-    public function getCommitteeByCCLI($company,$country,$location,$id)
+    public function getProceedingsByCCLId($company,$country,$location,$id)
     {
         $row = $this->select(function (Select $select) use ($company,$country,$location,$id){
             $select->where(array('company'=>(string) $company,
                                 'country'=>(string) $country,
                                 'location'=>(string) $location,
                                 'id'=>(int) $id,
-                                $this->table_name.'.status'=>'A'));
+                                'status'=>'A'));
         });
         if (!$row)
             return false;
         return $row->toArray();
     }
-
     
     public function getNextId() {
         $resultSet = $this->select(function (Select $select) {
@@ -109,17 +85,15 @@ class SafetyCommitteeTable extends AbstractTableGateway {
         return $id;
     }
    
-    public function save(SafetyCommittee $object)
+    public function save(SafetyCommitteeProceedings $object)
     {
         $data = array(
             'company' => $object->getCompany(),
             'country' => $object->getCountry(),
             'location' => $object->getLocation(),
             'id' => $object->getId(),
-            'fullname' => $object->getFullname(),
-            'id_position' => $object->getId_position(),
-            'email' => $object->getEmail(),
-            'phone' => $object->getPhone(),
+            'description' => $object->getDescription(),
+            'date_proceeding' => $object->getDate_proceeding(),
             'status' => $object->getStatus(),
             'user_id' => $object->getUser_id(),
             'date_creation' => $object->getDate_creation(),
@@ -131,35 +105,34 @@ class SafetyCommitteeTable extends AbstractTableGateway {
         $company = (string) $object->getCompany();
         $country = (string) $object->getCountry();
         $location = (string) $object->getLocation();
-        $photo = (string) $object->getPhoto();
-        $thumbnail = (string) $object->getThumbnail();
+        $file = (string) $object->getProceeding();
+
         if(empty($id)){
             $id = $this->getNextId();
             $data['id'] = $id;
         }
         
-        if(!empty($photo)){
-            $data['photo'] = $photo;
-            $data['thumbnail'] = $thumbnail;
+        if(!empty($file)){
+            $data['proceeding'] = $file;
         }
         
-        if (!$this->getCommitteeByCCLI($company,$country,$location,$id)) {
+        if (!$this->getProceedingsByCCLId($company,$country,$location,$id)) {
             if (!$this->insert($data)){
                 throw new \Exception('insert statement can\'t be executed');
             }
             return $data['id'];
-        } elseif ($this->getCommitteeByCCLI($company,$country,$location,$id)) {
+        } elseif ($this->getProceedingsByCCLId($company,$country,$location,$id)) {
             $data['date_modification']=date('Y-m-d h:i:s');
             $data['user_modification'] = $data['user_id'];
             $this->update( $data, 
                     array('company'=> $company,'country'=> $country,'location'=>$location,'id' => $id) );
             return $data['id'];
         } else {
-            throw new \Exception('company or country or location or id in object SafetyCommittee does not exist');
+            throw new \Exception('company or country or location or id in object SafetyCommitteeProceedings does not exist');
         }
     }
 
-    public function updateCommittee($company,$country,$location,$id,$data)
+    public function updateProceedings($company,$country,$location,$id,$data)
     {
         $company = (string) $company;
         $country = (string) $country;

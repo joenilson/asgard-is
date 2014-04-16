@@ -396,6 +396,76 @@ return array(
                             ),
                         ),
                     ),
+                    'committeeproceedings' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/committeeproceedings[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'committeeproceedings'
+                            ),
+                        ),
+                    ),
+                    'getcommitteeproceedings' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/getcommitteeproceedings[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'getcommitteeproceedings'
+                            ),
+                        ),
+                    ),
+                    'addcommitteeproceedings' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/addcommitteeproceedings[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'addcommitteeproceedings'
+                            ),
+                        ),
+                    ),
+                    'removecommitteeproceedings' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/removecommitteeproceedings[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'removecommitteeproceedings'
+                            ),
+                        ),
+                    ),
+                    'formcommitteeproceedings' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/formcommitteeproceedings[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'formcommitteeproceedings'
+                            ),
+                        ),
+                    ),
                     'diagram' => array(
                         'type'    => 'Segment',
                         'options' => array(

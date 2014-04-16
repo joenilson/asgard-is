@@ -22,11 +22,11 @@ Ext.define('Asgard.lib.dataview.safetycommittee',{
     flex: 1,
     trackOver: true,
     overItemCls: 'x-item-over',
-    itemSelector: '.thumb-wrap',
+    itemSelector: 'div.thumb-wrap',
     emptyTextText: 'No images to display',
-    tpl: [
+    template: [
         '<tpl for=".">',
-            '<div class="thumb-wrap" style="float: left; padding: 5px; width: 200px; height: 200px;" id="{id:stripTags}">',
+            '<div class="thumb-wrap" style="" id="{id:stripTags}">',
                 '<div class="thumb"><img src="{thumbnail}" title="{fullname:htmlEncode}"></div>',
                 '<span>{fullname:htmlEncode}</span><br />',
                 '<span>{description:htmlEncode}</span><br />',
@@ -37,7 +37,7 @@ Ext.define('Asgard.lib.dataview.safetycommittee',{
         '<div class="x-clear"></div>'
     ],
     initComponent: function(){
-        
+        this.tpl = this.template;
         this.emptyText = this.emptyTextText;
         this.callParent();
     }

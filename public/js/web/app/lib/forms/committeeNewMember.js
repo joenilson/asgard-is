@@ -210,7 +210,6 @@ Ext.define('Asgard.lib.forms.committeeNewMember',{
         var companyId = panel.items.getAt(0).getValue();
         var countryId = panel.items.getAt(1).getValue();
         var locationId = panel.items.getAt(2).getValue();
-        console.log(panel);
         var grid = panel.innerPanel;
         if(form.isValid()){
             form.submit({
@@ -218,8 +217,6 @@ Ext.define('Asgard.lib.forms.committeeNewMember',{
                     module: 'imssafetycommittee'
                 },
                 success: function(fp, o, m, r) {
-                    console.log(fp);
-                    console.log(o);
                     form.reset();
                     var winActive = Ext.WindowManager.getActive();
                     winActive.hide();
@@ -227,8 +224,6 @@ Ext.define('Asgard.lib.forms.committeeNewMember',{
                     Ext.Msg.alert('Success', me.successText);
                 },
                 failure: function(fp, o, u){
-                    console.log(fp);
-                    console.log(o);
                     Ext.Msg.alert('Failure', me.failureText);
                 }
             });

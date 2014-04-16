@@ -1,5 +1,4 @@
 <?php
-
 /* 
  * Copyright (C) 2014 Joe Nilson <joenilson at gmail.com>
  *
@@ -18,63 +17,6 @@
  */
 
 ?>
-<style>
-.thumb{
-    background: #dddddd;
-    padding: 3px;
-    padding-bottom: 0;
-}
-
-.thumb {
-    padding-bottom: 3px;
-}
-
-//#images-view .thumb-wrap{
-.thumb-wrap{
-    float: left;
-    margin: 4px;
-    margin-right: 0;
-    padding: 5px;
-}
-.thumb-wrap span {
-    display: block;
-    overflow: hidden;
-    text-align: center;
-    width: 171px; /* for ie to ensure that the text is centered */
-}
-
-.x-item-over{
-    border:1px solid #dddddd;
-    background: #efefef;
-    //url(over.gif) repeat-x left top;
-    padding: 4px;
-}
-
-.x-item-selected{
-    background: #eff5fb;
-    //url(selected.gif) no-repeat right bottom;
-    border:1px solid #99bbe8;
-    padding: 4px;
-}
-.x-item-selected .thumb{
-    background:transparent;
-}
-/*
-.x-view-selector {
-    position:absolute;
-    left:0;
-    top:0;
-    width:0;
-    border:1px dotted;
-    opacity: .5;
-    -moz-opacity: .5;
-    filter:alpha(opacity=50);
-    zoom:1;
-    background-color:#c3daf9;
-    border-color:#3399bb;
-}
-*/
-</style>
 <script>
 function deployCombos(comboField,comboValue){
     var combo = formCommittee<?=$this->panelId;?>.getForm().findField(comboField);
@@ -98,7 +40,6 @@ var CommitteeStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.SafetyCo
 
 var viewCommittee<?=$this->panelId;?> = Ext.create('Asgard.lib.dataview.safetycommittee', { 
     store: CommitteeStore<?= $this->panelId; ?>, 
-    id: 'viewCommittee'
 });
 
    
