@@ -25,6 +25,7 @@ class CommonsController extends AbstractActionController
     protected $companiesTable;
     protected $countriesTable;
     protected $locationsTable;
+    protected $languagesTable;
     
     /**
      * The default action - show the home page
@@ -87,6 +88,24 @@ class CommonsController extends AbstractActionController
         }
         $result = new JsonModel($data);
     	return $result;
+    }
+    
+    public function getlanguagesAction()
+    {
+        if (! $this->getServiceLocator()
+    	 		->get('AuthService')->hasIdentity()){
+    	   return $this->redirect()->toRoute('login');
+    	}
+        $request = $this->getRequest();
+        if ($request->isGet() AND $request->getQuery('lang')!=''){
+            $lang = (string) $request->getQuery('lang');
+            $Languages = $this->getLanguagesTable()->getLanguageByLang($lang);
+            $data=array('success'=>true,'results'=>$Languages,'llego'=>'aqui');
+        }else{
+            $Languages = $this->getLanguagesTable()->getLanguages();
+            $data=array('success'=>true,'results'=>$Languages, 'count'=> count($Languages));
+        }
+        return new JsonModel($data);
     }
     
     public function getmenusAction()
@@ -312,5 +331,14 @@ class CommonsController extends AbstractActionController
             $this->locationsTable = $sm->get('Application\Model\LocationsTable');
         }
         return $this->locationsTable;
+    }
+    
+    private function getLanguagesTable()
+    {
+        if (!$this->languagesTable){
+            $sm = $this->getServiceLocator();
+            $this->languagesTable = $sm->get('Application\Model\LanguagesTable');
+        }
+        return $this->languagesTable;
     }
 }

@@ -130,6 +130,19 @@ return array(
                                     ),
                                 ),
                             ),
+                            'getlanguages' => array(
+                                'type'    => 'Segment',
+                                'options' => array(
+                                    'route'    => '/getlanguages',
+                                    'constraints' => array(
+                                        'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                        'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                    ),
+                                    'defaults' => array(
+                                        'action' => 'getlanguages'
+                                    ),
+                                ),
+                            ),
                             'getmenus' => array(
                                 'type'    => 'Segment',
                                 'options' => array(

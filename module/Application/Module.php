@@ -26,6 +26,7 @@ use Application\Model\CompaniesTable;
 use Application\Model\CountriesTable;
 use Application\Model\LocationsTable;
 use Application\Model\MessagesTable;
+use Application\Model\LanguagesTable;
 
 class Module
 {
@@ -233,7 +234,13 @@ class Module
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new MessagesTable($dbAdapter);
                     return $table;
-                },        
+                },
+                        
+                'Application\Model\LanguagesTable' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new LanguagesTable($dbAdapter);
+                    return $table;
+                },
     	    ),
         );
     }

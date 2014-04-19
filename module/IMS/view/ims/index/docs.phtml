@@ -36,6 +36,10 @@ var toolsLibrary = [{
     type: 'plus',
     tooltip: 'Add Document',
     handler: fnLibraryTool
+},{
+    type: 'expand',
+    tooltip: 'Upload Master File',
+    handler: fnLibraryTool
 }];
 
 /*
@@ -93,7 +97,7 @@ function fnLibraryTool(me, e, object, tool) {
                 winContent = new Ext.create('Asgard.lib.forms.docsNewDocument',{
                     flex: 1
                 });
-            }else{
+            }else if(tool.type==='gear'){
                 windowDoc.setTitle('Change Request Queue');
                 innerStore.load({ params: { module: 'master', company: companies, country: countries, location: locations } });
                 grid = new Ext.create('Asgard.lib.grid.changeRequestQueue',{
@@ -124,6 +128,11 @@ function fnLibraryTool(me, e, object, tool) {
                         detailPanel.update(Ext.htmlDecode(selectedRecord[0].data.desc_request));
                     }
                 });
+                
+            }else if(tool.type==='expand') {
+                windowDoc.setTitle('Upload Master Files');
+                windowDoc.setHeight(250);
+                winContent = Ext.create('Asgard.lib.forms.docsMasterFileUpload');
                 
             }
             windowDoc.add(winContent);

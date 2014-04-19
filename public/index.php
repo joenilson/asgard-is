@@ -12,6 +12,7 @@ Zend\Loader\AutoloaderFactory::factory(array(
     'Zend\Loader\StandardAutoloader' => array(
         'namespaces' => array(
             'AsgardLib' => __DIR__ . '/../vendor/AsgardLib',
+            'PHPExcel' => __DIR__ . '/../vendor/Classes',
         ),
     )
 ));

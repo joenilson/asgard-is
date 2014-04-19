@@ -121,10 +121,6 @@ Ext.define('Asgard.lib.grid.auditors',{
         if(event!=='yes'){
             this.processChangeValue.setValue('no');
         }
-        console.log(event);
-        console.log(e);
-        console.log(object);
-        console.log(tool);
     },
     
     fnLibraryTool: function(event, e, object, tool) {

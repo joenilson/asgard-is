@@ -22,6 +22,9 @@ use IMS\Model\Entity\DocsLibrary;
 use AsgardLib\Versioning\Documents;
 use AsgardLib\Versioning\Scope;
 
+//use PHPExcel;
+use PHPExcel\Reader\Excel5; 
+
 class IndexController extends AbstractActionController
 {
     protected $auditorsTable;
@@ -895,8 +898,7 @@ class IndexController extends AbstractActionController
             $this->removefile($proceedingData[0]['proceeding']);
             $dataResult['success'] = true;
         }
-        return new JsonModel($dataResult);
-        
+        return new JsonModel($dataResult);   
     }
     
     public function formcommitteeproceedingsAction(){
@@ -929,6 +931,191 @@ class IndexController extends AbstractActionController
             $data['data']="";
         }
         return new JsonModel($data);
+    }
+    
+    public function massdocprocessAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $company = $request->getPost('companiesCombo');
+        $country = $request->getPost('countriesCombo');
+        $location = $request->getPost('locationsCombo');
+        $lang_docs = $request->getPost('languageCombo');
+        $files =  $request->getFiles()->toArray();
+        $date_creation = \date('Y-m-d h:i:s');
+        $zipfolder = '/tmp/temp_'.\date('Ymdhis').'/';
+        
+        $dataResult = array();
+
+        //$sqlMessage = $this->getMessagesTable();
+        $sqlProcess = $this->getProcessMainTable();
+        $arrayProcess = $sqlProcess->getMainProcess($lang_docs,0,'A',$company,$country,$location);
+        $process = array();
+        foreach($arrayProcess as $key=>$process_values){
+            $process[$process_values['description']]=array('id'=>$process_values['id'],'desc'=>$process_values['description']);
+        }
+        
+        $sqlHelpers = $this->getDocsHelpersTable();
+        $arrayHelpers = $sqlHelpers->getHelpers($lang_docs);
+        $helpers = array();
+        foreach($arrayHelpers as $key=>$values){
+            $helpers[$values['helper']][$values['description']]=array('id'=>$values['id'],'desc'=>$values['description']);
+        }
+        //$reader = new \PHPExcel();
+        $reader = new \PHPExcel_Reader_Excel5();
+        $worksheetData = $reader->listWorksheetInfo($files['excel_file']['tmp_name']);
+        $objPHPExcel = $reader->load($files['excel_file']['tmp_name']);
+        $sheetData = $objPHPExcel->getActiveSheet()->toArray(null,true,true,true);
+        
+        if(!is_dir($zipfolder)){
+            mkdir($zipfolder, 0777);
+        }
+        move_uploaded_file($files['zip_file']['tmp_name'], '/tmp/'.$files['zip_file']['name']);
+        $zip = new \ZipArchive;
+        if ($zip->open('/tmp/'.$files['zip_file']['name']) === TRUE) {
+            $dataResult['numfiles']=$zip->numFiles;
+            $zipList = array();
+            $zipdir = "";
+            
+            
+            
+            for($i = 0; $i < $zip->numFiles; $i++)
+            {  
+                if(strpos(".",$zip->getNameIndex($i))){
+                    $zipList[]=$zip->getNameIndex($i);
+                    
+                }
+            }
+            $zipdir = $zip->getNameIndex(0);
+            $dataResult['unziped']=$zipdir;
+            $zip->extractTo($zipfolder);
+            $zip->close();
+            
+        } else {
+            $dataResult['unziped']="ERROR";
+        }
+        
+        $arrayMasterData = array();
+        $counter = 1;
+        foreach($sheetData as $key=>$content){
+            if($counter != 1 and !empty($content['A'])){
+            $id = (int) trim($content['A']);
+            $classification = (string) trim($content['B']);
+            $description = (string) trim($content['C']);
+            $filename = (string) $zipdir.trim($content['D']).'.pdf';
+            $type = (string) trim($content['E']);
+            $review = (string) trim($content['F']);
+            $protection = (string) trim($content['G']);
+            $owner = (string) trim($content['H']);
+            $doclocation = (string) trim($content['I']);
+            $origin = (string) trim($content['J']);
+            $retention = (string) trim($content['K']);
+            $register = (string) trim($content['L']);
+            $version_number = (int) trim($content['M']);
+            
+            $version_date_dump = explode("/",$content['N']);
+            $revision_date_dump = explode("/",$content['O']);
+                       
+            //$version_date = date("Y-m-d", strtotime(str_replace("'","",$content['N'])));
+            //$revision_date = date("Y-m-d", strtotime(str_replace("'","",$content['O'])));
+            //$version_date = \date("Y-m-d", strtotime($version_date_dump));
+            //$revision_date = \date("Y-m-d", strtotime($revision_date_dump));
+            
+            $version_date = \date("Y-m-d", strtotime($version_date_dump[2]."-".$version_date_dump[1]."-".$version_date_dump[0]));
+            $revision_date = \date("Y-m-d", strtotime($revision_date_dump[2]."-".$revision_date_dump[1]."-".$revision_date_dump[0]));
+            //$version_date = date_format(new \DateTime(str_replace("'","",$content['N']), "Y-m-d"));
+            //$revision_date = date_format(new \DateTime(str_replace("'","",$content['O']), "Y-m-d"));
+            
+            $arrayMasterData[]=array(
+                'doc_id'=>(int) $id,
+                'classification'=>(!$helpers['classification'][$classification])?"":$helpers['classification'][$classification]['id'],
+                'classification_desc'=>(!$helpers['classification'][$classification])?"":$helpers['classification'][$classification]['desc'],
+                'type'=>(!$helpers['type'][$type])?"":$helpers['type'][$type]['id'],
+                'type_desc'=>(!$helpers['type'][$type])?"":$helpers['type'][$type]['desc'],
+                'review'=>(!$helpers['review'][$review])?"":$helpers['review'][$review]['id'],
+                'review_desc'=>(!$helpers['review'][$review])?"":$helpers['review'][$review]['desc'],
+                'protection'=>(!$helpers['protection'][$protection])?"":$helpers['protection'][$protection]['id'],
+                'protection_desc'=>(!$helpers['protection'][$protection])?"":$helpers['protection'][$protection]['desc'],
+                'location'=>(!$helpers['location'][$doclocation])?"":$helpers['location'][$doclocation]['id'],
+                'location_desc'=>(!$helpers['location'][$doclocation])?"":$helpers['location'][$doclocation]['desc'],
+                'origin'=>(!$helpers['origin'][$origin])?"":$helpers['origin'][$origin]['id'],
+                'origin_desc'=>(!$helpers['origin'][$origin])?"":$helpers['origin'][$origin]['desc'],
+                'retention'=>(!$helpers['retention'][$retention])?"":$helpers['retention'][$retention]['id'],
+                'retention_desc'=>(!$helpers['retention'][$retention])?"":$helpers['retention'][$retention]['desc'],
+                'description'=>$description,
+                'filename'=>(is_file($zipfolder.$filename))?$zipfolder.$filename:$filename,
+                'owner'=>(!$process[$owner])?"":$process[$owner]['id'],
+                'owner_desc'=>(!$process[$owner])?"":$process[$owner]['desc'],
+                'doc_record'=>$register,
+                'version_number'=>$version_number,
+                'version_date'=>$version_date,
+                'revision_date'=>$revision_date,
+                'doc_status_general'=>'U',
+                'date_creation'=>$date_creation
+            );
+            
+            }
+            $counter++;
+            
+        }
+        
+        //var_dump($sheetData);
+        foreach($worksheetData as $worksheet){
+            $dataResult['worksheetName']=$worksheet['worksheetName'];
+            $dataResult['totalRows']=$worksheet['totalRows'];
+            $dataResult['totalColumns']=$worksheet['totalColumns'];
+            $dataResult['lastColumnLetter']=$worksheet['lastColumnLetter'];
+            
+        }
+        $dataResult['file_results']=$arrayMasterData;
+        $dataResult['success']=true;
+
+        //$reader->load($files['excel_file']);
+        
+        /** Define how many rows we want to read for each "chunk" **/ 
+        //$chunkSize = 2048; 
+        /** Create a new Instance of our Read Filter **/ 
+        //$chunkFilter = new chunkReadFilter(); 
+        /** Tell the Reader that we want to use the Read Filter **/ 
+        //$objReader->setReadFilter($chunkFilter);
+        
+        $sql = $this->getDocsLibraryTable();
+        /*
+        $insert = new \IMS\Model\Entity\SafetyCommitteeProceedings();
+        $insert->setDescription($description)
+                ->setDate_proceeding($date_proceeding)
+                ->setCompany($company)
+                ->setCountry($country)
+                ->setLocation($location)
+                ->setUser_id($userData->id)
+                ->setStatus('A')
+                ->setDate_creation($date_creation);
+        if($id){
+            $insert->setId($id);
+        }
+        $dataResult['success'] = true; 
+        try {
+            $newId = $sql->save($insert);
+            
+        } catch (\Exception $ex) {
+            //$error = $ex;
+            
+            $dataResult['success'] = false; 
+            $dataResult['message'] = $ex->getMessage(); 
+        }
+
+        $valid = new \Zend\Validator\File\UploadFile();
+        
+        if(isset($newId) AND $valid->isValid($files['proceeding_file'])){
+            $fileName = "proceeding_{$company}_{$country}_{$location}_".$newId.".pdf";
+            $this->savefile('library/proceedings', $files['proceeding_file'], $fileName, false, null);
+            $sql->update(array('proceeding'=>'library/proceedings/'.$fileName),array('id'=>$newId));
+        }
+         
+         */
+        return new JsonModel($dataResult);        
     }
     
     public function hiraspecsAction()
@@ -1222,7 +1409,7 @@ class IndexController extends AbstractActionController
             $data['success']=true;
             $data['results']=$listDocuments;
         }else{
-            $data['msg']="Error trying to get the information...";;
+            $data['msg']="Error trying to get the information...";
         }
         return new JsonModel($data);
     }

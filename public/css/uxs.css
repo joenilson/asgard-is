@@ -230,3 +230,11 @@
 .upload-icon {
     background: url('../images/default/16x16/upload_doc_icon.png') no-repeat 0 0 !important;
 }
+
+.uploadexcel-icon {
+    background: url('../images/default/16x16/upload_xls_icon.png') no-repeat 0 0 !important;
+}
+
+.uploadzip-icon {
+    background: url('../images/default/16x16/upload_zip_icon.png') no-repeat 0 0 !important;
+}

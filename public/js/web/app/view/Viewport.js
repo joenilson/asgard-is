@@ -27,7 +27,9 @@ Ext.define('Asgard.view.Viewport', {
     'Asgard.lib.grid.hira_incidents_type','Asgard.lib.grid.hira_incidents_details',
     'Asgard.store.CommitteePositions','Asgard.store.SafetyCommittee','Asgard.lib.forms.CommitteePositionsCombo',
     'Asgard.lib.forms.committeeNewMember','Asgard.lib.dataview.safetycommittee',
-    'Asgard.lib.Panels.CommitteePanel'
+    'Asgard.lib.Panels.CommitteePanel','Asgard.store.Languages','Asgard.lib.forms.LanguageCombo',
+    'Asgard.lib.forms.docsMasterFileUpload','Asgard.lib.grid.documents_upload',
+    'Asgard.store.DocsUpload'
   ],
   menuTitleText: 'Main Menu',
     defaults: {

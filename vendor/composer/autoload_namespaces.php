@@ -10,4 +10,5 @@ return array(
     'ZendXml' => array($vendorDir . '/zendframework/zendxml/library'),
     'Imagine' => array($vendorDir . '/imagine/imagine/lib'),
     'AsgardLib' => array($vendorDir . '/AsgardLib'),
+    'PHPExcel' => array($vendorDir . '/Classes'),
 );
