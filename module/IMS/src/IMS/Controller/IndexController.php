@@ -978,9 +978,6 @@ class IndexController extends AbstractActionController
             $dataResult['numfiles']=$zip->numFiles;
             $zipList = array();
             $zipdir = "";
-            
-            
-            
             for($i = 0; $i < $zip->numFiles; $i++)
             {  
                 if(strpos(".",$zip->getNameIndex($i))){
@@ -992,7 +989,6 @@ class IndexController extends AbstractActionController
             $dataResult['unziped']=$zipdir;
             $zip->extractTo($zipfolder);
             $zip->close();
-            
         } else {
             $dataResult['unziped']="ERROR";
         }
@@ -1025,9 +1021,7 @@ class IndexController extends AbstractActionController
             
             $version_date = \date("Y-m-d", strtotime($version_date_dump[2]."-".$version_date_dump[1]."-".$version_date_dump[0]));
             $revision_date = \date("Y-m-d", strtotime($revision_date_dump[2]."-".$revision_date_dump[1]."-".$revision_date_dump[0]));
-            //$version_date = date_format(new \DateTime(str_replace("'","",$content['N']), "Y-m-d"));
-            //$revision_date = date_format(new \DateTime(str_replace("'","",$content['O']), "Y-m-d"));
-            
+           
             $arrayMasterData[]=array(
                 'doc_id'=>(int) $id,
                 'classification'=>(!$helpers['classification'][$classification])?"":$helpers['classification'][$classification]['id'],
@@ -1053,6 +1047,10 @@ class IndexController extends AbstractActionController
                 'version_date'=>$version_date,
                 'revision_date'=>$revision_date,
                 'doc_status_general'=>'U',
+                'lang'=>$lang_docs,
+                'company'=>$company,
+                'country'=>$country,
+                'location'=>$location,
                 'date_creation'=>$date_creation
             );
             
@@ -1116,6 +1114,25 @@ class IndexController extends AbstractActionController
          
          */
         return new JsonModel($dataResult);        
+    }
+    
+    public function processmassdocsAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $dataBulk = $request->getPost('data');
+        $data = \json_decode($dataBulk);
+        $dataCount = count($data);
+        if(is_array($data)){
+            $dataResult['success']=true;
+            $dataResult['message']="$dataCount documents proccessed";
+        }else{
+            $dataResult['success']=false;
+            $dataResult['message']="No data was sent";
+        }
+        return new JsonModel($dataResult);
     }
     
     public function hiraspecsAction()
@@ -1539,22 +1556,26 @@ class IndexController extends AbstractActionController
             }
             $result = new JsonModel($data);
             return $result;
-        //}
-        
-        
+        //}      
     }
     
     public function docsAction()
     {
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
         $userData = $this->getServiceLocator()->get('userSessionData');
-
-        return array('data'=>'LLegamos!','userData'=>$userPrefs);
+        $lang = $userPrefs[0]['lang'];
+        return array('userData'=>$userPrefs, 
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0)),
+            'lang'=>$lang,
+        );
     }
     
     public function newdocumentAction() 
     {
-         $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
         
         $data['success']=false;
         $data['message']="Request Error";

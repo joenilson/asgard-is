@@ -22,12 +22,19 @@
  */
 ?>
 <script>
+function deployCombos(comboField,comboValue){
+    var combo = formDataRequest<?=$this->panelId;?>.getForm().findField(comboField);
+    var store = combo.store;
+    store.on("load", function(store, records, state, operation, opts) {
+            combo.setValue(comboValue);
+    });
+}    
 var required = '<span style="color:red;font-weight:bold" data-qtip="Required">*</span>';
 
 var DocsLibraryStore<?= $this->panelId; ?> = Ext.create('Asgard.store.DocsLibrary');
 
 var innerStore = new Ext.create('Asgard.store.DocsRequest');
- 
+
 var toolsLibrary = [{
     type: 'gear',
     tooltip: 'View Change Requests Queue',
@@ -66,6 +73,11 @@ var libraryViewport<?=$this->panelId; ?> = Ext.create('Ext.panel.Panel', {
         DocumentsGrid<?=$this->panelId; ?>
    ]
 });
+
+deployCombos('companiesCombo','<?=$this->companyId;?>');
+deployCombos('countriesCombo','<?=$this->countryId;?>');
+deployCombos('locationsCombo','<?=$this->locationId;?>');
+
 
 var windowDoc = Ext.create('Ext.window.Window',{
     closable: true,

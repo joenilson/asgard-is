@@ -47,8 +47,51 @@ Ext.define('Asgard.lib.grid.documents_upload',{
     retentionText: 'Retention Time',
     fileText: 'File',
     //toolViewDocText: 'View File',
-    
+    buttonAcceptText: 'Save Upload',
+    emptyTitleText: 'No data selected',
+    emptyMessageText: 'No one items was selected to process, <br />Please select one at last...',
     initComponent: function(){
+        var me = this;
+        this.selType = 'checkboxmodel';
+        this.cellEditing = new Ext.grid.plugin.CellEditing({
+            clicksToEdit: 1
+        });
+        this.plugins =  [this.cellEditing],
+        this.dockedItems = [{
+            xtype: 'toolbar',
+            ui: 'footer',
+            dock: 'bottom',
+            items: ['->', {
+                text: this.buttonAcceptText,
+                scope: this,
+                handler: function(){
+                    var gridSel = this.getSelectionModel().getSelection();
+                    if(gridSel.length > 0){
+                        console.log(gridSel);
+                        //console.log(gridSel[0].data);
+                        //console.log(gridSel.data);
+                        var sendData = [];
+                        for(i=0; i<gridSel.length; i++){
+                            sendData.push(gridSel[i].data);
+                        }
+                        console.log(sendData);
+                        Ext.Ajax.request({
+                            url: 'ims/processmassdocs',
+                            params: {
+                                data: Ext.encode(sendData)
+                            },
+                            success: function(response){
+                                var text = response.responseText;
+                                console.log(text);
+                            }
+                        });
+                    }else{
+                        this.showEmptyMessage();
+                    }
+                }
+            }]
+        }];
+
         this.title = this.titleText,
         this.columns =  {
             plugins: [{
@@ -56,28 +99,80 @@ Ext.define('Asgard.lib.grid.documents_upload',{
             }],
             items: [
                 {text: this.idText, sortable: true, dataIndex: 'doc_id', filter: true},
-                {text: this.classDocText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'classification_desc', tdCls: 'wrapText'},
-                {text: this.typeText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'type_desc', tdCls: 'wrapText'},
-                {text: this.documentText, flex: 3, sortable: true, filter: true, dataIndex: 'description', tdCls: 'wrapText'},
-                {text: this.recordText, flex: 1.5, sortable: true, filter: true, dataIndex: 'doc_record', tdCls: 'wrapText'},
-                {text: this.versionText, flex: 1, sortable: true, filter: true, dataIndex: 'version_number', tdCls: 'wrapText'},
+                {text: this.classDocText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'classification_desc', tdCls: 'wrapText',
+                    editor: Ext.create('Asgard.lib.forms.DocsHelpers',{ 
+                        store: new Ext.create('Asgard.store.DocsHelpers').load({ params: { helper: 'classification' } })
+                    })
+                },
+                {text: this.typeText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'type_desc', tdCls: 'wrapText',
+                    editor: Ext.create('Asgard.lib.forms.DocsHelpers',{ 
+                        store: new Ext.create('Asgard.store.DocsHelpers').load({ params: { helper: 'type' } })
+                    })
+                },
+                {text: this.documentText, flex: 3, sortable: true, filter: true, dataIndex: 'description', tdCls: 'wrapText', 
+                    editor: { allowBlank: false }
+                },
+                {text: this.recordText, flex: 1.5, sortable: true, filter: true, dataIndex: 'doc_record', tdCls: 'wrapText',
+                    editor: { allowBlank: false }
+                },
+                {text: this.versionText, flex: 1, sortable: true, filter: true, dataIndex: 'version_number', tdCls: 'wrapText',
+                    editor: {
+                        xtype: 'numberfield',
+                        allowBlank: true,
+                        minValue: 0,
+                        maxValue: 100000
+                    }
+                },
                 {text: this.dateVersionText, flex: 1.5,  sortable: true, filter: true, dataIndex: 'version_date', tdCls: 'wrapText', 
-                    xtype: 'datecolumn', format:'Y-m-d'
+                    xtype: 'datecolumn', format:'Y-m-d',
+                    editor: {
+                        xtype: 'datefield',
+                        format: 'Y-m-d'
+                    }
                 },
                 {text: this.statusText, flex: 1, sortable: true, filter: true, dataIndex: 'doc_status_general', tdCls: 'wrapText'},
                 {text: this.dateRevisionText, flex: 1.5,  sortable: true, filter: true, dataIndex: 'revision_date', tdCls: 'wrapText', 
-                    xtype: 'datecolumn', format:'Y-m-d'
+                    xtype: 'datecolumn', format:'Y-m-d',
+                    editor: {
+                        xtype: 'datefield',
+                        format: 'Y-m-d'
+                    }
                 },
-                {text: this.reviewText, flex: 1, sortable: true, filter: true, dataIndex: 'review_desc', tdCls: 'wrapText'},
-                {text: this.protectionText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'protection_desc', tdCls: 'wrapText'},
+                {text: this.reviewText, flex: 1, sortable: true, filter: true, dataIndex: 'review_desc', tdCls: 'wrapText',
+                    editor: Ext.create('Asgard.lib.forms.DocsHelpers',{ 
+                        store: new Ext.create('Asgard.store.DocsHelpers').load({ params: { helper: 'review' } })
+                    })},
+                {text: this.protectionText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'protection_desc', tdCls: 'wrapText',
+                    editor: Ext.create('Asgard.lib.forms.DocsHelpers',{ 
+                        store: new Ext.create('Asgard.store.DocsHelpers').load({ params: { helper: 'protection' } })
+                    })},
                 {text: this.ownerText, flex: 1, sortable: true, filter: true, dataIndex: 'owner_desc', tdCls: 'wrapText'},
-                {text: this.locationText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'location_desc', tdCls: 'wrapText'},
-                {text: this.originText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'origin_desc', tdCls: 'wrapText'},
-                {text: this.retentionText, flex: 1, sortable: true, filter: 'combo', dataIndex: 'retention_desc', tdCls: 'wrapText'},
+                {text: this.locationText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'location_desc', tdCls: 'wrapText',
+                    editor: Ext.create('Asgard.lib.forms.DocsHelpers',{ 
+                        store: new Ext.create('Asgard.store.DocsHelpers').load({ params: { helper: 'location' } })
+                    })},
+                {text: this.originText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'origin_desc', tdCls: 'wrapText',
+                    editor: Ext.create('Asgard.lib.forms.DocsHelpers',{ 
+                        store: new Ext.create('Asgard.store.DocsHelpers').load({ params: { helper: 'origin' } })
+                    })},
+                {text: this.retentionText, flex: 1, sortable: true, filter: 'combo', dataIndex: 'retention_desc', tdCls: 'wrapText',
+                    editor: Ext.create('Asgard.lib.forms.DocsHelpers',{ 
+                        store: new Ext.create('Asgard.store.DocsHelpers').load({ params: { helper: 'retention' } })
+                    })},
                 {text: this.fileText, flex: 2, sortable: true, filter: true, dataIndex: 'filename', tdCls: 'wrapText'}
             ]
         };
         
         this.callParent();
+    },
+    showEmptyMessage: function(){
+        var emptyMsg = Ext.MessageBox.show({
+           title: this.emptyTitleText,
+           msg: this.emptyMessageText,
+           buttons: Ext.MessageBox.OK,
+           icon: Ext.MessageBox.WARNING
+       });
+       return emptyMsg;
+
     }
 });
