@@ -1032,7 +1032,7 @@ class IndexController extends AbstractActionController
                 'review_desc'=>(!$helpers['review'][$review])?"":$helpers['review'][$review]['desc'],
                 'protection'=>(!$helpers['protection'][$protection])?"":$helpers['protection'][$protection]['id'],
                 'protection_desc'=>(!$helpers['protection'][$protection])?"":$helpers['protection'][$protection]['desc'],
-                'location'=>(!$helpers['location'][$doclocation])?"":$helpers['location'][$doclocation]['id'],
+                'location_doc'=>(!$helpers['location'][$doclocation])?"":$helpers['location'][$doclocation]['id'],
                 'location_desc'=>(!$helpers['location'][$doclocation])?"":$helpers['location'][$doclocation]['desc'],
                 'origin'=>(!$helpers['origin'][$origin])?"":$helpers['origin'][$origin]['id'],
                 'origin_desc'=>(!$helpers['origin'][$origin])?"":$helpers['origin'][$origin]['desc'],
@@ -1051,15 +1051,14 @@ class IndexController extends AbstractActionController
                 'company'=>$company,
                 'country'=>$country,
                 'location'=>$location,
-                'date_creation'=>$date_creation
+                'date_creation'=>$date_creation,
+                'user_creation'=>$userData->id
             );
             
             }
             $counter++;
             
         }
-        
-        //var_dump($sheetData);
         foreach($worksheetData as $worksheet){
             $dataResult['worksheetName']=$worksheet['worksheetName'];
             $dataResult['totalRows']=$worksheet['totalRows'];
@@ -1069,50 +1068,6 @@ class IndexController extends AbstractActionController
         }
         $dataResult['file_results']=$arrayMasterData;
         $dataResult['success']=true;
-
-        //$reader->load($files['excel_file']);
-        
-        /** Define how many rows we want to read for each "chunk" **/ 
-        //$chunkSize = 2048; 
-        /** Create a new Instance of our Read Filter **/ 
-        //$chunkFilter = new chunkReadFilter(); 
-        /** Tell the Reader that we want to use the Read Filter **/ 
-        //$objReader->setReadFilter($chunkFilter);
-        
-        $sql = $this->getDocsLibraryTable();
-        /*
-        $insert = new \IMS\Model\Entity\SafetyCommitteeProceedings();
-        $insert->setDescription($description)
-                ->setDate_proceeding($date_proceeding)
-                ->setCompany($company)
-                ->setCountry($country)
-                ->setLocation($location)
-                ->setUser_id($userData->id)
-                ->setStatus('A')
-                ->setDate_creation($date_creation);
-        if($id){
-            $insert->setId($id);
-        }
-        $dataResult['success'] = true; 
-        try {
-            $newId = $sql->save($insert);
-            
-        } catch (\Exception $ex) {
-            //$error = $ex;
-            
-            $dataResult['success'] = false; 
-            $dataResult['message'] = $ex->getMessage(); 
-        }
-
-        $valid = new \Zend\Validator\File\UploadFile();
-        
-        if(isset($newId) AND $valid->isValid($files['proceeding_file'])){
-            $fileName = "proceeding_{$company}_{$country}_{$location}_".$newId.".pdf";
-            $this->savefile('library/proceedings', $files['proceeding_file'], $fileName, false, null);
-            $sql->update(array('proceeding'=>'library/proceedings/'.$fileName),array('id'=>$newId));
-        }
-         
-         */
         return new JsonModel($dataResult);        
     }
     
@@ -1125,9 +1080,97 @@ class IndexController extends AbstractActionController
         $dataBulk = $request->getPost('data');
         $data = \json_decode($dataBulk);
         $dataCount = count($data);
+        /*
+        *classification 5
+	*classification_desc "Registros"
+	*company "0001"
+	*country "0001"
+	*date_creation 	Date {Sun Apr 20 2014 12:24:20 GMT-0400 (AST)}
+	*description "MOVIMIENTO DE AZUCAR, PREPARACION DE JARABE SIMPLE"
+	*doc_id 32
+	*doc_record "SGI/REG/17/02J-RD"
+	doc_status_general "U"
+	*filename "/tmp/temp_2014042012242...ON DE JARABE SIMPLE.pdf"
+	*lang "es"
+	*location "0008"
+	*location_desc "Base de datos"
+	*origin 	3
+	*origin_desc "Corporativo"
+	*owner 0
+	*owner_desc ""
+	*protection 2
+	*protection_desc "Backup Sistema"
+	*retention 1
+	*retention_desc "1 Año"
+	*review 2
+	*review_desc "Anual"
+	*revision_date Date {Mon Mar 31 2014 00:00:00 GMT-0400 (AST)}
+	*type 3
+	*type_desc "Electronico"
+	*user_creation 0
+	*version_date Date {Wed Feb 01 2012 00:00:00 GMT-0400 (AST)}
+	*version_label ""
+	*version_number 1
+        */
         if(is_array($data)){
+            $sqlDocs = $this->getDocsLibraryTable();
+            
+            foreach ($data as $dataContent){
+                $doc_new_id = $sqlDocs->getNextDocId();
+                $doc_company = (!empty($dataContent->company))?$dataContent->company:$userData->company;
+                $doc_country = (!empty($dataContent->country))?$dataContent->country:$userData->country;
+                $doc_location = (!empty($dataContent->location))?$dataContent->location:$userData->location;
+                $doc_classification = (is_numeric($dataContent->classification_desc))?$dataContent->classification_desc:$dataContent->classification;
+                $doc_protection = (is_numeric($dataContent->protection_desc))?$dataContent->protection_desc:$dataContent->protection;
+                $doc_review = (is_numeric($dataContent->review_desc))?$dataContent->review_desc:$dataContent->review;
+                $doc_retention = (is_numeric($dataContent->retention_desc))?$dataContent->retention_desc:$dataContent->retention;
+                $doc_origin = (is_numeric($dataContent->origin_desc))?$dataContent->origin_desc:$dataContent->origin;
+                $doc_type = (is_numeric($dataContent->type_desc))?$dataContent->type_desc:$dataContent->type;
+                $doc_owner = (is_numeric($dataContent->owner_desc))?$dataContent->owner_desc:$dataContent->owner;
+                $doc_location_doc = (is_numeric($dataContent->location_desc))?$dataContent->location_desc:$dataContent->location_doc;
+                $doc_version_number = (is_numeric($dataContent->version_number))?$dataContent->version_number:0;
+                $doc_version_label = (!empty($dataContent->version_label))?$dataContent->version_label:"";
+                $doc_lang = (!empty($dataContent->lang))?$dataContent->lang:$lang;
+                $doc_user_creation = (!empty($dataContent->user_creation))?$dataContent->user_creation:$userData->id;
+                $doc_date_creation = (!empty($dataContent->date_creation))?\date("Y-m-d H:i:s", strtotime($dataContent->date_creation)):\date('Y-m-d H:i:s');
+                $doc_date_version = (!empty($dataContent->version_date))?\date("Y-m-d H:i:s", strtotime($dataContent->version_date)):\date('Y-m-d H:i:s');
+                $doc_date_revision = (!empty($dataContent->revision_date))?\date("Y-m-d H:i:s", strtotime($dataContent->revision_date)):\date('Y-m-d H:i:s');
+                $doc_desc = (!empty($dataContent->description))?trim($dataContent->description):"No description - please fix it";
+                $doc_record = (!empty($dataContent->doc_record))?trim($dataContent->doc_record):"";
+                $doc_file = (!empty($dataContent->filename))?'library/docs/'.$doc_new_id.'_'.$doc_version_number.'_'.date('Ymdhis').'.pdf':"";
+                if(!empty($doc_file)){
+                    $this->movefile('library/docs/', $dataContent->filename, $doc_new_id.'_'.$doc_version_number.'_'.date('Ymdhis').'.pdf');
+                }
+                $doc = new DocsLibrary();
+                $doc->setCompany($doc_company)
+                    ->setCountry($doc_country)
+                    ->setLocation($doc_location)
+                    ->setDoc_id($doc_new_id)
+                    ->setDoc_classification($doc_classification)
+                    ->setDoc_protection($doc_protection)
+                    ->setDoc_review($doc_review)
+                    ->setDoc_retention($doc_retention)
+                    ->setDoc_origin($doc_origin)
+                    ->setDoc_type($doc_type)
+                    ->setDoc_location($doc_location_doc)
+                    ->setDoc_version_number($doc_version_number)
+                    ->setDoc_version_label($doc_version_label)
+                    ->setLang($doc_lang)
+                    ->setDoc_user_creation($doc_user_creation)
+                    ->setDoc_date_creation($doc_date_creation)
+                    ->setDoc_date_revision_actual($doc_date_version)
+                    ->setDoc_date_revision_next($doc_date_revision)
+                    ->setDoc_desc($doc_desc)
+                    ->setDoc_file($doc_file)
+                    ->setDoc_owner($doc_owner)
+                    ->setDoc_record($doc_record)
+                    ->setDoc_status_general('A');
+                $sqlDocs->save($doc);
+            }
             $dataResult['success']=true;
             $dataResult['message']="$dataCount documents proccessed";
+            //$dataResult['test']=$doc_date_creation;
+            $dataResult['docs_processed']=$dataCount;
         }else{
             $dataResult['success']=false;
             $dataResult['message']="No data was sent";
@@ -2078,6 +2121,20 @@ class IndexController extends AbstractActionController
     
     private function PersonName($name){
         return ucwords(strtolower(htmlspecialchars(trim($name))));
+    }
+    
+    private function movefile($path,$file,$filename){
+        $filesPath = getcwd().DIRECTORY_SEPARATOR.'public'.DIRECTORY_SEPARATOR.$path.DIRECTORY_SEPARATOR;
+        
+        if (!is_dir($filesPath)){
+            mkdir($filesPath,0777,true);
+        }
+        try {
+            copy($file, $filesPath.$filename);
+            return true;
+        } catch (Exception $ex) {
+            return false;
+        }
     }
     
     private function savefile($path,$file,$filename,$thumb,$thumbname){

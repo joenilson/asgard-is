@@ -170,12 +170,14 @@ function showDocument(obj, id, component, icon, event, record){
     var documentFile = Ext.create('Ext.ux.panel.PDF', {
         flex: 1,
         //layout: 'border',
-        width    : document.documentElement.clientWidth - 50,
+        //width: '100%',
+        width    : document.documentElement.clientWidth - 400,
         //height   : document.documentElement.clientHeight - 50,
         pageScale: 1,                                           // Initial scaling of the PDF. 1 = 100%
         src      : record.data.doc_file, // URL to the PDF - Same Domain or Server with CORS Support
         loadingMessage: 'Cargando Documento'
     });
+    //windowDoc.alignTo(Ext.getBody(), "tr-tr", [-10, 10]);
     windowDoc.add(documentFile);
     windowDoc.show();
 }

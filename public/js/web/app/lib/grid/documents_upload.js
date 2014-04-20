@@ -46,6 +46,10 @@ Ext.define('Asgard.lib.grid.documents_upload',{
     originText: 'Origin',
     retentionText: 'Retention Time',
     fileText: 'File',
+    resultTitleText: 'Success',
+    resultMessageText: 'documents processed.',
+    failureTitleText: 'Warning',
+    failureMessageText: 'Server dont process the files, <br />please review your items.',
     //toolViewDocText: 'View File',
     buttonAcceptText: 'Save Upload',
     emptyTitleText: 'No data selected',
@@ -65,16 +69,13 @@ Ext.define('Asgard.lib.grid.documents_upload',{
                 text: this.buttonAcceptText,
                 scope: this,
                 handler: function(){
+                    var gridStore = this.getStore();
                     var gridSel = this.getSelectionModel().getSelection();
                     if(gridSel.length > 0){
-                        console.log(gridSel);
-                        //console.log(gridSel[0].data);
-                        //console.log(gridSel.data);
                         var sendData = [];
                         for(i=0; i<gridSel.length; i++){
                             sendData.push(gridSel[i].data);
                         }
-                        console.log(sendData);
                         Ext.Ajax.request({
                             url: 'ims/processmassdocs',
                             params: {
@@ -82,9 +83,17 @@ Ext.define('Asgard.lib.grid.documents_upload',{
                             },
                             success: function(response){
                                 var text = response.responseText;
-                                console.log(text);
+                                var result = Ext.decode(text);
+                                if(result.success){
+                                    for(i=0; i<gridSel.length; i++){
+                                        gridStore.remove(gridSel[i]);
+                                    }
+                                    me.showResultMessage(result.docs_processed);
+                                }else{
+                                    me.showFailureMessage();
+                                }
                             }
-                        });
+                        }, this);
                     }else{
                         this.showEmptyMessage();
                     }
@@ -171,8 +180,27 @@ Ext.define('Asgard.lib.grid.documents_upload',{
            msg: this.emptyMessageText,
            buttons: Ext.MessageBox.OK,
            icon: Ext.MessageBox.WARNING
-       });
+        });
        return emptyMsg;
 
-    }
+    },
+    showResultMessage: function(items){
+        var resultMsg = Ext.MessageBox.show({
+           title: this.resultTitleText,
+           msg: items+' '+this.resultMessageText,
+           buttons: Ext.MessageBox.OK,
+           icon: Ext.MessageBox.INFO
+        });
+       return resultMsg;
+    },
+    showFailureMessage: function(){
+        var failureMsg = Ext.MessageBox.show({
+           title: this.failureTitleText,
+           msg: this.failureMessageText,
+           buttons: Ext.MessageBox.OK,
+           icon: Ext.MessageBox.WARNING
+        });
+       return failureMsg;
+
+    },
 });

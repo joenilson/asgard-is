@@ -36,7 +36,7 @@ Ext.define('Asgard.model.DocsUpload', {
         {name: 'protection_desc', type: 'string' },
         {name: 'owner', type: 'float' }, 
         {name: 'owner_desc', type: 'string'},
-        {name: 'location', type: 'float' }, 
+        {name: 'location_doc', type: 'float' }, 
         {name: 'location_desc', type: 'string' }, 
         {name: 'origin', type: 'float' },
         {name: 'origin_desc', type: 'string' }, 
