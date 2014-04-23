@@ -29,7 +29,7 @@ Ext.define('Asgard.view.Viewport', {
     'Asgard.lib.forms.committeeNewMember','Asgard.lib.dataview.safetycommittee',
     'Asgard.lib.Panels.CommitteePanel','Asgard.store.Languages','Asgard.lib.forms.LanguageCombo',
     'Asgard.lib.forms.docsMasterFileUpload','Asgard.lib.grid.documents_upload',
-    'Asgard.store.DocsUpload'
+    'Asgard.store.DocsUpload','Asgard.lib.grid.thread_documents',
   ],
   menuTitleText: 'Main Menu',
     defaults: {

@@ -679,7 +679,7 @@ return array(
                     'threaddetails' => array(
                         'type'    => 'Segment',
                         'options' => array(
-                            'route'    => '/threaddetails[/:id_thread[/:country[/:company[/:location]]]]',
+                            'route'    => '/threaddetails[/:id_thread[/:country[/:company[/:location[/:process_id]]]]]',
                             'constraints' => array(
                                 'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',

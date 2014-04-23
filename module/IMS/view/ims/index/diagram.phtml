@@ -8,6 +8,14 @@
 <script>
 var diagram<?=$this->panelId; ?>;
 
+function deployCombos(comboField,comboValue){
+    var combo = formDataRequest<?=$this->panelId;?>.getForm().findField(comboField);
+    var store = combo.store;
+    store.on("load", function(store, records, state, operation, opts) {
+            combo.setValue(comboValue);
+    });
+}
+
 var storeProcessList<?=$this->panelId; ?> = Ext.create('Asgard.store.ProcessMain');
 var storeProcessMain<?=$this->panelId; ?> = Ext.create('Asgard.store.ProcessMain');
 var storeProcessSupport<?=$this->panelId; ?> = Ext.create('Asgard.store.ProcessMain');
@@ -44,7 +52,7 @@ var diagramStrategicView = Ext.create('Asgard.lib.Panels.DiagramView',{
     name: 'ims1',
     emptyText: 'No hay nada que ver',
     minHeight: '200px',
-    store: storeProcessStrategic<?=$this->panelId; ?>,
+    store: storeProcessStrategic<?=$this->panelId; ?>
 });
 
 var diagramMainView = Ext.create('Asgard.lib.Panels.DiagramView',{
@@ -233,6 +241,12 @@ var diagramViewport<?=$this->panelId; ?> = Ext.create('Ext.panel.Panel', {
     ]
 });
 
+
+deployCombos('companiesCombo','<?=$this->companyId;?>');
+deployCombos('countriesCombo','<?=$this->countryId;?>');
+deployCombos('locationsCombo','<?=$this->locationId;?>');
+
+
 function fnCCLProcess(button, opt, obj) {
     var values = button.up('form').getForm().getValues();
     var companies = values['companiesCombo'];
@@ -259,7 +273,6 @@ function fnButton (button, object)
     var companies = values['companiesCombo'];
     var countries = values['countriesCombo'];
     var locations = values['locationsCombo'];
-    
     if (tab) {
       tabsPanel.setActiveTab(tab);
     } else {
@@ -280,9 +293,6 @@ function fnButton (button, object)
   }
     
 }
-
-
-
 
 function fnSubmit (button, object)
 {

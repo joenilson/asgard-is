@@ -49,6 +49,11 @@ var <?php echo 'HIRAGridPanel'.$this->panelId; ?> = Ext.create('Asgard.lib.GridP
   dockedItems: [{
     xtype: toolbarType<?php echo $this->panelId; ?>
   }],
+  tools: [{
+    type: 'expand',
+    tooltip: 'Upload Master File',
+    handler: fnLibraryTool
+  }],
   columns: {
       plugins: [{
             ptype: 'gridautoresizer'
@@ -150,6 +155,11 @@ if ($this->userRole!='Viewer'){
     echo "HIRAGridPanel".$this->panelId.".plugins.push(rowEditing".$this->panelId.");\n\r";
 }
 ?>
+    
+function fnLibraryTool(){
+    
+}
+    
 function onClick(btn){
     var tbar<?php echo $this->panelId; ?> = <?php echo 'HIRAGridPanel'.$this->panelId; ?>.getDockedItems('toolbar[dock="top"]')[0];
     switch (btn.name){

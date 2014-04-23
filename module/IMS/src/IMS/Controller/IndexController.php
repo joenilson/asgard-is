@@ -134,7 +134,7 @@ class IndexController extends AbstractActionController
     public function diagramAction()
     {
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
-        //$userData = $this->getServiceLocator()->get('userSessionData');
+        $userData = $this->getServiceLocator()->get('userSessionData');
         
         $lang=$userPrefs[0]['lang'];
         
@@ -147,6 +147,10 @@ class IndexController extends AbstractActionController
             'ims_main_process'=>$imsMainProcess->value,
             'ims_strategic_process'=>$imsStrategicProcess->value,
             'ims_support_process'=>$imsSupportProcess->value,
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'lang'=>$lang,
             'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
         );
     }
@@ -951,11 +955,19 @@ class IndexController extends AbstractActionController
 
         //$sqlMessage = $this->getMessagesTable();
         $sqlProcess = $this->getProcessMainTable();
-        $arrayProcess = $sqlProcess->getMainProcess($lang_docs,0,'A',$company,$country,$location);
+        $arrayProcess = $sqlProcess->getAllMainProcess($lang_docs,'A',$company,$country,$location);
         $process = array();
         foreach($arrayProcess as $key=>$process_values){
-            $process[$process_values['description']]=array('id'=>$process_values['id'],'desc'=>$process_values['description']);
+            $process[$process_values['value']]=array('id'=>$process_values['id'],'desc'=>$process_values['value']);
         }
+        
+        $sqlThreads = $this->getProcessThreadTable();
+        $arrayThreads = $sqlThreads->getAllThreads($lang_docs,'A',$company,$country,$location);
+        
+        $threads = array();
+        foreach($arrayThreads as $key=>$thread_values){
+            $threads[$thread_values['value']]=array('id'=>$thread_values['id'],'desc'=>$thread_values['value']);
+        }    
         
         $sqlHelpers = $this->getDocsHelpersTable();
         $arrayHelpers = $sqlHelpers->getHelpers($lang_docs);
@@ -1013,6 +1025,8 @@ class IndexController extends AbstractActionController
             
             $version_date_dump = explode("/",$content['N']);
             $revision_date_dump = explode("/",$content['O']);
+            $doc_process = (string) $this->PersonName(trim($content['P']));
+            $doc_thread = (string) $this->PersonName(trim($content['Q']));
                        
             //$version_date = date("Y-m-d", strtotime(str_replace("'","",$content['N'])));
             //$revision_date = date("Y-m-d", strtotime(str_replace("'","",$content['O'])));
@@ -1042,6 +1056,10 @@ class IndexController extends AbstractActionController
                 'filename'=>(is_file($zipfolder.$filename))?$zipfolder.$filename:$filename,
                 'owner'=>(!$process[$owner])?"":$process[$owner]['id'],
                 'owner_desc'=>(!$process[$owner])?"":$process[$owner]['desc'],
+                'process'=>(!$process[$doc_process])?"":$process[$doc_process]['id'],
+                'process_desc'=>(!$process[$doc_process])?"":$process[$doc_process]['desc'],
+                'thread'=>(!$threads[$doc_thread])?"":$threads[$doc_thread]['id'],
+                'thread_desc'=>(!$threads[$doc_thread])?"":$threads[$doc_thread]['desc'],
                 'doc_record'=>$register,
                 'version_number'=>$version_number,
                 'version_date'=>$version_date,
@@ -1064,11 +1082,12 @@ class IndexController extends AbstractActionController
             $dataResult['totalRows']=$worksheet['totalRows'];
             $dataResult['totalColumns']=$worksheet['totalColumns'];
             $dataResult['lastColumnLetter']=$worksheet['lastColumnLetter'];
+            $dataResult['process']=$arrayProcess;
             
         }
         $dataResult['file_results']=$arrayMasterData;
         $dataResult['success']=true;
-        return new JsonModel($dataResult);        
+        return new JsonModel($dataResult);    
     }
     
     public function processmassdocsAction(){
@@ -1127,6 +1146,8 @@ class IndexController extends AbstractActionController
                 $doc_origin = (is_numeric($dataContent->origin_desc))?$dataContent->origin_desc:$dataContent->origin;
                 $doc_type = (is_numeric($dataContent->type_desc))?$dataContent->type_desc:$dataContent->type;
                 $doc_owner = (is_numeric($dataContent->owner_desc))?$dataContent->owner_desc:$dataContent->owner;
+                $doc_process = (is_numeric($dataContent->process_desc))?$dataContent->process_desc:$dataContent->process;
+                $doc_thread = (is_numeric($dataContent->thread_desc))?$dataContent->thread_desc:$dataContent->thread;
                 $doc_location_doc = (is_numeric($dataContent->location_desc))?$dataContent->location_desc:$dataContent->location_doc;
                 $doc_version_number = (is_numeric($dataContent->version_number))?$dataContent->version_number:0;
                 $doc_version_label = (!empty($dataContent->version_label))?$dataContent->version_label:"";
@@ -1164,7 +1185,9 @@ class IndexController extends AbstractActionController
                     ->setDoc_file($doc_file)
                     ->setDoc_owner($doc_owner)
                     ->setDoc_record($doc_record)
-                    ->setDoc_status_general('A');
+                    ->setDoc_status_general('A')
+                    ->setId_process($doc_process)
+                    ->setId_thread($doc_thread);
                 $sqlDocs->save($doc);
             }
             $dataResult['success']=true;
@@ -1479,16 +1502,17 @@ class IndexController extends AbstractActionController
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
         $lang = $userPrefs[0]['lang'];
         
-        $thread_id = $this->params()->fromRoute('id_thread',0);
-        $company  = $this->params()->fromRoute('company', 0);
-        $country  = $this->params()->fromRoute('country', 0);
-        $location  = $this->params()->fromRoute('location', 0);
-
+        $thread_id = (int) $this->params()->fromRoute('id_thread',0);
+        $company  = (string) $this->params()->fromRoute('company', 0);
+        $country  = (string) $this->params()->fromRoute('country', 0);
+        $location  = (string) $this->params()->fromRoute('location', 0);
+        $process_id  = (int) $this->params()->fromRoute('process_id', 0);
         $queryPM = $this->getProcessThreadTable();
         $listDocuments = $queryPM->getThreadInfo($lang,$thread_id);
         //print_r($listDocuments);
         return array(
             'threadId'=>$thread_id,
+            'processId'=>$process_id,
             'company'=>$company,
             'country'=>$country,
             'location'=>$location,
@@ -1506,9 +1530,17 @@ class IndexController extends AbstractActionController
         $company= $request->getQuery('company');
         $country= $request->getQuery('country');
         $location= $request->getQuery('location');
+        $process= $request->getQuery('process');
+        $thread= $request->getQuery('thread');
+        
+        
         if($module){
             $sql = $this->getDocsLibraryTable();
-            $listDocuments = $sql->getLibrary($lang,$company,$country,$location);
+            if(!empty($process) and !empty($thread)){
+                $listDocuments = $sql->getLibraryByPT($lang,$company,$country,$location,$process,$thread);
+            }else{
+                $listDocuments = $sql->getLibrary($lang,$company,$country,$location);
+            }
             //print_r($listDocuments);
             if(!empty($listDocuments)){
                 $data['success']=true;

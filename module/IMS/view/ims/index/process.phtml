@@ -126,7 +126,7 @@ function onSelectionChange(){
             titleAlign: 'right',
             title: selected.data.value,
             loader: {
-                url: 'ims/threaddetails/'+selected.data.id+'/'+companyId+'/'+countryId+'/'+locationId,
+                url: 'ims/threaddetails/'+selected.data.id+'/'+companyId+'/'+countryId+'/'+locationId+'/'+<?=$this->process_id;?>,
                 autoLoad: true,
                 scripts: true
             }

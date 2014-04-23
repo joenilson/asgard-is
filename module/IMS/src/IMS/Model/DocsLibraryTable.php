@@ -60,6 +60,63 @@ class DocsLibraryTable extends AbstractTableGateway {
         return $row;
     }
     
+    public function getLibraryByPT($lang,$companies,$countries,$locations,$process,$thread){
+        $companies = $this->processArray($companies);
+        $countries = $this->processArray($countries);
+        $locations = $this->processArray($locations);
+        $process_id = (int) $process;
+        $thread_id = (int) $thread;
+        $row = $this->select(function (Select $select) use ($lang,$companies,$countries,$locations,$process_id,$thread_id) {
+            $select->join(
+                array('h1'=>new TableIdentifier($this->table_helper, $this->schema_name)), 
+                new Expression ( $this->table_name.'.doc_classification = h1.id AND h1.helper=\'classification\' AND h1.lang=\''.$lang.'\''),
+                array('desc_classification'=>'description')
+            );
+            $select->join(
+                array('h2'=>new TableIdentifier($this->table_helper, $this->schema_name)), 
+                new Expression ( $this->table_name.'.doc_type = h2.id AND h2.helper=\'type\' AND h2.lang=\''.$lang.'\''), 
+                array('desc_type'=>'description')
+            );
+            $select->join(
+                array('h3'=>new TableIdentifier($this->table_helper, $this->schema_name)), 
+                new Expression ( $this->table_name.'.doc_review = h3.id AND h3.helper=\'review\' AND h3.lang=\''.$lang.'\''), 
+                array('desc_review'=>'description')
+            );
+            $select->join(
+                array('h4'=>new TableIdentifier($this->table_helper, $this->schema_name)), 
+                new Expression ( $this->table_name.'.doc_protection = h4.id AND h4.helper=\'protection\' AND h4.lang=\''.$lang.'\''), 
+                array('desc_protection'=>'description')
+            );
+            $select->join(
+                array('h5'=>new TableIdentifier($this->table_helper, $this->schema_name)), 
+                new Expression ( $this->table_name.'.doc_location = h5.id AND h5.helper=\'location\' AND h5.lang=\''.$lang.'\''), 
+                array('desc_location'=>'description')
+            );
+            $select->join(
+                array('h6'=>new TableIdentifier($this->table_helper, $this->schema_name)), 
+                new Expression ( $this->table_name.'.doc_origin = h6.id AND h6.helper=\'origin\' AND h6.lang=\''.$lang.'\''), 
+                array('desc_origin'=>'description')
+            );
+            $select->join(
+                array('h7'=>new TableIdentifier($this->table_helper, $this->schema_name)), 
+                new Expression ( $this->table_name.'.doc_retention = h7.id AND h7.helper=\'retention\' AND h7.lang=\''.$lang.'\''), 
+                array('desc_retention'=>'description')
+            );
+            $select->where(array('doc_status_general'=>'A','company'=>$companies,'country'=>$countries,'location'=>$locations, 'id_process'=>$process_id,'id_thread'=>$thread_id));
+            $select->order('doc_id ASC');
+            //echo $select->getSqlString();
+        });
+        
+        if (!$row)
+            return false;
+        $listItems=array();
+        for ($index = 0; $index < $row->count(); $index++) {
+            $listItems[]=$row->current();
+            $row->next();
+        }
+        return $listItems;
+    }
+    
     public function getLibrary($lang,$companies,$countries,$locations) {
         $companies = $this->processArray($companies);
         $countries = $this->processArray($countries);
@@ -136,23 +193,6 @@ class DocsLibraryTable extends AbstractTableGateway {
         }
         return $listItems;
     }
-    
-    
-    public function getSubProcessListByParent($lang,$parent_id) {
-        $row = $this->select(function (Select $select) use ($lang,$parent_id) {
-            $select->where(array('lang' => (string) $lang,'parent_id'=>$parent_id))->order('ordering ASC');
-        });
-        //$row = $this->select(array('lang' => (string) $lang));
-        if (!$row)
-            return false;
-        $listItems=array();
-        for ($index = 0; $index < $row->count(); $index++) {
-            $listItems[]=$row->current();
-            $row->next();
-        }
-        return $listItems;
-    }
-    
     
     public function save(DocsLibrary $object)
     {

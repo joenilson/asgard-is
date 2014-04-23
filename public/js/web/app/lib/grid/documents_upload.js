@@ -42,6 +42,8 @@ Ext.define('Asgard.lib.grid.documents_upload',{
     reviewText: 'Review',
     protectionText: 'Protection',
     ownerText: 'Owner',
+    processText: 'Process',
+    threadText: 'Thread',
     locationText: 'Location',
     originText: 'Origin',
     retentionText: 'Retention Time',
@@ -107,7 +109,7 @@ Ext.define('Asgard.lib.grid.documents_upload',{
                 ptype: 'gridautoresizer'
             }],
             items: [
-                {text: this.idText, sortable: true, dataIndex: 'doc_id', filter: true},
+                {text: this.idText, sortable: true,flex: 0.5, dataIndex: 'doc_id', filter: true},
                 {text: this.classDocText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'classification_desc', tdCls: 'wrapText',
                     editor: Ext.create('Asgard.lib.forms.DocsHelpers',{ 
                         store: new Ext.create('Asgard.store.DocsHelpers').load({ params: { helper: 'classification' } })
@@ -124,7 +126,7 @@ Ext.define('Asgard.lib.grid.documents_upload',{
                 {text: this.recordText, flex: 1.5, sortable: true, filter: true, dataIndex: 'doc_record', tdCls: 'wrapText',
                     editor: { allowBlank: false }
                 },
-                {text: this.versionText, flex: 1, sortable: true, filter: true, dataIndex: 'version_number', tdCls: 'wrapText',
+                {text: this.versionText, flex: 0.5, sortable: true, filter: true, dataIndex: 'version_number', tdCls: 'wrapText',
                     editor: {
                         xtype: 'numberfield',
                         allowBlank: true,
@@ -139,7 +141,6 @@ Ext.define('Asgard.lib.grid.documents_upload',{
                         format: 'Y-m-d'
                     }
                 },
-                {text: this.statusText, flex: 1, sortable: true, filter: true, dataIndex: 'doc_status_general', tdCls: 'wrapText'},
                 {text: this.dateRevisionText, flex: 1.5,  sortable: true, filter: true, dataIndex: 'revision_date', tdCls: 'wrapText', 
                     xtype: 'datecolumn', format:'Y-m-d',
                     editor: {
@@ -156,6 +157,8 @@ Ext.define('Asgard.lib.grid.documents_upload',{
                         store: new Ext.create('Asgard.store.DocsHelpers').load({ params: { helper: 'protection' } })
                     })},
                 {text: this.ownerText, flex: 1, sortable: true, filter: true, dataIndex: 'owner_desc', tdCls: 'wrapText'},
+                {text: this.processText, flex: 1, sortable: true, filter: true, dataIndex: 'process_desc', tdCls: 'wrapText'},
+                {text: this.threadText, flex: 1, sortable: true, filter: true, dataIndex: 'thread_desc', tdCls: 'wrapText'},
                 {text: this.locationText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'location_desc', tdCls: 'wrapText',
                     editor: Ext.create('Asgard.lib.forms.DocsHelpers',{ 
                         store: new Ext.create('Asgard.store.DocsHelpers').load({ params: { helper: 'location' } })
