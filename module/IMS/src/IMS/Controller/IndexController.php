@@ -1969,6 +1969,76 @@ class IndexController extends AbstractActionController
     	return $result;   
     }
     
+    public function hiraincidentsAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang = $userPrefs[0]['lang'];
+        
+        return array(
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'lang'=>$lang,
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0)),
+        );
+        
+    }
+    
+    public function gethiraincidentsAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang = $userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $companyParams = $request->getQuery('company');
+        $countryParams = $request->getQuery('country');
+        $locationParams = $request->getQuery('location');
+        $dateValues = $request->getQuery('date_incident');
+        $valsDate = explode('-',$dateValues);
+        $dateParams = $valsDate[0].'-'.$valsDate[1];
+        $hiraIncidentDetail = $this->getHiraIncidentsListTable();
+        $listDocuments = $hiraIncidentDetail->getIncidentsDetails($companyParams,$countryParams,$locationParams,$dateParams, $lang);
+        $dataResult = array();
+        if($listDocuments){
+            $dataResult['success']=true;
+            $dataResult['results']=$listDocuments;
+        }else{
+            $dataResult['success']=false;
+            $dataResult['results']="";
+        }
+        
+       return new JsonModel($dataResult);
+    }
+    
+    public function removeincidentsAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang = $userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $dataBulk = $request->getPost('data_ids');
+        $data = \json_decode($dataBulk);
+        $dataCount = count($data);
+        
+        $dataResult = array();
+        if(is_array($data)){
+            $sqlIncidents = $this->getHiraIncidentsListTable();
+            foreach($data as $id_incident){
+                $data = array();
+                $data['user_modification'] = $userData->id;
+                $data['date_modification'] = \date('Y-m-d H:i:s');
+                $data['general_status'] = 0;
+                $sqlIncidents->update($data,array('id_incident'=>$id_incident));
+            }
+            $dataResult['success']=true;
+            $dataResult['docs_processed']=$dataCount;
+        }else{
+            $dataResult['success']=false;
+            $dataResult['message']="No data was send";
+        }
+        return new JsonModel($dataResult);
+        
+    }
+    
     public function hirailistAction()
     {
         $userPrefs = $this->getServiceLocator()->get('userPreferences');

@@ -816,6 +816,48 @@ return array(
                             ),
                         ),
                     ),
+                    'removeincidents' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/removeincidents[/:id[/:company[/:country[/:location[/:date_incident[/:process_id[/:thread_id]]]]]]]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                //'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'removeincidents'
+                            ),
+                        ),
+                    ),
+                    'hiraincidents' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/hiraincidents[/:id[/:company[/:country[/:location[/:date_incident[/:process_id[/:thread_id]]]]]]]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                //'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'hiraincidents'
+                            ),
+                        ),
+                    ),
+                    'gethiraincidents' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/gethiraincidents[/:company[/:country[/:location[/:date_incident[/:process_id[/:thread_id]]]]]]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                //'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'gethiraincidents'
+                            ),
+                        ),
+                    ),
                     'hiradetails' => array(
                         'type'    => 'Segment',
                         'options' => array(

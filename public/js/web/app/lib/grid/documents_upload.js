@@ -205,5 +205,5 @@ Ext.define('Asgard.lib.grid.documents_upload',{
         });
        return failureMsg;
 
-    },
+    }
 });

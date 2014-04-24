@@ -17,6 +17,10 @@ class hiraIncidentsTable extends AbstractTableGateway {
 
     protected $table_name = 'hira_incidents';
     protected $ht_table_name = 'hira_incidents_type';
+    protected $nc_table_name = 'hira_nc_type';
+    protected $pm_table_name = 'process_main_i18n';
+    protected $pt_table_name = 'process_thread_i18n';
+    //protected $nc_table_name = 'process_owner_i18n';
     protected $schema_name = 'ims';
 
     private function processList($value)
@@ -66,7 +70,7 @@ class hiraIncidentsTable extends AbstractTableGateway {
         
         $resultSet = $this->select(function (Select $select) use ($var_companies, $var_countries, $var_locations, $year, $month) {
             $select->columns(array('date_incident','id_type','count' => new Expression('COUNT(*)')));
-            $select->where(array('company'=>$var_companies,'country'=>$var_countries,'location'=>$var_locations,new Expression("date_incident::TEXT like '$year-$month-%'")));
+            $select->where(array('company'=>$var_companies,'country'=>$var_countries,'location'=>$var_locations,new Expression("date_incident::TEXT like '$year-$month-%' and general_status!=0")));
             $select->group(array('date_incident','id_type'));
             $select->order(array('date_incident ASC','id_type ASC'));
         });
@@ -106,18 +110,31 @@ class hiraIncidentsTable extends AbstractTableGateway {
         return $postList;
     }
     
-    public function getIncidentsDetails($company,$country,$location,$dateValue,$lang)
+    public function getIncidentsDetails($company,$country,$location,$datePass,$lang)
     {
         $var_companies = $this->processList($company);
         $var_countries = $this->processList($country);
         $var_locations = $this->processList($location);
-        
+        $valDate = explode('-',$datePass);
+        $dateValue = (count($valDate)<3)?$valDate[0]."-".$valDate[1]."-":$datePass;
         $resultSet = $this->select(function (Select $select) use ($var_companies, $var_countries, $var_locations, $dateValue, $lang) {
             $select->join(
                     array('ht'=>new TableIdentifier($this->ht_table_name, $this->schema_name)),
                         new Expression($this->table_name.'.id_type::INT = ht.id_incident and ht.lang =\''.$lang.'\''), array('val_incident')
                     );
-            $select->where(array('company'=>$var_companies,'country'=>$var_countries,'location'=>$var_locations,new Expression("date_incident::TEXT like '$dateValue%'")));
+            $select->join(
+                    array('nc'=>new TableIdentifier($this->nc_table_name, $this->schema_name)),
+                        new Expression($this->table_name.'.nonconformity_type = nc.id and nc.lang =\''.$lang.'\''), array('nonconformity_type_desc'=>'description')
+                    );
+            $select->join(
+                    array('pm'=>new TableIdentifier($this->pm_table_name, $this->schema_name)),
+                        new Expression($this->table_name.'.incident_process = pm.id and pm.lang =\''.$lang.'\''), array('incident_process_desc'=>'value'),'left'
+                    );
+            $select->join(
+                    array('pt'=>new TableIdentifier($this->pt_table_name, $this->schema_name)),
+                        new Expression($this->table_name.'.incident_thread = pt.id and pt.lang =\''.$lang.'\''), array('incident_thread_desc'=>'value'),'left'
+                    );
+            $select->where(array('company'=>$var_companies,'country'=>$var_countries,'location'=>$var_locations,new Expression("date_incident::TEXT like '$dateValue%' and general_status!=0")));
             $select->order('date_incident ASC');
         });
         return $resultSet->toArray();
