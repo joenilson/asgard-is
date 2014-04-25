@@ -23,6 +23,8 @@ use IMS\Model\hiraRiskLevelTable;
 use IMS\Model\hiraRiskLevelI18nTable;
 use IMS\Model\hiraDocumentsTable;
 use IMS\Model\hiraIncidentTypeTable;
+use IMS\Model\hiraIncidentsCTTable;
+use IMS\Model\hiraIncidentDetailsTable;
 use IMS\Model\hiraNonConformityTypeTable;
 use IMS\Model\hiraIncidentsTable;
 use IMS\Model\ProcessMainTable;
@@ -186,6 +188,16 @@ class Module implements AutoloaderProviderInterface
                 'IMS\Model\ProcessThreadTable'=> function($sm){
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new ProcessThreadTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\hiraIncidentDetailsTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new hiraIncidentDetailsTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\hiraIncidentsCTTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new hiraIncidentsCTTable($dbAdapter);
                     return $table;
                 },
                 'IMS\Model\hiraDocumentsTable'=> function($sm){

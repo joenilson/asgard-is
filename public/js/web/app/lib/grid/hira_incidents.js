@@ -39,6 +39,9 @@ Ext.define('Asgard.lib.grid.hira_incidents',{
     emailText: 'Email',
     dateText: 'Date',
     statusText: 'Status',
+    causesToolText: 'Incident Causes',
+    closeToolText: 'Close Incident',
+    validityToolText: 'Close Validity',
     deleteToolText: 'Delete Incident',
     addToolText: 'Add Incident',
     resultTitleText: 'Success',
@@ -51,12 +54,30 @@ Ext.define('Asgard.lib.grid.hira_incidents',{
     chooseTitleText: 'Warning',
     chooseTitleBodyDelete: 'You are choosing delete this items. <br />Would you like to save your changes?',
     chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?',
-
+    titleCausesTool: 'Non Conformity Causes',
+    valTreatment1: 'Open',
+    valTreatment2: 'Closed',
+    valTreatment4: 'Closed and Validated',
     initComponent: function(){
         var me = this;
         this.title = this.titleText;
         
         this.tools = [{
+            type: 'gear',
+            tooltip: this.causesToolText,
+            scope: this,
+            handler: this.fnLibraryTool
+        },{
+            type: 'save',
+            tooltip: this.closeToolText,
+            scope: this,
+            handler: this.fnLibraryTool
+        },{
+            type: 'pin',
+            tooltip: this.validityToolText,
+            scope: this,
+            handler: this.fnLibraryTool
+        },{
             type: 'minus',
             tooltip: this.deleteToolText,
             scope: this,
@@ -84,18 +105,27 @@ Ext.define('Asgard.lib.grid.hira_incidents',{
                 {text: this.processText, flex: 1, sortable: true, filter: 'combo', dataIndex: 'process_desc', tdCls: 'wrapText' },
                 {text: this.threadText, flex: 1, sortable: true, filter: 'combo', dataIndex: 'thread_desc', tdCls: 'wrapText' },
                 {text: this.dateText, flex: 1, sortable: false, filter: true, dataIndex: 'date_incident', renderer : Ext.util.Format.dateRenderer('Y-m-d') }, 
-                {text: this.statusText, flex: 1, sortable: true, filter: true, dataIndex: 'status'}
+                {text: this.statusText, flex: 1, sortable: true, filter: 'combo', dataIndex: 'status', renderer: this.statusRender, tdCls: 'wrapText' }
             ]
         };
         this.callParent();
     },
+    statusRender: function(val){
+        if (val === 1) {
+            return '<span style="color:' + 'red' + '; text-align: center;">' + this.valTreatment1 + '</span>';
+        } else if (val === 2) {
+            return '<span style="color:' + 'orange' + '; text-align: center;">' + this.valTreatment2 + '</span>';
+        }else if (val === 4) {
+            return '<span style="color:' + 'green' + '; text-align: center;">' + this.valTreatment4 + '</span>';
+        }
+        return val;
+    },
     fnLibraryTool: function(object, event, panel, button){
         var me = this;
-        console.log(button);
+        //console.log(button);
         if(button.type==='minus'){
             var gridStore = this.getStore();
             var selectedItems = this.getSelectionModel().getSelection();
-            //console.log(selectedItems.length);
             
             if(selectedItems.length > 0){
                 Ext.Msg.confirm(this.chooseTitleText,
@@ -134,13 +164,72 @@ Ext.define('Asgard.lib.grid.hira_incidents',{
             
         }else if(button.type==='plus'){
             var winAdd = Ext.create('Asgard.lib.window.windowGeneric',{
-            height: document.documentElement.clientHeight - 50,
-            innerPanel : this
-        });
-        winAdd.add(Ext.create('Asgard.lib.forms.hiraNewIncident'));
-        winAdd.show();
+                height: document.documentElement.clientHeight - 50,
+                innerPanel : this
+            });
+            winAdd.add(Ext.create('Asgard.lib.forms.hiraNewIncident'));
+            winAdd.show();
+        }else if(button.type==='gear'){
+            var gridStore = this.getStore();
+            var selectedItems = this.getSelectionModel().getSelection();
+            if(selectedItems.length > 0){
+                var winAdd = Ext.create('Asgard.lib.window.windowGeneric',{
+                    height: document.documentElement.clientHeight - 50,
+                    //width: document.documentElement.clientWidth - 450,
+                    width: 550,
+                    innerPanel : this
+                });
+                winAdd.setTitle(this.titleCausesTool);
+                winAdd.add(Ext.create('Asgard.lib.forms.hiraIncidentCauses',{
+                    baseParams: { incident_id: selectedItems[0].data.id_incident,
+                                    company: selectedItems[0].data.company,
+                                    country: selectedItems[0].data.country,
+                                    location: selectedItems[0].data.location }
+                }));
+                winAdd.show();
+            }else{
+                this.showEmptyMessage();
+            }
+        }else if(button.type==='save'){
+            var gridStore = this.getStore();
+            var selectedItems = this.getSelectionModel().getSelection();
+            if(selectedItems.length > 0){
+                var winAdd = Ext.create('Asgard.lib.window.windowGeneric',{
+                    height: document.documentElement.clientHeight - 50,
+                    //width: document.documentElement.clientWidth - 450,
+                    width: 450,
+                    innerPanel : this
+                });
+                winAdd.setTitle(this.titleCloseTool);
+                var CloseForm = Ext.create('Asgard.lib.forms.hiraIncidentClose',{
+                    baseParams: { incident_id: selectedItems[0].data.id_incident },
+                    objectIncidentValue: selectedItems[0].data.description
+                });
+                winAdd.add(CloseForm);
+                winAdd.show();
+            }else{
+                this.showEmptyMessage();
+            }
+        }else if(button.type==='pin'){
+            var gridStore = this.getStore();
+            var selectedItems = this.getSelectionModel().getSelection();
+            if(selectedItems.length > 0){
+                var winAdd = Ext.create('Asgard.lib.window.windowGeneric',{
+                    height: document.documentElement.clientHeight - 50,
+                    width: 450,
+                    innerPanel : this
+                });
+                winAdd.setTitle(this.titleValidityTool);
+                var ValidityForm = Ext.create('Asgard.lib.forms.hiraIncidentValidity',{
+                    baseParams: { incident_id: selectedItems[0].data.id_incident },
+                    objectIncidentValue: selectedItems[0].data.description
+                });
+                winAdd.add(ValidityForm);
+                winAdd.show();
+            }else{
+                this.showEmptyMessage();
+            }
         }
-        console.log(this);
     },
     
     createWindow: function() {

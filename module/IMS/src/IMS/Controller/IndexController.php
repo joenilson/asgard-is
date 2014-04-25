@@ -18,6 +18,8 @@ use IMS\Model\Entity\ContentText;
 use IMS\Model\Entity\ProcessRelations;
 use IMS\Model\Entity\DocsRequest;
 use IMS\Model\Entity\DocsLibrary;
+use IMS\Model\Entity\hiraIncidentDetails;
+use IMS\Model\Entity\hiraIncidents;
 
 use AsgardLib\Versioning\Documents;
 use AsgardLib\Versioning\Scope;
@@ -45,6 +47,8 @@ class IndexController extends AbstractActionController
     protected $messagesTable;
     protected $translationTable;
     protected $hiraIncidentTypeTable;
+    protected $hiraIncidentDetailsTable;
+    protected $hiraIncidentsCTTable;
     protected $hiraIncidentsListTable;
     protected $hiraNonConformityTypeTable;
     protected $processmainView;
@@ -2039,6 +2043,113 @@ class IndexController extends AbstractActionController
         
     }
     
+    public function addincidentcausesAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang = $userPrefs[0]['lang'];
+        $arrayCauses = array('me'=>1,'ma'=>2,'hf'=>3,'in'=>4,'mt'=>5,'ot'=>6);
+        
+        $request = $this->getRequest();
+        $companyParams = $request->getPost('company');
+        $countryParams = $request->getPost('country');
+        $locationParams = $request->getPost('location');
+        $id_incident = (int) $request->getPost('incident_id');
+        $sqlCauses = $this->getHiraIncidentDetailsTable();
+        $insertCount = 0;
+        foreach ($arrayCauses as $key=>$code){
+            $IncidentType = $this->cleanTags($request->getPost($key.'_IncidentType'));
+            $IncidentIA = $this->cleanTags($request->getPost($key.'_IncidentIA'));
+            $IncidentCA = $this->cleanTags($request->getPost($key.'_IncidentCA'));
+            $registerName = $this->cleanTags($request->getPost($key.'_registerName'));
+            $registerSurname = $this->cleanTags($request->getPost($key.'_registerSurname'));
+            $registerLastname = $this->cleanTags($request->getPost($key.'_registerLastname'));
+            
+            if(!empty($IncidentType)){
+                $fullName = $this->PersonName($registerSurname." ".$registerLastname.", ".$registerName);
+                $object = new hiraIncidentDetails();
+                $object->setCompany($companyParams)
+                        ->setCountry($countryParams)
+                        ->setLocation($locationParams)
+                        ->setId($id_incident)
+                        ->setId_cause($code)
+                        ->setDescription_cause($IncidentType)
+                        ->setDescription_ia($IncidentIA)
+                        ->setDescription_ca($IncidentCA)
+                        ->setFullname_employee($fullName)
+                        ->setStatus('A')
+                        ->setDate_creation(\date('Y-m-d H:i:s'))
+                        ->setUser_id($userData->id);
+                $sqlCauses->save($object);
+                $insertCount++;
+            }
+        }
+        
+        //$hiraIncidentDetail = $this->getHiraIncidentsListTable();
+        //$listDocuments = $hiraIncidentDetail->getIncidentsDetails($companyParams,$countryParams,$locationParams,$dateParams, $lang);
+        $dataResult = array();
+        if($insertCount>0){
+            $dataResult['success']=true;
+            $dataResult['results']=$insertCount;
+        }else{
+            $dataResult['success']=false;
+            $dataResult['results']=$insertCount;
+        }
+        
+       return new JsonModel($dataResult);
+    }
+    
+    public function addincidentcloseAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang = $userPrefs[0]['lang'];
+        $arrayCauses = array('me'=>1,'ma'=>2,'hf'=>3,'in'=>4,'mt'=>5,'ot'=>6);
+        
+        $request = $this->getRequest();
+        $closeDesc = $this->cleanTags($request->getPost('close_description'));
+        $idIncident = (int) $request->getPost('incident_id');
+        $sqlIncident = $this->getHiraIncidentsListTable();
+        $dataResult = array();
+        
+        if(!empty($closeDesc) and $idIncident!=0){
+            $data['description_close']=$closeDesc;
+            $data['date_close']=\date('Y-m-d H:i:s');
+            $data['user_close']=$userData->id;
+            $data['status']=2;
+            $sqlIncident->update($data,array('id_incident'=>$idIncident));
+            $dataResult['success']=true;
+        }else{
+            $dataResult['success']=false;
+        }
+        
+       return new JsonModel($dataResult);
+    }
+    
+    public function addincidentvalidityAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang = $userPrefs[0]['lang'];
+        $arrayCauses = array('me'=>1,'ma'=>2,'hf'=>3,'in'=>4,'mt'=>5,'ot'=>6);
+        
+        $request = $this->getRequest();
+        $validityDesc = $this->cleanTags($request->getPost('validity_description'));
+        $idIncident = (int) $request->getPost('incident_id');
+        $sqlIncident = $this->getHiraIncidentsListTable();
+        $dataResult = array();
+        
+        if(!empty($validityDesc) and $idIncident!=0){
+            $data['description_validity']=$validityDesc;
+            $data['date_validity']=\date('Y-m-d H:i:s');
+            $data['user_validity']=$userData->id;
+            $data['status']=4;
+            $sqlIncident->update($data,array('id_incident'=>$idIncident));
+            $dataResult['success']=true;
+        }else{
+            $dataResult['success']=false;
+        }
+        
+       return new JsonModel($dataResult);
+    }
+    
     public function hirailistAction()
     {
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
@@ -2405,7 +2516,25 @@ class IndexController extends AbstractActionController
     	return $this->hiraNonConformityTypeTable;
     }
 
-    public function getHiraIncidentTypeTable()
+    private function getHiraIncidentDetailsTable()
+    {
+    	if (!$this->hiraIncidentDetailsTable) {
+            $sm = $this->getServiceLocator();
+            $this->hiraIncidentDetailsTable = $sm->get('IMS\Model\hiraIncidentDetailsTable');
+    	}
+    	return $this->hiraIncidentDetailsTable;
+    }
+    
+    private function getHiraIncidentsCTTable()
+    {
+    	if (!$this->hiraIncidentsCTTable) {
+            $sm = $this->getServiceLocator();
+            $this->hiraIncidentsCTTable = $sm->get('IMS\Model\hiraIncidentsCTTable');
+    	}
+    	return $this->hiraIncidentsCTTable;
+    }
+    
+    private function getHiraIncidentTypeTable()
     {
     	if (!$this->hiraIncidentTypeTable) {
             $sm = $this->getServiceLocator();

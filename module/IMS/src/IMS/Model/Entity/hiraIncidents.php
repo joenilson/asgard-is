@@ -34,6 +34,12 @@ class hiraIncidents {
     protected $incident_thread;
     protected $incident_owner;
     protected $user_id;
+    protected $description_close;
+    protected $date_close;
+    protected $user_close;
+    protected $description_validity;
+    protected $date_validity;
+    protected $user_validity;
     
     public function __construct(array $options = null)
     {
@@ -261,5 +267,57 @@ class hiraIncidents {
         return $this;
     }
 
+    public function getDescription_close() {
+        return $this->description_close;
+    }
 
+    public function getDate_close() {
+        return $this->date_close;
+    }
+
+    public function getUser_close() {
+        return $this->user_close;
+    }
+
+    public function setDescription_close($description_close) {
+        $this->description_close = $description_close;
+        return $this;
+    }
+
+    public function setDate_close($date_close) {
+        $this->date_close = $date_close;
+        return $this;
+    }
+
+    public function setUser_close($user_close) {
+        $this->user_close = $user_close;
+        return $this;
+    }
+
+    public function getDescription_validity() {
+        return $this->description_validity;
+    }
+
+    public function getDate_validity() {
+        return $this->date_validity;
+    }
+
+    public function getUser_validity() {
+        return $this->user_validity;
+    }
+
+    public function setDescription_validity($description_validity) {
+        $this->description_validity = $description_validity;
+        return $this;
+    }
+
+    public function setDate_validity($date_validity) {
+        $this->date_validity = $date_validity;
+        return $this;
+    }
+
+    public function setUser_validity($user_validity) {
+        $this->user_validity = $user_validity;
+        return $this;
+    }
 }

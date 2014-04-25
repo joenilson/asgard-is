@@ -830,6 +830,48 @@ return array(
                             ),
                         ),
                     ),
+                    'addincidentcauses' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/addincidentcauses[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                //'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'addincidentcauses'
+                            ),
+                        ),
+                    ),
+                    'addincidentclose' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/addincidentclose[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                //'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'addincidentclose'
+                            ),
+                        ),
+                    ),
+                    'addincidentvalidity' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/addincidentvalidity[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                //'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'addincidentvalidity'
+                            ),
+                        ),
+                    ),
                     'hiraincidents' => array(
                         'type'    => 'Segment',
                         'options' => array(
