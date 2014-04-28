@@ -973,7 +973,7 @@ class IndexController extends AbstractActionController
         
         $threads = array();
         foreach($arrayThreads as $key=>$thread_values){
-            $threads[$thread_values['value']]=array('id'=>$thread_values['id'],'desc'=>$thread_values['value']);
+            $threads[$this->PersonName(trim($thread_values['value']))]=array('id'=>$thread_values['id'],'desc'=>$thread_values['value']);
         }    
         
         $sqlHelpers = $this->getDocsHelpersTable();
@@ -1089,7 +1089,7 @@ class IndexController extends AbstractActionController
             $dataResult['totalRows']=$worksheet['totalRows'];
             $dataResult['totalColumns']=$worksheet['totalColumns'];
             $dataResult['lastColumnLetter']=$worksheet['lastColumnLetter'];
-            $dataResult['process']=$arrayProcess;
+            //$dataResult['process']=$arrayThreads[1];
             
         }
         $dataResult['file_results']=$arrayMasterData;
@@ -2640,13 +2640,12 @@ class IndexController extends AbstractActionController
             mkdir($filesPath,0777,true);
         }
         try {
-            copy($file, $filesPath.$filename);
+            rename($file, $filesPath.$filename);
             return true;
         } catch (Exception $ex) {
             return false;
         }
     }
-    
     private function savefile($path,$file,$filename,$thumb,$thumbname){
         $filesPath = getcwd().DIRECTORY_SEPARATOR.'public'.DIRECTORY_SEPARATOR.$path.DIRECTORY_SEPARATOR;
         
