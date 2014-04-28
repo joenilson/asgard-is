@@ -7,15 +7,18 @@
 ?>
 <script>
 <?php
+/*
 if(!empty($this->userRole)){
     $var=str_replace(' ','',$this->userRole);
     echo "var toolbarType".$this->panelId." = Ext.create('Asgard.lib.gridToolbar".$var."',{titleBarText: '<b>".$this->HiraGridTitle."</b>'});\n";
 }
+*/
 ?>
 /**
 * Custom function used for column renderer
 * @param {Object} val
 */
+/*
 function riskleveler(val, meta) {
     if (val < 9 && val > 0) {
         meta.tdCls = 'red-column';
@@ -26,15 +29,34 @@ function riskleveler(val, meta) {
     }
     return val;
 }
-
+*/
 var <?php echo 'rowEditing'.$this->panelId; ?> = Ext.create('Ext.grid.plugin.RowEditing', {
     clicksToMoveEditor: 1,
     autoCancel: false
 });
 
-var <?php echo 'HIRAStore'.$this->panelId; ?> = Ext.create('Asgard.store.HiraDocuments');
-<?php echo 'HIRAStore'.$this->panelId.'.load();'; ?>
+function deployCombos(comboField,comboValue){
+    var combo = formDataRequest<?=$this->panelId;?>.getForm().findField(comboField);
+    var store = combo.store;
+    store.on("load", function(store, records, state, operation, opts) {
+            combo.setValue(comboValue);
+    });
+}
 
+var HIRAStore<?=$this->panelId; ?> = Ext.create('Asgard.store.HiraDocuments');
+<?php 
+//echo 'HIRAStore'.$this->panelId.'.load();'; 
+?>
+
+var formDataRequest<?=$this->panelId; ?> = Ext.create('Asgard.lib.forms.comboCCL',{
+    region: 'north'
+});
+
+var HIRAGridPanel<?=$this->panelId; ?> = Ext.create('Asgard.lib.grid.hira_general',{
+    store: HIRAStore<?=$this->panelId; ?>,
+    region: 'center'
+});
+/*
 var <?php echo 'HIRAGridPanel'.$this->panelId; ?> = Ext.create('Asgard.lib.GridPanel', {
   autoShow: true,
   autoDestroy: true,
@@ -148,53 +170,29 @@ var <?php echo 'HIRAGridPanel'.$this->panelId; ?> = Ext.create('Asgard.lib.GridP
         ]
     },
 });
-
+*/
 <?php
+/*
 if ($this->userRole!='Viewer'){
     echo 'rowEditing'.$this->panelId.".init(HIRAGridPanel".$this->panelId.");\n\r";
     echo "HIRAGridPanel".$this->panelId.".plugins.push(rowEditing".$this->panelId.");\n\r";
 }
-?>
+ * */
+ ?>
     
-function fnLibraryTool(){
-    
-}
-    
-function onClick(btn){
-    var tbar<?php echo $this->panelId; ?> = <?php echo 'HIRAGridPanel'.$this->panelId; ?>.getDockedItems('toolbar[dock="top"]')[0];
-    switch (btn.name){
-        case "edit":
-            tbar<?php echo $this->panelId; ?>.down('#save').setDisabled(false);
-            tbar<?php echo $this->panelId; ?>.down('#cancel').setDisabled(false);
-            tbar<?php echo $this->panelId; ?>.down('#edit').setDisabled(true);
-            
-            <?php echo 'HIRAGridPanel'.$this->panelId; ?>.removeAll();
-            var items = [
-                {
-                    xtype: 'rb-versioning'
-                },
-                {
-                    xtype: 'rb-scope'
-                },
-                { 
-                    xtype: 'rtfeditor', name: 'rtfeditor', value: panelContent<?php echo $this->panelId; ?>, height: '95%', anchor: '100%'
-                }];
-            <?php echo 'HIRAGridPanel'.$this->panelId; ?>.add(items);
-            <?php echo 'HIRAGridPanel'.$this->panelId; ?>.doLayout();
-            break;
-        case "add":
-            console.log('Add lib class to be implemented.');
-            break;
-        case "remove":
-            console.log('Remove lib class to be implemented.');
-            break;
-    }
+function fnCCLProcess(button, opt, obj) {
+    var values = button.up('form').getForm().getValues();
+    var companies = values['companiesCombo'];
+    var countries = values['countriesCombo'];
+    var locations = values['locationsCombo'];
+    HIRAStore<?= $this->panelId; ?>.load({ params: { module: 'hira', company: companies, country: countries, location: locations}});
+
 }
 
-var <?php echo 'HiraSpecs'.$this->panelId; ?> = Ext.create('Ext.Panel', {
+var HiraSpecs<?=$this->panelId; ?> = Ext.create('Ext.Panel', {
     collapsible: true,
     frame: false,
-    region: 'north',
+    region: 'south',
     titleAlign: 'right',
     collapsed: true,
     title: '<?php echo $this->titleHiraSpecs; ?>',
@@ -209,10 +207,15 @@ var <?php echo 'HiraPanel'.$this->panelId; ?> = Ext.create('Ext.Panel', {
     frame: false,
     layout: 'border',
     items: [ 
-        <?php echo 'HiraSpecs'.$this->panelId; ?>,
-        <?php echo 'HIRAGridPanel'.$this->panelId; ?>
+        HiraSpecs<?=$this->panelId; ?>,
+        formDataRequest<?=$this->panelId; ?>,
+        HIRAGridPanel<?=$this->panelId; ?>
     ]
 });
+
+deployCombos('companiesCombo','<?=$this->companyId;?>');
+deployCombos('countriesCombo','<?=$this->countryId;?>');
+deployCombos('locationsCombo','<?=$this->locationId;?>');
 
 
 Ext.getCmp('content-panel').getActiveTab().add(<?php echo 'HiraPanel'.$this->panelId; ?>);

@@ -774,6 +774,76 @@ return array(
                             ),
                         ),
                     ),
+                    'removehiradocs' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/removehiradocs[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'removehiradocs'
+                            ),
+                        ),
+                    ),
+                    'addhiradocs' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/addhiradocs[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'addhiradocs'
+                            ),
+                        ),
+                    ),
+                    'formhiradocs' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/formhiradocs[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'formhiradocs'
+                            ),
+                        ),
+                    ),
+                    'masshiraprocess' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/masshiraprocess[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'masshiraprocess'
+                            ),
+                        ),
+                    ),
+                    'processmasshira' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/processmasshira[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'processmasshira'
+                            ),
+                        ),
+                    ),
                     'listhira' => array(
                         'type'    => 'Segment',
                         'options' => array(

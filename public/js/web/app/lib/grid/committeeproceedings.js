@@ -19,9 +19,9 @@
  * @version 1.0.0 devel
  * @author Joe Nilson <joenilson@gmail.com>
  */
-Ext.define('Asgard.lib.grid.auditors',{
+Ext.define('Asgard.lib.grid.committeeproceedings',{
     extend: 'Asgard.lib.GridPanel',
-    alias: 'widget.gridauditors',
+    alias: 'widget.gridcommitteeproceedings',
     autoShow: true,
     autoDestroy: true,
     autoScroll: true,
@@ -29,19 +29,20 @@ Ext.define('Asgard.lib.grid.auditors',{
     frame: false,
     flex: 1,
     layout: 'fit',
-    titleText: 'Auditors List',
+    titleText: 'Committee Proceedings',
     idText: 'Id',
-    nameText: 'Name',
-    registryText: 'Registry',
-    
+    nameText: 'Description',
+    dateText: 'Date',
+    fileText: 'File',
     toolAddText: 'Add Values',
     toolRemoveText: 'Remove Entry',
     toolChangeText: 'Change Entry',
-    
-    titleNewAuditor: 'Add new Auditor',
-    titleEditAuditor: 'Edit Auditor data',
-    
+    toolViewDocText: 'View File',
+    titleNewAuditPlan: 'Add new Proceeding',
+    titleEditAuditPlan: 'Edit Proceeding data',
+    loadingFileText: 'Loading Document.. please wait...',
     chooseTitleText: 'Warning',
+    emptyFileMessage: 'No document is linked to this record...',
     chooseTitleBodyDelete: 'You are choosing delete this item. <br />Would you like to save your changes?',
     chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?',
     
@@ -71,8 +72,17 @@ Ext.define('Asgard.lib.grid.auditors',{
             }],
             items: [
                 {text: this.idText, flex: 1, sortable: false, hidden: false, dataIndex: 'id', filter: true},
-                {text: this.nameText, flex: 3, sortable: false, hidden: false, dataIndex: 'auditor_name', filter: true},
-                {text: this.registryText, flex: 3, sortable: false, hidden: false, dataIndex: 'auditor_dip', filter: true}
+                {text: this.nameText, flex: 3, sortable: false, hidden: false, dataIndex: 'description', filter: true},
+                {text: this.dateText, flex: 1, sortable: false, hidden: false, dataIndex: 'date_proceeding', renderer : Ext.util.Format.dateRenderer('Y-m-d'), filter: true},
+                {xtype: 'actioncolumn', flex: 1, sortable: false, menuDisabled: true,
+                    items: [
+                        {
+                            icon: 'images/default/16x16/view.png',
+                            tooltip: this.toolViewDocText,
+                            scope: this,
+                            handler: this.showDocument
+                        }]
+                }
             ]
         };
         
@@ -80,13 +90,13 @@ Ext.define('Asgard.lib.grid.auditors',{
     },
     
     createWindow: function() {
-        var windowAuditor = Ext.create('Ext.window.Window',{
+        var windowAudit = Ext.create('Ext.window.Window',{
                 closable: true,
                 closeAction: 'hide',
                 maximizable : true,
                 layout: 'fit'
             });
-         return windowAuditor;
+         return windowAudit;
     },
     
     chooseMessage: function(type) {
@@ -138,8 +148,8 @@ Ext.define('Asgard.lib.grid.auditors',{
         }else{
             windowDoc.removeAll();
             if(tool.type==='plus'){
-                windowDoc.setTitle(this.titleNewAuditor);
-                winContent = new Ext.create('Asgard.lib.forms.auditorsNewAuditor',{
+                windowDoc.setTitle(this.titleNewAuditPlan);
+                winContent = new Ext.create('Asgard.lib.forms.CommitteeProcedings',{
                     flex: 1,
                     innerPanel: panel
                 });
@@ -155,13 +165,12 @@ Ext.define('Asgard.lib.grid.auditors',{
                             var selData = panel.getSelectionModel().getSelection();
                             var sendData = Ext.encode(selData[0].data);
                             Ext.Ajax.request({
-                                url: 'ims/deleteauditor',
+                                url: 'ims/removecommitteeproceedings',
                                 params: {
                                     company: selData[0].data.company,
                                     country: selData[0].data.country,
                                     location: selData[0].data.location,
-                                    year: selData[0].data.year,
-                                    id: selData[0].data.id,
+                                    id: selData[0].data.id
                                 },
                                 success: function(response){
                                     var text = response.responseText;
@@ -173,42 +182,49 @@ Ext.define('Asgard.lib.grid.auditors',{
                     this
                 );
             }else if(tool.type==='gear'){
-                windowDoc.setTitle(this.titleEditAuditor);
+                windowDoc.setTitle(this.titleEditAuditPlan);
                 var selGrid = panel.getSelectionModel().getSelection();
-                var AuditorId = selGrid[0].data.id;
-                var AuditorCompany = selGrid[0].data.company;
-                var AuditorCountry = selGrid[0].data.country;
-                var AuditorLocation = selGrid[0].data.location;
-                var AuditorYear = selGrid[0].data.year;
-                var editAuditor = Ext.create('Asgard.lib.forms.auditorsNewAuditor', { innerPanel: panel, baseParams: { auditor_id: AuditorId }});
-                editAuditor.getForm().load({
-                    url: 'ims/formauditor',
-                    params: { id: AuditorId, country: AuditorCountry, company: AuditorCompany, location: AuditorLocation, year: AuditorYear },
+                var objId = selGrid[0].data.id;
+                var objCompany = selGrid[0].data.company;
+                var objCountry = selGrid[0].data.country;
+                var objLocation = selGrid[0].data.location;
+                var editAuditPlan = Ext.create('Asgard.lib.forms.CommitteeProcedings', { innerPanel: panel, baseParams: { auditplan_id: AuditId }});
+                editAuditPlan.getForm().load({
+                    url: 'ims/formcommitteeproceedings',
+                    params: { id: objId, country: objCountry, company: objCompany, location: objLocation },
                     failure: function(form, action) {
-                        Ext.Msg.alert("Fallo Inesperado", action.result.errorMessage);
+                        Ext.Msg.alert("Unspected Fail", action.result.errorMessage);
                     }
                 });
-                windowDoc.add(editAuditor);
+                windowDoc.add(editAuditPlan);
                 windowDoc.show();
             }
         }  
     },
-    
-    makeTreatment: function(obj, id, component, icon, event, record, other) {
-        var win = this.createWindow();
-        var document = Ext.create('Asgard.lib.forms.RequestTreatment', {
-            flex: 1,
-            //innerItem: obj,
-            baseParams: {
-                country: record.data.country,
-                company: record.data.company,
-                location:  record.data.location,
-                doc_id:  record.data.doc_id,
-                doc_newid:  record.data.doc_newid
-            }
-        });
-        win.add(document);
-        win.show();
+    showDocument: function(obj, id, component, icon, event, record){
+        if(record.data.audit_file!==''){
+            var windowDoc = this.createWindow();
+            //windowDoc.removeAll();
+            windowDoc.setTitle(record.data.description);
+            var documentFile = Ext.create('Ext.ux.panel.PDF', {
+                flex: 1,
+                //layout: 'border',
+                //width    : document.documentElement.clientWidth - 50,
+                height   : document.documentElement.clientHeight - 50,
+                pageScale: 1,                                           // Initial scaling of the PDF. 1 = 100%
+                src      : '/'+record.data.proceeding, // URL to the PDF - Same Domain or Server with CORS Support
+                loadingMessage: this.loadingFileText
+            });
+            windowDoc.add(documentFile);
+            windowDoc.show();
+        }else{
+            Ext.MessageBox.alert({
+                title: this.chooseTitleText,
+                msg: this.emptyFileMessage,
+                icon: Ext.MessageBox.WARNING,
+                buttons: Ext.MessageBox.OK,
+                scope: this
+            });
+        }
     }
-    
 });

@@ -38,6 +38,8 @@ class IndexController extends AbstractActionController
     protected $committeeproceedingsTable;
     protected $adminusersubmodulesTable;
     protected $contentTextTable;
+    protected $hiraRiskTable;
+    protected $hiraDangerTable;
     protected $hiraMatrixTable;
     protected $hiraSeverityTable;
     protected $hiraFrequencyTable;
@@ -56,6 +58,7 @@ class IndexController extends AbstractActionController
     protected $processownerTable;
     protected $processRelationsTable;
     protected $processThreadTable;
+    protected $processActivityTable;
     protected $docsLibraryTable;
     protected $docsHelpersTable;
     protected $docsRequestTable;
@@ -820,9 +823,9 @@ class IndexController extends AbstractActionController
         $company = $request->getQuery('company');
         $country = $request->getQuery('country');
         $location = $request->getQuery('location');
-
+        $year = $request->getQuery('year');
         $sql = $this->getCommitteeProceedingsTable();
-        $dataProceedings = $sql->getProceedingsByCCL($company,$country,$location);
+        $dataProceedings = $sql->getProceedingsByCCLY($company,$country,$location,$year);
         if($dataProceedings){
             $dataResult['success']=true;
             $dataResult['results']=$dataProceedings;
@@ -1257,7 +1260,7 @@ class IndexController extends AbstractActionController
     {
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
         $userData = $this->getServiceLocator()->get('userSessionData');
-        
+        $lang=$userPrefs[0]['lang'];
         $moduleParams = explode('-',$this->params()->fromRoute('id', 0));
         $idUser = $userPrefs[0]['user_id'];
         $idModule = $moduleParams[0];
@@ -1305,7 +1308,11 @@ class IndexController extends AbstractActionController
             'HiraGridHeaderScaleMedium'=>$HiraGridHeaderScaleMedium_38['value'],
             'HiraGridHeaderScaleLow'=>$HiraGridHeaderScaleLow_38['value'],
             'HiraGridHeaderResidualRiskEval'=>$HiraGridHeaderResidualRiskEval_38['value'],
-
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0)),
+            'lang'=>$lang
         );
         
     }
@@ -2040,7 +2047,6 @@ class IndexController extends AbstractActionController
             $dataResult['message']="No data was send";
         }
         return new JsonModel($dataResult);
-        
     }
     
     public function addincidentcausesAction(){
@@ -2282,20 +2288,311 @@ class IndexController extends AbstractActionController
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
         $userData = $this->getServiceLocator()->get('userSessionData');
         $lang = $userPrefs[0]['lang'];
-        
+        $request = $this->getRequest();
+        $company = (string) $request->getQuery('company');
+        $country = (string) $request->getQuery('country');
+        $location = (string) $request->getQuery('location');
         $hiraDocuments = $this->getHiraDocumentsTable();
         //$listDocuments = $hiraDocuments->fetchAll();
-        $listDocuments = $hiraDocuments->fetchAllView($lang,$userData->country);
+        $listDocuments = $hiraDocuments->fetchAllView($lang,$country,$company,$location);
+        $data = array();
         if(!empty($listDocuments)){
             $data['success']=true;
             $data['results']=$listDocuments;
             $data['msg']="";
         }else{
-            $data['success']=false;
-            $data['msg']="Error trying to get the information...";
+            $data['success']=true;
+            $data['msg']="No data found.";
+            $data['results']="";
         }
         $result = new JsonModel($data);
     	return $result;
+    }
+    
+    public function removehiradocsAction() {
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang = $userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $dataBulk = $request->getPost('data_ids');
+        $data = \json_decode($dataBulk);
+        $dataCount = count($data);
+        
+        $dataResult = array();
+        if(is_array($data)){
+            $sqlHIRADocs = $this->getHiraDocumentsTable();
+            foreach($data as $id_danger_risk){
+                $data = array();
+                $data['user_modification'] = $userData->id;
+                $data['date_modification'] = \date('Y-m-d H:i:s');
+                $data['status'] = 0;
+                $sqlHIRADocs->update($data,array('id_danger_risk'=>$id_danger_risk));
+            }
+            $dataResult['success']=true;
+            $dataResult['docs_processed']=$dataCount;
+        }else{
+            $dataResult['success']=false;
+            $dataResult['message']="No data was send";
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function addhiradocsAction() {
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang = $userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $dataBulk = $request->getPost('data_ids');
+        $data = \json_decode($dataBulk);
+        $dataCount = count($data);
+        
+        $dataResult = array();
+        if(is_array($data)){
+            $sqlHIRADocs = $this->getHiraDocumentsTable();
+            foreach($data as $id_danger_risk){
+                $data = array();
+                $data['user_modification'] = $userData->id;
+                $data['date_modification'] = \date('Y-m-d H:i:s');
+                $data['status'] = 0;
+                $sqlHIRADocs->update($data,array('id_danger_risk'=>$id_danger_risk));
+            }
+            $dataResult['success']=true;
+            $dataResult['docs_processed']=$dataCount;
+        }else{
+            $dataResult['success']=false;
+            $dataResult['message']="No data was send";
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function masshiraprocessAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $company = $request->getPost('companiesCombo');
+        $country = $request->getPost('countriesCombo');
+        $location = $request->getPost('locationsCombo');
+        $lang_docs = $request->getPost('languageCombo');
+        $files =  $request->getFiles()->toArray();
+        $date_creation = \date('Y-m-d h:i:s');
+        
+        $dataResult = array();
+
+        //$sqlMessage = $this->getMessagesTable();
+        $sqlProcess = $this->getProcessMainTable();
+        $arrayProcess = $sqlProcess->getAllMainProcess($lang_docs,'A',$company,$country,$location);
+        $process = array();
+        foreach($arrayProcess as $key=>$process_values){
+            $process[trim($process_values['value'])]=array('id'=>$process_values['id'],'desc'=>$process_values['value']);
+        }
+        
+        $sqlThreads = $this->getProcessThreadTable();
+        $arrayThreads = $sqlThreads->getAllThreads($lang_docs,'A',$company,$country,$location);
+        $threads = array();
+        foreach($arrayThreads as $key=>$thread_values){
+            $threads[trim($thread_values['value'])]=array('id'=>$thread_values['id'],'desc'=>$thread_values['value']);
+        }    
+        
+        $sqlActivity = $this->getProcessActivityTable();
+        $arrayActivity = $sqlActivity->getAllActivities($lang_docs,'A',$company,$country,$location);
+        $activities = array();
+        foreach($arrayActivity as $key=>$activity_values){
+            $activities[$activity_values['value']]=array('id'=>$activity_values['id'],'desc'=>$activity_values['value']);
+        }
+        
+        $sqlDanger = $this->getHiraDangerTable();
+        $arrayDanger = $sqlDanger->getDangerList($lang_docs);
+        
+        $dangers = array();
+        foreach($arrayDanger as $key=>$obj_values){
+            $dangers[$obj_values['desc_danger']]=array('id'=>$obj_values['id_danger'],'desc'=>$obj_values['desc_danger']);
+        }
+        
+        $sqlRisk = $this->getHiraRiskTable();
+        $arrayRisk = $sqlRisk->getRiskList($lang_docs);
+        
+        $risks = array();
+        foreach($arrayRisk as $key=>$obj_values){
+            $risks[$obj_values['desc_risk']]=array('id'=>$obj_values['id_risk'],'desc'=>$obj_values['desc_risk']);
+        }
+        //
+        //$reader = new \PHPExcel();
+        //$reader = new \PHPExcel_Reader_Excel2007();
+        
+        /** Identify the type of $inputFileName **/ 
+        //$inputFileType = \PHPExcel_IOFactory::identify($files['excel_file']['tmp_name']); 
+        /** Create a new Reader of the type that has been identified **/ 
+        //$objReader = \PHPExcel_IOFactory::createReader($inputFileType); 
+        /** Load $inputFileName to a PHPExcel Object **/ 
+        //$objPHPExcel = $objReader->load($files['excel_file']['tmp_name']);
+        
+        $reader = new \PHPExcel_Reader_Excel5();
+        $worksheetData = $reader->listWorksheetInfo($files['excel_file']['tmp_name']);
+        $objPHPExcel = $reader->load($files['excel_file']['tmp_name']);
+        $sheetData = $objPHPExcel->getActiveSheet()->toArray(null,true,true,true);
+        
+        $arrayMasterData = array();
+        $counter = 1;
+        $filesProcessed = 0;
+        
+        foreach($sheetData as $key=>$content){
+            if($counter>2){
+                $filesProcessed++;
+                $id = $filesProcessed;
+                //$processType = (int) trim($content['A']);
+                $processMain = (string) trim($content['B']);
+                $processThread = (string) trim($content['C']);
+                $processActivity = (string) trim($content['D']);
+                $documentDanger = (string) trim($content['E']);
+                $documentRisk = (string) trim($content['F']);
+                $iperHigh = (int) trim($content['G']);
+                $iperMedium = (int) trim($content['H']);
+                $iperLow = (int) trim($content['I']);
+                $controlMeasures = (string) trim($content['J']);
+                $rraHigh = (int) trim($content['K']);
+                $rraMedium = (int) trim($content['L']);
+                $rraLow = (int) trim($content['M']);
+
+                $arrayMasterData[]=array(
+                    'id_danger_risk'=>(int) $id,
+                    'id_danger'=>(!$dangers[$documentDanger])?"":$dangers[$documentDanger]['id'],
+                    'desc_danger'=>(!$dangers[$documentDanger])?"":$dangers[$documentDanger]['desc'],
+                    'id_risk'=>(!$risks[$documentRisk])?"":$risks[$documentRisk]['id'],
+                    'desc_risk'=>(!$risks[$documentRisk])?"":$risks[$documentRisk]['desc'],
+                    'id_activity'=>(!$activities[$processActivity])?"":$activities[$processActivity]['id'],
+                    'eval_iper_h'=>(!$iperHigh)?0:$iperHigh,
+                    'eval_iper_m'=>(!$iperMedium)?0:$iperMedium,
+                    'eval_iper_l'=>(!$iperLow)?0:$iperLow,
+                    'control_measures'=>(!$controlMeasures)?"":$controlMeasures,
+                    'eval_risk_h'=>(!$rraHigh)?0:$rraHigh,
+                    'eval_risk_m'=>(!$rraMedium)?0:$rraMedium,
+                    'eval_risk_l'=>(!$rraLow)?0:$rraLow,
+                    'id_process_main'=>(!$threads[$processThread])?"":$threads[$processThread]['id'],
+                    'process_main_desc'=>(!$threads[$processThread])?"":$threads[$processThread]['desc'],
+                    'process_sup_desc'=>(!$process[$processMain])?"":$process[$processMain]['desc'],
+                    'activity_desc'=>(!$activities[$processActivity])?"":$activities[$processActivity]['desc'],
+                    'status'=>1,
+                    'company'=>$company,
+                    'country'=>$country,
+                    'location'=>$location,
+                    'date_creation'=>$date_creation,
+                    'user_creation'=>$userData->id
+                );
+            }
+            $counter++;
+        }  
+        
+        foreach($worksheetData as $worksheet){
+            $dataResult['worksheetName']=$worksheet['worksheetName'];
+            $dataResult['totalRows']=$worksheet['totalRows'];
+            $dataResult['totalColumns']=$worksheet['totalColumns'];
+            $dataResult['lastColumnLetter']=$worksheet['lastColumnLetter'];
+            //$dataResult['process']=$threads;
+            
+        }
+        $dataResult['file_results']=$arrayMasterData;
+        $dataResult['success']=true;
+        return new JsonModel($dataResult);    
+    }
+    
+    public function processmasshiraAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $dataBulk = $request->getPost('data');
+        $data = \json_decode($dataBulk);
+        $dataCount = count($data);
+        
+//        "id_danger_risk":1,
+//        "id_danger":137,
+//        "desc_danger":"Superf\u00edcie escorregadia, Irregular, Obst\u00e1culos no andar",
+//        "id_risk":41,
+//        "desc_risk":"Queda ao mesmo n\u00edvel",
+//        "id_process_main":0,
+//        "process_main_desc":"Tratamento de \u00e1gua",
+//        "process_sup_desc":"Produ\u00e7\u00e3o",
+//        "type":0,
+//        "type_desc":"",
+//        "eval_iper_h":0,
+//        "eval_iper_m":0,
+//        "eval_iper_l":23,
+//        "control_measures":"Tr\u00e2nsito de pedrestes somente por zonas sinalizadas e/ou seguras",
+//        "eval_risk_h":0,
+//        "eval_risk_m":0,
+//        "eval_risk_l":23,
+//        "date_creation":"2014-04-27T09:57:57",
+//        "user_creation":"2",
+//        "date_modification":null,
+//        "user_modification":"",
+//        "status":1,
+//        "company":"0003",
+//        "country":"0003",
+//        "location":"0001",
+//        "id_machine":0,
+//        "id_activity":105,
+//        "activity_desc":"Revis\u00e3o inicial e rotineira de \u00e1gua em tanques"
+        
+        if(is_array($data)){
+            $sqlDocs = $this->getHiraDocumentsTable(); 
+            
+            foreach ($data as $dataContent){
+                //$doc_new_id = $sqlDocs->getNextDocId();
+                $doc_company = (!empty($dataContent->company))?$dataContent->company:$userData->company;
+                $doc_country = (!empty($dataContent->country))?$dataContent->country:$userData->country;
+                $doc_location = (!empty($dataContent->location))?$dataContent->location:$userData->location;
+                $doc_thread = (is_numeric($dataContent->process_main_desc))?$dataContent->process_main_desc:$dataContent->id_process_main;
+                $doc_activity = (is_numeric($dataContent->activity_desc))?$dataContent->activity_desc:$dataContent->id_activity;
+                $doc_id_risk = (!empty($dataContent->id_risk))?$dataContent->id_risk:0;
+                $doc_id_danger = (!empty($dataContent->id_danger))?$dataContent->id_danger:0;
+                $eval_iper_h = (!empty($dataContent->eval_iper_h))?$dataContent->eval_iper_h:0;
+                $eval_iper_m = (!empty($dataContent->eval_iper_m))?$dataContent->eval_iper_m:0;
+                $eval_iper_l = (!empty($dataContent->eval_iper_l))?$dataContent->eval_iper_l:0;
+                $eval_risk_h = (!empty($dataContent->eval_risk_h))?$dataContent->eval_risk_h:0;
+                $eval_risk_m = (!empty($dataContent->eval_risk_m))?$dataContent->eval_risk_m:0;
+                $eval_risk_l = (!empty($dataContent->eval_risk_l))?$dataContent->eval_risk_l:0;
+                $control_measures = (!empty($dataContent->control_measures))?$this->cleanTags(trim($dataContent->control_measures)):"";
+                $doc_user_creation = (!empty($dataContent->user_creation))?$dataContent->user_creation:$userData->id;
+                $doc_date_creation = (!empty($dataContent->date_creation))?\date("Y-m-d H:i:s", strtotime($dataContent->date_creation)):\date('Y-m-d H:i:s');
+                
+                
+                $doc = new \IMS\Model\Entity\hiraDocuments();
+                //$doc = new hiraDocuments();
+                $doc->setCompany($doc_company)
+                    ->setCountry($doc_country)
+                    ->setLocation($doc_location)
+                    ->setId_danger_risk(0)
+                    ->setId_danger($doc_id_danger)
+                    ->setId_risk($doc_id_risk)
+                    ->setId_process_main($doc_thread)
+                    ->setControl_measures($control_measures)
+                    ->setEval_iper_h($eval_iper_h)
+                    ->setEval_iper_m($eval_iper_m)
+                    ->setEval_iper_l($eval_iper_l)
+                    ->setEval_risk_h($eval_risk_h)
+                    ->setEval_risk_m($eval_risk_m)
+                    ->setEval_risk_l($eval_risk_l)
+                    ->setId_activity($doc_activity)
+                    ->setUser_creation($doc_user_creation)
+                    ->setDate_creation($doc_date_creation)
+                    ->setStatus(1);
+                
+                $sqlDocs->save($doc);
+            }
+            $dataResult['success']=true;
+            $dataResult['message']="$dataCount documents proccessed";
+            //$dataResult['test']=$doc_date_creation;
+            $dataResult['docs_processed']=$dataCount;
+        }else{
+            $dataResult['success']=false;
+            $dataResult['message']="No data was sent";
+        }
+        return new JsonModel($dataResult);
     }
     
     public function hiraDocsByThreadAction() {
@@ -2607,6 +2904,22 @@ class IndexController extends AbstractActionController
     	return $this->hiraRLI18nTable;
     }
     
+    public function getHiraDangerTable() {
+        if (!$this->hiraDangerTable) {
+            $sm = $this->getServiceLocator();
+            $this->hiraDangerTable = $sm->get('IMS\Model\hiraDangerTable');
+        }
+        return $this->hiraDangerTable;
+    }
+    
+    public function getHiraRiskTable() {
+        if (!$this->hiraRiskTable) {
+            $sm = $this->getServiceLocator();
+            $this->hiraRiskTable = $sm->get('IMS\Model\hiraRiskTable');
+        }
+        return $this->hiraRiskTable;
+    }
+    
     public function getHiraDocumentsTable() {
         if (!$this->hiraDocumentsTable) {
             $sm = $this->getServiceLocator();
@@ -2648,12 +2961,20 @@ class IndexController extends AbstractActionController
     }
     
     
-    public function getProcessThreadTable() {
+    private function getProcessThreadTable() {
         if(!$this->processThreadTable) {
             $sm = $this->getServiceLocator();
             $this->processThreadTable = $sm->get('IMS\Model\ProcessThreadTable');
         }
         return $this->processThreadTable;
+    }
+    
+    private function getProcessActivityTable() {
+        if(!$this->processActivityTable) {
+            $sm = $this->getServiceLocator();
+            $this->processActivityTable = $sm->get('IMS\Model\ProcessActivityTable');
+        }
+        return $this->processActivityTable;
     }
     
     public function getMessagesTable()

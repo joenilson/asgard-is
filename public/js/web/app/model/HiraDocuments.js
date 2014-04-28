@@ -31,6 +31,8 @@ Ext.define('Asgard.model.HiraDocuments', {
         { name: 'company', type: 'string'},
         { name: 'country', type: 'string'},
         { name: 'location', type: 'string'},
-        { name: 'id_machine', type: 'float' }
+        { name: 'id_machine', type: 'float' },
+        { name: 'id_activity', type: 'float' },
+        { name: 'activity_desc', type: 'string' }
     ]
 });

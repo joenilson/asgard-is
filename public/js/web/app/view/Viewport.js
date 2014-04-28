@@ -32,7 +32,9 @@ Ext.define('Asgard.view.Viewport', {
     'Asgard.store.DocsUpload','Asgard.lib.grid.thread_documents','Asgard.store.HiraIncidents',
     'Asgard.lib.grid.hira_incidents','Asgard.lib.Panels.IncidentCausesPanel',
     'Asgard.lib.forms.hiraIncidentCauses','Asgard.lib.forms.hiraIncidentValidity',
-    'Asgard.lib.forms.hiraIncidentClose'
+    'Asgard.lib.forms.hiraIncidentClose','Asgard.store.SafetyCommitteeProceedings',
+    'Asgard.lib.grid.committeeproceedings','Asgard.lib.grid.hira_general',
+    'Asgard.store.HiraUpload','Asgard.lib.grid.hira_upload','Asgard.lib.forms.hiraMasterFileUpload'
   ],
   menuTitleText: 'Main Menu',
     defaults: {

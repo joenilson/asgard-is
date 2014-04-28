@@ -20,6 +20,8 @@ use IMS\Model\hiraMatrixTable;
 use IMS\Model\hiraFrequencyTable;
 use IMS\Model\hiraSeverityTable;
 use IMS\Model\hiraRiskLevelTable;
+use IMS\Model\hiraRiskTable;
+use IMS\Model\hiraDangerTable;
 use IMS\Model\hiraRiskLevelI18nTable;
 use IMS\Model\hiraDocumentsTable;
 use IMS\Model\hiraIncidentTypeTable;
@@ -31,6 +33,7 @@ use IMS\Model\ProcessMainTable;
 use IMS\Model\ProcessMainView;
 use IMS\Model\ProcessRelationsTable;
 use IMS\Model\ProcessThreadTable;
+use IMS\Model\ProcessActivityTable;
 use IMS\Model\ProcessOwnerTable;
 use IMS\Model\CSBTable;
 use IMS\Model\CSITable;
@@ -170,6 +173,11 @@ class Module implements AutoloaderProviderInterface
                     $table = new ProcessOwnerTable($dbAdapter);
                     return $table;
                 },
+                'IMS\Model\ProcessActivityTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new ProcessActivityTable($dbAdapter);
+                    return $table;
+                },
                 'IMS\Model\ProcessRelationsTable'=> function($sm){
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new ProcessRelationsTable($dbAdapter);
@@ -198,6 +206,16 @@ class Module implements AutoloaderProviderInterface
                 'IMS\Model\hiraIncidentsCTTable'=> function($sm){
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new hiraIncidentsCTTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\hiraRiskTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new hiraRiskTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\hiraDangerTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new hiraDangerTable($dbAdapter);
                     return $table;
                 },
                 'IMS\Model\hiraDocumentsTable'=> function($sm){

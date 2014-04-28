@@ -19,31 +19,35 @@
  * @version 1.0.0 devel
  * @author Joe Nilson <joenilson@gmail.com>
  */
-Ext.define('Asgard.lib.grid.hira_incidents',{
+Ext.define('Asgard.lib.grid.hira_general',{
     extend: 'Asgard.lib.GridPanel',
-    alias: 'widget.hiraincidents',
     autoShow: true,
     autoDestroy: true,
-    autoScroll: true,
     border: false,
     frame: false,
     flex: 1,
-    titleText: 'Incidents List',
+    //layout: 'fit',
+    titleText: 'HIRA List',
     idText: 'Id',
-    nctypeText: 'Non Conformity',
-    typeText: 'Type',
-    descriptionText: 'Description',
-    authorText: 'Author',
     processText: 'Process',
     threadText: 'Thread',
-    emailText: 'Email',
-    dateText: 'Date',
-    statusText: 'Status',
-    causesToolText: 'Incident Causes',
-    closeToolText: 'Close Incident',
-    validityToolText: 'Close Validity',
-    deleteToolText: 'Delete Incident',
-    addToolText: 'Add Incident',
+    activityText: 'Activity',
+    dangerText: 'Danger',
+    riskText: 'Risk',
+    evaluationHiraText: 'HIRA Evaluation',
+    evaluationHiraHText: 'H',
+    evaluationHiraMText: 'M',
+    evaluationHiraLText: 'L',
+    controlMeasuresText: 'Measures to be implemented',
+    residualRiskText: 'Residual Risk Assessment',
+    residualRiskHText: 'H',
+    residualRiskMText: 'M',
+    residualRiskLText: 'L',
+    editToolText: 'Edit',
+    deleteToolText: 'Delete',
+    addToolText: 'Add',
+    uploadToolText: 'Mass Upload',
+    emptyTextText: 'No HIRA associated to this Location.',
     resultTitleText: 'Success',
     resultMessageText: 'incidents processed.',
     failureTitleText: 'Warning',
@@ -56,27 +60,17 @@ Ext.define('Asgard.lib.grid.hira_incidents',{
     chooseTitleText: 'Warning',
     chooseTitleBodyDelete: 'You are choosing delete this items. <br />Would you like to save your changes?',
     chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?',
-    titleCausesTool: 'Non Conformity Causes',
-    valTreatment1: 'Open',
-    valTreatment2: 'Closed',
-    valTreatment4: 'Closed and Validated',
+
+    
+    
     initComponent: function(){
-        var me = this;
         this.title = this.titleText;
-        
+        this.autoScroll = true;
+        this.emptyText = this.emptyTextText;
+        this.selType = 'checkboxmodel';
         this.tools = [{
             type: 'gear',
-            tooltip: this.causesToolText,
-            scope: this,
-            handler: this.fnLibraryTool
-        },{
-            type: 'save',
-            tooltip: this.closeToolText,
-            scope: this,
-            handler: this.fnLibraryTool
-        },{
-            type: 'pin',
-            tooltip: this.validityToolText,
+            tooltip: this.editToolText,
             scope: this,
             handler: this.fnLibraryTool
         },{
@@ -89,36 +83,69 @@ Ext.define('Asgard.lib.grid.hira_incidents',{
             tooltip: this.addToolText,
             scope: this,
             handler: this.fnLibraryTool
-        }];
-        
-        this.selType = 'checkboxmodel';
+        },{
+            type: 'expand',
+            tooltip: this.uploadToolText,
+            scope: this,
+            handler: this.fnLibraryTool
+          }];
         this.columns =  {
-            
             plugins: [{
                 ptype: 'gridautoresizer'
             }],
-            
             items: [
-                {text: this.idText, flex: 0.5, sortable: true, dataIndex: 'id_incident', filter: true },
-                {text: this.nctypeText, flex: 1, sortable: true, filter: 'combo', dataIndex: 'nonconformity_type_desc', tdCls: 'wrapText' },
-                {text: this.typeText, flex: 1, sortable: true, filter: 'combo', dataIndex: 'val_incident', tdCls: 'wrapText' },
-                {text: this.descriptionText, flex: 3, sortable: true, filter: 'combo', dataIndex: 'description', tdCls: 'wrapText' },
-                {text: this.authorText, flex: 2, sortable: true, filter: 'combo', dataIndex: 'owner_fullname', tdCls: 'wrapText' },
-                {text: this.processText, flex: 1, sortable: true, filter: 'combo', dataIndex: 'process_desc', tdCls: 'wrapText' },
-                {text: this.threadText, flex: 1, sortable: true, filter: 'combo', dataIndex: 'thread_desc', tdCls: 'wrapText' },
-                {text: this.dateText, flex: 1, sortable: false, filter: true, dataIndex: 'date_incident', renderer : Ext.util.Format.dateRenderer('Y-m-d') }, 
-                {text: this.statusText, flex: 1, sortable: true, filter: 'combo', dataIndex: 'status', renderer: this.statusRender, tdCls: 'wrapText' }
-            ]
+                {text: this.idText, sortable: false, hidden: true, dataIndex: 'id_danger_risk', filter: false},
+                {text: this.processText, flex: 1, sortable: false, hidden: false, dataIndex: 'process_sup_desc', filter: true, tdCls: 'wrapText'},
+                {text: this.threadText, flex: 1, sortable: false, hidden: false, dataIndex: 'process_main_desc', filter: true, tdCls: 'wrapText'},
+                {text: this.activityText, flex: 2, sortable: false, hidden: false, dataIndex: 'activity_desc', filter: true, tdCls: 'wrapText'},
+                {text: this.dangerText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'desc_danger', tdCls: 'wrapText'},
+                {text: this.riskText, flex: 1.5, sortable: true, filter: true, dataIndex: 'desc_risk', tdCls: 'wrapText'},
+                {text: this.evaluationHiraText,
+                    columns: [{
+                        text     : this.evaluationHiraHText,
+                        width    : 50, sortable : true, filter: true,
+                        align: 'center', dataIndex: 'eval_iper_h', renderer : this.riskleveler
+                    }, {
+                        text     : this.evaluationHiraMText,
+                        width    : 50, sortable : true, filter: true,
+                        align: 'center', renderer : this.riskleveler, dataIndex: 'eval_iper_m'
+                    }, {
+                        text     : this.evaluationHiraLText,
+                        width    : 50, sortable : true, filter: true,
+                        align: 'center', renderer : this.riskleveler, dataIndex: 'eval_iper_l'
+                    }]
+                },
+            {text: this.controlMeasuresText, flex:3, sortable: true, filter: true, dataIndex: 'control_measures', tdCls: 'wrapText' },
+            {text: this.residualRiskText,
+                columns: [{
+                    text     : this.residualRiskHText,
+                    width    : 50, sortable : true, filter: true,
+                    align: 'center', dataIndex: 'eval_risk_h', renderer : this.iskleveler
+                }, {
+                    text     : this.residualRiskMText,
+                    width    : 50, sortable : true, filter: true,
+                    align: 'center', renderer : this.riskleveler, dataIndex: 'eval_risk_m'
+                }, {
+                    text     : this.residualRiskLText,
+                    width    : 50, sortable : true, filter: true,
+                    align: 'center', renderer : this.riskleveler, dataIndex: 'eval_risk_l'
+                }]
+            }]
         };
+        
         this.callParent();
     },
-    statusRender: function(val){
-        if (val === 1) {
-            return '<span style="color:' + 'red' + '; text-align: center;">' + this.valTreatment1 + '</span>';
-        } else if (val === 2) {
-            return '<span style="color:' + 'orange' + '; text-align: center;">' + this.valTreatment2 + '</span>';
-        }else if (val === 4) {
-            return '<span style="color:' + 'green' + '; text-align: center;">' + this.valTreatment4 + '</span>';
+    /**
+    * Custom function used for column renderer
+    * @param {Object} val
+    */
+    riskleveler: function(val, meta) {
+        if (val < 9 && val > 0) {
+            meta.tdCls = 'red-column';
+        } else if (val < 16 && val > 8) {
+            meta.tdCls = 'yellow-column';
+        } else if (val > 15) {
+            meta.tdCls = 'green-column';
         }
         return val;
     },
@@ -138,10 +165,10 @@ Ext.define('Asgard.lib.grid.hira_incidents',{
                     } else {
                         var sendData = [];
                         for(i=0; i<selectedItems.length; i++){
-                            sendData.push(selectedItems[i].data.id_incident);
+                            sendData.push(selectedItems[i].data.id_danger_risk);
                         }
                         Ext.Ajax.request({
-                            url: 'ims/removeincidents',
+                            url: 'ims/removehiradocs',
                             params: {
                                 data_ids: Ext.encode(sendData)
                             },
@@ -196,53 +223,13 @@ Ext.define('Asgard.lib.grid.hira_incidents',{
                     this.showWrongMessage();
                 }
             }
-        }else if(button.type==='save'){
-            var gridStore = this.getStore();
-            var selectedItems = this.getSelectionModel().getSelection();
-            if((selectedItems.length > 0) && (selectedItems[0].data.status === 1)){
-                var winAdd = Ext.create('Asgard.lib.window.windowGeneric',{
-                    height: document.documentElement.clientHeight - 50,
-                    //width: document.documentElement.clientWidth - 450,
-                    width: 450,
-                    innerPanel : this
-                });
-                winAdd.setTitle(this.titleCloseTool);
-                var CloseForm = Ext.create('Asgard.lib.forms.hiraIncidentClose',{
-                    baseParams: { incident_id: selectedItems[0].data.id_incident },
-                    objectIncidentValue: selectedItems[0].data.description
-                });
-                winAdd.add(CloseForm);
-                winAdd.show();
-            }else{
-                if(selectedItems.length > 0){
-                    this.showEmptyMessage();
-                }else if(selectedItems[0].data.status !== 1){
-                    this.showWrongMessage();
-                }
-            }
-        }else if(button.type==='pin'){
-            var gridStore = this.getStore();
-            var selectedItems = this.getSelectionModel().getSelection();
-            if((selectedItems.length > 0) && (selectedItems[0].data.status === 2)){
-                var winAdd = Ext.create('Asgard.lib.window.windowGeneric',{
-                    height: document.documentElement.clientHeight - 50,
-                    width: 450,
-                    innerPanel : this
-                });
-                winAdd.setTitle(this.titleValidityTool);
-                var ValidityForm = Ext.create('Asgard.lib.forms.hiraIncidentValidity',{
-                    baseParams: { incident_id: selectedItems[0].data.id_incident },
-                    objectIncidentValue: selectedItems[0].data.description
-                });
-                winAdd.add(ValidityForm);
-                winAdd.show();
-            }else{
-                if(selectedItems.length > 0){
-                    this.showEmptyMessage();
-                }else if(selectedItems[0].data.status !== 2){
-                    this.showWrongMessage();
-                }
-            }
+        }else if(button.type==='expand'){
+            var windowDoc = this.createWindow();
+            windowDoc.setTitle('Upload Master Files');
+            windowDoc.setHeight(250);
+            winContent = Ext.create('Asgard.lib.forms.hiraMasterFileUpload');
+            windowDoc.add(winContent);
+            windowDoc.show();
         }
     },
     
@@ -294,5 +281,4 @@ Ext.define('Asgard.lib.grid.hira_incidents',{
        return failureMsg;
 
     }
-
 });

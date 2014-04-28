@@ -33,6 +33,7 @@ class hiraDocuments {
     protected $country;
     protected $location;
     protected $id_machine;
+    protected $id_activity;
    
     public function __construct(array $options = null)
     {
@@ -251,6 +252,13 @@ class hiraDocuments {
         return $this;
     }
 
+    public function getId_activity() {
+        return $this->id_activity;
+    }
 
+    public function setId_activity($id_activity) {
+        $this->id_activity = $id_activity;
+        return $this;
+    }
 
 }

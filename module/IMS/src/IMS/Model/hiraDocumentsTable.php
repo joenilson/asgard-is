@@ -22,6 +22,7 @@ class hiraDocumentsTable extends AbstractTableGateway {
     protected $pyi_table_name = 'process_type_i18n';
     protected $pmi_table_name = 'process_main_i18n';
     protected $pti_table_name = 'process_thread_i18n';
+    protected $pai_table_name = 'process_activity_i18n';
     
     protected $hr_table_name = 'hira_risk';
     protected $hd_table_name = 'hira_danger';
@@ -74,12 +75,12 @@ class hiraDocumentsTable extends AbstractTableGateway {
         return $resultSet->toArray();
     }
     
-    public function fetchAllView($lang,$country) {
-        $row = $this->select(function (Select $select) use ($lang,$country){
+    public function fetchAllView($lang,$country,$company,$location) {
+        $row = $this->select(function (Select $select) use ($lang,$country,$company,$location){
             //$select->columns(array('id','ordering','status'));
             $select->join( array('pr'=>new TableIdentifier($this->pr_table_name, $this->schema_name)),
-                new Expression(
-                    $this->table_name.'.id_process_main = pr.id and type=\'s\' and pr.country=\''.$country.'\''), array('parent_id')
+                new Expression( 
+                    $this->table_name.'.id_process_main = pr.id and type=\'s\' and pr.country=\''.$country.'\' and pr.company=\''.$company.'\' and pr.location=\''.$location.'\' '), array('parent_id')
                     );
             $select->join(
                 array('pti'=>new TableIdentifier($this->pti_table_name, $this->schema_name)), 
@@ -99,6 +100,10 @@ class hiraDocumentsTable extends AbstractTableGateway {
                         new Expression('p2.parent_id = pti3.id and pti3.lang=\''.$lang.'\''), array('type_desc'=>'value')
                     );
             $select->join(
+                    array('pai'=>new TableIdentifier($this->pai_table_name, $this->schema_name)),
+                        new Expression($this->table_name.'.id_activity = pai.id and pai.lang=\''.$lang.'\''), array('activity_desc'=>'value')
+                    ,'left');
+            $select->join(
                     array('hr'=>new TableIdentifier($this->hr_table_name, $this->schema_name)),
                         new Expression($this->table_name.'.id_risk = hr.id_risk and hr.lang=\''.$lang.'\''), array('desc_risk')
                     );
@@ -106,8 +111,7 @@ class hiraDocumentsTable extends AbstractTableGateway {
                     array('hd'=>new TableIdentifier($this->hd_table_name, $this->schema_name)),
                         new Expression($this->table_name.'.id_danger = hd.id_danger and hd.lang=\''.$lang.'\''), array('desc_danger')
                     );
-            //$select->where(array('lang' => (string) $lang, 'status'=>'A'));
-            $select->where(array(new IsNotNull('control_measures')));
+            $select->where(array(new IsNotNull('control_measures'),$this->table_name.'.country'=>(string) $country,$this->table_name.'.company'=>(string) $company,$this->table_name.'.location'=>(string) $location,$this->table_name.'.status'=>1));
             $select->order('id_danger_risk ASC');
             //echo $select->getSqlString();
         });
@@ -117,88 +121,40 @@ class hiraDocumentsTable extends AbstractTableGateway {
     public function fetchThreadDocuments($lang,$country,$company,$location,$thread_id) {
         $row = $this->select(function (Select $select) use ($lang,$country,$company,$location,$thread_id){
             $select->join(
-                    array('hr'=>new TableIdentifier($this->hr_table_name, $this->schema_name)),
-                        new Expression($this->table_name.'.id_risk = hr.id_risk and hr.lang=\''.$lang.'\''), array('desc_risk')
-                    );
+                array('hr'=>new TableIdentifier($this->hr_table_name, $this->schema_name)),
+                    new Expression($this->table_name.'.id_risk = hr.id_risk and hr.lang=\''.$lang.'\''), array('desc_risk')
+                );
             $select->join(
-                    array('hd'=>new TableIdentifier($this->hd_table_name, $this->schema_name)),
-                        new Expression($this->table_name.'.id_danger = hd.id_danger and hd.lang=\''.$lang.'\''), array('desc_danger')
-                    );
-            $select->where(array(new IsNotNull('control_measures'),'id_process_main'=>(int) $thread_id,'country'=>(string) $country,'company'=>(string) $company,'location'=>(string) $location));
+                array('hd'=>new TableIdentifier($this->hd_table_name, $this->schema_name)),
+                    new Expression($this->table_name.'.id_danger = hd.id_danger and hd.lang=\''.$lang.'\''), array('desc_danger')
+                );
+            $select->join(
+                array('pai'=>new TableIdentifier($this->pai_table_name, $this->schema_name)),
+                    new Expression($this->table_name.'.id_activity = pai.id and pai.lang=\''.$lang.'\''), array('activity_desc'=>'value')
+                ,'left');
+            $select->where(array(new IsNotNull('control_measures'),'id_process_main'=>(int) $thread_id,'country'=>(string) $country,'company'=>(string) $company,'location'=>(string) $location, $this->table_name.'.status'=>1));
             $select->order('id_danger_risk ASC');
             //echo $select->getSqlString();
         });
         return $row->toArray();
     }
     
-    public function getIncidentsListFiltered($country,$location,$dateValue,$lang) 
-    {
-        $var_countries = $this->countriesList($country);
-        $var_locations = $this->locationsList($location);
-        
-        $time=strtotime($dateValue);
-
-        $month=date("m",$time);
-        $year=date("Y",$time);
-        
-        $first = date('d-m-Y', mktime(0, 0, 0, $month, 1, $year));
-        $last = date('t-m-Y', mktime(0, 0, 0, $month, 1, $year));
-
-        $thisTime = strtotime($first);
-        $endTime = strtotime($last);
-        
-        
-        $resultSet = $this->select(function (Select $select) use ($var_countries, $var_locations, $year, $month) {
-            $select->where(array('country'=>$var_countries,'location'=>$var_locations,new Expression("date_incident::TEXT like '$year-$month-%'")));
-            $select->order('id_incident ASC');
-            //echo $select->getSqlString();
+    public function getNextId() {
+        $resultSet = $this->select(function (Select $select) {
+            $select->columns(array(new Expression('max(id_danger_risk) as id_danger_risk')));
         });
-        return $resultSet->toArray();
-        /*
-        $queryResumen="SELECT * FROM view_incidents_list 
-        WHERE in_idPais IN ($var_countries) AND in_idUbicacion IN ($var_locations) 
-        and (DATEPART(yy, dt_FechaCreacion) = $year
-         AND DATEPART(mm, dt_FechaCreacion) = $month ) ORDER BY dt_FechaCreacion ASC";
-        //echo $queryResumen;
-        $resultResumen = $this->getAdapter()->query($queryResumen,Adapter::QUERY_MODE_EXECUTE);
-        
-        $bulkIncidents = $resultResumen->toArray();
-        
-        $resumenIncidents = array();
-        
-        for ($idx=0; $idx < count($bulkIncidents); $idx++)
-        {
-            $resumenIncidents[$bulkIncidents[$idx]['dt_FechaCreacion']][$bulkIncidents[$idx]['in_IdTipoIncidente']]+=$bulkIncidents[$idx]['quantityIncidents'];
-        }
-        
-        
-        $listIncidents=array();
-        $counterList=0; $counterDate=array();
-        while($thisTime <= $endTime)
-        {
-            $thisDate = date('Y-m-d', $thisTime);
-            $listIncidents[$counterList]['dt_fechaCreacion']=$thisDate;
-            foreach($resumenIncidents[$thisDate] as $key=>$values){
-                $listIncidents[$counterList][$key]=$values;
-                $counterDate[$thisDate]+=$values;
-            }
-            //$listIncidents[$counterList]['summaryIncidents']=count($resumenIncidents[$thisDate]);
-            $listIncidents[$counterList]['summaryIncidents']=$counterDate[$thisDate];
-            $thisTime = strtotime('+1 day', $thisTime); // increment for loop
-            $counterList++;
-        }
-
-        //var_dump($listIncidents);
-        return $listIncidents;
-        */
+        $row = $resultSet->current();
+        $id = $row->id_danger_risk;
+        $id++;
+        return $id;
     }
     
-    public function getIncidentValue($id_incident,$lang)
+    public function getHIRAItem($id)
     {
-        $row = $this->select(array('id_incident'=>(string) strtoupper($id_incident),'lang' => (string) $lang));
+        $row = $this->select(array('id_danger_risk'=>(int) $id));
         if (!$row)
             return false;
-        return $row;
+        return $row->toArray();
     }
     
     public function getIncidentTypeList($lang) {
@@ -219,40 +175,51 @@ class hiraDocumentsTable extends AbstractTableGateway {
     public function save(hiraDocuments $object)
     {
         $data = array(
-            'lang' => $object->getLang(),
-            'id_incident' => $object->getId_incident(),
-            'val_incident' => $object->getVal_incident(),
-            'status' => $object->getStatus(),
+            'id_danger' => $object->getId_danger(),
+            'id_risk' => $object->getId_risk(),
+            'id_process_main' => $object->getId_process_main(),
+            'eval_iper_h' => $object->getEval_iper_h(),
+            'eval_iper_m' => $object->getEval_iper_m(),
+            'eval_iper_l' => $object->getEval_iper_l(),
+            'control_measures' => $object->getControl_measures(),
+            'eval_risk_h' => $object->getEval_risk_h(),
+            'eval_risk_m' => $object->getEval_risk_m(),
+            'eval_risk_l' => $object->getEval_risk_l(),
             'date_creation' => $object->getDate_creation(),
-            'date_modification' => $object->getDate_modification()
+            'user_creation' => $object->getUser_creation(),
+            'date_modification' => $object->getDate_modification(),
+            'user_modification' => $object->getUser_modification(),
+            'status' => $object->getStatus(),
+            'company' => $object->getCompany(),
+            'country' => $object->getCountry(),
+            'location' => $object->getLocation(),
+            'id_machine' => $object->getId_machine(),
+            'id_activity' => $object->getId_activity()
         );
 
-        $id_incident = (int) $object->id_incident;
-        $lang = (string) $object->lang;
-        
-        if (!$this->getIncidentValue($id_incident,$lang)) {
+        $id = (int) $object->getId_danger_risk();
+        if($id == 0) {
+            $id = $this->getNextId();
+            
+        }
+        if (!$this->getHIRAItem($id)) {
+            $data['id_danger_risk'] = $id;
             if (!$this->insert($data))
                 throw new \Exception('insert statement can\'t be executed');
-            return true;
-        } elseif ($this->getIncidentValue($id_incident,$lang)) {
-            $this->update(
-                $data,
-                array(
-                    'id_incident' => $id_incident, 
-                    'lang' => $lang,
-                    )
-            );
+            return $id;
+        } elseif ($this->getHIRAItem($id)) {
+            $this->update( $data, array('id_danger_risk' => $id ) );
             return true;
         } else {
-            throw new \Exception('id_incident or lang in object hiraIncidentType does not exist');
+            throw new \Exception('id_danger_risk in object hiraDocuments does not exist');
         }
     }
 
-    public function updateHiraIncidentType($idi,$lang,$data)
+    public function updateHiraDocuments($id,$data)
     {
-        $id_incident = (int) $idi;
-        $lang = (string) $lang;
-        $this->update($data, array('id_incident' => $id_incident, 'lang' => $lang));
+        $id = (int) $id;
+        if($id!=0){
+            $this->update($data, array('id_danger_risk' => $id));
+        }
     }
 }
-?>

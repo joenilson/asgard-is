@@ -15,8 +15,8 @@ use IMS\Model\Entity\SafetyCommitteeProceedings;
 
 class SafetyCommitteeProceedingsTable extends AbstractTableGateway {
 
-    protected $table_name = 'safetycommittee';
-    protected $at_table_name = 'committee_positions';
+    protected $table_name = 'safetycommittee_proceedings';
+    //protected $at_table_name = 'committee_positions';
     protected $schema_name = 'ims';
 
     private function processList($value)
@@ -60,6 +60,22 @@ class SafetyCommitteeProceedingsTable extends AbstractTableGateway {
             return false;
         return $row->toArray();
     }
+    
+    public function getProceedingsByCCLY($company,$country,$location,$year)
+    {
+        $row = $this->select(function (Select $select) use ($company,$country,$location,$year){
+            $select->where(array('company'=>(string) $company,
+                                'country'=>(string) $country,
+                                'location'=>(string) $location,
+                                new Expression('date_proceeding::text like \''.$year.'-%\''),
+                                'status'=>'A'));
+            $select->order('date_proceeding DESC');
+        });
+        if (!$row)
+            return false;
+        return $row->toArray();
+    }
+    
     
     public function getProceedingsByCCLId($company,$country,$location,$id)
     {

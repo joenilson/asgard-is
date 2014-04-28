@@ -11,13 +11,13 @@ use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Sql\TableIdentifier;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Predicate\Expression;
-use IMS\Model\Entity\ProcessThread;
+use IMS\Model\Entity\ProcessActivity;
 
-class ProcessThreadTable extends AbstractTableGateway {
+class ProcessActivityTable extends AbstractTableGateway {
 
-    protected $table_name = 'process_thread';
+    protected $table_name = 'process_activity';
     protected $schema_name = 'ims';
-    protected $table_i18n = 'process_thread_i18n';
+    protected $table_i18n = 'process_activity_i18n';
     protected $table_relations = 'process_relations';
     protected $empty_value = '0000';
     
@@ -52,7 +52,7 @@ class ProcessThreadTable extends AbstractTableGateway {
     }
    
     
-    public function getAllThreads($lang,$assigned,$companies,$countries,$locations) {
+    public function getAllActivities($lang,$assigned,$companies,$countries,$locations) {
         
         $companies = $this->processArray($companies);
         $countries = $this->processArray($countries);
@@ -61,14 +61,14 @@ class ProcessThreadTable extends AbstractTableGateway {
         $row = $this->select(function (Select $select) use ($lang,$companies,$countries,$locations,$typeJoin) {
             $select->columns(array('id','ordering','status'));
             $select->join( array('pti'=>new TableIdentifier($this->table_i18n, $this->schema_name)),
-                $this->table_name.'.id = pti.id', array('lang', 'value', 'mission', 'scope', 'rich_content'));
+                $this->table_name.'.id = pti.id', array('lang', 'value'));
             $select->join(
                 array('pr'=>new TableIdentifier($this->table_relations, $this->schema_name)), 
                 new Expression(
-                    $this->table_name.'.id = pr.id AND pr.type=\'s\' and pr.company IN (\''.$companies.'\')  and pr.country IN (\''.$countries.'\') and pr.location IN (\''.$locations.'\')'), 
+                    $this->table_name.'.id = pr.id AND pr.type=\'a\' and pr.company IN (\''.$companies.'\')  and pr.country IN (\''.$countries.'\') and pr.location IN (\''.$locations.'\')'), 
                 array('type', 'parent_id', 'company', 'country', 'location'),$typeJoin
             );
-            $select->where(array('lang' => (string) $lang, $this->table_name.'.status'=>'A'));
+            $select->where(array('lang' => (string) $lang, 'status'=>'A'));
             $select->order('ordering ASC');
             //echo $select->getSqlString();
         });
@@ -82,7 +82,7 @@ class ProcessThreadTable extends AbstractTableGateway {
         return $listItems;
     }
     
-    public function getThreads($lang,$assigned,$companies,$countries,$locations,$process_id) {
+    public function getActivities($lang,$assigned,$companies,$countries,$locations,$process_id) {
         
         $companies = $this->processArray($companies);
         $countries = $this->processArray($countries);
@@ -100,7 +100,7 @@ class ProcessThreadTable extends AbstractTableGateway {
                     $this->table_name.'.id = pr.id AND pr.type=\'s\' and pr.company IN (\''.$companies.'\')  and pr.country IN (\''.$countries.'\') and pr.location IN (\''.$locations.'\')'), 
                 array('type', 'parent_id', 'company', 'country', 'location'),$typeJoin
             );
-            $select->where(array('lang' => (string) $lang,  $this->table_name.'.status'=>'A','parent_id'=>$parentSql));
+            $select->where(array('lang' => (string) $lang, 'status'=>'A','parent_id'=>$parentSql));
             $select->order('ordering ASC');
             //echo $select->getSqlString();
         });
@@ -114,14 +114,14 @@ class ProcessThreadTable extends AbstractTableGateway {
         return $listItems;
     }
     
-    public function getThreadInfo($lang,$thread_id) {
+    public function getActivity($lang,$thread_id) {
         
         $thread_id = $this->processArray($thread_id);
         $row = $this->select(function (Select $select) use ($lang,$thread_id) {
             $select->columns(array('id','ordering','status'));
             $select->join( array('pti'=>new TableIdentifier($this->table_i18n, $this->schema_name)),
                 $this->table_name.'.id = pti.id', array('lang', 'value', 'mission', 'scope', 'rich_content'));
-            $select->where(array('lang' => (string) $lang,  $this->table_name.'.status'=>'A','process_thread.id'=>$thread_id));
+            $select->where(array('lang' => (string) $lang, 'status'=>'A','process_thread.id'=>$thread_id));
             $select->order('ordering ASC');
             //echo $select->getSqlString();
         });
@@ -136,9 +136,9 @@ class ProcessThreadTable extends AbstractTableGateway {
     }
     
     
-    public function getSubProcessListByParent($lang,$parent_id) {
+    public function getActivitiesListByParent($lang,$parent_id) {
         $row = $this->select(function (Select $select) use ($lang,$parent_id) {
-            $select->where(array('lang' => (string) $lang,'parent_id'=>$parent_id, 'status'=>'A'))->order('ordering ASC');
+            $select->where(array('lang' => (string) $lang,'parent_id'=>$parent_id))->order('ordering ASC');
         });
         //$row = $this->select(array('lang' => (string) $lang));
         if (!$row)
@@ -152,7 +152,7 @@ class ProcessThreadTable extends AbstractTableGateway {
     }
     
     
-    public function save(ProcessThread $object)
+    public function save(ProcessActivity $object)
     {
         $data = array(
             'lang' => $object->getLang(),
@@ -177,7 +177,7 @@ class ProcessThreadTable extends AbstractTableGateway {
             $this->update(
                 $data,
                 array(
-                    'id_incident' => $id, 
+                    'id' => $id, 
                     'lang' => $lang,
                     )
             );
@@ -187,7 +187,7 @@ class ProcessThreadTable extends AbstractTableGateway {
         }
     }
 
-    public function updateProcessMain($id,$lang,$data)
+    public function updateProcessActivity($id,$lang,$data)
     {
         $id = (int) $id;
         $lang = (string) $lang;
