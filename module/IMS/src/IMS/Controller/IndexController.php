@@ -1034,7 +1034,9 @@ class IndexController extends AbstractActionController
             $revision_date_dump = explode("/",$content['O']);
             $doc_process = (string) $this->PersonName(trim($content['P']));
             $doc_thread = (string) $this->PersonName(trim($content['Q']));
-                       
+            
+            $date['VERSION'] = $content['N'];
+            $date['REVISION'] = $content['O'];
             //$version_date = date("Y-m-d", strtotime(str_replace("'","",$content['N'])));
             //$revision_date = date("Y-m-d", strtotime(str_replace("'","",$content['O'])));
             //$version_date = \date("Y-m-d", strtotime($version_date_dump));
@@ -1089,7 +1091,7 @@ class IndexController extends AbstractActionController
             $dataResult['totalRows']=$worksheet['totalRows'];
             $dataResult['totalColumns']=$worksheet['totalColumns'];
             $dataResult['lastColumnLetter']=$worksheet['lastColumnLetter'];
-            //$dataResult['process']=$arrayThreads[1];
+            $dataResult['process']=$date;
             
         }
         $dataResult['file_results']=$arrayMasterData;
@@ -1199,7 +1201,7 @@ class IndexController extends AbstractActionController
             }
             $dataResult['success']=true;
             $dataResult['message']="$dataCount documents proccessed";
-            //$dataResult['test']=$doc_date_creation;
+            //$dataResult['test']=$date;
             $dataResult['docs_processed']=$dataCount;
         }else{
             $dataResult['success']=false;
