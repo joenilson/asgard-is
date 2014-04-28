@@ -1039,8 +1039,8 @@ class IndexController extends AbstractActionController
             $dateVersionDump = (strpos($content['N'], '/') !== false)?$version_date_dump[2]."-".$version_date_dump[1]."-".$version_date_dump[0]:$version_date_dump[2]."-".$version_date_dump[0]."-".$version_date_dump[1];
             $dateRevisionDump = (strpos($content['O'], '/') !== false)?$revision_date_dump[2]."-".$revision_date_dump[1]."-".$revision_date_dump[0]:$revision_date_dump[2]."-".$revision_date_dump[0]."-".$revision_date_dump[1];
             
-            $date['VERSION'] = $content['N'];
-            $date['REVISION'] = $content['O'];
+            //$date['VERSION'] = $content['N'];
+            //$date['REVISION'] = $content['O'];
             //$version_date = date("Y-m-d", strtotime(str_replace("'","",$content['N'])));
             //$revision_date = date("Y-m-d", strtotime(str_replace("'","",$content['O'])));
             //$version_date = \date("Y-m-d", strtotime($version_date_dump));
@@ -1097,7 +1097,7 @@ class IndexController extends AbstractActionController
             $dataResult['totalRows']=$worksheet['totalRows'];
             $dataResult['totalColumns']=$worksheet['totalColumns'];
             $dataResult['lastColumnLetter']=$worksheet['lastColumnLetter'];
-            $dataResult['process']=$date;
+            //$dataResult['process']=$date;
             
         }
         $dataResult['file_results']=$arrayMasterData;
