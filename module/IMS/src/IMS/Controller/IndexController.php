@@ -1030,10 +1030,14 @@ class IndexController extends AbstractActionController
             $register = (string) trim($content['L']);
             $version_number = (int) trim($content['M']);
             
-            $version_date_dump = explode("/",$content['N']);
-            $revision_date_dump = explode("/",$content['O']);
+            $version_date_dump = (strpos($content['N'], '/') !== false)?explode("/",$content['N']):explode("-",$content['N']);
+            $revision_date_dump = (strpos($content['O'], '/') !== false)?explode("/",$content['O']):explode("-",$content['O']);
+            //$revision_date_dump = explode("/",$content['O']);
             $doc_process = (string) $this->PersonName(trim($content['P']));
             $doc_thread = (string) $this->PersonName(trim($content['Q']));
+
+            $dateVersionDump = (strpos($content['N'], '/') !== false)?$version_date_dump[2]."-".$version_date_dump[1]."-".$version_date_dump[0]:$version_date_dump[2]."-".$version_date_dump[0]."-".$version_date_dump[1];
+            $dateRevisionDump = (strpos($content['O'], '/') !== false)?$revision_date_dump[2]."-".$revision_date_dump[1]."-".$revision_date_dump[0]:$revision_date_dump[2]."-".$revision_date_dump[0]."-".$revision_date_dump[1];
             
             $date['VERSION'] = $content['N'];
             $date['REVISION'] = $content['O'];
@@ -1041,10 +1045,12 @@ class IndexController extends AbstractActionController
             //$revision_date = date("Y-m-d", strtotime(str_replace("'","",$content['O'])));
             //$version_date = \date("Y-m-d", strtotime($version_date_dump));
             //$revision_date = \date("Y-m-d", strtotime($revision_date_dump));
-            
-            $version_date = \date("Y-m-d", strtotime($version_date_dump[2]."-".$version_date_dump[1]."-".$version_date_dump[0]));
-            $revision_date = \date("Y-m-d", strtotime($revision_date_dump[2]."-".$revision_date_dump[1]."-".$revision_date_dump[0]));
-           
+            //$version_date_dump[2] = (strlen($version_date_dump[2])==2)?"20".$version_date_dump[2]:$version_date_dump[2];
+            //$revision_date_dump[2] = (strlen($revision_date_dump[2])==2)?"20".$revision_date_dump[2]:$revision_date_dump[2];
+            $version_date = \date("Y-m-d", strtotime($dateVersionDump));
+            $revision_date = \date("Y-m-d", strtotime($dateRevisionDump));
+           $date['VERSION_new'] = $version_date_dump;
+            $date['REVISION_new'] = $revision_date_dump;
             $arrayMasterData[]=array(
                 'doc_id'=>(int) $id,
                 'classification'=>(!$helpers['classification'][$classification])?"":$helpers['classification'][$classification]['id'],
