@@ -88,6 +88,202 @@ return array(
                             ),
                         ),
                     ),
+                    'objetives' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/objetives[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'objetives'
+                            ),
+                        ),
+                    ),
+                    'getobjetives' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/getobjetives[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'getobjetives'
+                            ),
+                        ),
+                    ),
+                    'organigram' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/organigram[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'organigram'
+                            ),
+                        ),
+                    ),
+                    'getorganigram' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/getorganigram[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'getorganigram'
+                            ),
+                        ),
+                    ),
+                    'addorganigram' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/addorganigram[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'addorganigram'
+                            ),
+                        ),
+                    ),
+                    'ownersprofile' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/ownersprofile[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'ownersprofile'
+                            ),
+                        ),
+                    ),
+                    'getownersprofile' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/getownersprofile[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'getownersprofile'
+                            ),
+                        ),
+                    ),
+                    'requirements' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/requirements[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'requirements'
+                            ),
+                        ),
+                    ),
+                    'addrequirements' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/addrequirements[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'addrequirements'
+                            ),
+                        ),
+                    ),
+                    'removerequirements' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/removerequirements[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'removerequirements'
+                            ),
+                        ),
+                    ),
+                    'getrequirements' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/getrequirements[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'getrequirements'
+                            ),
+                        ),
+                    ),
+                    'formrequirements' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/formrequirements[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'formrequirements'
+                            ),
+                        ),
+                    ),
+                    'massreqprocess' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/massreqprocess[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'massreqprocess'
+                            ),
+                        ),
+                    ),
+                    'processmassreqs' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/processmassreqs[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'processmassreqs'
+                            ),
+                        ),
+                    ),
                     'listauditors' => array(
                         'type'    => 'Segment',
                         'options' => array(

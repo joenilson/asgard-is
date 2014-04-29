@@ -18,8 +18,9 @@ use IMS\Model\Entity\ContentText;
 use IMS\Model\Entity\ProcessRelations;
 use IMS\Model\Entity\DocsRequest;
 use IMS\Model\Entity\DocsLibrary;
+use IMS\Model\Entity\Requirements;
 use IMS\Model\Entity\hiraIncidentDetails;
-use IMS\Model\Entity\hiraIncidents;
+use IMS\Model\Entity\Organigram;
 
 use AsgardLib\Versioning\Documents;
 use AsgardLib\Versioning\Scope;
@@ -66,6 +67,11 @@ class IndexController extends AbstractActionController
     protected $countriesTable;
     protected $locationsTable;
     protected $systemConfig;
+    protected $requirementsTable;
+    protected $requirementsHelperTable;
+    protected $sgiObjectivesTable;
+    protected $processOwnerProfileTable;
+    protected $organigramTable;
     
     public function indexAction()
     {
@@ -136,6 +142,44 @@ class IndexController extends AbstractActionController
             'message'=>$messageContent,
             'contentId'=>$this->params()->fromRoute('id', 0),
             'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0)));
+    }
+    
+    public function objetivesAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        return array(
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'lang'=>$lang,
+            'panelId'=>1018
+        );
+    }
+    
+    public function getobjetivesAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang = $userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $companyParams = $request->getQuery('company');
+        $countryParams = $request->getQuery('country');
+        $locationParams = $request->getQuery('location');
+        
+        $sql = $this->getSgiObjectivesTable();
+        $listDocuments = $sql->getObjetivesByCCL($companyParams,$countryParams,$locationParams);
+        
+        if(!empty($listDocuments)){
+            $data['success']=true;
+            $data['results']=$listDocuments;
+            $data['msg']="";
+        }else{
+            $data['success']=true;
+            $data['results']="";
+            $data['msg']="Error trying to get the information...";
+        }
+        $result = new JsonModel($data);
+    	return $result;   
     }
     
     public function diagramAction()
@@ -1214,6 +1258,341 @@ class IndexController extends AbstractActionController
             $dataResult['message']="No data was sent";
         }
         return new JsonModel($dataResult);
+    }
+    
+    public function organigramAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        return array(
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'lang'=>$lang,
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
+        );
+    }
+    
+    public function getorganigramAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang=$userPrefs[0]['lang'];
+        $request = $this->getRequest();
+        $company = $request->getQuery('company');
+        $country = $request->getQuery('country');
+        $location = $request->getQuery('location');
+        $sql = $this->getOrganigramTable();
+        $dataList = $sql->getOrganigramByCCL($company,$country,$location);
+        $dataResult['success']=true;
+        $dataResult['results']=$dataList;
+        return new JsonModel($dataResult);
+    }
+    
+    public function addorganigramAction(){
+        $dataRequirement = 1;
+        if($dataRequirement){
+            $dataResult['success']=true;
+            $dataResult['results']=$dataRequirement;
+        }else{
+            $dataResult['success']=true;
+            $dataResult['results']=$dataRequirement;
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function ownersprofileAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        return array(
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'lang'=>$lang,
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
+        );
+    }
+    
+    public function addownersprofileAction(){
+        
+    }
+    
+    public function removeownersprofileAction(){
+        
+    }
+    
+    public function formownersprofileAction(){
+        
+    }
+    
+    public function getownersprofileAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang=$userPrefs[0]['lang'];
+        $request = $this->getRequest();
+        $company = $request->getQuery('company');
+        $country = $request->getQuery('country');
+        $location = $request->getQuery('location');
+        $sql = $this->getPOPTable();
+        $dataRequirement = $sql->getOwnersByCCL($company,$country,$location,$lang);
+        if($dataRequirement){
+            $dataResult['success']=true;
+            $dataResult['results']=$dataRequirement;
+        }else{
+            $dataResult['success']=true;
+            $dataResult['results']=$dataRequirement;
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function requirementsAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        return array(
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'lang'=>$lang,
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
+        );
+    }
+    
+    public function addrequirementsAction(){
+        
+    }
+    
+    public function removerequirementsAction(){
+        
+    }
+    
+    public function formrequirementsAction(){
+        
+    }
+    
+    public function getrequirementsAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang=$userPrefs[0]['lang'];
+        $request = $this->getRequest();
+        $company = $request->getQuery('company');
+        $country = $request->getQuery('country');
+        $location = $request->getQuery('location');
+        $sql = $this->getRequirementsTable();
+        $dataRequirement = $sql->getRequirementByCCL($company,$country,$location,$lang);
+        if($dataRequirement){
+            $dataResult['success']=true;
+            $dataResult['results']=$dataRequirement;
+        }else{
+            $dataResult['success']=true;
+            $dataResult['results']=$dataRequirement;
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function massreqprocessAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $company = $request->getPost('companiesCombo');
+        $country = $request->getPost('countriesCombo');
+        $location = $request->getPost('locationsCombo');
+        $lang_docs = $request->getPost('languageCombo');
+        $files =  $request->getFiles()->toArray();
+        $date_creation = \date('Y-m-d h:i:s');
+        $zipfolder = '/tmp/temp_'.\date('Ymdhis').'/';
+        
+        $dataResult = array();
+
+        //$sqlMessage = $this->getMessagesTable();
+        
+        $sqlHelpers = $this->getRequirementsHelperTable();
+        $arrayHelpers = $sqlHelpers->getHelpers($lang_docs);
+        $helpers = array();
+        foreach($arrayHelpers as $key=>$values){
+            $helpers[$values['helper']][$this->PersonName($values['description'])]=array('id'=>$values['id'],'desc'=>$values['description']);
+        }
+        //$reader = new \PHPExcel();
+        $reader = new \PHPExcel_Reader_Excel5();
+        $worksheetData = $reader->listWorksheetInfo($files['excel_file']['tmp_name']);
+        $objPHPExcel = $reader->load($files['excel_file']['tmp_name']);
+        $sheetData = $objPHPExcel->getActiveSheet()->toArray(null,true,true,true);
+        
+        if(!is_dir($zipfolder)){
+            mkdir($zipfolder, 0777);
+        }
+        move_uploaded_file($files['zip_file']['tmp_name'], '/tmp/'.$files['zip_file']['name']);
+        $zip = new \ZipArchive;
+        if ($zip->open('/tmp/'.$files['zip_file']['name']) === TRUE) {
+            $dataResult['numfiles']=$zip->numFiles;
+            $zipList = array();
+            $zipdir = "";
+            for($i = 0; $i < $zip->numFiles; $i++)
+            {  
+                if(strpos(".",$zip->getNameIndex($i))){
+                    $zipList[]=$zip->getNameIndex($i);
+                    
+                }
+            }
+            $zipdir = $zip->getNameIndex(0);
+            $dataResult['unziped']=$zipdir;
+            $zip->extractTo($zipfolder);
+            $zip->close();
+        } else {
+            $dataResult['unziped']="ERROR";
+        }
+        
+        $arrayMasterData = array();
+        $counter = 1;
+        foreach($sheetData as $key=>$content){
+            if($counter != 1 and !empty($content['A'])){
+            $id = (int) $counter;
+            $class = (string) $this->PersonName(trim($content['A']));
+            $type = (string) $this->PersonName(trim($content['B']));
+            $description = (string) trim($content['C']);
+            $code = (string) trim($content['D']);
+            $validBegin = (string) trim($content['E']);
+            $validEnd = (string) trim($content['F']);
+            $filename = (string) $zipdir.trim($content['G']).'.pdf';
+            //$statusType =  (string) trim($content['H']);
+            /*
+            $version_date_dump = (strpos($content['E'], '/') !== false)?explode("/",$content['E']):explode("-",$content['E']);
+            $revision_date_dump = (strpos($content['F'], '/') !== false)?explode("/",$content['F']):explode("-",$content['F']);
+
+            $dateVersionDump = (strpos($content['E'], '/') !== false)?$version_date_dump[2]."-".$version_date_dump[1]."-".$version_date_dump[0]:$version_date_dump[2]."-".$version_date_dump[0]."-".$version_date_dump[1];
+            $dateRevisionDump = (strpos($content['F'], '/') !== false)?$revision_date_dump[2]."-".$revision_date_dump[1]."-".$revision_date_dump[0]:$revision_date_dump[2]."-".$revision_date_dump[0]."-".$revision_date_dump[1];
+
+            $validBegin = \date("Y-m-d", strtotime($dateVersionDump));
+            $validEnd = \date("Y-m-d", strtotime($dateRevisionDump));
+            $date['VERSION_new'] = $version_date_dump;
+            $date['REVISION_new'] = $revision_date_dump;
+             * 
+             */
+            
+            $arrayMasterData[]=array(
+                'req_id'=>(int) $id,
+                'class_req'=>(!$helpers['class'][$class])?"":$helpers['class'][$class]['id'],
+                'class_desc'=>(!$helpers['class'][$class])?"":$helpers['class'][$class]['desc'],
+                'type_req'=>(!$helpers['type'][$type])?"":$helpers['type'][$type]['id'],
+                'type_desc'=>(!$helpers['type'][$type])?"":$helpers['type'][$type]['desc'],
+                'description'=>$description,
+                'filename'=>(is_file($zipfolder.$filename))?$zipfolder.$filename:"",
+                'code_req'=>$code,
+                'valid_begin'=>$validBegin,
+                'valid_end'=>$validEnd,
+                'status'=>'A',
+                'lang'=>$lang_docs,
+                'company'=>$company,
+                'country'=>$country,
+                'location'=>$location,
+                'date_creation'=>$date_creation,
+                'user_creation'=>$userData->id
+            );
+            
+            }
+            $counter++;
+            
+        }
+        foreach($worksheetData as $worksheet){
+            $dataResult['worksheetName']=$worksheet['worksheetName'];
+            $dataResult['totalRows']=$worksheet['totalRows'];
+            $dataResult['totalColumns']=$worksheet['totalColumns'];
+            $dataResult['lastColumnLetter']=$worksheet['lastColumnLetter'];
+            //$dataResult['process']=$date;
+            
+        }
+        $dataResult['file_results']=$arrayMasterData;
+        $dataResult['success']=true;
+        return new JsonModel($dataResult);    
+    }
+    
+    public function processmassreqsAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $dataBulk = $request->getPost('data');
+        $data = \json_decode($dataBulk);
+        $dataCount = count($data);
+        /*
+        *classification 5
+	*classification_desc "Registros"
+	*company "0001"
+	*country "0001"
+	*date_creation 	Date {Sun Apr 20 2014 12:24:20 GMT-0400 (AST)}
+	*description "MOVIMIENTO DE AZUCAR, PREPARACION DE JARABE SIMPLE"
+	*doc_id 32
+	*doc_record "SGI/REG/17/02J-RD"
+	doc_status_general "U"
+	*filename "/tmp/temp_2014042012242...ON DE JARABE SIMPLE.pdf"
+	*lang "es"
+	*location "0008"
+	*location_desc "Base de datos"
+	*origin 	3
+	*origin_desc "Corporativo"
+	*owner 0
+	*owner_desc ""
+	*protection 2
+	*protection_desc "Backup Sistema"
+	*retention 1
+	*retention_desc "1 Año"
+	*review 2
+	*review_desc "Anual"
+	*revision_date Date {Mon Mar 31 2014 00:00:00 GMT-0400 (AST)}
+	*type 3
+	*type_desc "Electronico"
+	*user_creation 0
+	*version_date Date {Wed Feb 01 2012 00:00:00 GMT-0400 (AST)}
+	*version_label ""
+	*version_number 1
+        */
+        if(is_array($data)){
+            $sqlReqs = $this->getRequirementsTable();
+            
+            foreach ($data as $dataContent){
+                $doc_new_id = $sqlReqs->getNextId();
+                $doc_company = (!empty($dataContent->company))?$dataContent->company:$userData->company;
+                $doc_country = (!empty($dataContent->country))?$dataContent->country:$userData->country;
+                $doc_location = (!empty($dataContent->location))?$dataContent->location:$userData->location;
+                $doc_class = (is_numeric($dataContent->class_desc))?$dataContent->class_desc:$dataContent->class_req;
+                $doc_type = (is_numeric($dataContent->type_desc))?$dataContent->type_desc:$dataContent->type_req;
+                $doc_code = (!empty($dataContent->code_req))?$dataContent->code_req:"";
+                $doc_user_creation = (!empty($dataContent->user_creation))?$dataContent->user_creation:$userData->id;
+                $doc_date_creation = (!empty($dataContent->date_creation))?\date("Y-m-d H:i:s", strtotime($dataContent->date_creation)):\date('Y-m-d H:i:s');
+                $doc_valid_begin = (!empty($dataContent->valid_begin))?$dataContent->valid_begin:"";
+                $doc_valid_end = (!empty($dataContent->valid_end))?$dataContent->valid_end:"";
+                $doc_desc = (!empty($dataContent->description))?trim($dataContent->description):"No description - please fix it";
+                $doc_file = (!empty($dataContent->filename))?'library/reqs/'.$doc_new_id.'_'.date('Ymdhis').'.pdf':"";
+                if(!empty($doc_file)){
+                    $this->movefile('library/reqs/', $dataContent->filename, $doc_new_id.'_'.date('Ymdhis').'.pdf');
+                }
+                $req = new Requirements();
+                $req->setCompany($doc_company)
+                    ->setCountry($doc_country)
+                    ->setLocation($doc_location)
+                    ->setId($doc_new_id)
+                    ->setClass_req($doc_class)
+                    ->setType_req($doc_type)
+                    ->setCode_req($doc_code)
+                    ->setValid_begin($doc_valid_begin)
+                    ->setValid_end($doc_valid_end)
+                    ->setUser_id($doc_user_creation)
+                    ->setDate_creation($doc_date_creation)
+                    ->setDescription($doc_desc)
+                    ->setFile_req($doc_file)
+                    ->setStatus('A');
+                $sqlReqs->save($req);
+            }
+            $dataResult['success']=true;
+            $dataResult['message']="$dataCount documents proccessed";
+            //$dataResult['test']=$date;
+            $dataResult['docs_processed']=$dataCount;
+        }else{
+            $dataResult['success']=false;
+            $dataResult['message']="No data was sent";
+        }
+        return new JsonModel($dataResult);
+        
     }
     
     public function hiraspecsAction()
@@ -2804,6 +3183,33 @@ class IndexController extends AbstractActionController
                 ->thumbnail(new \Imagine\Image\Box(171,180),$mode)
                 ->save($dst);
     }
+    
+    private function getOrganigramTable()
+    {
+    	if (!$this->organigramTable) {
+            $sm = $this->getServiceLocator();
+            $this->organigramTable = $sm->get('IMS\Model\OrganigramTable');
+    	}
+    	return $this->organigramTable;
+    }
+    
+    private function getPOPTable()
+    {
+    	if (!$this->processOwnerProfileTable) {
+            $sm = $this->getServiceLocator();
+            $this->processOwnerProfileTable = $sm->get('IMS\Model\ProcessOwnerProfileTable');
+    	}
+    	return $this->processOwnerProfileTable;
+    }
+    
+    private function getSgiObjectivesTable()
+    {
+    	if (!$this->sgiObjectivesTable) {
+            $sm = $this->getServiceLocator();
+            $this->sgiObjectivesTable = $sm->get('IMS\Model\SGIObjectivesTable');
+    	}
+    	return $this->sgiObjectivesTable;
+    }
 
     private function getSafetyCommitteeTable()
     {
@@ -2830,6 +3236,24 @@ class IndexController extends AbstractActionController
             $this->committeeproceedingsTable = $sm->get('IMS\Model\CommitteeProceedingsTable');
     	}
     	return $this->committeeproceedingsTable;
+    }
+    
+    private function getRequirementsHelperTable()
+    {
+    	if (!$this->requirementsHelperTable) {
+            $sm = $this->getServiceLocator();
+            $this->requirementsHelperTable = $sm->get('IMS\Model\RequirementsHelperTable');
+    	}
+    	return $this->requirementsHelperTable;
+    }
+    
+    private function getRequirementsTable()
+    {
+    	if (!$this->requirementsTable) {
+            $sm = $this->getServiceLocator();
+            $this->requirementsTable = $sm->get('IMS\Model\RequirementsTable');
+    	}
+    	return $this->requirementsTable;
     }
     
     private function getAuditorsTable()

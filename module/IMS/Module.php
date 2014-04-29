@@ -44,6 +44,11 @@ use IMS\Model\AuditorsTable;
 use IMS\Model\AuditsTable;
 use IMS\Model\AuditTypeTable;
 use IMS\Model\AuditPlanTable;
+use IMS\Model\RequirementsTable;
+use IMS\Model\RequirementsHelperTable;
+use IMS\Model\SGIObjectivesTable;
+use IMS\Model\OrganigramTable;
+use IMS\Model\ProcessOwnerProfileTable;
 use IMS\Model\SafetyCommitteeTable;
 use IMS\Model\SafetyCommitteePositionsTable;
 use IMS\Model\SafetyCommitteeProceedingsTable;
@@ -106,6 +111,31 @@ class Module implements AutoloaderProviderInterface
                 'IMS\Model\SafetyCommitteeTable'=> function($sm){
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new SafetyCommitteeTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\ProcessOwnerProfileTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new ProcessOwnerProfileTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\RequirementsTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new RequirementsTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\OrganigramTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new OrganigramTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\SGIObjectivesTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new SGIObjectivesTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\RequirementsHelperTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new RequirementsHelperTable($dbAdapter);
                     return $table;
                 },
                 'IMS\Model\AuditorsTable'=> function($sm){

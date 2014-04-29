@@ -1,0 +1,62 @@
+<?php
+
+/* 
+ * Copyright (C) 2014 Joe Nilson <joenilson at gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+?>
+<script>
+function deployCombos(comboField,comboValue){
+    var combo = formRequirements<?=$this->panelId;?>.getForm().findField(comboField);
+    var store = combo.store;
+    store.on("load", function(store, records, state, operation, opts) {
+            combo.setValue(comboValue);
+    });
+}
+
+function fnCCLProcess(button, opt, obj) {
+    var values = button.up('form').getForm().getValues();
+    var companies = values['companiesCombo'];
+    var countries = values['countriesCombo'];
+    var locations = values['locationsCombo'];
+    RequirementsStore<?= $this->panelId; ?>.load({ params: { module: 'master', company: companies, country: countries, location: locations  }});
+
+}
+var RequirementsStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.Requirements');
+
+var formRequirements<?=$this->panelId;?> = Ext.create('Asgard.lib.forms.comboCCL', { innerGrid: 'gridRequirements' });
+var gridRequirements<?=$this->panelId;?> = Ext.create('Asgard.lib.grid.requirements', { 
+    store: RequirementsStore<?= $this->panelId; ?>, 
+    id: 'gridRequirements'
+});
+
+deployCombos('companiesCombo','<?=$this->companyId;?>');
+deployCombos('countriesCombo','<?=$this->countryId;?>');
+deployCombos('locationsCombo','<?=$this->locationId;?>');
+
+var libraryViewport<?=$this->panelId; ?> = Ext.create('Ext.panel.Panel', {
+    layout: {
+        type: 'vbox',
+        align : 'stretch',
+        pack  : 'start'
+    },
+    items: [
+        formRequirements<?=$this->panelId; ?>,
+        gridRequirements<?=$this->panelId; ?>
+   ]
+});
+Ext.getCmp('content-panel').getActiveTab().add(libraryViewport<?= $this->panelId; ?>);
+</script>

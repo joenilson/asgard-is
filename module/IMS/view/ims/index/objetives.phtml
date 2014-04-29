@@ -1,0 +1,62 @@
+<?php
+
+/* 
+ * Copyright (C) 2014 Joe Nilson <joenilson at gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+?>
+<script>
+function deployCombos(comboField,comboValue){
+    var combo = form<?=$this->panelId;?>.getForm().findField(comboField);
+    var store = combo.store;
+    store.on("load", function(store, records, state, operation, opts) {
+            combo.setValue(comboValue);
+    });
+}
+
+function fnCCLProcess(button, opt, obj) {
+    var values = button.up('form').getForm().getValues();
+    var companies = values['companiesCombo'];
+    var countries = values['countriesCombo'];
+    var locations = values['locationsCombo'];
+    gridStore<?= $this->panelId; ?>.load({ params: { module: 'master', company: companies, country: countries, location: locations  }});
+
+}
+var gridStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.Objetives');
+
+var form<?=$this->panelId;?> = Ext.create('Asgard.lib.forms.comboCCL', { innerGrid: grid<?=$this->panelId;?> });
+var grid<?=$this->panelId;?> = Ext.create('Asgard.lib.grid.objetives', { 
+    store: gridStore<?= $this->panelId; ?>, 
+    id: 'grid<?=$this->panelId;?>'
+});
+
+deployCombos('companiesCombo','<?=$this->companyId;?>');
+deployCombos('countriesCombo','<?=$this->countryId;?>');
+deployCombos('locationsCombo','<?=$this->locationId;?>');
+
+var libraryViewport<?=$this->panelId; ?> = Ext.create('Ext.panel.Panel', {
+    layout: {
+        type: 'vbox',
+        align : 'stretch',
+        pack  : 'start'
+    },
+    items: [
+        form<?=$this->panelId; ?>,
+        grid<?=$this->panelId; ?>
+   ]
+});
+Ext.getCmp('content-panel').getActiveTab().add(libraryViewport<?= $this->panelId; ?>);
+</script>

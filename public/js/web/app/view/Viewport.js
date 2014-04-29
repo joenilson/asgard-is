@@ -34,7 +34,12 @@ Ext.define('Asgard.view.Viewport', {
     'Asgard.lib.forms.hiraIncidentCauses','Asgard.lib.forms.hiraIncidentValidity',
     'Asgard.lib.forms.hiraIncidentClose','Asgard.store.SafetyCommitteeProceedings',
     'Asgard.lib.grid.committeeproceedings','Asgard.lib.grid.hira_general',
-    'Asgard.store.HiraUpload','Asgard.lib.grid.hira_upload','Asgard.lib.forms.hiraMasterFileUpload'
+    'Asgard.store.HiraUpload','Asgard.lib.grid.hira_upload','Asgard.lib.forms.hiraMasterFileUpload',
+    'Asgard.store.Requirements','Asgard.lib.grid.requirements','Asgard.store.ReqsUpload',
+    'Asgard.lib.forms.reqsMasterFileUpload','Asgard.lib.grid.requirements_upload',
+    'Asgard.store.Objetives','Asgard.lib.grid.objetives','Asgard.lib.grid.ownersprofile',
+    'Asgard.store.OwnersProfile','Asgard.lib.dataview.organigram','Asgard.store.Organigram',
+    'Asgard.lib.Panels.OrganigramPanel','Asgard.lib.forms.organigramNewOrganigram'
   ],
   menuTitleText: 'Main Menu',
     defaults: {
