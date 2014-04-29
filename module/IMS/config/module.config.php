@@ -970,6 +970,48 @@ return array(
                             ),
                         ),
                     ),
+                    'formincidentcauses' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/formincidentcauses[/:company[/:country[/:location[/:date_incident[/:process_id[/:thread_id]]]]]]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                //'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'formincidentcauses'
+                            ),
+                        ),
+                    ),
+                    'formincidentclose' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/formincidentclose[/:company[/:country[/:location[/:date_incident[/:process_id[/:thread_id]]]]]]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                //'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'formincidentclose'
+                            ),
+                        ),
+                    ),
+                    'formincidentvalidity' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/formincidentvalidity[/:company[/:country[/:location[/:date_incident[/:process_id[/:thread_id]]]]]]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                //'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'formincidentvalidity'
+                            ),
+                        ),
+                    ),
                     'hiradetails' => array(
                         'type'    => 'Segment',
                         'options' => array(

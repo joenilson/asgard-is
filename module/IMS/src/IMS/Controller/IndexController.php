@@ -2021,7 +2021,7 @@ class IndexController extends AbstractActionController
             $dataResult['success']=true;
             $dataResult['results']=$listDocuments;
         }else{
-            $dataResult['success']=false;
+            $dataResult['success']=true;
             $dataResult['results']="";
         }
         
@@ -2127,17 +2127,82 @@ class IndexController extends AbstractActionController
         foreach($listCauses as $vals){
             $Surname = explode(',',$vals['fullname_employee']);
             $lastname = explode(' ',$Surname[0]);
-            $data['result'][][$arrayCauses[$vals['id_cause']]]=$vals['cause_desc'];
-            $data[$arrayCauses[$vals['id_cause']].'_IncidentType']=$vals['description_cause'];
-            $data[$arrayCauses[$vals['id_cause']].'_IncidentIA']=$vals['description_ia'];
-            $data[$arrayCauses[$vals['id_cause']].'_IncidentCA']=$vals['description_ca'];
-            $data[$arrayCauses[$vals['id_cause']].'_registerName']=trim($Surname);
-            $data[$arrayCauses[$vals['id_cause']].'_registerSurname']=trim($lastname[0]);
-            $data[$arrayCauses[$vals['id_cause']].'_registerLastname']=trim($lastname[1]);
+            //$dataResult['result'][][$arrayCauses[$vals['id_cause']]]=$vals['cause_desc'];
+            $dataResult[$arrayCauses[$vals['id_cause']].'_IncidentType']=$vals['description_cause'];
+            $dataResult[$arrayCauses[$vals['id_cause']].'_IncidentIA']=$vals['description_ia'];
+            $dataResult[$arrayCauses[$vals['id_cause']].'_IncidentCA']=$vals['description_ca'];
+            $dataResult[$arrayCauses[$vals['id_cause']].'_registerName']=trim($Surname[1]);
+            $dataResult[$arrayCauses[$vals['id_cause']].'_registerSurname']=trim($lastname[0]);
+            $dataResult[$arrayCauses[$vals['id_cause']].'_registerLastname']=trim($lastname[1]);
+        }
+        $data = array();
+        if(count($dataResult>0)){
+            $data['success']=true;
+            $data['data']=$dataResult;
+        }else{
+            $data['success']=false;
+            $data['data']="";
         }
         
-        return new JsonModel($dataResult);
-                
+        return new JsonModel($data);
+    }
+    
+    public function formincidentcloseAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang = $userPrefs[0]['lang'];
+        $request = $this->getRequest();
+        $companyParams = $request->getPost('company');
+        $countryParams = $request->getPost('country');
+        $locationParams = $request->getPost('location');
+        $idIncident = (int) $request->getPost('incident_id');
+        $sqlIncident = $this->getHiraIncidentsListTable();
+        $listClose = $sqlIncident->getIncidentClose($companyParams,$countryParams,$locationParams,$idIncident);
+        $dataResult = array();
+        
+        foreach($listClose as $values) {
+            $dataResult['close_description']=$values['close_description'];
+            $dataResult['incident_desc']=$values['incident_desc'];
+        }
+        $data = array();
+        if(count($dataResult>0)){
+            $data['success']=true;
+            $data['data']=$dataResult;
+        }else{
+            $data['success']=false;
+            $data['data']="";
+        }
+        
+        return new JsonModel($data);
+    }
+    
+    public function formincidentvalidityAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang = $userPrefs[0]['lang'];
+        $request = $this->getRequest();
+        $companyParams = $request->getPost('company');
+        $countryParams = $request->getPost('country');
+        $locationParams = $request->getPost('location');
+        $idIncident = (int) $request->getPost('incident_id');
+        $sqlIncident = $this->getHiraIncidentsListTable();
+        $listClose = $sqlIncident->getIncidentValidity($companyParams,$countryParams,$locationParams,$idIncident);
+        $dataResult = array();
+        
+        foreach($listClose as $values) {
+            $dataResult['validity_description']=$values['validity_description'];
+            $dataResult['incident_desc']=$values['incident_desc'];
+        }
+        $data = array();
+        if(count($dataResult>0)){
+            $data['success']=true;
+            $data['data']=$dataResult;
+        }else{
+            $data['success']=false;
+            $data['data']="";
+        }
+        
+        return new JsonModel($data);
     }
     
     public function addincidentcloseAction(){

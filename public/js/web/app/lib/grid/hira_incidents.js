@@ -60,6 +60,7 @@ Ext.define('Asgard.lib.grid.hira_incidents',{
     valTreatment1: 'Open',
     valTreatment2: 'Closed',
     valTreatment4: 'Closed and Validated',
+    titleIncident: 'Incident: ',
     initComponent: function(){
         var me = this;
         this.title = this.titleText;
@@ -122,8 +123,10 @@ Ext.define('Asgard.lib.grid.hira_incidents',{
         }
         return val;
     },
+    //fnLibraryTool: function(event, e, object, tool) {
     fnLibraryTool: function(object, event, panel, button){
         var me = this;
+        var panel = button.up('panel');
         //console.log(button);
         if(button.type==='minus'){
             var gridStore = this.getStore();
@@ -174,61 +177,50 @@ Ext.define('Asgard.lib.grid.hira_incidents',{
         }else if(button.type==='gear'){
             var gridStore = this.getStore();
             var selectedItems = this.getSelectionModel().getSelection();
-            if((selectedItems.length > 0) && (selectedItems[0].data.status === 1)){
-                var winAdd = Ext.create('Asgard.lib.window.windowGeneric',{
-                    height: document.documentElement.clientHeight - 50,
-                    //width: document.documentElement.clientWidth - 450,
-                    width: 550,
-                    innerPanel : this
+            if((selectedItems.length > 0)){
+                var windowDoc = this.createWindow();
+                windowDoc.setHeight(document.documentElement.clientHeight - 50);
+                windowDoc.setWidth(document.documentElement.clientWidth - 450);
+                windowDoc.setTitle(this.titleIncident+' '+selectedItems[0].data.id_incident);
+                var IncidentId = selectedItems[0].data.id_incident;
+                var IncidentCompany = selectedItems[0].data.company;
+                var IncidentCountry = selectedItems[0].data.country;
+                var IncidentLocation = selectedItems[0].data.location;
+                var viewIncidentCauses = Ext.create('Asgard.lib.forms.hiraIncidentCauses', { innerPanel: panel, baseParams: { incident_id: IncidentId }});
+                viewIncidentCauses.getForm().load({
+                    url: 'ims/formincidentcauses',
+                    params: { id: IncidentId, country: IncidentCountry, company: IncidentCompany, location: IncidentLocation },
+                    failure: function(form, action) {
+                        Ext.Msg.alert("Fallo Inesperado", action.result.errorMessage);
+                    }
                 });
-                winAdd.setTitle(this.titleCausesTool);
-                winAdd.add(Ext.create('Asgard.lib.forms.hiraIncidentCauses',{
-                    baseParams: { incident_id: selectedItems[0].data.id_incident,
-                                    company: selectedItems[0].data.company,
-                                    country: selectedItems[0].data.country,
-                                    location: selectedItems[0].data.location }
-                }));
-                winAdd.show();
+                windowDoc.add(viewIncidentCauses);
+                windowDoc.show();
             }else{
-                if(selectedItems.length > 0){
-                    this.showEmptyMessage();
-                }else if(selectedItems[0].data.status !== 1){
-                    var windowDoc = this.createWindow();
-                    windowDoc.setTitle(this.titleEditAuditPlan);
-                    var selGrid = panel.getSelectionModel().getSelection();
-                    var IncidentId = selGrid[0].data.id;
-                    var IncidentCompany = selGrid[0].data.company;
-                    var IncidentCountry = selGrid[0].data.country;
-                    var IncidentLocation = selGrid[0].data.location;
-                    var viewIncidentCauses = Ext.create('Asgard.lib.forms.hiraIncidentCauses', { innerPanel: panel, baseParams: { incident_id: IncidentId }});
-                    viewIncidentCauses.getForm().load({
-                        url: 'ims/formincidentcauses',
-                        params: { id: IncidentId, country: IncidentCountry, company: IncidentCompany, location: IncidentLocation },
-                        failure: function(form, action) {
-                            Ext.Msg.alert("Fallo Inesperado", action.result.errorMessage);
-                        }
-                    });
-                    windowDoc.add(viewIncidentCauses);
-                    windowDoc.show();
-                }
+                this.showEmptyMessage();
             }
         }else if(button.type==='save'){
             var gridStore = this.getStore();
             var selectedItems = this.getSelectionModel().getSelection();
-            if((selectedItems.length > 0) && (selectedItems[0].data.status === 1)){
-                var winAdd = Ext.create('Asgard.lib.window.windowGeneric',{
-                    height: document.documentElement.clientHeight - 50,
-                    //width: document.documentElement.clientWidth - 450,
-                    width: 450,
-                    innerPanel : this
+            if(selectedItems.length > 0){
+                var windowDoc = this.createWindow();
+                windowDoc.setHeight(document.documentElement.clientHeight - 50);
+                windowDoc.setWidth(document.documentElement.clientWidth - 550);
+                windowDoc.setTitle(this.titleIncident+' '+selectedItems[0].data.id_incident);
+                var IncidentId = selectedItems[0].data.id_incident;
+                var IncidentCompany = selectedItems[0].data.company;
+                var IncidentCountry = selectedItems[0].data.country;
+                var IncidentLocation = selectedItems[0].data.location;
+                var viewIncidentClose = Ext.create('Asgard.lib.forms.hiraIncidentClose', { innerPanel: panel, baseParams: { incident_id: IncidentId }});
+                viewIncidentClose.getForm().load({
+                    url: 'ims/formincidentclose',
+                    params: { id: IncidentId, country: IncidentCountry, company: IncidentCompany, location: IncidentLocation },
+                    failure: function(form, action) {
+                        Ext.Msg.alert("Fallo Inesperado", action.result.errorMessage);
+                    },
                 });
-                winAdd.setTitle(this.titleCloseTool);
-                var CloseForm = Ext.create('Asgard.lib.forms.hiraIncidentClose',{
-                    baseParams: { incident_id: selectedItems[0].data.id_incident },
-                    objectIncidentValue: selectedItems[0].data.description
-                });
-                winAdd.add(CloseForm);
-                winAdd.show();
+                windowDoc.add(viewIncidentClose);
+                windowDoc.show();
             }else{
                 if(selectedItems.length > 0){
                     this.showEmptyMessage();
@@ -239,25 +231,27 @@ Ext.define('Asgard.lib.grid.hira_incidents',{
         }else if(button.type==='pin'){
             var gridStore = this.getStore();
             var selectedItems = this.getSelectionModel().getSelection();
-            if((selectedItems.length > 0) && (selectedItems[0].data.status === 2)){
-                var winAdd = Ext.create('Asgard.lib.window.windowGeneric',{
-                    height: document.documentElement.clientHeight - 50,
-                    width: 450,
-                    innerPanel : this
+            if((selectedItems.length > 0)){
+                var windowDoc = this.createWindow();
+                windowDoc.setHeight(document.documentElement.clientHeight - 50);
+                windowDoc.setWidth(document.documentElement.clientWidth - 550);
+                windowDoc.setTitle(this.titleIncident+' '+selectedItems[0].data.id_incident);
+                var IncidentId = selectedItems[0].data.id_incident;
+                var IncidentCompany = selectedItems[0].data.company;
+                var IncidentCountry = selectedItems[0].data.country;
+                var IncidentLocation = selectedItems[0].data.location;
+                var viewIncidentValidity = Ext.create('Asgard.lib.forms.hiraIncidentValidity', { innerPanel: panel, baseParams: { incident_id: IncidentId }});
+                viewIncidentValidity.getForm().load({
+                    url: 'ims/formincidentvalidity',
+                    params: { id: IncidentId, country: IncidentCountry, company: IncidentCompany, location: IncidentLocation },
+                    failure: function(form, action) {
+                        Ext.Msg.alert("Fallo Inesperado", action.result.errorMessage);
+                    },
                 });
-                winAdd.setTitle(this.titleValidityTool);
-                var ValidityForm = Ext.create('Asgard.lib.forms.hiraIncidentValidity',{
-                    baseParams: { incident_id: selectedItems[0].data.id_incident },
-                    objectIncidentValue: selectedItems[0].data.description
-                });
-                winAdd.add(ValidityForm);
-                winAdd.show();
+                windowDoc.add(viewIncidentValidity);
+                windowDoc.show();
             }else{
-                if(selectedItems.length > 0){
-                    this.showEmptyMessage();
-                }else if(selectedItems[0].data.status !== 2){
-                    this.showWrongMessage();
-                }
+                this.showEmptyMessage();
             }
         }
     },

@@ -50,6 +50,22 @@ class hiraIncidentsTable extends AbstractTableGateway {
         });
         return $resultSet->toArray();
     }
+    
+    public function getIncidentClose($company,$country,$location,$id) {
+        $resultSet = $this->select(function (Select $select) use ($company,$country,$location,$id){
+            $select->columns(array('incident_desc'=>'description','close_description'=>'description_close','date_close'));
+            $select->where(array('company'=>$company,'country'=>$country,'location'=>$location,'id_incident'=>$id));
+        });
+        return $resultSet->toArray();
+    }
+
+    public function getIncidentValidity($company,$country,$location,$id) {
+        $resultSet = $this->select(function (Select $select) use ($company,$country,$location,$id){
+            $select->columns(array('incident_desc'=>'description','validity_description'=>'description_validity','date_validity'));
+            $select->where(array('company'=>$company,'country'=>$country,'location'=>$location,'id_incident'=>$id));
+        });
+        return $resultSet->toArray();
+    }
 
     public function getIncidentsListResume($company,$country,$location,$dateValue) 
     {
