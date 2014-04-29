@@ -193,7 +193,23 @@ Ext.define('Asgard.lib.grid.hira_incidents',{
                 if(selectedItems.length > 0){
                     this.showEmptyMessage();
                 }else if(selectedItems[0].data.status !== 1){
-                    this.showWrongMessage();
+                    var windowDoc = this.createWindow();
+                    windowDoc.setTitle(this.titleEditAuditPlan);
+                    var selGrid = panel.getSelectionModel().getSelection();
+                    var IncidentId = selGrid[0].data.id;
+                    var IncidentCompany = selGrid[0].data.company;
+                    var IncidentCountry = selGrid[0].data.country;
+                    var IncidentLocation = selGrid[0].data.location;
+                    var viewIncidentCauses = Ext.create('Asgard.lib.forms.hiraIncidentCauses', { innerPanel: panel, baseParams: { incident_id: IncidentId }});
+                    viewIncidentCauses.getForm().load({
+                        url: 'ims/formincidentcauses',
+                        params: { id: IncidentId, country: IncidentCountry, company: IncidentCompany, location: IncidentLocation },
+                        failure: function(form, action) {
+                            Ext.Msg.alert("Fallo Inesperado", action.result.errorMessage);
+                        }
+                    });
+                    windowDoc.add(viewIncidentCauses);
+                    windowDoc.show();
                 }
             }
         }else if(button.type==='save'){

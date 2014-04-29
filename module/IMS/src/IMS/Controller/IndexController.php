@@ -2125,8 +2125,18 @@ class IndexController extends AbstractActionController
         $sqlCauses = $this->getHiraIncidentDetailsTable();
         $listCauses = $sqlCauses->getIncidentDetails($companyParams,$countryParams,$locationParams,$id_incident,$lang);
         foreach($listCauses as $vals){
+            $Surname = explode(',',$vals['fullname_employee']);
+            $lastname = explode(' ',$Surname[0]);
             $data['result'][][$arrayCauses[$vals['id_cause']]]=$vals['cause_desc'];
+            $data[$arrayCauses[$vals['id_cause']].'_IncidentType']=$vals['description_cause'];
+            $data[$arrayCauses[$vals['id_cause']].'_IncidentIA']=$vals['description_ia'];
+            $data[$arrayCauses[$vals['id_cause']].'_IncidentCA']=$vals['description_ca'];
+            $data[$arrayCauses[$vals['id_cause']].'_registerName']=trim($Surname);
+            $data[$arrayCauses[$vals['id_cause']].'_registerSurname']=trim($lastname[0]);
+            $data[$arrayCauses[$vals['id_cause']].'_registerLastname']=trim($lastname[1]);
         }
+        
+        return new JsonModel($dataResult);
                 
     }
     
