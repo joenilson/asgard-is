@@ -2104,6 +2104,24 @@ class IndexController extends AbstractActionController
        return new JsonModel($dataResult);
     }
     
+    public function formincidentcausesAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang = $userPrefs[0]['lang'];
+        $request = $this->getRequest();
+        $arrayCauses = array(1=>'me',2=>'ma',3=>'hf',4=>'in',5=>'mt',6=>'ot');
+        $companyParams = $request->getPost('company');
+        $countryParams = $request->getPost('country');
+        $locationParams = $request->getPost('location');
+        $id_incident = (int) $request->getPost('incident_id');
+        $sqlCauses = $this->getHiraIncidentDetailsTable();
+        $listCauses = $sqlCauses->getIncidentDetails($companyParams,$countryParams,$locationParams,$id_incident,$lang);
+        foreach($listCauses as $vals){
+            $data['result'][][$arrayCauses[$vals['id_cause']]]=$vals['cause_desc'];
+        }
+                
+    }
+    
     public function addincidentcloseAction(){
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
         $userData = $this->getServiceLocator()->get('userSessionData');
