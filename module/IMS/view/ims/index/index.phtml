@@ -9,6 +9,25 @@ if(!empty($this->role)){
 }
 ?>
 Ext.tip.QuickTipManager.init();
+var objectivesStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.Objetives');
+
+function showObjetives(){
+    var objectivesgrid<?=$this->panelId;?> = Ext.create('Asgard.lib.grid.objetives', { 
+        store: objectivesStore<?= $this->panelId; ?>, 
+        id: 'grid<?=$this->panelId;?>'
+    });
+    winAdd = Ext.create('Asgard.lib.window.windowGeneric',{
+        height: document.documentElement.clientHeight - 50,
+        width: document.documentElement.clientWidth - 550,
+    });
+    winAdd.setTitle('Objetivos');
+    winAdd.add(objectivesgrid<?=$this->panelId;?>);
+    //console.log('mostramos la ventana para agregar un incidente');
+    winAdd.show();
+
+
+objectivesStore<?= $this->panelId; ?>.load({ params: { module: 'master', company: '<?=$companyId;?>', country: '<?=$countryId;?>', location: '<?=$locationId;?>'  }});
+}
 
 var versioningHeader<?php echo $this->panelId; ?> = Ext.create('Asgard.lib.versioningContent',{
     anchor: '100%',

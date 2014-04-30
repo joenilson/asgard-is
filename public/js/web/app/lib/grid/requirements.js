@@ -223,7 +223,7 @@ Ext.define('Asgard.lib.grid.requirements',{
         }  
     },
     showDocument: function(obj, id, component, icon, event, record){
-        if(record.data.audit_file!==''){
+        if(record.data.file_req!==''){
             var windowDoc = this.createWindow();
             //windowDoc.removeAll();
             windowDoc.setTitle(record.data.description);
@@ -233,7 +233,7 @@ Ext.define('Asgard.lib.grid.requirements',{
                 //width    : document.documentElement.clientWidth - 50,
                 height   : document.documentElement.clientHeight - 50,
                 pageScale: 1,                                           // Initial scaling of the PDF. 1 = 100%
-                src      : '/'+record.data.file_req, // URL to the PDF - Same Domain or Server with CORS Support
+                src      : record.data.file_req, // URL to the PDF - Same Domain or Server with CORS Support
                 loadingMessage: this.loadingFileText
             });
             windowDoc.add(documentFile);

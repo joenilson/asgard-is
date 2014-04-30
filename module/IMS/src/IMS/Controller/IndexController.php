@@ -141,6 +141,10 @@ class IndexController extends AbstractActionController
             'versioningContent'=>$contentVersioning,
             'message'=>$messageContent,
             'contentId'=>$this->params()->fromRoute('id', 0),
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'lang'=>$lang,
             'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0)));
     }
     

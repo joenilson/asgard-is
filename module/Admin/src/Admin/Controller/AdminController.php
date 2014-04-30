@@ -38,7 +38,7 @@ class AdminController extends AbstractActionController
         if ($this->getServiceLocator()
         ->get('AuthService')->hasIdentity()){
             $userData = $this->getServiceLocator()->get('userSessionData');
-            print_r($userData);
+            //print_r($userData);
             
         }
         
