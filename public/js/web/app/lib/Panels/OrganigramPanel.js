@@ -42,46 +42,7 @@ Ext.define('Asgard.lib.Panels.OrganigramPanel', {
                 window.items.add(contentWin);
                 window.show();
             }
-        },{ 
-            text: this.barRemoveText,
-            scope: me,
-            handler: function() {
-                var dv = this.items.getAt(0);
-                var selected = dv.getSelectionModel().getSelection();
-                var dataItems = new Array();
-                for(i=0; i<selected.length; i++){
-                    dataItems[i]=selected[i].data.id;
-                }
-                Ext.Msg.confirm(this.warningTitle,
-                    this.warningTitleBodyDelete,
-                    function(buttonId) {
-                        if (buttonId === 'no') {
-                            
-                        } else {
-                            Ext.Ajax.request({
-                                url: 'ims/removesafetycommittee',
-                                params: {
-                                    ids: Ext.encode(dataItems),
-                                    company: selected[0].data.company,
-                                    country: selected[0].data.country,
-                                    location: selected[0].data.location
-                                },
-                                success: function(response, action){
-                                    var result = Ext.decode(response.responseText);
-                                    if(result.success){
-                                        var store = dv.getStore();
-                                        store.remove(selected);
-                                    }else{
-                                        Ext.Msg.alert(me.warningTitle,me.warningBody);
-                                    }
-                                }
-                            });
-                        }
-                    },
-                    this
-                );
-            }
-        }],
+        }];
         this.callParent();
     }
 });

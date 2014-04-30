@@ -15,18 +15,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 namespace IMS\Model\Entity;
-
 /**
  * Description of CSB
  *
  * @author Joe Nilson <joenilson@grupoism.com.do>
  */
 class Auditors {
-
-    protected $company; 
-    protected $country; 
+    protected $company;
+    protected $country;
     protected $location;
     protected $id;
     protected $auditor_name;

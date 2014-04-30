@@ -55,7 +55,7 @@ Ext.define('Asgard.lib.forms.organigramNewOrganigram',{
             fieldLabel: this.descriptionText,
             afterLabelTextTpl: this.required,
             xtype: 'textfield',
-            name: 'fullname',
+            name: 'description',
             anchor: '100%',
             allowBlank:false
         }, this.descriptionField);

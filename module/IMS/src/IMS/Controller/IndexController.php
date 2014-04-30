@@ -1287,14 +1287,97 @@ class IndexController extends AbstractActionController
         return new JsonModel($dataResult);
     }
     
+    public function removeorganigramAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $company = $request->getPost('companiesCombo');
+        $country = $request->getPost('countriesCombo');
+        $location = $request->getPost('locationsCombo');
+        $organigram_id = $request->getPost('id');
+        $dataResult = array();
+        $sql = $this->getOrganigramTable();
+        $organigram = $sql->getOrganigramByCCLId($company,$country,$location,$organigram_id);
+        if($organigram){
+            $dataU['status']='I';
+            $dataU['user_modification']=$userData->id;
+            $dataU['date_modification']=\date('Y-m-d H:i:s');
+            $dataIdx['company']=$organigram[0]['company'];
+            $dataIdx['country']=$organigram[0]['country'];
+            $dataIdx['location']=$organigram[0]['location'];
+            $dataIdx['id']=$organigram[0]['id'];
+            try {
+                $sql->update($dataU,$dataIdx);
+
+            } catch (\Exception $ex) {
+                //$error = $ex;
+
+                $dataResult['success'] = false; 
+                $dataResult['message'] = $ex->getMessage(); 
+            }
+        }
+        return new JsonModel($dataResult);
+    }
+    
     public function addorganigramAction(){
-        $dataRequirement = 1;
-        if($dataRequirement){
-            $dataResult['success']=true;
-            $dataResult['results']=$dataRequirement;
-        }else{
-            $dataResult['success']=true;
-            $dataResult['results']=$dataRequirement;
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $company = $request->getPost('companiesCombo');
+        $country = $request->getPost('countriesCombo');
+        $location = $request->getPost('locationsCombo');
+        $description = (string) $request->getPost('description');
+        $files =  $request->getFiles()->toArray();
+        $id = $request->getPost('organigram_id');
+        $date_creation = \date('Y-m-d h:i:s');
+
+        $dataResult = array();
+        
+        $sql = $this->getOrganigramTable();
+        $oldORganigram = $sql->getOrganigramByCCL($company,$country,$location);
+        if($oldORganigram){
+            $dataU['status']='I';
+            $dataU['user_modification']=$userData->id;
+            $dataU['date_modification']=\date('Y-m-d H:i:s');
+            $dataIdx['company']=$oldORganigram[0]['company'];
+            $dataIdx['country']=$oldORganigram[0]['country'];
+            $dataIdx['location']=$oldORganigram[0]['location'];
+            $dataIdx['id']=$oldORganigram[0]['id'];
+            $sql->update($dataU,$dataIdx);
+        }
+        
+        $object = new Organigram();
+        $object->setDescription($description)
+                ->setCompany($company)
+                ->setCountry($country)
+                ->setLocation($location)
+                ->setUser_creation($userData->id)
+                ->setStatus('A')
+                ->setDate_creation($date_creation);
+        if($id){
+            $object->setId($id);
+        }
+        $dataResult['success'] = true; 
+        try {
+            $newId = $sql->save($object);
+            
+        } catch (\Exception $ex) {
+            //$error = $ex;
+            
+            $dataResult['success'] = false; 
+            $dataResult['message'] = $ex->getMessage(); 
+        }
+
+        $valid = new \Zend\Validator\File\UploadFile();
+        
+        if(isset($newId) AND $valid->isValid($files['organigram'])){
+            $fileName = "organigram_{$company}_{$country}_{$location}_".$newId.".pdf";
+            $this->savefile('library/organigrams', $files['organigram'], $fileName, false, null);
+            $sql->update(array('filename'=>'library/organigrams/'.$fileName),array('id'=>$newId));
         }
         return new JsonModel($dataResult);
     }
