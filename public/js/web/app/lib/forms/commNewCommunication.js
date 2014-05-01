@@ -19,28 +19,27 @@
  * @version 1.0.0 devel
  * @author Joe Nilson <joenilson@gmail.com>
  */
-Ext.define('Asgard.lib.forms.auditsNewAuditPlan',{
+Ext.define('Asgard.lib.forms.commNewCommunication',{
     extend: 'Ext.form.Panel',
-    alias: 'widget.newauditplan',
-    url: 'ims/saveauditplan',
+    alias: 'widget.newcommunication',
+    url: 'ims/addcommunication',
 
-    auditdescText: 'Description',
-    auditdatebeginText: 'Audit Begin',
-    auditdateendText: 'Audit End',
-    auditfileText: 'File',
+    descText: 'Description',
+    fileText: 'File',
+    typeText: 'Type',
     fileFieldEmptyText: 'Choose a document',    
     textSubmitButton: 'Send',
     textCancelButton: 'Cancel',
-
+    internalText: 'Internal',
+    externalText: 'External',
     warningTitle: 'Warning',
-    warningText: 'Audit Plan exists!, revise your data',
+    warningText: 'Communication exists!, revise your data',
     required: '<span style="color:red;font-weight:bold" data-qtip="Required">*</span>',
-    successText: 'Audit Plan loaded succefully!',
+    successText: 'Communication saved succefully!',
     failureText: 'Something is wrong, please try it again',
-    auditdescField: undefined,
-    auditdatebeginField: undefined,
-    auditdateendField: undefined,
-    auditfileField: undefined,
+    descField: undefined,
+    typeField: undefined,
+    fileField: undefined,
     companiesField: undefined,
     countriesField: undefined,
     locationsField: undefined,
@@ -54,55 +53,35 @@ Ext.define('Asgard.lib.forms.auditsNewAuditPlan',{
     
     initComponent: function(){
         var me = this;
-        var auditplan = new Ext.create('Asgard.store.AuditPlan');
-        this.auditdescField = this.auditdescField || [];
-        this.auditdescField = Ext.Object.merge({
-            fieldLabel: this.auditdescText,
+        this.descField = this.descField || [];
+        this.descField = Ext.Object.merge({
+            fieldLabel: this.descText,
             afterLabelTextTpl: this.required,
             xtype: 'textfield',
-            name: 'auditdesc',
+            name: 'description',
             anchor: '100%',
-            listeners:{
-                change: function(field, valueForm, other) {
-                    auditplan.clearFilter();
-                    auditplan.load();
-                    scope: this;
-                    var match = auditplan.find( "description", valueForm, 0, false, false, true );
-                    me = field.up('form');
-                    if(match>-1){
-                        Ext.MessageBox.alert(me.warningTitle, me.warningText);
-                    }
-                }
-            },
             allowBlank:false
-        }, this.auditdescField);
+        }, this.descField);
         
-        this.auditdatebeginField = this.auditdatebeginField || [];
-        this.auditdatebeginField = Ext.Object.merge({
-            fieldLabel: this.auditdatebeginText,
-            xtype: 'vdatefield',
-            name: 'auditdatebegin',
-            width: 350,
-            allowBlank:true
-        }, this.auditdatebeginField);
+        this.typeFiled = this.typeField || [];
+        this.typeField = Ext.Object.merge({
+            xtype: 'radiogroup',
+            fieldLabel: this.typeText,
+            //cls: 'x-check-group-alt',
+            items: [
+                {boxLabel: this.internalText, name: 'type', inputValue:'I' },
+                {boxLabel: this.externalText, name: 'type', inputValue:'E' }
+            ]
+        }, this.typeField);
         
-        this.auditdateendField = this.auditdateendField || [];
-        this.auditdateendField = Ext.Object.merge({
-            fieldLabel: this.auditdateendText,
-            xtype: 'vdatefield',
-            name: 'auditdateend',
-            width: 350,
-            allowBlank:true
-        }, this.auditdateendField);
-        
-        this.auditfileField = this.auditfileField || [];
-        this.auditfileField = Ext.Object.merge({
-            fieldLabel: this.auditfileText,
+        this.fileField = this.fileField || [];
+        this.fileField = Ext.Object.merge({
+            fieldLabel: this.fileText,
             allowBlank:true,
             xtype: 'filefield',
             anchor: '100%',
             emptyText: this.fileFieldEmptyText,
-            name: 'auditplan_file',
+            name: 'comm_file',
             listeners:{
                 afterrender:function(cmp){
                     cmp.fileInputEl.set({
@@ -114,7 +93,7 @@ Ext.define('Asgard.lib.forms.auditsNewAuditPlan',{
             buttonConfig: {
                 iconCls: 'upload-icon'
             }
-        }, this.auditfileField);        
+        }, this.fileField);        
         
         this.companiesField = this.companiesField || [];
         this.companiesField = Ext.Object.merge({
@@ -182,10 +161,9 @@ Ext.define('Asgard.lib.forms.auditsNewAuditPlan',{
             this.companiesField,
             this.countriesField,
             this.locationsField,
-            this.auditdescField,
-            this.auditdatebeginField,
-            this.auditdateendField,
-            this.auditfileField
+            this.descField,
+            this.typeField,
+            this.fileField
         ]);
         
         this.buttons = this.buttons || [];
@@ -200,21 +178,22 @@ Ext.define('Asgard.lib.forms.auditsNewAuditPlan',{
         var companyId = panel.items.getAt(0).getValue();
         var countryId = panel.items.getAt(1).getValue();
         var locationId = panel.items.getAt(2).getValue();
-        var yearmonth = panel.items.getAt(3).getValue();
         var grid = panel.innerPanel;
         if(form.isValid()){
             form.submit({
                 params: {
-                    module: 'imsauditplan'
+                    module: 'imscommunications'
                 },
                 success: function(fp, o, m, r) {
                     form.reset();
                     var winActive = Ext.WindowManager.getActive();
                     winActive.hide();
-                    grid.getStore().load({params: { company: companyId, country: countryId, location: locationId, monthfield: yearmonth }});
+                    grid.getStore().load({params: { company: companyId, country: countryId, location: locationId }});
                     Ext.Msg.alert('Success', me.successText);
                 },
                 failure: function(fp, o, u){
+                    console.log(fp);
+                    console.log(o);
                     Ext.Msg.alert('Failure', me.failureText);
                 }
             });

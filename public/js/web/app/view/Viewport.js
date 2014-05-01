@@ -39,7 +39,9 @@ Ext.define('Asgard.view.Viewport', {
     'Asgard.lib.forms.reqsMasterFileUpload','Asgard.lib.grid.requirements_upload',
     'Asgard.store.Objetives','Asgard.lib.grid.objetives','Asgard.lib.grid.ownersprofile',
     'Asgard.store.OwnersProfile','Asgard.lib.dataview.organigram','Asgard.store.Organigram',
-    'Asgard.lib.Panels.OrganigramPanel','Asgard.lib.forms.organigramNewOrganigram'
+    'Asgard.lib.Panels.OrganigramPanel','Asgard.lib.forms.organigramNewOrganigram',
+    'Asgard.store.Communications','Asgard.lib.grid.communications','Asgard.lib.forms.commNewCommunication',
+    'Asgard.store.TrainingPlan','Asgard.lib.grid.trainingplan','Asgard.lib.forms.trainingNewTrainingPlan'
   ],
   menuTitleText: 'Main Menu',
     defaults: {

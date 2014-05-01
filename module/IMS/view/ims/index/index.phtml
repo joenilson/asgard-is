@@ -10,6 +10,9 @@ if(!empty($this->role)){
 ?>
 Ext.tip.QuickTipManager.init();
 var objectivesStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.Objetives');
+var requirementsStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.Requirements');
+var viewStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.Organigram');
+var ownersStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.OwnersProfile');
 
 function showObjetives(){
     var objectivesgrid<?=$this->panelId;?> = Ext.create('Asgard.lib.grid.objetives', { 
@@ -20,14 +23,67 @@ function showObjetives(){
         height: document.documentElement.clientHeight - 50,
         width: document.documentElement.clientWidth - 550,
     });
-    winAdd.setTitle('Objetivos');
+    winAdd.setTitle('Objetives');
     winAdd.add(objectivesgrid<?=$this->panelId;?>);
     //console.log('mostramos la ventana para agregar un incidente');
     winAdd.show();
-
-
-objectivesStore<?= $this->panelId; ?>.load({ params: { module: 'master', company: '<?=$companyId;?>', country: '<?=$countryId;?>', location: '<?=$locationId;?>'  }});
+    objectivesStore<?= $this->panelId; ?>.load({ params: { module: 'master', company: '<?=$companyId;?>', country: '<?=$countryId;?>', location: '<?=$locationId;?>'  }});
 }
+
+function showRequirements(){
+    var requirementsgrid<?=$this->panelId;?> = Ext.create('Asgard.lib.grid.requirements', { 
+        store: requirementsStore<?= $this->panelId; ?>, 
+        id: 'reqgrid<?=$this->panelId;?>'
+    });
+    winAdd = Ext.create('Asgard.lib.window.windowGeneric',{
+        height: document.documentElement.clientHeight - 50,
+        width: document.documentElement.clientWidth - 550,
+    });
+    winAdd.setTitle('Requirements');
+    winAdd.add(requirementsgrid<?=$this->panelId;?>);
+    //console.log('mostramos la ventana para agregar un incidente');
+    winAdd.show();
+    requirementsStore<?= $this->panelId; ?>.load({ params: { module: 'master', company: '<?=$companyId;?>', country: '<?=$countryId;?>', location: '<?=$locationId;?>'  }});
+}
+
+function showOrganigram(){
+    var view<?=$this->panelId;?> = Ext.create('Asgard.lib.dataview.organigram', { 
+        store: viewStore<?= $this->panelId; ?>, 
+    });
+    var contentOrg<?=$this->panelId; ?> = Ext.create('Ext.panel.Panel',{
+        flex: 1,
+        layout: 'fit',
+        items: view<?=$this->panelId;?>
+    });
+
+    winAdd = Ext.create('Asgard.lib.window.windowGeneric',{
+        height: document.documentElement.clientHeight - 50,
+        width: document.documentElement.clientWidth - 550,
+    });
+    winAdd.setTitle('Organigram');
+    winAdd.add(contentOrg<?=$this->panelId;?>);
+    //console.log('mostramos la ventana para agregar un incidente');
+    winAdd.show();
+    viewStore<?= $this->panelId; ?>.load({ params: { module: 'master', company: '<?=$companyId;?>', country: '<?=$countryId;?>', location: '<?=$locationId;?>'  }});
+}
+
+function showOwnersProfiles(){
+    var ownersgrid<?=$this->panelId;?> = Ext.create('Asgard.lib.grid.ownersprofile', { 
+        store: ownersStore<?= $this->panelId; ?>, 
+        id: 'ownersgrid<?=$this->panelId;?>'
+    });
+
+    winAdd = Ext.create('Asgard.lib.window.windowGeneric',{
+        height: document.documentElement.clientHeight - 50,
+        width: document.documentElement.clientWidth - 550,
+    });
+    winAdd.setTitle('Owners Profile');
+    winAdd.add(ownersgrid<?=$this->panelId;?>);
+    //console.log('mostramos la ventana para agregar un incidente');
+    winAdd.show();
+    ownersStore<?= $this->panelId; ?>.load({ params: { module: 'master', company: '<?=$companyId;?>', country: '<?=$countryId;?>', location: '<?=$locationId;?>'  }});
+}
+
 
 var versioningHeader<?php echo $this->panelId; ?> = Ext.create('Asgard.lib.versioningContent',{
     anchor: '100%',
@@ -53,7 +109,7 @@ var <?php echo 'Panel'.$this->panelId; ?> = Ext.create('Asgard.lib.RTFPanel', {
   dockedItems: [{
     xtype: toolbarType<?php echo $this->panelId; ?>
   }, versioningHeader<?php echo $this->panelId; ?>],
-  url: '/ims/saveContent/<?php echo $this->contentId; ?>',
+  url: 'ims/saveContent/<?php echo $this->contentId; ?>',
   autoShow: true,
   autoDestroy: true,
   autoScroll: true,

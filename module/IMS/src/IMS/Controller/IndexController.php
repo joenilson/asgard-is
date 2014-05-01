@@ -21,6 +21,8 @@ use IMS\Model\Entity\DocsLibrary;
 use IMS\Model\Entity\Requirements;
 use IMS\Model\Entity\hiraIncidentDetails;
 use IMS\Model\Entity\Organigram;
+use IMS\Model\Entity\Communications;
+use IMS\Model\Entity\TrainingPlan;
 
 use AsgardLib\Versioning\Documents;
 use AsgardLib\Versioning\Scope;
@@ -72,6 +74,8 @@ class IndexController extends AbstractActionController
     protected $sgiObjectivesTable;
     protected $processOwnerProfileTable;
     protected $organigramTable;
+    protected $communicationsTable;
+    protected $trainingplanTable;
     
     public function indexAction()
     {
@@ -157,7 +161,7 @@ class IndexController extends AbstractActionController
             'locationId'=>$userData->location,
             'countryId'=>$userData->country,
             'lang'=>$lang,
-            'panelId'=>1018
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
         );
     }
     
@@ -184,6 +188,269 @@ class IndexController extends AbstractActionController
         }
         $result = new JsonModel($data);
     	return $result;   
+    }
+    
+    public function communicationsAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        return array(
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'lang'=>$lang,
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
+        );
+    }
+    
+    public function getcommunicationsAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang = $userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $companyParams = $request->getQuery('company');
+        $countryParams = $request->getQuery('country');
+        $locationParams = $request->getQuery('location');
+        
+        $sql = $this->getCommunicationsTable();
+        $listDocuments = $sql->getCommunicationsByCCL($companyParams,$countryParams,$locationParams);
+        
+        if(!empty($listDocuments)){
+            $data['success']=true;
+            $data['results']=$listDocuments;
+            $data['msg']="";
+        }else{
+            $data['success']=true;
+            $data['results']="";
+            $data['msg']="Error trying to get the information...";
+        }
+        $result = new JsonModel($data);
+    	return $result;   
+    }
+    
+    public function addcommunicationAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $company = $request->getPost('companiesCombo');
+        $country = $request->getPost('countriesCombo');
+        $location = $request->getPost('locationsCombo');
+        $description = $request->getPost('description');
+        $type_comm = $request->getPost('type');
+        $files =  $request->getFiles()->toArray();
+        $id = $request->getPost('communication_id');
+        $date_creation = \date('Y-m-d h:i:s');
+
+        $dataResult = array();
+        
+        $sql = $this->getCommunicationsTable();
+        
+        $object = new Communications();
+        $object->setDescription($description)
+                ->setCompany($company)
+                ->setCountry($country)
+                ->setLocation($location)
+                ->setType_comm($type_comm)
+                ->setUser_creation($userData->id)
+                ->setStatus('A')
+                ->setDate_creation($date_creation);
+        if($id){
+            $object->setId($id);
+        }
+        $dataResult['success'] = true; 
+        try {
+            $newId = $sql->save($object);
+            
+        } catch (\Exception $ex) {
+            //$error = $ex;
+            
+            $dataResult['success'] = false; 
+            $dataResult['message'] = $ex->getMessage(); 
+        }
+
+        $valid = new \Zend\Validator\File\UploadFile();
+        
+        if(isset($newId) AND $valid->isValid($files['comm_file'])){
+            $fileName = "comm_{$company}_{$country}_{$location}_".$newId.".pdf";
+            $this->savefile('library/comms', $files['comm_file'], $fileName, false, null);
+            $sql->update(array('filename'=>'library/comms/'.$fileName),array('id'=>$newId));
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function removecommunicationAction(){
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $request = $this->getRequest();
+        $object_id = $request->getPost('id');
+        $company = $request->getPost('company');
+        $country = $request->getPost('country');
+        $location = $request->getPost('location');
+        $sql = $this->getCommunicationsTable();
+        $objectData = $sql->getCommunicationByCCLId($company,$country,$location,$object_id);
+        $dataRemove = array();
+        $dataResult = array();
+        $dataResult['success'] = false;
+        if(count($objectData)>0){
+            $dataRemove['company']=$company;
+            $dataRemove['country']=$country;
+            $dataRemove['location']=$location;
+            $dataRemove['id']=$object_id;
+            $dataUp['status']="I";
+            $dataUp['date_modification']=\date('Y-m-d H:i:s');
+            $dataUp['user_modification']=$userData->id;
+            $sql->update($dataUp,$dataRemove);
+            $dataResult['success'] = true;
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function formcommunicationAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+
+        $request = $this->getRequest();
+        $object_id = $request->getPost('communication_id');
+        $company = $request->getPost('company');
+        $country = $request->getPost('country');
+        $location = $request->getPost('location');
+        
+        $sql = $this->getCommunicationsTable();
+        $AuditData = $sql->getCommunicationByCCLId($company,$country,$location,$object_id);
+        $dataResult = array();
+        foreach($AuditData as $key=>$values){
+            $dataResult['companiesCombo']=$values['company'];
+            $dataResult['countriesCombo']=$values['country'];
+            $dataResult['locationsCombo']=$values['location'];
+            $dataResult['description']=$values['description'];
+            $dataResult['type']=$values['type_comm'];
+        }
+        $data = array();
+        if(count($dataResult>0)){
+            $data['success']=true;
+            $data['data']=$dataResult;
+        }else{
+            $data['success']=false;
+            $data['data']="";
+        }
+        
+        return new JsonModel($data);
+    }
+    
+    public function trainingplanAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        return array(
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'lang'=>$lang,
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
+        );
+    }
+    
+    public function gettrainingplanAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang = $userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $companyParams = $request->getQuery('company');
+        $countryParams = $request->getQuery('country');
+        $locationParams = $request->getQuery('location');
+        
+        $sql = $this->getTrainingPlanTable();
+        $listDocuments = $sql->getTrainingPlanByCCL($companyParams,$countryParams,$locationParams);
+        
+        if(!empty($listDocuments)){
+            $data['success']=true;
+            $data['results']=$listDocuments;
+            $data['msg']="";
+        }else{
+            $data['success']=true;
+            $data['results']="";
+            $data['msg']="Error trying to get the information...";
+        }
+        $result = new JsonModel($data);
+    	return $result;   
+    }
+    
+    public function addtrainingplanAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $company = $request->getPost('companiesCombo');
+        $country = $request->getPost('countriesCombo');
+        $location = $request->getPost('locationsCombo');
+        $description = $request->getPost('description');
+        $files =  $request->getFiles()->toArray();
+        $id = $request->getPost('trainingplan_id');
+        $date_creation = \date('Y-m-d h:i:s');
+
+        $dataResult = array();
+        
+        $sql = $this->getTrainingPlanTable();
+        
+        $object = new TrainingPlan();
+        $object->setDescription($description)
+                ->setCompany($company)
+                ->setCountry($country)
+                ->setLocation($location)
+                ->setUser_creation($userData->id)
+                ->setStatus('A')
+                ->setDate_creation($date_creation);
+        if($id){
+            $object->setId($id);
+        }
+        $dataResult['success'] = true; 
+        try {
+            $newId = $sql->save($object);
+            
+        } catch (\Exception $ex) {
+            //$error = $ex;
+            
+            $dataResult['success'] = false; 
+            $dataResult['message'] = $ex->getMessage(); 
+        }
+
+        $valid = new \Zend\Validator\File\UploadFile();
+        
+        if(isset($newId) AND $valid->isValid($files['training_file'])){
+            $fileName = "training_{$company}_{$country}_{$location}_".$newId.".pdf";
+            $this->savefile('library/training', $files['training_file'], $fileName, false, null);
+            $sql->update(array('filename'=>'library/training/'.$fileName),array('id'=>$newId));
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function removetrainingplanAction(){
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $request = $this->getRequest();
+        $object_id = $request->getPost('id');
+        $company = $request->getPost('company');
+        $country = $request->getPost('country');
+        $location = $request->getPost('location');
+        $sql = $this->getTrainingPlanTable();
+        $objectData = $sql->getTrainingPlanByCCLId($company,$country,$location,$object_id);
+        $dataRemove = array();
+        $dataResult = array();
+        $dataResult['success'] = false;
+        if(count($objectData)>0){
+            $dataRemove['company']=$company;
+            $dataRemove['country']=$country;
+            $dataRemove['location']=$location;
+            $dataRemove['id']=$object_id;
+            $dataUp['status']="I";
+            $dataUp['date_modification']=\date('Y-m-d H:i:s');
+            $dataUp['user_modification']=$userData->id;
+            $sql->update($dataUp,$dataRemove);
+            $dataResult['success'] = true;
+        }
+        return new JsonModel($dataResult);
     }
     
     public function diagramAction()
@@ -325,6 +592,7 @@ class IndexController extends AbstractActionController
     }
     
     public function deleteauditorAction(){
+        $userData = $this->getServiceLocator()->get('userSessionData');
         $request = $this->getRequest();
         $auditor_id = $request->getPost('id');
         $company = $request->getPost('company');
@@ -340,7 +608,12 @@ class IndexController extends AbstractActionController
             $dataRemove['location']=$location;
             $dataRemove['year']=$year;
             $dataRemove['id']=$auditor_id;
-            $sql->delete($dataRemove);
+            //$sql->delete($dataRemove);
+            $dataUp['status']="I";
+            $dataUp['date_modification']=\date('Y-m-d H:i:s');
+            $dataUp['user_modification']=$userData->id;
+            $sql->update($dataUp,$dataRemove);
+            
         }
         
         
@@ -437,6 +710,7 @@ class IndexController extends AbstractActionController
     }
     
     public function removeauditAction(){
+        $userData = $this->getServiceLocator()->get('userSessionData');
         $request = $this->getRequest();
         $audit_id = $request->getPost('id');
         $company = $request->getPost('company');
@@ -452,8 +726,12 @@ class IndexController extends AbstractActionController
             $dataRemove['country']=$country;
             $dataRemove['location']=$location;
             $dataRemove['id']=$audit_id;
-            $sql->delete($dataRemove);
-            $this->removefile($AuditData[0]['audit_file']);
+            $dataUp['status']="I";
+            $dataUp['date_modification']=\date('Y-m-d H:i:s');
+            $dataUp['user_modification']=$userData->id;
+            $sql->update($dataUp,$dataRemove);
+            //$sql->delete($dataRemove);
+            //$this->removefile($AuditData[0]['audit_file']);
             $dataResult['success'] = true;
         }
         return new JsonModel($dataResult);
@@ -3269,6 +3547,24 @@ class IndexController extends AbstractActionController
         $imagine->open($file)
                 ->thumbnail(new \Imagine\Image\Box(171,180),$mode)
                 ->save($dst);
+    }
+    
+    private function getTrainingPlanTable()
+    {
+    	if (!$this->trainingplanTable) {
+            $sm = $this->getServiceLocator();
+            $this->trainingplanTable = $sm->get('IMS\Model\TrainingPlanTable');
+    	}
+    	return $this->trainingplanTable;
+    }
+    
+    private function getCommunicationsTable()
+    {
+    	if (!$this->communicationsTable) {
+            $sm = $this->getServiceLocator();
+            $this->communicationsTable = $sm->get('IMS\Model\CommunicationsTable');
+    	}
+    	return $this->communicationsTable;
     }
     
     private function getOrganigramTable()

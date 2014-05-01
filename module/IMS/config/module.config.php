@@ -116,6 +116,146 @@ return array(
                             ),
                         ),
                     ),
+                    'communications' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/communications[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'communications'
+                            ),
+                        ),
+                    ),
+                    'getcommunications' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/getcommunications[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'getcommunications'
+                            ),
+                        ),
+                    ),
+                    'addcommunication' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/addcommunication[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'addcommunication'
+                            ),
+                        ),
+                    ),
+                    'removecommunication' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/removecommunication[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'removecommunication'
+                            ),
+                        ),
+                    ),
+                    'formcommunication' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/formcommunication[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'formcommunication'
+                            ),
+                        ),
+                    ),
+                    'trainingplan' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/trainingplan[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'trainingplan'
+                            ),
+                        ),
+                    ),
+                    'gettrainingplan' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/gettrainingplan[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'gettrainingplan'
+                            ),
+                        ),
+                    ),
+                    'removetrainingplan' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/removetrainingplan[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'removetrainingplan'
+                            ),
+                        ),
+                    ),
+                    'addtrainingplan' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/addtrainingplan[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'addtrainingplan'
+                            ),
+                        ),
+                    ),
+                    'formtrainingplan' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/formtrainingplan[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'formtrainingplan'
+                            ),
+                        ),
+                    ),
                     'organigram' => array(
                         'type'    => 'Segment',
                         'options' => array(

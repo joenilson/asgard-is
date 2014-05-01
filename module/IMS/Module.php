@@ -47,6 +47,8 @@ use IMS\Model\AuditPlanTable;
 use IMS\Model\RequirementsTable;
 use IMS\Model\RequirementsHelperTable;
 use IMS\Model\SGIObjectivesTable;
+use IMS\Model\CommunicationsTable;
+use IMS\Model\TrainingPlanTable;
 use IMS\Model\OrganigramTable;
 use IMS\Model\ProcessOwnerProfileTable;
 use IMS\Model\SafetyCommitteeTable;
@@ -106,6 +108,16 @@ class Module implements AutoloaderProviderInterface
                 'IMS\Model\CommitteePositionsTable'=> function($sm){
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new SafetyCommitteePositionsTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\TrainingPlanTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new TrainingPlanTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\CommunicationsTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new CommunicationsTable($dbAdapter);
                     return $table;
                 },
                 'IMS\Model\SafetyCommitteeTable'=> function($sm){
