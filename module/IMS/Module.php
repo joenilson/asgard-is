@@ -29,6 +29,7 @@ use IMS\Model\hiraIncidentsCTTable;
 use IMS\Model\hiraIncidentDetailsTable;
 use IMS\Model\hiraNonConformityTypeTable;
 use IMS\Model\hiraIncidentsTable;
+use IMS\Model\IEEATable;
 use IMS\Model\ProcessMainTable;
 use IMS\Model\ProcessMainView;
 use IMS\Model\ProcessRelationsTable;
@@ -108,6 +109,11 @@ class Module implements AutoloaderProviderInterface
                 'IMS\Model\CommitteePositionsTable'=> function($sm){
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new SafetyCommitteePositionsTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\IEEATable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new IEEATable($dbAdapter);
                     return $table;
                 },
                 'IMS\Model\TrainingPlanTable'=> function($sm){

@@ -438,6 +438,104 @@ return array(
                             ),
                         ),
                     ),
+                    'ieea' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/ieea[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'ieea'
+                            ),
+                        ),
+                    ),
+                    'addieea' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/addieea[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'addieea'
+                            ),
+                        ),
+                    ),
+                    'removeieea' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/removeieea[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'removeieea'
+                            ),
+                        ),
+                    ),
+                    'getieea' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/getieea[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'getieea'
+                            ),
+                        ),
+                    ),
+                    'formieea' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/formieea[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'formieea'
+                            ),
+                        ),
+                    ),
+                    'massieeaprocess' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/massieeaprocess[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'massieeaprocess'
+                            ),
+                        ),
+                    ),
+                    'processmassieea' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/processmassieea[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'processmassieea'
+                            ),
+                        ),
+                    ),
                     'listauditors' => array(
                         'type'    => 'Segment',
                         'options' => array(

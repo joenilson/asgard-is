@@ -23,6 +23,7 @@ use IMS\Model\Entity\hiraIncidentDetails;
 use IMS\Model\Entity\Organigram;
 use IMS\Model\Entity\Communications;
 use IMS\Model\Entity\TrainingPlan;
+use IMS\Model\Entity\IEEA;
 
 use AsgardLib\Versioning\Documents;
 use AsgardLib\Versioning\Scope;
@@ -49,6 +50,8 @@ class IndexController extends AbstractActionController
     protected $hiraRLTable;
     protected $hiraRLI18nTable;
     protected $hiraDocumentsTable;
+    protected $ieeaTable;
+    protected $ieeaHelperTable;
     protected $messagesTable;
     protected $translationTable;
     protected $hiraIncidentTypeTable;
@@ -189,6 +192,270 @@ class IndexController extends AbstractActionController
         $result = new JsonModel($data);
     	return $result;   
     }
+    
+    public function ieeaAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        return array(
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'lang'=>$lang,
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
+        );
+    }
+    
+    public function getieeaAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang = $userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $companyParams = $request->getQuery('company');
+        $countryParams = $request->getQuery('country');
+        $locationParams = $request->getQuery('location');
+        
+        $sql = $this->getIEEATable();
+        $listDocuments = $sql->getIEEA($lang,$companyParams,$countryParams,$locationParams);
+        
+        if(!empty($listDocuments)){
+            $data['success']=true;
+            $data['results']=$listDocuments;
+            $data['msg']="";
+        }else{
+            $data['success']=true;
+            $data['results']="";
+            $data['msg']="Error trying to get the information...";
+        }
+        $result = new JsonModel($data);
+    	return $result;   
+    }
+    
+    public function addieeaAction(){
+        
+    }
+    
+    public function removeieeaAction(){
+        
+    }
+    
+    public function formieeaAction(){
+        
+    }
+    
+    public function massieeaprocessAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $company = $request->getPost('companiesCombo');
+        $country = $request->getPost('countriesCombo');
+        $location = $request->getPost('locationsCombo');
+        $lang_docs = $request->getPost('languageCombo');
+        $files =  $request->getFiles()->toArray();
+        $date_creation = \date('Y-m-d h:i:s');
+        
+        $dataResult = array();
+
+        //$sqlMessage = $this->getMessagesTable();
+        $sqlProcess = $this->getProcessMainTable();
+        $arrayProcess = $sqlProcess->getAllMainProcess($lang_docs,'A',$company,$country,$location);
+        $process = array();
+        foreach($arrayProcess as $key=>$process_values){
+            $process[trim($process_values['value'])]=array('id'=>$process_values['id'],'desc'=>$process_values['value']);
+        }
+        
+        $sqlThreads = $this->getProcessThreadTable();
+        $arrayThreads = $sqlThreads->getAllThreads($lang_docs,'A',$company,$country,$location);
+        $threads = array();
+        foreach($arrayThreads as $key=>$thread_values){
+            $threads[trim($thread_values['value'])]=array('id'=>$thread_values['id'],'desc'=>$thread_values['value']);
+        }    
+        
+        $sqlHelpers = $this->getIEEAHelperTable();
+        $arrayHelpers = $sqlHelpers->getHelpers($lang_docs);
+        $helpers = array();
+        foreach($arrayHelpers as $key=>$values){
+            $helpers[$values['helper']][$values['description']]=array('id'=>$values['id'],'desc'=>$values['description']);
+        }
+        
+        //
+        //$reader = new \PHPExcel();
+        //$reader = new \PHPExcel_Reader_Excel2007();
+        
+        /** Identify the type of $inputFileName **/ 
+        //$inputFileType = \PHPExcel_IOFactory::identify($files['excel_file']['tmp_name']); 
+        /** Create a new Reader of the type that has been identified **/ 
+        //$objReader = \PHPExcel_IOFactory::createReader($inputFileType); 
+        /** Load $inputFileName to a PHPExcel Object **/ 
+        //$objPHPExcel = $objReader->load($files['excel_file']['tmp_name']);
+        
+        $reader = new \PHPExcel_Reader_Excel5();
+        $worksheetData = $reader->listWorksheetInfo($files['excel_file']['tmp_name']);
+        $objPHPExcel = $reader->load($files['excel_file']['tmp_name']);
+        $sheetData = $objPHPExcel->getActiveSheet()->toArray(null,true,true,true);
+        
+        $arrayMasterData = array();
+        $counter = 1;
+        $filesProcessed = 0;
+        
+        foreach($sheetData as $key=>$content){
+            if($counter>2){
+                $filesProcessed++;
+                $id = $filesProcessed;
+                //$processType = (int) trim($content['A']);
+                $processMain = (string) trim($content['B']);
+                $processThread = (string) trim($content['C']);
+                $processActivity = (string) trim($content['D']);
+                $documentDanger = (string) trim($content['E']);
+                $documentRisk = (string) trim($content['F']);
+                $iperHigh = (int) trim($content['G']);
+                $iperMedium = (int) trim($content['H']);
+                $iperLow = (int) trim($content['I']);
+                $controlMeasures = (string) trim($content['J']);
+                $rraHigh = (int) trim($content['K']);
+                $rraMedium = (int) trim($content['L']);
+                $rraLow = (int) trim($content['M']);
+
+                $arrayMasterData[]=array(
+                    'id_danger_risk'=>(int) $id,
+                    'id_danger'=>(!$dangers[$documentDanger])?"":$dangers[$documentDanger]['id'],
+                    'desc_danger'=>(!$dangers[$documentDanger])?"":$dangers[$documentDanger]['desc'],
+                    'id_risk'=>(!$risks[$documentRisk])?"":$risks[$documentRisk]['id'],
+                    'desc_risk'=>(!$risks[$documentRisk])?"":$risks[$documentRisk]['desc'],
+                    'id_activity'=>(!$activities[$processActivity])?"":$activities[$processActivity]['id'],
+                    'eval_iper_h'=>(!$iperHigh)?0:$iperHigh,
+                    'eval_iper_m'=>(!$iperMedium)?0:$iperMedium,
+                    'eval_iper_l'=>(!$iperLow)?0:$iperLow,
+                    'control_measures'=>(!$controlMeasures)?"":$controlMeasures,
+                    'eval_risk_h'=>(!$rraHigh)?0:$rraHigh,
+                    'eval_risk_m'=>(!$rraMedium)?0:$rraMedium,
+                    'eval_risk_l'=>(!$rraLow)?0:$rraLow,
+                    'id_process_main'=>(!$threads[$processThread])?"":$threads[$processThread]['id'],
+                    'process_main_desc'=>(!$threads[$processThread])?"":$threads[$processThread]['desc'],
+                    'process_sup_desc'=>(!$process[$processMain])?"":$process[$processMain]['desc'],
+                    'activity_desc'=>(!$activities[$processActivity])?"":$activities[$processActivity]['desc'],
+                    'status'=>1,
+                    'company'=>$company,
+                    'country'=>$country,
+                    'location'=>$location,
+                    'date_creation'=>$date_creation,
+                    'user_creation'=>$userData->id
+                );
+            }
+            $counter++;
+        }  
+        
+        foreach($worksheetData as $worksheet){
+            $dataResult['worksheetName']=$worksheet['worksheetName'];
+            $dataResult['totalRows']=$worksheet['totalRows'];
+            $dataResult['totalColumns']=$worksheet['totalColumns'];
+            $dataResult['lastColumnLetter']=$worksheet['lastColumnLetter'];
+            //$dataResult['process']=$threads;
+            
+        }
+        $dataResult['file_results']=$arrayMasterData;
+        $dataResult['success']=true;
+        return new JsonModel($dataResult);    
+    }
+    
+    public function processmassieeaAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $dataBulk = $request->getPost('data');
+        $data = \json_decode($dataBulk);
+        $dataCount = count($data);
+        
+//        "id_danger_risk":1,
+//        "id_danger":137,
+//        "desc_danger":"Superf\u00edcie escorregadia, Irregular, Obst\u00e1culos no andar",
+//        "id_risk":41,
+//        "desc_risk":"Queda ao mesmo n\u00edvel",
+//        "id_process_main":0,
+//        "process_main_desc":"Tratamento de \u00e1gua",
+//        "process_sup_desc":"Produ\u00e7\u00e3o",
+//        "type":0,
+//        "type_desc":"",
+//        "eval_iper_h":0,
+//        "eval_iper_m":0,
+//        "eval_iper_l":23,
+//        "control_measures":"Tr\u00e2nsito de pedrestes somente por zonas sinalizadas e/ou seguras",
+//        "eval_risk_h":0,
+//        "eval_risk_m":0,
+//        "eval_risk_l":23,
+//        "date_creation":"2014-04-27T09:57:57",
+//        "user_creation":"2",
+//        "date_modification":null,
+//        "user_modification":"",
+//        "status":1,
+//        "company":"0003",
+//        "country":"0003",
+//        "location":"0001",
+//        "id_machine":0,
+//        "id_activity":105,
+//        "activity_desc":"Revis\u00e3o inicial e rotineira de \u00e1gua em tanques"
+        
+        if(is_array($data)){
+            $sqlDocs = $this->getHiraDocumentsTable(); 
+            
+            foreach ($data as $dataContent){
+                //$doc_new_id = $sqlDocs->getNextDocId();
+                $doc_company = (!empty($dataContent->company))?$dataContent->company:$userData->company;
+                $doc_country = (!empty($dataContent->country))?$dataContent->country:$userData->country;
+                $doc_location = (!empty($dataContent->location))?$dataContent->location:$userData->location;
+                $doc_thread = (is_numeric($dataContent->process_main_desc))?$dataContent->process_main_desc:$dataContent->id_process_main;
+                $doc_activity = (is_numeric($dataContent->activity_desc))?$dataContent->activity_desc:$dataContent->id_activity;
+                $doc_id_risk = (!empty($dataContent->id_risk))?$dataContent->id_risk:0;
+                $doc_id_danger = (!empty($dataContent->id_danger))?$dataContent->id_danger:0;
+                $eval_iper_h = (!empty($dataContent->eval_iper_h))?$dataContent->eval_iper_h:0;
+                $eval_iper_m = (!empty($dataContent->eval_iper_m))?$dataContent->eval_iper_m:0;
+                $eval_iper_l = (!empty($dataContent->eval_iper_l))?$dataContent->eval_iper_l:0;
+                $eval_risk_h = (!empty($dataContent->eval_risk_h))?$dataContent->eval_risk_h:0;
+                $eval_risk_m = (!empty($dataContent->eval_risk_m))?$dataContent->eval_risk_m:0;
+                $eval_risk_l = (!empty($dataContent->eval_risk_l))?$dataContent->eval_risk_l:0;
+                $control_measures = (!empty($dataContent->control_measures))?$this->cleanTags(trim($dataContent->control_measures)):"";
+                $doc_user_creation = (!empty($dataContent->user_creation))?$dataContent->user_creation:$userData->id;
+                $doc_date_creation = (!empty($dataContent->date_creation))?\date("Y-m-d H:i:s", strtotime($dataContent->date_creation)):\date('Y-m-d H:i:s');
+                
+                
+                $doc = new \IMS\Model\Entity\hiraDocuments();
+                //$doc = new hiraDocuments();
+                $doc->setCompany($doc_company)
+                    ->setCountry($doc_country)
+                    ->setLocation($doc_location)
+                    ->setId_danger_risk(0)
+                    ->setId_danger($doc_id_danger)
+                    ->setId_risk($doc_id_risk)
+                    ->setId_process_main($doc_thread)
+                    ->setControl_measures($control_measures)
+                    ->setEval_iper_h($eval_iper_h)
+                    ->setEval_iper_m($eval_iper_m)
+                    ->setEval_iper_l($eval_iper_l)
+                    ->setEval_risk_h($eval_risk_h)
+                    ->setEval_risk_m($eval_risk_m)
+                    ->setEval_risk_l($eval_risk_l)
+                    ->setId_activity($doc_activity)
+                    ->setUser_creation($doc_user_creation)
+                    ->setDate_creation($doc_date_creation)
+                    ->setStatus(1);
+                
+                $sqlDocs->save($doc);
+            }
+            $dataResult['success']=true;
+            $dataResult['message']="$dataCount documents proccessed";
+            //$dataResult['test']=$doc_date_creation;
+            $dataResult['docs_processed']=$dataCount;
+        }else{
+            $dataResult['success']=false;
+            $dataResult['message']="No data was sent";
+        }
+        return new JsonModel($dataResult);
+    }
+    
     
     public function communicationsAction(){
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
@@ -3547,6 +3814,24 @@ class IndexController extends AbstractActionController
         $imagine->open($file)
                 ->thumbnail(new \Imagine\Image\Box(171,180),$mode)
                 ->save($dst);
+    }
+    
+    private function getIEEATable()
+    {
+    	if (!$this->ieeaTable) {
+            $sm = $this->getServiceLocator();
+            $this->ieeaTable = $sm->get('IMS\Model\IEEATable');
+    	}
+    	return $this->ieeaTable;
+    }
+    
+    private function getIEEAHelperTable()
+    {
+    	if (!$this->ieeaHelperTable) {
+            $sm = $this->getServiceLocator();
+            $this->ieeaHelperTable = $sm->get('IMS\Model\IEEAHelperTable');
+    	}
+    	return $this->ieeaHelperTable;
     }
     
     private function getTrainingPlanTable()
