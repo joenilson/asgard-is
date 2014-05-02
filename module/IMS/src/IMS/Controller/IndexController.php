@@ -29,7 +29,7 @@ use AsgardLib\Versioning\Documents;
 use AsgardLib\Versioning\Scope;
 
 //use PHPExcel;
-use PHPExcel\Reader\Excel5; 
+use PHPExcel\Reader\Excel5;
 
 class IndexController extends AbstractActionController
 {
@@ -304,39 +304,72 @@ class IndexController extends AbstractActionController
             if($counter>2){
                 $filesProcessed++;
                 $id = $filesProcessed;
-                //$processType = (int) trim($content['A']);
-                $processMain = (string) trim($content['B']);
-                $processThread = (string) trim($content['C']);
-                $processActivity = (string) trim($content['D']);
-                $documentDanger = (string) trim($content['E']);
-                $documentRisk = (string) trim($content['F']);
-                $iperHigh = (int) trim($content['G']);
-                $iperMedium = (int) trim($content['H']);
-                $iperLow = (int) trim($content['I']);
-                $controlMeasures = (string) trim($content['J']);
-                $rraHigh = (int) trim($content['K']);
-                $rraMedium = (int) trim($content['L']);
-                $rraLow = (int) trim($content['M']);
-
+                $ieeaType = (string) strtoupper(trim($content['A']));
+                $ieeaCycle = (string) strtoupper(trim($content['B']));
+                $processMain = (string) trim($content['C']);
+                $processThread = (string) trim($content['D']);
+                $envAspects = (string) strtoupper(trim($content['E']));
+                $envImpact = (string) strtoupper(trim($content['F']));
+                $quantity = (int) trim($content['G']);
+                $unitmeasure = (string) trim($content['H']);
+                $influence = (string) trim($content['I']);
+                $magnitude = (int) trim($content['J']);
+                $frequency = (int) trim($content['K']);
+                $eImpact = (int) trim($content['L']);
+                $savings = (int) trim($content['M']);
+                $totalNormalCondition = ($magnitude+$frequency+$eImpact+$savings);
+                $legalReq = (int) trim($content['O']);
+                $corporativeReq = (int) trim($content['P']);
+                $voluntaryReq = (int) trim($content['Q']);
+                $totalRequirements = ($totalNormalCondition*$legalReq*$corporativeReq*$voluntaryReq);
+                $abnormal_ha_a = trim($content['S']);
+                $abnormal_ha_b = trim($content['T']);
+                $abnormal_ha_c = trim($content['U']);
+                $abnormal_ha_d = trim($content['V']);
+                $abnormal_mi_e = trim($content['W']);
+                $abnormal_mi_f = trim($content['X']);
+                $abnormal_su_g = trim($content['Y']);
+                $abnormalFactors = trim($content['Z']);
+                $abnormalTable = trim($content['AA']);
+                $ranking = trim($content['AB']);
                 $arrayMasterData[]=array(
-                    'id_danger_risk'=>(int) $id,
-                    'id_danger'=>(!$dangers[$documentDanger])?"":$dangers[$documentDanger]['id'],
-                    'desc_danger'=>(!$dangers[$documentDanger])?"":$dangers[$documentDanger]['desc'],
-                    'id_risk'=>(!$risks[$documentRisk])?"":$risks[$documentRisk]['id'],
-                    'desc_risk'=>(!$risks[$documentRisk])?"":$risks[$documentRisk]['desc'],
-                    'id_activity'=>(!$activities[$processActivity])?"":$activities[$processActivity]['id'],
-                    'eval_iper_h'=>(!$iperHigh)?0:$iperHigh,
-                    'eval_iper_m'=>(!$iperMedium)?0:$iperMedium,
-                    'eval_iper_l'=>(!$iperLow)?0:$iperLow,
-                    'control_measures'=>(!$controlMeasures)?"":$controlMeasures,
-                    'eval_risk_h'=>(!$rraHigh)?0:$rraHigh,
-                    'eval_risk_m'=>(!$rraMedium)?0:$rraMedium,
-                    'eval_risk_l'=>(!$rraLow)?0:$rraLow,
-                    'id_process_main'=>(!$threads[$processThread])?"":$threads[$processThread]['id'],
-                    'process_main_desc'=>(!$threads[$processThread])?"":$threads[$processThread]['desc'],
-                    'process_sup_desc'=>(!$process[$processMain])?"":$process[$processMain]['desc'],
-                    'activity_desc'=>(!$activities[$processActivity])?"":$activities[$processActivity]['desc'],
-                    'status'=>1,
+                    'id'=>(int) $id,
+                    'id_type'=>(!$helpers['type'][$ieeaType])?"":$helpers['type'][$ieeaType]['id'],
+                    'desc_type'=>(!$helpers['type'][$ieeaType])?"":$helpers['type'][$ieeaType]['desc'],
+                    'id_cycle'=>(!$helpers['cycle'][$ieeaCycle])?"":$helpers['cycle'][$ieeaCycle]['id'],
+                    'desc_cycle'=>(!$helpers['cycle'][$ieeaCycle])?"":$helpers['cycle'][$ieeaCycle]['desc'],
+                    'id_process'=>(!$process[$processMain])?"":$process[$processMain]['id'],
+                    'desc_process'=>(!$process[$processMain])?"":$process[$processMain]['desc'],
+                    'id_thread'=>(!$threads[$processThread])?"":$threads[$processThread]['id'],
+                    'desc_thread'=>(!$threads[$processThread])?"":$threads[$processThread]['desc'],
+                    'id_ea'=>(!$helpers['ea'][$envAspects])?"":$helpers['ea'][$envAspects]['id'],
+                    'desc_ea'=>(!$helpers['ea'][$envAspects])?"":$helpers['ea'][$envAspects]['desc'],
+                    'id_ei'=>(!$helpers['ei'][$envImpact])?"":$helpers['ei'][$envImpact]['id'],
+                    'desc_ei'=>(!$helpers['ei'][$envImpact])?"":$helpers['ei'][$envImpact]['desc'],
+                    'quantity'=>(!$quantity)?"":$quantity,
+                    'unit_measure'=>(!$helpers['um'][$unitmeasure])?"":$helpers['um'][$unitmeasure]['id'],
+                    'desc_unit_measure'=>(!$helpers['um'][$unitmeasure])?"":$helpers['um'][$unitmeasure]['desc'],
+                    'influence'=>(!$influence)?"":$influence,
+                    'magnitude'=>(!$magnitude)?"":$magnitude,
+                    'frequency'=>(!$frequency)?"":$frequency,
+                    'e_impact'=>(!$eImpact)?"":$eImpact,
+                    'save'=>(!$savings)?"":$savings,
+                    't_normal_c'=>(!$totalNormalCondition)?"":$totalNormalCondition,
+                    'legal_req'=>(!$legalReq)?"":$legalReq,
+                    'corporative_req'=>(!$corporativeReq)?"":$corporativeReq,
+                    'voluntary_req'=>(!$voluntaryReq)?"":$voluntaryReq,
+                    'total_req'=>(!$totalRequirements)?"":$totalRequirements,
+                    'abnormal_ha_a'=>(!$abnormal_ha_a)?"":$abnormal_ha_a,
+                    'abnormal_ha_b'=>(!$abnormal_ha_b)?"":$abnormal_ha_b,
+                    'abnormal_ha_c'=>(!$abnormal_ha_c)?"":$abnormal_ha_c,
+                    'abnormal_ha_d'=>(!$abnormal_ha_d)?"":$abnormal_ha_d,
+                    'abnormal_im_e'=>(!$abnormal_mi_e)?"":$abnormal_mi_e,
+                    'abnormal_im_f'=>(!$abnormal_mi_f)?"":$abnormal_mi_f,
+                    'abnormal_su_g'=>(!$abnormal_su_g)?"":$abnormal_su_g,
+                    'abnormal_factor'=>(!$abnormalFactors)?"":$abnormalFactors,
+                    'abnormal_table'=>(!$abnormalTable)?"":$abnormalTable,
+                    'ranking'=>(!$ranking)?"":$ranking,
+                    'status'=>'A',
                     'company'=>$company,
                     'country'=>$country,
                     'location'=>$location,
@@ -352,7 +385,7 @@ class IndexController extends AbstractActionController
             $dataResult['totalRows']=$worksheet['totalRows'];
             $dataResult['totalColumns']=$worksheet['totalColumns'];
             $dataResult['lastColumnLetter']=$worksheet['lastColumnLetter'];
-            //$dataResult['process']=$threads;
+            $dataResult['process']=$process;
             
         }
         $dataResult['file_results']=$arrayMasterData;
@@ -370,78 +403,79 @@ class IndexController extends AbstractActionController
         $data = \json_decode($dataBulk);
         $dataCount = count($data);
         
-//        "id_danger_risk":1,
-//        "id_danger":137,
-//        "desc_danger":"Superf\u00edcie escorregadia, Irregular, Obst\u00e1culos no andar",
-//        "id_risk":41,
-//        "desc_risk":"Queda ao mesmo n\u00edvel",
-//        "id_process_main":0,
-//        "process_main_desc":"Tratamento de \u00e1gua",
-//        "process_sup_desc":"Produ\u00e7\u00e3o",
-//        "type":0,
-//        "type_desc":"",
-//        "eval_iper_h":0,
-//        "eval_iper_m":0,
-//        "eval_iper_l":23,
-//        "control_measures":"Tr\u00e2nsito de pedrestes somente por zonas sinalizadas e/ou seguras",
-//        "eval_risk_h":0,
-//        "eval_risk_m":0,
-//        "eval_risk_l":23,
-//        "date_creation":"2014-04-27T09:57:57",
-//        "user_creation":"2",
-//        "date_modification":null,
-//        "user_modification":"",
-//        "status":1,
-//        "company":"0003",
-//        "country":"0003",
-//        "location":"0001",
-//        "id_machine":0,
-//        "id_activity":105,
-//        "activity_desc":"Revis\u00e3o inicial e rotineira de \u00e1gua em tanques"
-        
         if(is_array($data)){
-            $sqlDocs = $this->getHiraDocumentsTable(); 
+            $sqlDocs = $this->getIEEATable(); 
             
             foreach ($data as $dataContent){
-                //$doc_new_id = $sqlDocs->getNextDocId();
                 $doc_company = (!empty($dataContent->company))?$dataContent->company:$userData->company;
                 $doc_country = (!empty($dataContent->country))?$dataContent->country:$userData->country;
                 $doc_location = (!empty($dataContent->location))?$dataContent->location:$userData->location;
-                $doc_thread = (is_numeric($dataContent->process_main_desc))?$dataContent->process_main_desc:$dataContent->id_process_main;
-                $doc_activity = (is_numeric($dataContent->activity_desc))?$dataContent->activity_desc:$dataContent->id_activity;
-                $doc_id_risk = (!empty($dataContent->id_risk))?$dataContent->id_risk:0;
-                $doc_id_danger = (!empty($dataContent->id_danger))?$dataContent->id_danger:0;
-                $eval_iper_h = (!empty($dataContent->eval_iper_h))?$dataContent->eval_iper_h:0;
-                $eval_iper_m = (!empty($dataContent->eval_iper_m))?$dataContent->eval_iper_m:0;
-                $eval_iper_l = (!empty($dataContent->eval_iper_l))?$dataContent->eval_iper_l:0;
-                $eval_risk_h = (!empty($dataContent->eval_risk_h))?$dataContent->eval_risk_h:0;
-                $eval_risk_m = (!empty($dataContent->eval_risk_m))?$dataContent->eval_risk_m:0;
-                $eval_risk_l = (!empty($dataContent->eval_risk_l))?$dataContent->eval_risk_l:0;
-                $control_measures = (!empty($dataContent->control_measures))?$this->cleanTags(trim($dataContent->control_measures)):"";
+                $doc_id_type = (is_numeric($dataContent->desc_type))?$dataContent->desc_type:$dataContent->id_type;
+                $doc_id_cycle = (is_numeric($dataContent->desc_cycle))?$dataContent->desc_cycle:$dataContent->id_cycle;
+                $doc_process = (is_numeric($dataContent->desc_process))?$dataContent->desc_process:$dataContent->id_process;
+                $doc_thread = (is_numeric($dataContent->desc_thread))?$dataContent->desc_thread:$dataContent->id_thread;
+                $doc_ea = (is_numeric($dataContent->desc_ea))?$dataContent->desc_ea:$dataContent->id_ea;
+                $doc_ei = (is_numeric($dataContent->desc_ei))?$dataContent->desc_ei:$dataContent->id_ei;
+                $doc_quantity = (!empty($dataContent->quantity))?$dataContent->quantity:0;
+                $doc_unit_measure = (is_numeric($dataContent->desc_unit_measure))?$dataContent->desc_unit_measure:$dataContent->unit_measure;
+                $doc_influence = (!empty($dataContent->influence))?$dataContent->influence:0;
+                $doc_magnitude = (!empty($dataContent->magnitude))?$dataContent->magnitude:0;
+                $doc_frequency = (!empty($dataContent->frequency))?$dataContent->frequency:0;
+                $doc_e_impact = (!empty($dataContent->e_impact))?$dataContent->e_impact:0;
+                $doc_save = (!empty($dataContent->save))?$dataContent->save:0;
+                $doc_t_normal_c = (!empty($dataContent->t_normal_c))?$dataContent->t_normal_c:0;
+                $doc_legal_req = (!empty($dataContent->legal_req))?$dataContent->legal_req:0;
+                $doc_corporative_req = (!empty($dataContent->corporative_req))?$dataContent->corporative_req:0;
+                $doc_voluntary_req = (!empty($dataContent->voluntary_req))?$dataContent->voluntary_req:0;
+                $doc_total_req = (!empty($dataContent->total_req))?$dataContent->total_req:0;
+                $abnormal_ha_a = (!empty($dataContent->abnormal_ha_a))?$dataContent->abnormal_ha_a:0;
+                $abnormal_ha_b = (!empty($dataContent->abnormal_ha_b))?$dataContent->abnormal_ha_b:0;
+                $abnormal_ha_c = (!empty($dataContent->abnormal_ha_c))?$dataContent->abnormal_ha_c:0;
+                $abnormal_ha_d = (!empty($dataContent->abnormal_ha_d))?$dataContent->abnormal_ha_d:0;
+                $abnormal_im_e = (!empty($dataContent->abnormal_im_e))?$dataContent->abnormal_im_e:0;
+                $abnormal_im_f = (!empty($dataContent->abnormal_im_f))?$dataContent->abnormal_im_f:0;
+                $abnormal_su_g = (!empty($dataContent->abnormal_su_g))?$dataContent->abnormal_su_g:0;
+                $abnormal_factor = (!empty($dataContent->abnormal_factor))?$dataContent->abnormal_factor:0;
+                $abnormal_table = (!empty($dataContent->abnormal_table))?$dataContent->abnormal_table:0;
+                $ranking = (!empty($dataContent->ranking))?$dataContent->ranking:0;
                 $doc_user_creation = (!empty($dataContent->user_creation))?$dataContent->user_creation:$userData->id;
                 $doc_date_creation = (!empty($dataContent->date_creation))?\date("Y-m-d H:i:s", strtotime($dataContent->date_creation)):\date('Y-m-d H:i:s');
                 
-                
-                $doc = new \IMS\Model\Entity\hiraDocuments();
-                //$doc = new hiraDocuments();
+                $doc = new IEEA();
                 $doc->setCompany($doc_company)
                     ->setCountry($doc_country)
                     ->setLocation($doc_location)
-                    ->setId_danger_risk(0)
-                    ->setId_danger($doc_id_danger)
-                    ->setId_risk($doc_id_risk)
-                    ->setId_process_main($doc_thread)
-                    ->setControl_measures($control_measures)
-                    ->setEval_iper_h($eval_iper_h)
-                    ->setEval_iper_m($eval_iper_m)
-                    ->setEval_iper_l($eval_iper_l)
-                    ->setEval_risk_h($eval_risk_h)
-                    ->setEval_risk_m($eval_risk_m)
-                    ->setEval_risk_l($eval_risk_l)
-                    ->setId_activity($doc_activity)
+                    ->setId_type($doc_id_type)
+                    ->setId_cycle($doc_id_cycle)
+                    ->setId_process($doc_process)
+                    ->setId_thread($doc_thread)
+                    ->setId_ea($doc_ea)
+                    ->setId_ei($doc_ei)
+                    ->setQuantity($doc_quantity)
+                    ->setUnit_measure($doc_unit_measure)
+                    ->setInfluence($doc_influence)
+                    ->setMagnitude($doc_magnitude)
+                    ->setFrequency($doc_frequency)
+                    ->setE_impact($doc_e_impact)
+                    ->setSave($doc_save)
+                    ->setT_normal_c($doc_t_normal_c)
+                    ->setLegal_req($doc_legal_req)
+                    ->setCorporative_req($doc_corporative_req)
+                    ->setVoluntary_req($doc_voluntary_req)
+                    ->setTotal_req($doc_total_req)
+                    ->setAbnormal_ha_a($abnormal_ha_a)
+                    ->setAbnormal_ha_b($abnormal_ha_b)
+                    ->setAbnormal_ha_c($abnormal_ha_c)
+                    ->setAbnormal_ha_d($abnormal_ha_d)
+                    ->setAbnormal_im_e($abnormal_im_e)
+                    ->setAbnormal_im_f($abnormal_im_f)
+                    ->setAbnormal_su_g($abnormal_su_g)
+                    ->setAbnormal_factor($abnormal_factor)
+                    ->setAbnormal_table($abnormal_table)
+                    ->setRanking($ranking)
                     ->setUser_creation($doc_user_creation)
                     ->setDate_creation($doc_date_creation)
-                    ->setStatus(1);
+                    ->setStatus('A');
                 
                 $sqlDocs->save($doc);
             }

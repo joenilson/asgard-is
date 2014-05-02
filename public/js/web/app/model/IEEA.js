@@ -48,6 +48,7 @@ Ext.define('Asgard.model.IEEA', {
         { name: 'desc_ea', type: 'string' },
         { name: 'desc_ei', type: 'string' },
         { name: 'desc_process', type: 'string' },
-        { name: 'desc_thread', type: 'string' }
+        { name: 'desc_thread', type: 'string' },
+        { name: 'desc_unit_measure', type: 'string' }
     ]
 });

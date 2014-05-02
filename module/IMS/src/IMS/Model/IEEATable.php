@@ -90,17 +90,22 @@ class IEEATable extends AbstractTableGateway {
                 array('desc_ei'=>'description')
             );
             $select->join(
+                array('h5'=>new TableIdentifier($this->table_helper, $this->schema_name)), 
+                new Expression ( $this->table_name.'.unit_measure = h5.id AND h5.helper=\'um\' and h5.status=\'A\' AND h5.lang=\''.$lang.'\''), 
+                array('desc_unit_measure'=>'description')
+            );
+            $select->join(
                 array('pm'=>new TableIdentifier($this->table_process, $this->schema_name)), 
                 new Expression ( $this->table_name.'.id_process = pm.id AND pm.lang=\''.$lang.'\''), 
-                array('desc_process'=>'description')
+                array('desc_process'=>'value')
             );
             $select->join(
                 array('pt'=>new TableIdentifier($this->table_thread, $this->schema_name)), 
-                new Expression ( $this->table_name.'.id_thread = pt.id AND pm.lang=\''.$lang.'\''), 
-                array('desc_thread'=>'description')
+                new Expression ( $this->table_name.'.id_thread = pt.id AND pt.lang=\''.$lang.'\''), 
+                array('desc_thread'=>'value')
             );
             $select->where(array($this->table_name.'.status'=>'A','company'=>$companies,'country'=>$countries,'location'=>$locations, 'id_process'=>$process_id,'id_thread'=>$thread_id));
-            $select->order(array('id_process','id_thread','id_type','id_class','id'));
+            $select->order(array('id_process','id_thread','id_type','id_cycle','id'));
             //echo $select->getSqlString();
         });
         
@@ -141,18 +146,23 @@ class IEEATable extends AbstractTableGateway {
                 array('desc_ei'=>'description')
             );
             $select->join(
+                array('h5'=>new TableIdentifier($this->table_helper, $this->schema_name)), 
+                new Expression ( $this->table_name.'.unit_measure = h5.id AND h5.helper=\'um\' and h5.status=\'A\' AND h5.lang=\''.$lang.'\''), 
+                array('desc_unit_measure'=>'description')
+            );
+            $select->join(
                 array('pm'=>new TableIdentifier($this->table_process, $this->schema_name)), 
                 new Expression ( $this->table_name.'.id_process = pm.id AND pm.lang=\''.$lang.'\''), 
-                array('desc_process'=>'description')
+                array('desc_process'=>'value')
             );
             $select->join(
                 array('pt'=>new TableIdentifier($this->table_thread, $this->schema_name)), 
-                new Expression ( $this->table_name.'.id_thread = pt.id AND pm.lang=\''.$lang.'\''), 
-                array('desc_thread'=>'description')
+                new Expression ( $this->table_name.'.id_thread = pt.id AND pt.lang=\''.$lang.'\''), 
+                array('desc_thread'=>'value')
             );
 
             $select->where(array($this->table_name.'.status'=>'A','company'=>$companies,'country'=>$countries,'location'=>$locations));
-            $select->order(array('id_process','id_thread','id_type','id_class','id'));
+            $select->order(array('id_process','id_thread','id_type','id_cycle','id'));
             //echo $select->getSqlString();
         });
         if (!$row)

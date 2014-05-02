@@ -42,7 +42,8 @@ Ext.define('Asgard.view.Viewport', {
     'Asgard.lib.Panels.OrganigramPanel','Asgard.lib.forms.organigramNewOrganigram',
     'Asgard.store.Communications','Asgard.lib.grid.communications','Asgard.lib.forms.commNewCommunication',
     'Asgard.store.TrainingPlan','Asgard.lib.grid.trainingplan','Asgard.lib.forms.trainingNewTrainingPlan',
-    'Asgard.store.IEEA','Asgard.lib.grid.ieea'
+    'Asgard.store.IEEA','Asgard.lib.grid.ieea','Asgard.lib.forms.ieeaMasterFileUpload','Asgard.store.IEEAUpload',
+    'Asgard.lib.grid.ieea_upload'
   ],
   menuTitleText: 'Main Menu',
     defaults: {

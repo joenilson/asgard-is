@@ -19,9 +19,9 @@
  * @version 1.0.0 devel
  * @author Joe Nilson <joenilson@gmail.com>
  */
-Ext.define('Asgard.lib.grid.ieea',{
+Ext.define('Asgard.lib.grid.ieea_upload',{
     extend: 'Asgard.lib.GridPanel',
-    alias: 'widget.ieea',
+    alias: 'widget.ieeaupload',
     autoShow: true,
     autoDestroy: true,
     border: false,
@@ -66,7 +66,6 @@ Ext.define('Asgard.lib.grid.ieea',{
     haText: 'Human Aspects',
     imText: 'Instructions and Machines',
     suText: 'Sustance Nature',
-    
     editToolText: 'Edit',
     deleteToolText: 'Delete',
     addToolText: 'Add',
@@ -87,48 +86,67 @@ Ext.define('Asgard.lib.grid.ieea',{
     viewConfig: {
         stripeRows: true
     },
+
     initComponent: function(){
         var me = this;
         this.title = this.titleText;
         this.autoScroll = true;
         this.emptyText = this.emptyTextText;
         this.selType = 'checkboxmodel';
-        this.tools = [{
-            type: 'gear',
-            tooltip: this.editToolText,
-            scope: this,
-            handler: this.fnLibraryTool
-        },{
-            type: 'minus',
-            tooltip: this.deleteToolText,
-            scope: this,
-            handler: this.fnLibraryTool
-        },{
-            type: 'plus',
-            tooltip: this.addToolText,
-            scope: this,
-            handler: this.fnLibraryTool
-        },{
-            type: 'expand',
-            tooltip: this.uploadToolText,
-            scope: this,
-            handler: this.fnLibraryTool
-          }];
         this.columnLines = true;
+        this.dockedItems = [{
+            xtype: 'toolbar',
+            ui: 'footer',
+            dock: 'bottom',
+            items: ['->', {
+                text: this.buttonAcceptText,
+                scope: this,
+                handler: function(){
+                    var gridStore = this.getStore();
+                    var gridSel = this.getSelectionModel().getSelection();
+                    if(gridSel.length > 0){
+                        var sendData = [];
+                        for(i=0; i<gridSel.length; i++){
+                            sendData.push(gridSel[i].data);
+                        }
+                        Ext.Ajax.request({
+                            url: 'ims/processmassieea',
+                            params: {
+                                data: Ext.encode(sendData)
+                            },
+                            success: function(response){
+                                var text = response.responseText;
+                                var result = Ext.decode(text);
+                                if(result.success){
+                                    for(i=0; i<gridSel.length; i++){
+                                        gridStore.remove(gridSel[i]);
+                                    }
+                                    me.showResultMessage(result.docs_processed);
+                                }else{
+                                    me.showFailureMessage();
+                                }
+                            }
+                        }, this);
+                    }else{
+                        this.showEmptyMessage();
+                    }
+                }
+            }]
+        }];
         this.columns =  {
             plugins: [{
                 ptype: 'gridautoresizer'
             }],
             items: [
                 {text: this.idText, sortable: false, hidden: true, dataIndex: 'id', filter: false},
-                {text: this.IdTypeText, width: 80, sortable: false, hidden: false, dataIndex: 'desc_type', filter: 'combo', tdCls: 'wrapText', locked: true},
-                {text: this.IdCycleText, width: 50, sortable: false, hidden: false, dataIndex: 'desc_cycle', filter: 'combo', tdCls: 'wrapText', locked: true},
-                {text: this.IdProcessText, width: 120, sortable: false, hidden: false, dataIndex: 'desc_process', filter: 'combo', tdCls: 'wrapText', locked: true},
-                {text: this.IdThreadText, width: 100, sortable: false, hidden: false, dataIndex: 'desc_thread', filter: 'combo', tdCls: 'wrapText', locked: true},
-                {text: this.IdEaText, width: 100, sortable: false, hidden: false, dataIndex: 'desc_ea', filter: 'combo', tdCls: 'wrapText', locked: true},
-                {text: this.IdEiText, width: 120, sortable: false, hidden: false, dataIndex: 'desc_ei', filter: 'combo', tdCls: 'wrapText', locked: true},
+                {text: this.IdTypeText, width: 150, sortable: false, hidden: false, dataIndex: 'desc_type', filter: true, tdCls: 'wrapText'},
+                {text: this.IdCycleText, width: 150, sortable: false, hidden: false, dataIndex: 'desc_cycle', filter: true, tdCls: 'wrapText'},
+                {text: this.IdProcessText, width: 150, sortable: false, hidden: false, dataIndex: 'desc_process', filter: true, tdCls: 'wrapText'},
+                {text: this.IdThreadText, width: 150, sortable: false, hidden: false, dataIndex: 'desc_thread', filter: true, tdCls: 'wrapText'},
+                {text: this.IdEaText, width: 150, sortable: false, hidden: false, dataIndex: 'desc_ea', filter: true, tdCls: 'wrapText'},
+                {text: this.IdEiText, width: 150, sortable: false, hidden: false, dataIndex: 'desc_ei', filter: true, tdCls: 'wrapText'},
                 {text: this.QuantityText, width: 50, sortable: false, hidden: false, dataIndex: 'quantity', filter: true, tdCls: 'wrapText'},
-                {text: this.UnitMeasureText, width: 50, sortable: false, hidden: false, dataIndex: 'desc_unit_measure', filter: 'combo', tdCls: 'wrapText'},
+                {text: this.UnitMeasureText, width: 50, sortable: false, hidden: false, dataIndex: 'desc_unit_measure', filter: true, tdCls: 'wrapText'},
                 {text: this.InfluenceText, width: 50, sortable: false, hidden: false, dataIndex: 'influence', filter: true, tdCls: 'wrapText'},
                 {text: this.MagnitudeText, width: 50, sortable: false, hidden: false, dataIndex: 'magnitude', filter: true, tdCls: 'wrapText'},
                 {text: this.FrequencyText, width: 50, sortable: false, hidden: false, dataIndex: 'frequency', filter: true, tdCls: 'wrapText'},
@@ -203,90 +221,6 @@ Ext.define('Asgard.lib.grid.ieea',{
         }
         return val;
     },
-    fnLibraryTool: function(object, event, panel, button){
-        var me = this;
-        //console.log(button);
-        if(button.type==='minus'){
-            var gridStore = this.getStore();
-            var selectedItems = this.getSelectionModel().getSelection();
-            
-            if(selectedItems.length > 0){
-                Ext.Msg.confirm(this.chooseTitleText,
-                this.chooseTitleBodyDelete,
-                function(buttonId) {
-                    if (buttonId === 'no') {
-
-                    } else {
-                        var sendData = [];
-                        for(i=0; i<selectedItems.length; i++){
-                            sendData.push(selectedItems[i].data.id_danger_risk);
-                        }
-                        Ext.Ajax.request({
-                            url: 'ims/removeieea',
-                            params: {
-                                data_ids: Ext.encode(sendData)
-                            },
-                            success: function(response){
-                                var text = response.responseText;
-                                var result = Ext.decode(text);
-                                if(result.success){
-                                    for(i=0; i<selectedItems.length; i++){
-                                        gridStore.remove(selectedItems[i]);
-                                    }
-                                    me.showResultMessage(result.docs_processed);
-                                }else{
-                                    me.showFailureMessage();
-                                }
-                            }
-                        }, this);
-                    }
-                }, this);
-            }else{
-                this.showEmptyMessage();
-            }
-            
-        }else if(button.type==='plus'){
-            var winAdd = Ext.create('Asgard.lib.window.windowGeneric',{
-                height: document.documentElement.clientHeight - 50,
-                innerPanel : this
-            });
-            winAdd.add(Ext.create('Asgard.lib.forms.ieeaNewEval'));
-            winAdd.show();
-        }else if(button.type==='gear'){
-            var gridStore = this.getStore();
-            var selectedItems = this.getSelectionModel().getSelection();
-            if((selectedItems.length > 0) && (selectedItems[0].data.status === 1)){
-                var winAdd = Ext.create('Asgard.lib.window.windowGeneric',{
-                    height: document.documentElement.clientHeight - 50,
-                    //width: document.documentElement.clientWidth - 450,
-                    width: 550,
-                    innerPanel : this
-                });
-                winAdd.setTitle(this.titleCausesTool);
-                winAdd.add(Ext.create('Asgard.lib.forms.ieeaIncidentCauses',{
-                    baseParams: { incident_id: selectedItems[0].data.id,
-                                    company: selectedItems[0].data.company,
-                                    country: selectedItems[0].data.country,
-                                    location: selectedItems[0].data.location }
-                }));
-                winAdd.show();
-            }else{
-                if(selectedItems.length > 0){
-                    this.showEmptyMessage();
-                }else if(selectedItems[0].data.status !== 1){
-                    this.showWrongMessage();
-                }
-            }
-        }else if(button.type==='expand'){
-            var windowDoc = this.createWindow();
-            windowDoc.setTitle('Upload Master Files');
-            windowDoc.setHeight(250);
-            winContent = Ext.create('Asgard.lib.forms.ieeaMasterFileUpload');
-            windowDoc.add(winContent);
-            windowDoc.show();
-        }
-    },
-    
     createWindow: function() {
         var windowIncident = Ext.create('Ext.window.Window',{
                 closable: true,
