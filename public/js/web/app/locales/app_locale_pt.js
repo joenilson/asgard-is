@@ -323,7 +323,7 @@ Ext.define('Asgard.locales.lib.forms.yearMonthField',{
 });
 
 Ext.define('Asgard.locales.lib.grid.emergencyplan',{
-    override: 'Asgard.lib.forms.yearMonthField',
+    override: 'Asgard.lib.grid.emergencyplan',
     titleText: 'Registros Planejamento e exercícios de emergência',
     descText: 'Descrição',
     dateText: 'Data',
