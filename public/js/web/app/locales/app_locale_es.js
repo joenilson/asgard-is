@@ -149,7 +149,23 @@ Ext.define('Asgard.locales.lib.grid.documents',{
     originText: 'Origen',
     retentionText: 'Tiempo de Retencion',
     toolViewDocText: 'Ver Documento',
-    toolRequestText: 'Solicitar Cambio'
+    toolRequestText: 'Solicitar Cambio',
+    /* Added 03 - May - 2014 */
+    toolAddText: 'Agregar Documento',
+    toolRemoveText: 'Eliminar Documento',
+    toolChangeText: 'Ver las Solicitudes de Cambio',
+    toolMassText: 'Subir Plantilla de Documentos',
+    titleNewDocument: 'Agregar un Documento',
+    titleEditDocument: 'Editar Documento',
+    loadingFileText: 'Cargando Documento.. espere por favor...',
+    chooseTitleText: 'Advertencia',
+    emptyFileMessage: 'No existe el archivo asociado a este documento...',
+    chooseTitleBodyDelete: 'Va eliminar un documento!. <br />Desea seguir con esta acción?',
+    chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?',
+    warningTitle: 'Advertencia!',
+    emptyCCLText: 'Por favor complete los campos Compañia, Pais y Ubicación',
+    emptyTitleText: 'No se ha seleccionado nada',
+    emptyMessageText: 'No se ha seleccionado ningún documento, <br />Para continuar primero seleccione un documento...',
 });
 
 Ext.define('Asgard.locales.lib.forms.CompaniesCombo',{
@@ -305,4 +321,23 @@ Ext.define('Asgard.locales.lib.forms.yearMonthField',{
     fieldLabelText: 'Mes y Año'
 });
 
+Ext.define('Asgard.locales.lib.grid.emergencyplan',{
+    override: 'Asgard.lib.forms.yearMonthField',
+    titleText: 'Plan de Emergencia y Actas de Simulacros',
+    descText: 'Descripcion',
+    dateText: 'Fecha',
+    fileText: 'Documento',
+    toolAddText: 'Agregar',
+    toolUploadText: 'Subir Plantilla',
+    toolRemoveText: 'Eliminar Entrada',
+    toolChangeText: 'Cambiar Entrada',
+    toolViewDocText: 'Ver Archivo',
+    titleNewAuditPlan: 'Agregar nuevo Documento',
+    titleEditAuditPlan: 'Editar Documento',
+    loadingFileText: 'Cargando Documento... por favor espere...',
+    chooseTitleText: 'Advertencia',
+    emptyFileMessage: 'No se encontro el archivo enlazado al documento...',
+    chooseTitleBodyDelete: 'Va eliminar un documento!. <br />Desea seguir con esta acción?',
+    chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?'
+});
 

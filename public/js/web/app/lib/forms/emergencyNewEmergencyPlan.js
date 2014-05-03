@@ -19,31 +19,32 @@
  * @version 1.0.0 devel
  * @author Joe Nilson <joenilson@gmail.com>
  */
-Ext.define('Asgard.lib.forms.commNewCommunication',{
+Ext.define('Asgard.lib.forms.emergencyNewEmergencyPlan',{
     extend: 'Ext.form.Panel',
-    alias: 'widget.newcommunication',
-    url: 'ims/addcommunication',
+    alias: 'widget.newemergencyplan',
+    url: 'ims/addemergencyplan',
 
     descText: 'Description',
+    datebeginText: 'Date',
     fileText: 'File',
-    typeText: 'Type',
-    fileFieldEmptyText: 'Choose a document',    
+    fileFieldEmptyText: 'Choose a document',
+    planText: 'Plan',
+    actText: 'Act',
+    typeText: 'Document Type',
     textSubmitButton: 'Send',
     textCancelButton: 'Cancel',
-    internalText: 'Internal',
-    externalText: 'External',
     warningTitle: 'Warning',
-    warningText: 'Communication exists!, revise your data',
+    warningText: 'Emergency Plan exists!, revise your data',
     required: '<span style="color:red;font-weight:bold" data-qtip="Required">*</span>',
-    successText: 'Communication saved succefully!',
+    successText: 'Emergency Plan loaded succefully!',
     failureText: 'Something is wrong, please try it again',
     descField: undefined,
-    typeField: undefined,
+    datebeginField: undefined,
     fileField: undefined,
     companiesField: undefined,
     countriesField: undefined,
     locationsField: undefined,
-
+    typeField: undefined,
     defaults: {
         labelWidth: 180,
         msgTarget: 'qtip'
@@ -69,10 +70,19 @@ Ext.define('Asgard.lib.forms.commNewCommunication',{
             fieldLabel: this.typeText,
             //cls: 'x-check-group-alt',
             items: [
-                {boxLabel: this.internalText, name: 'type', inputValue:'I' },
-                {boxLabel: this.externalText, name: 'type', inputValue:'E' }
+                {boxLabel: this.planText, name: 'type', inputValue:'P' },
+                {boxLabel: this.actText, name: 'type', inputValue:'A' }
             ]
         }, this.typeField);
+        
+        this.datebeginField = this.datebeginField || [];
+        this.datebeginField = Ext.Object.merge({
+            fieldLabel: this.datebeginText,
+            xtype: 'vdatefield',
+            name: 'date_emergencyplan',
+            width: 350,
+            allowBlank:true
+        }, this.datebeginField);
         
         this.fileField = this.fileField || [];
         this.fileField = Ext.Object.merge({
@@ -81,7 +91,7 @@ Ext.define('Asgard.lib.forms.commNewCommunication',{
             xtype: 'filefield',
             anchor: '100%',
             emptyText: this.fileFieldEmptyText,
-            name: 'comm_file',
+            name: 'emergencyplan_file',
             listeners:{
                 afterrender:function(cmp){
                     cmp.fileInputEl.set({
@@ -93,7 +103,7 @@ Ext.define('Asgard.lib.forms.commNewCommunication',{
             buttonConfig: {
                 iconCls: 'upload-icon'
             }
-        }, this.fileField);        
+        }, this.auditfileField);        
         
         this.companiesField = this.companiesField || [];
         this.companiesField = Ext.Object.merge({
@@ -161,8 +171,9 @@ Ext.define('Asgard.lib.forms.commNewCommunication',{
             this.companiesField,
             this.countriesField,
             this.locationsField,
-            this.descField,
             this.typeField,
+            this.descField,
+            this.datebeginField,
             this.fileField
         ]);
         
@@ -182,7 +193,7 @@ Ext.define('Asgard.lib.forms.commNewCommunication',{
         if(form.isValid()){
             form.submit({
                 params: {
-                    module: 'imscommunications'
+                    module: 'imsauditplan'
                 },
                 success: function(fp, o, m, r) {
                     form.reset();
@@ -192,8 +203,6 @@ Ext.define('Asgard.lib.forms.commNewCommunication',{
                     Ext.Msg.alert('Success', me.successText);
                 },
                 failure: function(fp, o, u){
-                    console.log(fp);
-                    console.log(o);
                     Ext.Msg.alert('Failure', me.failureText);
                 }
             });

@@ -35,20 +35,6 @@ var DocsLibraryStore<?= $this->panelId; ?> = Ext.create('Asgard.store.DocsLibrar
 
 var innerStore = new Ext.create('Asgard.store.DocsRequest');
 
-var toolsLibrary = [{
-    type: 'gear',
-    tooltip: 'View Change Requests Queue',
-    handler: fnLibraryTool
-},{
-    type: 'plus',
-    tooltip: 'Add Document',
-    handler: fnLibraryTool
-},{
-    type: 'expand',
-    tooltip: 'Upload Master File',
-    handler: fnLibraryTool
-}];
-
 /*
  * Form Panel to attach
  */
@@ -59,7 +45,7 @@ var formDataRequest<?=$this->panelId; ?> = Ext.create('Asgard.lib.forms.comboCCL
  */
 var DocumentsGrid<?=$this->panelId; ?> = Ext.create('Asgard.lib.grid.documents',{
     store: DocsLibraryStore<?= $this->panelId; ?>,
-    tools: toolsLibrary
+    //tools: toolsLibrary
 });
 
 var libraryViewport<?=$this->panelId; ?> = Ext.create('Ext.panel.Panel', {

@@ -19,27 +19,26 @@
  * @version 1.0.0 devel
  * @author Joe Nilson <joenilson@gmail.com>
  */
-Ext.define('Asgard.lib.forms.commNewCommunication',{
+Ext.define('Asgard.lib.forms.CommitteeProcedings',{
     extend: 'Ext.form.Panel',
-    alias: 'widget.newcommunication',
-    url: 'ims/addcommunication',
+    alias: 'widget.newcommiteproceedings',
+    url: 'ims/addcommitteeproceedings',
 
     descText: 'Description',
+    datebeginText: 'Date',
     fileText: 'File',
-    typeText: 'Type',
     fileFieldEmptyText: 'Choose a document',    
     textSubmitButton: 'Send',
     textCancelButton: 'Cancel',
-    internalText: 'Internal',
-    externalText: 'External',
+
     warningTitle: 'Warning',
-    warningText: 'Communication exists!, revise your data',
+    warningText: 'Procedings exists!, revise your data',
     required: '<span style="color:red;font-weight:bold" data-qtip="Required">*</span>',
-    successText: 'Communication saved succefully!',
+    successText: 'Proceding loaded succefully!',
     failureText: 'Something is wrong, please try it again',
     descField: undefined,
-    typeField: undefined,
-    fileField: undefined,
+    datebeginField: undefined,
+    auditfileField: undefined,
     companiesField: undefined,
     countriesField: undefined,
     locationsField: undefined,
@@ -63,16 +62,14 @@ Ext.define('Asgard.lib.forms.commNewCommunication',{
             allowBlank:false
         }, this.descField);
         
-        this.typeField = this.typeField || [];
-        this.typeField = Ext.Object.merge({
-            xtype: 'radiogroup',
-            fieldLabel: this.typeText,
-            //cls: 'x-check-group-alt',
-            items: [
-                {boxLabel: this.internalText, name: 'type', inputValue:'I' },
-                {boxLabel: this.externalText, name: 'type', inputValue:'E' }
-            ]
-        }, this.typeField);
+        this.datebeginField = this.datebeginField || [];
+        this.datebeginField = Ext.Object.merge({
+            fieldLabel: this.datebeginText,
+            xtype: 'vdatefield',
+            name: 'date_proceeding',
+            width: 350,
+            allowBlank:true
+        }, this.datebeginField);
         
         this.fileField = this.fileField || [];
         this.fileField = Ext.Object.merge({
@@ -81,7 +78,7 @@ Ext.define('Asgard.lib.forms.commNewCommunication',{
             xtype: 'filefield',
             anchor: '100%',
             emptyText: this.fileFieldEmptyText,
-            name: 'comm_file',
+            name: 'proceeding_file',
             listeners:{
                 afterrender:function(cmp){
                     cmp.fileInputEl.set({
@@ -162,7 +159,7 @@ Ext.define('Asgard.lib.forms.commNewCommunication',{
             this.countriesField,
             this.locationsField,
             this.descField,
-            this.typeField,
+            this.datebeginField,
             this.fileField
         ]);
         
@@ -175,25 +172,26 @@ Ext.define('Asgard.lib.forms.commNewCommunication',{
         var me = this;
         var form = button.up('panel').getForm();
         var panel = button.up('panel');
+        var grid = panel.innerPanel;
+        var formValues = form.getValues();
         var companyId = panel.items.getAt(0).getValue();
         var countryId = panel.items.getAt(1).getValue();
         var locationId = panel.items.getAt(2).getValue();
-        var grid = panel.innerPanel;
+        var yearmonth = formValues['date_proceeding'];
+        
         if(form.isValid()){
             form.submit({
                 params: {
-                    module: 'imscommunications'
+                    module: 'imsprocedings'
                 },
                 success: function(fp, o, m, r) {
                     form.reset();
                     var winActive = Ext.WindowManager.getActive();
                     winActive.hide();
-                    grid.getStore().load({params: { company: companyId, country: countryId, location: locationId }});
+                    grid.getStore().load({params: { company: companyId, country: countryId, location: locationId, monthfield: yearmonth }});
                     Ext.Msg.alert('Success', me.successText);
                 },
                 failure: function(fp, o, u){
-                    console.log(fp);
-                    console.log(o);
                     Ext.Msg.alert('Failure', me.failureText);
                 }
             });

@@ -51,6 +51,7 @@ use IMS\Model\RequirementsHelperTable;
 use IMS\Model\SGIObjectivesTable;
 use IMS\Model\CommunicationsTable;
 use IMS\Model\TrainingPlanTable;
+use IMS\Model\EmergencyPlanTable;
 use IMS\Model\OrganigramTable;
 use IMS\Model\ProcessOwnerProfileTable;
 use IMS\Model\SafetyCommitteeTable;
@@ -120,6 +121,11 @@ class Module implements AutoloaderProviderInterface
                 'IMS\Model\IEEATable'=> function($sm){
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new IEEATable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\EmergencyPlanTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new EmergencyPlanTable($dbAdapter);
                     return $table;
                 },
                 'IMS\Model\TrainingPlanTable'=> function($sm){

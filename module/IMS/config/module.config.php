@@ -186,6 +186,219 @@ return array(
                             ),
                         ),
                     ),
+                    'emergencyplan' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/emergencyplan[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'emergencyplan'
+                            ),
+                        ),
+                    ),
+                    'getemergencyplan' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/getemergencyplan[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'getemergencyplan'
+                            ),
+                        ),
+                    ),
+                    'addemergencyplan' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/addemergencyplan[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'addemergencyplan'
+                            ),
+                        ),
+                    ),
+                    'removeemergencyplan' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/removeemergencyplan[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'removeemergencyplan'
+                            ),
+                        ),
+                    ),
+                    'formemergencyplan' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/formemergencyplan[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'formemergencyplan'
+                            ),
+                        ),
+                    ),
+                    
+                    'drillsphotos' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/drillsphotos[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'drillsphotos'
+                            ),
+                        ),
+                    ),
+                    'getdrillsphotos' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/getdrillsphotos[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'getdrillsphotos'
+                            ),
+                        ),
+                    ),
+                    'adddrillsphotos' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/adddrillsphotos[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'adddrillsphotos'
+                            ),
+                        ),
+                    ),
+                    'removedrillsphotos' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/removedrillsphotos[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'removedrillsphotos'
+                            ),
+                        ),
+                    ),
+                    'formdrillsphotos' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/formdrillsphotos[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'formdrillsphotos'
+                            ),
+                        ),
+                    ),
+                    
+                    'drillsminutes' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/drillsminutes[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'drillsminutes'
+                            ),
+                        ),
+                    ),
+                    'getdrillsminutes' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/getdrillsminutes[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'getdrillsminutes'
+                            ),
+                        ),
+                    ),
+                    'adddrillsminutes' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/adddrillsminutes[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'adddrillsminutes'
+                            ),
+                        ),
+                    ),
+                    'removedrillsminutes' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/removedrillsminutes[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'removedrillsminutes'
+                            ),
+                        ),
+                    ),
+                    'formdrillsminutes' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/formdrillsminutes[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'formdrillsminutes'
+                            ),
+                        ),
+                    ),  
+                    
                     'trainingplan' => array(
                         'type'    => 'Segment',
                         'options' => array(
@@ -1149,6 +1362,20 @@ return array(
                             ),
                             'defaults' => array(
                                 'action' => 'docs'
+                            ),
+                        ),
+                    ),
+                    'removedocument' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/removedocument[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'removedocument'
                             ),
                         ),
                     ),

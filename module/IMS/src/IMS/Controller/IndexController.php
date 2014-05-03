@@ -23,6 +23,7 @@ use IMS\Model\Entity\hiraIncidentDetails;
 use IMS\Model\Entity\Organigram;
 use IMS\Model\Entity\Communications;
 use IMS\Model\Entity\TrainingPlan;
+use IMS\Model\Entity\EmergencyPlan;
 use IMS\Model\Entity\IEEA;
 
 use AsgardLib\Versioning\Documents;
@@ -79,6 +80,7 @@ class IndexController extends AbstractActionController
     protected $organigramTable;
     protected $communicationsTable;
     protected $trainingplanTable;
+    protected $emergencyplanTable;
     
     public function indexAction()
     {
@@ -1473,7 +1475,7 @@ class IndexController extends AbstractActionController
         $country = $request->getPost('countriesCombo');
         $location = $request->getPost('locationsCombo');
         $description = $this->cleanTags($request->getPost('description'));
-        $date_proceeding = $request->getPost('auditdatebegin');
+        $date_proceeding = $request->getPost('date_proceeding');
         $files =  $request->getFiles()->toArray();
         $id = $request->getPost('proceeding_id');
         $date_creation = \date('Y-m-d h:i:s');
@@ -1569,6 +1571,235 @@ class IndexController extends AbstractActionController
             $data['data']="";
         }
         return new JsonModel($data);
+    }
+    
+    public function emergencyplanAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        return array(
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'lang'=>$lang,
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
+        );
+    }
+    
+    public function getemergencyplanAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang=$userPrefs[0]['lang'];
+
+        $request = $this->getRequest();
+        $company = $request->getQuery('company');
+        $country = $request->getQuery('country');
+        $location = $request->getQuery('location');
+        $sql = $this->getEmergencyPlanTable();
+        $dataDocuments = $sql->getEmergencyPlanByCCLType($company,$country,$location,'P');
+        if($dataDocuments){
+            $dataResult['success']=true;
+            $dataResult['results']=$dataDocuments;
+        }else{
+            $dataResult['success']=true;
+            $dataResult['results']="";
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function addemergencyplanAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $company = $request->getPost('companiesCombo');
+        $country = $request->getPost('countriesCombo');
+        $location = $request->getPost('locationsCombo');
+        $description = $request->getPost('description');
+        $type_doc = $request->getPost('type');
+        $date_emergencyplan = $request->getPost('date_emergencyplan');
+        $files =  $request->getFiles()->toArray();
+        $id = $request->getPost('emergencyplan_id');
+        $date_creation = \date('Y-m-d h:i:s');
+
+        $dataResult = array();
+        
+        $sql = $this->getEmergencyPlanTable();
+        
+        $object = new EmergencyPlan();
+        $object->setDescription($description)
+                ->setCompany($company)
+                ->setCountry($country)
+                ->setLocation($location)
+                ->setType_doc($type_doc)
+                ->setDate_emergencyplan($date_emergencyplan)
+                ->setUser_creation($userData->id)
+                ->setStatus('A')
+                ->setDate_creation($date_creation);
+        if($id){
+            $object->setId($id);
+        }
+        $dataResult['success'] = true; 
+        try {
+            $newId = $sql->save($object);
+            
+        } catch (\Exception $ex) {
+            //$error = $ex;
+            
+            $dataResult['success'] = false; 
+            $dataResult['message'] = $ex->getMessage(); 
+        }
+
+        $valid = new \Zend\Validator\File\UploadFile();
+        
+        if(isset($newId) AND $valid->isValid($files['emergencyplan_file'])){
+            $fileName = "emergencyplan_{$company}_{$country}_{$location}_".$newId.".pdf";
+            $this->savefile('library/emergencyplan', $files['emergencyplan_file'], $fileName, false, null);
+            $sql->update(array('filename'=>'library/emergencyplan/'.$fileName),array('id'=>$newId));
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function removeemergencyplanAction(){
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $request = $this->getRequest();
+        $object_id = $request->getPost('id');
+        $company = $request->getPost('company');
+        $country = $request->getPost('country');
+        $location = $request->getPost('location');
+        $sql = $this->getEmergencyPlanTable();
+        $objectData = $sql->getEmergencyPlanByCCLId($company,$country,$location,$object_id);
+        $dataRemove = array();
+        $dataResult = array();
+        $dataResult['success'] = false;
+        if(count($objectData)>0){
+            $dataRemove['company']=$company;
+            $dataRemove['country']=$country;
+            $dataRemove['location']=$location;
+            $dataRemove['id']=$object_id;
+            $dataUp['status']="I";
+            $dataUp['date_modification']=\date('Y-m-d H:i:s');
+            $dataUp['user_modification']=$userData->id;
+            $sql->update($dataUp,$dataRemove);
+            $dataResult['success'] = true;
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function formemergencyplanAction(){
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $request = $this->getRequest();
+        $object_id = $request->getPost('id');
+        $company = $request->getPost('company');
+        $country = $request->getPost('country');
+        $location = $request->getPost('location');
+        $sql = $this->getEmergencyPlanTable();
+        $objectData = $sql->getEmergencyPlanByCCLId($company,$country,$location,$object_id);
+        if($objectData){
+            $dataDocuments['description'] = $objectData[0]['description'];
+            $dataDocuments['date_emergencyplan'] = $objectData[0]['date_emergencyplan'];
+            $dataDocuments['companiesCombo'] = $objectData[0]['company'];
+            $dataDocuments['countriesCombo'] = $objectData[0]['country'];
+            $dataDocuments['locationsCombo'] = $objectData[0]['location'];
+            $dataDocuments['type'] = $objectData[0]['type_doc'];
+            $dataResult['success']=true;
+            $dataResult['data']=$dataDocuments;
+        }else{
+            $dataResult['success']=false;
+            $dataResult['results']="";
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function drillsphotosAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        return array(
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'lang'=>$lang,
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
+        );
+    }
+    
+    public function getdrillsphotosAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang=$userPrefs[0]['lang'];
+
+        $request = $this->getRequest();
+        $company = $request->getQuery('company');
+        $country = $request->getQuery('country');
+        $location = $request->getQuery('location');
+        $year = $request->getQuery('year');
+        $sql = $this->getCommitteeProceedingsTable();
+        $dataProceedings = $sql->getProceedingsByCCLY($company,$country,$location,$year);
+        if($dataProceedings){
+            $dataResult['success']=true;
+            $dataResult['results']=$dataProceedings;
+        }else{
+            $dataResult['success']=false;
+            $dataResult['results']="";
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function adddrillsphotosAction(){
+        
+    }
+    
+    public function removedrillsphotosAction(){
+        
+    }
+    
+    public function formdrillsphotosAction(){
+        
+    }
+    
+    public function drillsminutesAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        return array(
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'lang'=>$lang,
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
+        );
+    }
+    
+    public function getdrillsminutesAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang=$userPrefs[0]['lang'];
+
+        $request = $this->getRequest();
+        $company = $request->getQuery('company');
+        $country = $request->getQuery('country');
+        $location = $request->getQuery('location');
+        $sql = $this->getEmergencyPlanTable();
+        $dataDocuments = $sql->getEmergencyPlanByCCLType($company,$country,$location,'A');
+        if($dataDocuments){
+            $dataResult['success']=true;
+            $dataResult['results']=$dataDocuments;
+        }else{
+            $dataResult['success']=true;
+            $dataResult['results']="";
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function adddrillsminutesAction(){
+        
+    }
+    
+    public function removedrillsminutesAction(){
+        
+    }
+    
+    public function formdrillsminutesAction(){
+        
     }
     
     public function massdocprocessAction(){
@@ -2710,6 +2941,31 @@ class IndexController extends AbstractActionController
             'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0)),
             'lang'=>$lang,
         );
+    }
+    
+    public function removedocumentAction()
+    {
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang = $userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $company = $request->getPost('company');
+        $country = $request->getPost('country');
+        $location = $request->getPost('location');
+        $doc_id = $request->getPost('id');
+
+        $sql = $this->getDocsLibraryTable();
+        $Document = $sql->getDocInfo($doc_id);
+        if($Document){
+            $data = array();
+            $data['doc_user_modification'] = $userData->id;
+            $data['doc_date_modification'] = \date('Y-m-d H:i:s');
+            $data['doc_status_general'] = 'I';
+            $sql->update($data,array('doc_id'=>$doc_id,'company'=>$company,'country'=>$country,'location'=>$location));
+        }
+        $dataResult['success']=true;
+        return new JsonModel($dataResult);
     }
     
     public function newdocumentAction() 
@@ -3866,6 +4122,15 @@ class IndexController extends AbstractActionController
             $this->ieeaHelperTable = $sm->get('IMS\Model\IEEAHelperTable');
     	}
     	return $this->ieeaHelperTable;
+    }
+    
+    private function getEmergencyPlanTable()
+    {
+    	if (!$this->emergencyplanTable) {
+            $sm = $this->getServiceLocator();
+            $this->emergencyplanTable = $sm->get('IMS\Model\EmergencyPlanTable');
+    	}
+    	return $this->emergencyplanTable;
     }
     
     private function getTrainingPlanTable()

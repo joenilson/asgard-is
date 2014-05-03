@@ -149,7 +149,23 @@ Ext.define('Asgard.locales.lib.grid.documents',{
     originText: 'Origem',
     retentionText: 'Tempo de Retenção',
     toolViewDocText: 'Visualizar o documento',
-    toolRequestText: 'solicitação de Mudança'
+    toolRequestText: 'solicitação de Mudança',
+    /* Added 03 - May - 2014 */
+    toolAddText: 'Adicionar Documento',
+    toolRemoveText: 'Excluir Documento',
+    toolChangeText: 'Ver Solicitações de Alteração',
+    toolMassText: 'Carregar Modelo de documentos',
+    titleNewDocument: 'Adicionar um Documento',
+    titleEditDocument: 'Editar Documento',
+    loadingFileText: 'Carregando Documento.. Por favor aguarde...',
+    chooseTitleText: 'Aviso',
+    emptyFileMessage: 'Não há nenhum arquivo associado com este documento...',
+    chooseTitleBodyDelete: 'Ela irá remover um documento!. <br />Quer continuar com esta ação?',
+    chooseTitleBodyChange: 'Você está escolhendo a mudança este item. <br />Quer continuar com esta ação?',
+    warningTitle: 'Aviso!',
+    emptyCCLText: 'Por favor completos Los Campos Companhia, País e Sede',
+    emptyTitleText: 'Não é selecionado nada',
+    emptyMessageText: 'Não é selecionado documento, <br />Para continuar selecione primeiro um documento...',
 });
 
 Ext.define('Asgard.locales.lib.forms.CompaniesCombo',{
@@ -304,4 +320,24 @@ Ext.define('Asgard.locales.lib.forms.yearMonthField',{
     override: 'Asgard.lib.forms.yearMonthField',
     emptyTextText: 'Escolha uma data',
     fieldLabelText: 'Mês e Ano'
+});
+
+Ext.define('Asgard.locales.lib.grid.emergencyplan',{
+    override: 'Asgard.lib.forms.yearMonthField',
+    titleText: 'Registros Planejamento e exercícios de emergência',
+    descText: 'Descrição',
+    dateText: 'Data',
+    fileText: 'Documento',
+    toolAddText: 'Adicionar',
+    toolUploadText: 'Carregar Predefinição',
+    toolRemoveText: 'Excluir Entrada',
+    toolChangeText: 'Alterar Entrada',
+    toolViewDocText: 'Ver Arquivo',
+    titleNewAuditPlan: 'Adicionar novo documento',
+    titleEditAuditPlan: 'Editar Documento',
+    loadingFileText: 'Carregando Documento... por favor aguarde...',
+    chooseTitleText: 'Aviso',
+    emptyFileMessage: 'Não há nenhum arquivo associado com este documento...',
+    chooseTitleBodyDelete: 'Ela irá remover um documento!. <br />Quer continuar com esta ação?',
+    chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?'
 });
