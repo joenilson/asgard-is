@@ -76,8 +76,8 @@ class IEEATable extends AbstractTableGateway {
             );
             $select->join(
                 array('h2'=>new TableIdentifier($this->table_helper, $this->schema_name)), 
-                new Expression ( $this->table_name.'.id_class = h2.id AND h2.helper=\'class\' and h2.status=\'A\' AND h2.lang=\''.$lang.'\''), 
-                array('desc_class'=>'description')
+                new Expression ( $this->table_name.'.id_cycle = h2.id AND h2.helper=\'cycle\' and h2.status=\'A\' AND h2.lang=\''.$lang.'\''), 
+                array('desc_cycle'=>'description')
             );
             $select->join(
                 array('h3'=>new TableIdentifier($this->table_helper, $this->schema_name)), 

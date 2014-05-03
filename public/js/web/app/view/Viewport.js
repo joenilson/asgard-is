@@ -44,7 +44,8 @@ Ext.define('Asgard.view.Viewport', {
     'Asgard.store.TrainingPlan','Asgard.lib.grid.trainingplan','Asgard.lib.forms.trainingNewTrainingPlan',
     'Asgard.store.IEEA','Asgard.lib.grid.ieea','Asgard.lib.forms.ieeaMasterFileUpload','Asgard.store.IEEAUpload',
     'Asgard.lib.grid.ieea_upload','Asgard.lib.forms.CommitteeProcedings','Asgard.store.EmergencyPlan',
-    'Asgard.lib.grid.emergencyplan','Asgard.lib.forms.emergencyNewEmergencyPlan','Asgard.store.DrillsMinutes'
+    'Asgard.lib.grid.emergencyplan','Asgard.lib.forms.emergencyNewEmergencyPlan','Asgard.store.DrillsMinutes',
+    'Asgard.store.IEEA_Thread','Asgard.lib.grid.ieea_thread'
   ],
   menuTitleText: 'Main Menu',
     defaults: {

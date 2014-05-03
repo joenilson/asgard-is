@@ -233,6 +233,32 @@ class IndexController extends AbstractActionController
     	return $result;   
     }
     
+    public function getieeathreadAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang = $userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $companyParams = $request->getQuery('company');
+        $countryParams = $request->getQuery('country');
+        $locationParams = $request->getQuery('location');
+        $process_id = $request->getQuery('process');
+        $thread_id = $request->getQuery('thread');
+        $sql = $this->getIEEATable();
+        $listDocuments = $sql->getIEEAByPT($lang,$companyParams,$countryParams,$locationParams,$process_id,$thread_id);
+        
+        if(!empty($listDocuments)){
+            $data['success']=true;
+            $data['results']=$listDocuments;
+            $data['msg']="";
+        }else{
+            $data['success']=true;
+            $data['results']="";
+            $data['msg']="Error trying to get the information...";
+        }
+        $result = new JsonModel($data);
+    	return $result;   
+    }
+    
     public function addieeaAction(){
         
     }

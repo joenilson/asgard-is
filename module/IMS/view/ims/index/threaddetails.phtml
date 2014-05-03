@@ -26,6 +26,9 @@
 var DocsLibraryStore<?=$this->threadId; ?> = Ext.create('Asgard.store.DocsLibrary');
     DocsLibraryStore<?= $this->threadId; ?>.load({ params: { module: 'master', company: '<?=$this->company;?>', country: '<?=$this->country;?>', location: '<?=$this->location;?>', process: <?=$this->processId;?>, thread: <?=$this->threadId;?>}});
 
+var IEEAStore<?=$this->threadId; ?> = Ext.create('Asgard.store.IEEA_Thread');
+IEEAStore<?= $this->threadId; ?>.load({ params: { module: 'master', company: '<?=$this->company;?>', country: '<?=$this->country;?>', location: '<?=$this->location;?>', process: <?=$this->processId;?>, thread: <?=$this->threadId;?>}});
+
 var DocumentsGrid<?=$this->threadId; ?> = Ext.create('Asgard.lib.grid.thread_documents', {
     store: DocsLibraryStore<?=$this->threadId;?>
 });
@@ -69,6 +72,10 @@ HIRADocsStore<?=$this->threadId; ?>.load({ params: { tid: <?=$this->threadId; ?>
                                             }
                                             });
 
+var IEEAGrid<?=$this->threadId; ?> = Ext.create('Asgard.lib.grid.ieea_thread',{
+    flex: 1,
+    store: IEEAStore<?=$this->threadId; ?>
+});
 var HIRAGrid<?=$this->threadId; ?> = Ext.create('Asgard.lib.grid.hira', {
     //autoShow: true,
     //autoDestroy: true,
@@ -150,10 +157,13 @@ var tabpanel<?=$this->threadId; ?> = Ext.create('Ext.tab.Panel', {
             html: 'IPER Will be here'
         },
         */
+        IEEAGrid<?=$this->threadId; ?>,
+        /*
         {
             title: 'Aspectos Ambientales',
             html: 'Hello world 2'
-        },{
+        },*/
+        {
             title: 'Indicadores',
             html: 'Hello world 3'
         }]
