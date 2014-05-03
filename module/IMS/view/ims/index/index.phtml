@@ -21,7 +21,7 @@ function showObjetives(){
         store: objectivesStore<?= $this->panelId; ?>, 
         id: 'grid<?=$this->panelId;?>'
     });
-    winAdd = Ext.create('Asgard.lib.window.windowGeneric',{
+    var winAdd = Ext.create('Asgard.lib.window.windowGeneric',{
         height: document.documentElement.clientHeight - 50,
         width: document.documentElement.clientWidth - 550,
     });
@@ -36,7 +36,7 @@ function showRequirements(){
         store: requirementsStore<?= $this->panelId; ?>, 
         id: 'reqgrid<?=$this->panelId;?>'
     });
-    winAdd = Ext.create('Asgard.lib.window.windowGeneric',{
+    var winAdd = Ext.create('Asgard.lib.window.windowGeneric',{
         height: document.documentElement.clientHeight - 50,
         width: document.documentElement.clientWidth - 550,
     });
@@ -56,7 +56,7 @@ function showOrganigram(){
         items: view<?=$this->panelId;?>
     });
 
-    winAdd = Ext.create('Asgard.lib.window.windowGeneric',{
+    var winAdd = Ext.create('Asgard.lib.window.windowGeneric',{
         height: document.documentElement.clientHeight - 50,
         width: document.documentElement.clientWidth - 550,
     });
@@ -72,7 +72,7 @@ function showOwnersProfiles(){
         id: 'ownersgrid<?=$this->panelId;?>'
     });
 
-    winAdd = Ext.create('Asgard.lib.window.windowGeneric',{
+    var winAdd = Ext.create('Asgard.lib.window.windowGeneric',{
         height: document.documentElement.clientHeight - 50,
         width: document.documentElement.clientWidth - 550,
     });
@@ -88,7 +88,7 @@ function showCommunications(){
         id: 'commgrid<?=$this->panelId;?>'
     });
 
-    winAdd = Ext.create('Asgard.lib.window.windowGeneric',{
+    var winAdd = Ext.create('Asgard.lib.window.windowGeneric',{
         height: document.documentElement.clientHeight - 50,
         width: document.documentElement.clientWidth - 550,
     });
@@ -104,7 +104,7 @@ function showTrainingPlan(){
         id: 'tpgrid<?=$this->panelId;?>'
     });
 
-    winAdd = Ext.create('Asgard.lib.window.windowGeneric',{
+    var winAdd = Ext.create('Asgard.lib.window.windowGeneric',{
         height: document.documentElement.clientHeight - 50,
         width: document.documentElement.clientWidth - 550,
     });

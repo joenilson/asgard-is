@@ -214,7 +214,7 @@ Ext.define('Asgard.lib.grid.audits',{
                 //width    : document.documentElement.clientWidth - 50,
                 height   : document.documentElement.clientHeight - 50,
                 pageScale: 1,                                           // Initial scaling of the PDF. 1 = 100%
-                src      : '/'+record.data.audit_file, // URL to the PDF - Same Domain or Server with CORS Support
+                src      : record.data.audit_file, // URL to the PDF - Same Domain or Server with CORS Support
                 loadingMessage: this.loadingFileText
             });
             windowDoc.add(documentFile);
