@@ -13,6 +13,8 @@ var objectivesStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.Objetiv
 var requirementsStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.Requirements');
 var viewStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.Organigram');
 var ownersStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.OwnersProfile');
+var commStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.Communications');
+var tpStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.TrainingPlan');
 
 function showObjetives(){
     var objectivesgrid<?=$this->panelId;?> = Ext.create('Asgard.lib.grid.objetives', { 
@@ -25,7 +27,6 @@ function showObjetives(){
     });
     winAdd.setTitle('Objetives');
     winAdd.add(objectivesgrid<?=$this->panelId;?>);
-    //console.log('mostramos la ventana para agregar un incidente');
     winAdd.show();
     objectivesStore<?= $this->panelId; ?>.load({ params: { module: 'master', company: '<?=$companyId;?>', country: '<?=$countryId;?>', location: '<?=$locationId;?>'  }});
 }
@@ -41,7 +42,6 @@ function showRequirements(){
     });
     winAdd.setTitle('Requirements');
     winAdd.add(requirementsgrid<?=$this->panelId;?>);
-    //console.log('mostramos la ventana para agregar un incidente');
     winAdd.show();
     requirementsStore<?= $this->panelId; ?>.load({ params: { module: 'master', company: '<?=$companyId;?>', country: '<?=$countryId;?>', location: '<?=$locationId;?>'  }});
 }
@@ -62,7 +62,6 @@ function showOrganigram(){
     });
     winAdd.setTitle('Organigram');
     winAdd.add(contentOrg<?=$this->panelId;?>);
-    //console.log('mostramos la ventana para agregar un incidente');
     winAdd.show();
     viewStore<?= $this->panelId; ?>.load({ params: { module: 'master', company: '<?=$companyId;?>', country: '<?=$countryId;?>', location: '<?=$locationId;?>'  }});
 }
@@ -79,11 +78,41 @@ function showOwnersProfiles(){
     });
     winAdd.setTitle('Owners Profile');
     winAdd.add(ownersgrid<?=$this->panelId;?>);
-    //console.log('mostramos la ventana para agregar un incidente');
     winAdd.show();
     ownersStore<?= $this->panelId; ?>.load({ params: { module: 'master', company: '<?=$companyId;?>', country: '<?=$countryId;?>', location: '<?=$locationId;?>'  }});
 }
 
+function showCommunications(){
+    var commgrid<?=$this->panelId;?> = Ext.create('Asgard.lib.grid.communications', { 
+        store: commStore<?= $this->panelId; ?>, 
+        id: 'commgrid<?=$this->panelId;?>'
+    });
+
+    winAdd = Ext.create('Asgard.lib.window.windowGeneric',{
+        height: document.documentElement.clientHeight - 50,
+        width: document.documentElement.clientWidth - 550,
+    });
+    winAdd.setTitle('Communications');
+    winAdd.add(commgrid<?=$this->panelId;?>);
+    winAdd.show();
+    commStore<?= $this->panelId; ?>.load({ params: { module: 'master', company: '<?=$companyId;?>', country: '<?=$countryId;?>', location: '<?=$locationId;?>'  }});
+}
+
+function showTrainingPlan(){
+    var tpgrid<?=$this->panelId;?> = Ext.create('Asgard.lib.grid.trainingplan', { 
+        store: tpStore<?= $this->panelId; ?>, 
+        id: 'tpgrid<?=$this->panelId;?>'
+    });
+
+    winAdd = Ext.create('Asgard.lib.window.windowGeneric',{
+        height: document.documentElement.clientHeight - 50,
+        width: document.documentElement.clientWidth - 550,
+    });
+    winAdd.setTitle('Training Plan');
+    winAdd.add(tpgrid<?=$this->panelId;?>);
+    winAdd.show();
+    tpStore<?= $this->panelId; ?>.load({ params: { module: 'master', company: '<?=$companyId;?>', country: '<?=$countryId;?>', location: '<?=$locationId;?>'  }});
+}
 
 var versioningHeader<?php echo $this->panelId; ?> = Ext.create('Asgard.lib.versioningContent',{
     anchor: '100%',
