@@ -49,7 +49,8 @@ Ext.define('Asgard.view.Viewport', {
     'Asgard.lib.forms.RequirementTypeCombo','Asgard.store.RequirementsHelper',
     'Asgard.lib.forms.requirementNewRequirement','Asgard.lib.dataview.drillsphotos',
     'Asgard.lib.dataview.MSDS','Asgard.lib.Panels.MSDSPanel','Asgard.lib.Panels.drillsPhotosPanel',
-    'Asgard.lib.dataview.objectives','Asgard.lib.Panels.ObjectivesPanel',
+    'Asgard.lib.dataview.objectives','Asgard.lib.Panels.ObjectivesPanel','Asgard.lib.grid.msds',
+    'Asgard.store.MSDS','Asgard.lib.forms.msdsNewMSDS'
     
   ],
   menuTitleText: 'Main Menu',

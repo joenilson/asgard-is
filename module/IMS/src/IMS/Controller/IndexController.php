@@ -25,7 +25,8 @@ use IMS\Model\Entity\Communications;
 use IMS\Model\Entity\TrainingPlan;
 use IMS\Model\Entity\EmergencyPlan;
 use IMS\Model\Entity\IEEA;
-
+use IMS\Model\Entity\MSDS;
+use IMS\Model\Entity\HazardousSupplies;
 use AsgardLib\Versioning\Documents;
 use AsgardLib\Versioning\Scope;
 
@@ -81,6 +82,8 @@ class IndexController extends AbstractActionController
     protected $communicationsTable;
     protected $trainingplanTable;
     protected $emergencyplanTable;
+    protected $msdsTable;
+    protected $hazardoussuppliesTable;
     
     public function indexAction()
     {
@@ -2246,37 +2249,52 @@ class IndexController extends AbstractActionController
         $location = $request->getPost('locationsCombo');
         $description = (string) $request->getPost('description');
         $files =  $request->getFiles()->toArray();
-        $id = $request->getPost('ownersprofile_id');
+        $id = $request->getPost('organigram_id');
         $date_creation = \date('Y-m-d h:i:s');
 
         $dataResult = array();
         
-        $sql = $this->getPOPTable();
-        $oldData = $sql->getOwnerProfile($lang,$id,$company,$country,$location);
-        if($oldData){
-            $dataUpd['profile_desc']=$this->PersonName($description);
-            $dataUpd['date_modification']=$date_creation;
-            $dataUpd['user_modification']=$userData->id;
-            $dataIdx['company']=$oldData[0]['company'];
-            $dataIdx['country']=$oldData[0]['country'];
-            $dataIdx['location']=$oldData[0]['location'];
-            $dataIdx['lang']=$oldData[0]['lang'];
-            $dataIdx['id']=$oldData[0]['id'];
+        $sql = $this->getOrganigramTable();
+        $oldORganigram = $sql->getOrganigramByCCL($company,$country,$location);
+        if($oldORganigram){
+            $dataU['status']='I';
+            $dataU['user_modification']=$userData->id;
+            $dataU['date_modification']=\date('Y-m-d H:i:s');
+            $dataIdx['company']=$oldORganigram[0]['company'];
+            $dataIdx['country']=$oldORganigram[0]['country'];
+            $dataIdx['location']=$oldORganigram[0]['location'];
+            $dataIdx['id']=$oldORganigram[0]['id'];
+            $sql->update($dataU,$dataIdx);
         }
+        
+        $object = new Organigram();
+        $object->setDescription($description)
+                ->setCompany($company)
+                ->setCountry($country)
+                ->setLocation($location)
+                ->setUser_creation($userData->id)
+                ->setStatus('A')
+                ->setDate_creation($date_creation);
+        if($id){
+            $object->setId($id);
+        }
+        $dataResult['success'] = true; 
+        try {
+            $newId = $sql->save($object);
+            
+        } catch (\Exception $ex) {
+            //$error = $ex;
+            
+            $dataResult['success'] = false; 
+            $dataResult['message'] = $ex->getMessage(); 
+        }
+
         $valid = new \Zend\Validator\File\UploadFile();
         
-        if(isset($id) AND $valid->isValid($files['profile_file'])){
-            $fileName = "pop_{$company}_{$country}_{$location}_".$id.".pdf";
-            $dataUpd['profile_file']='library/owners/'.$fileName;
-            $this->savefile('library/owners', $files['profile_file'], $fileName, false, null);
-        }
-        
-        try {
-            $sql->update($dataUpd,$dataIdx);
-            $dataResult['success']=true;
-        } catch (Exception $ex) {
-            $dataResult['success']=false;
-            $dataResult['msg']=$ex->getMessage();
+        if(isset($newId) AND $valid->isValid($files['organigram'])){
+            $fileName = "organigram_{$company}_{$country}_{$location}_".$newId.".pdf";
+            $this->savefile('library/organigrams', $files['organigram'], $fileName, false, null);
+            $sql->update(array('filename'=>'library/organigrams/'.$fileName),array('id'=>$newId));
         }
         return new JsonModel($dataResult);
     }
@@ -2358,6 +2376,213 @@ class IndexController extends AbstractActionController
             $dataResult['success']=true;
             $dataResult['results']=$dataRequirement;
         }
+        return new JsonModel($dataResult);
+    }
+    
+    public function listmsdsAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        return array(
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'lang'=>$lang,
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
+        );
+    }
+    
+    public function getmsdsAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang=$userPrefs[0]['lang'];
+        $request = $this->getRequest();
+        $company = $request->getQuery('company');
+        $country = $request->getQuery('country');
+        $location = $request->getQuery('location');
+        $sql = $this->getMSDSTable();
+        $dataList = $sql->getObjectByCCL($company,$country,$location);
+        $dataResult['success']=true;
+        $dataResult['results']=$dataList;
+        return new JsonModel($dataResult);
+    }
+    
+    public function addmsdsAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $company = $request->getPost('companiesCombo');
+        $country = $request->getPost('countriesCombo');
+        $location = $request->getPost('locationsCombo');
+        $description = (string) $request->getPost('description');
+        $toxic = (string) $request->getPost('toxic');
+        $flammable = (string) $request->getPost('flammable');
+        $reactive = (string) $request->getPost('reactive');
+        $other = (string) $request->getPost('other');
+        $files =  $request->getFiles()->toArray();
+        $id = $request->getPost('msds_id');
+        $date_creation = \date('Y-m-d h:i:s');
+        $is_toxic = ($toxic=='on')?"X":"";
+        $is_flammable = ($flammable=='on')?"X":"";
+        $is_reactive = ($reactive=='on')?"X":"";
+        $is_other = ($other=='on')?"X":"";
+        $dataResult = array();
+        
+        $sql = $this->getMSDSTable();
+        $object = new MSDS();
+        $object->setDescription($description)
+                ->setCompany($company)
+                ->setCountry($country)
+                ->setLocation($location)
+                ->setUser_creation($userData->id)
+                ->setIs_toxic($is_toxic)
+                ->setIs_flammable($is_flammable)
+                ->setIs_reactive($is_reactive)
+                ->setIs_other($is_other)
+                ->setStatus('A')
+                ->setDate_creation($date_creation);
+        if($id){
+            $object->setId($id);
+        }
+        $dataResult['success'] = true; 
+        $dataResult['msg']=$flamable;
+        try {
+            $newId = $sql->save($object);
+            
+        } catch (\Exception $ex) {
+            //$error = $ex;
+            
+            $dataResult['success'] = false; 
+            $dataResult['message'] = $ex->getMessage(); 
+        }
+
+        $valid = new \Zend\Validator\File\UploadFile();
+        $sql2 = $this->getHSTable();
+        if($toxic=='on'){
+            $object2 = new HazardousSupplies();
+            $object2->setCompany($company)
+                    ->setCountry($country)
+                    ->setLocation($location)
+                    ->setUser_creation($userData->id)
+                    ->setStatus('A')
+                    ->setDescription($description)
+                    ->setDate_creation($date_creation)
+                    ->setId_type(1);
+            $sql2->save($object2);
+        }
+        if($flammable=='on'){
+            $object2 = new HazardousSupplies();
+            $object2->setCompany($company)
+                    ->setCountry($country)
+                    ->setLocation($location)
+                    ->setUser_creation($userData->id)
+                    ->setStatus('A')
+                    ->setDescription($description)
+                    ->setDate_creation($date_creation)
+                    ->setId_type(2);
+            $sql2->save($object2);
+        }
+        
+        if($reactive=='on'){
+            $object2 = new HazardousSupplies();
+            $object2->setCompany($company)
+                    ->setCountry($country)
+                    ->setLocation($location)
+                    ->setUser_creation($userData->id)
+                    ->setStatus('A')
+                    ->setDescription($description)
+                    ->setDate_creation($date_creation)
+                    ->setId_type(3);
+            $sql2->save($object2);
+        }
+        
+        if($other=='on'){
+            $object2 = new HazardousSupplies();
+            $object2->setCompany($company)
+                    ->setCountry($country)
+                    ->setLocation($location)
+                    ->setUser_creation($userData->id)
+                    ->setStatus('A')
+                    ->setDescription($description)
+                    ->setDate_creation($date_creation)
+                    ->setId_type(4);
+            $sql2->save($object2);
+        }
+        
+        if(isset($newId) AND $valid->isValid($files['msds_file'])){
+            $fileName = "organigram_{$company}_{$country}_{$location}_".$newId.".pdf";
+            $this->savefile('library/msds', $files['msds_file'], $fileName, false, null);
+            $sql->update(array('filename'=>'library/msds/'.$fileName),array('id'=>$newId));
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function removemsdsAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $company = $request->getPost('company');
+        $country = $request->getPost('country');
+        $location = $request->getPost('location');
+        $id = (int) $request->getPost('id');
+        $dataResult = array();
+        $sql = $this->getMSDSTable();
+        $sql2 = $this->getHSTable();
+        $object = $sql->getObjectByCCLId($company,$country,$location,$id);
+        if($object){
+            $dataU['status']='I';
+            $dataU['user_modification']=$userData->id;
+            $dataU['date_modification']=\date('Y-m-d H:i:s');
+            $dataIdx['company']=$object[0]['company'];
+            $dataIdx['country']=$object[0]['country'];
+            $dataIdx['location']=$object[0]['location'];
+            $dataIdx['id']=$object[0]['id'];
+            $dataIdx2['company']=$object[0]['company'];
+            $dataIdx2['country']=$object[0]['country'];
+            $dataIdx2['location']=$object[0]['location'];
+            $dataIdx2['description']=$object[0]['description'];
+            try {
+                $sql->update($dataU,$dataIdx);
+                $sql2->update($dataU,$dataIdx2);
+                $dataResult['success'] = true; 
+            } catch (\Exception $ex) {
+                //$error = $ex;
+                $dataResult['success'] = false; 
+                $dataResult['message'] = $ex->getMessage(); 
+            }
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function formmsdsAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang=$userPrefs[0]['lang'];
+        $request = $this->getRequest();
+        $company = $request->getPost('company');
+        $country = $request->getPost('country');
+        $location = $request->getPost('location');
+        $id = $request->getPost('msds_id');
+        $sql = $this->getMSDSTable();
+        $oldData = $sql->getObjectByCCLId($company,$country,$location,$id);
+        if($oldData){
+            $dataIdx['description']=$oldData[0]['description'];
+            $dataIdx['companiesCombo']=$oldData[0]['company'];
+            $dataIdx['countriesCombo']=$oldData[0]['country'];
+            $dataIdx['locationsCombo']=$oldData[0]['location'];
+            $dataIdx['toxic']=($oldData[0]['is_toxic']=="X")?"on":"";
+            $dataIdx['flammable']=($oldData[0]['is_flammable']=="X")?"on":"";
+            $dataIdx['reactive']=($oldData[0]['is_reactive']=="X")?"on":"";
+            $dataIdx['other']=($oldData[0]['is_other']=="X")?"on":"";
+            $dataIdx['id']=$oldData[0]['id'];
+            $dataResult['success']=true;
+            $dataResult['data']=$dataIdx;
+        }else{
+            $dataResult['success']=false;
+        }
+        
         return new JsonModel($dataResult);
     }
     
@@ -4352,6 +4577,24 @@ class IndexController extends AbstractActionController
         $imagine->open($file)
                 ->thumbnail(new \Imagine\Image\Box(171,180),$mode)
                 ->save($dst);
+    }
+    
+    private function getHSTable()
+    {
+    	if (!$this->hazardoussuppliesTable) {
+            $sm = $this->getServiceLocator();
+            $this->hazardoussuppliesTable = $sm->get('IMS\Model\HazardousSuppliesTable');
+    	}
+    	return $this->hazardoussuppliesTable;
+    }
+    
+    private function getMSDSTable()
+    {
+    	if (!$this->msdsTable) {
+            $sm = $this->getServiceLocator();
+            $this->msdsTable = $sm->get('IMS\Model\MSDSTable');
+    	}
+    	return $this->msdsTable;
     }
     
     private function getIEEATable()

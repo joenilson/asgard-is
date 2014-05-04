@@ -116,6 +116,76 @@ return array(
                             ),
                         ),
                     ),
+                    'listmsds' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/listmsds[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'listmsds'
+                            ),
+                        ),
+                    ),
+                    'getmsds' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/getmsds[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'getmsds'
+                            ),
+                        ),
+                    ),
+                    'addmsds' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/addmsds[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'addmsds'
+                            ),
+                        ),
+                    ),
+                    'removemsds' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/removemsds[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'removemsds'
+                            ),
+                        ),
+                    ),
+                    'formmsds' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/formmsds[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'formmsds'
+                            ),
+                        ),
+                    ),
                     'communications' => array(
                         'type'    => 'Segment',
                         'options' => array(

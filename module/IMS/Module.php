@@ -30,6 +30,8 @@ use IMS\Model\hiraIncidentDetailsTable;
 use IMS\Model\hiraNonConformityTypeTable;
 use IMS\Model\hiraIncidentsTable;
 use IMS\Model\IEEATable;
+use IMS\Model\MSDSTable;
+use IMS\Model\HazardousSuppliesTable;
 use IMS\Model\IEEAHelperTable;
 use IMS\Model\ProcessMainTable;
 use IMS\Model\ProcessMainView;
@@ -121,6 +123,16 @@ class Module implements AutoloaderProviderInterface
                 'IMS\Model\IEEATable'=> function($sm){
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new IEEATable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\HazardousSuppliesTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new HazardousSuppliesTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\MSDSTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new MSDSTable($dbAdapter);
                     return $table;
                 },
                 'IMS\Model\EmergencyPlanTable'=> function($sm){

@@ -27,7 +27,7 @@ Ext.define('Asgard.lib.Panels.MSDSPanel', {
     
     initComponent: function(){
         var me = this;
-        
+        /*
         this.tbar = [{ 
             text: this.barAddText,
             scope: me,
@@ -45,6 +45,7 @@ Ext.define('Asgard.lib.Panels.MSDSPanel', {
                 window.show();
             }
         }];
+        */
         this.callParent();
     }
 });

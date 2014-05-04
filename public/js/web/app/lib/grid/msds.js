@@ -124,11 +124,15 @@ Ext.define('Asgard.lib.grid.msds',{
     fnLibraryTool: function(event, e, object, tool) {
         var panel = tool.up('panel');
         var gridStore = panel.getSelectionModel().getSelection();
-        var form = panel.up('panel').down('form');
+        var form = panel.up('panel').up('panel').down('form');
+        console.log(panel);
+        console.log(form);
+        
         var values = form.getForm().getValues();
         var companies = values['companiesCombo'];
         var countries = values['countriesCombo'];
         var locations = values['locationsCombo'];
+        
         var winContent;
         var windowDoc = this.createWindow();
         if(companies.length !== 4){
@@ -137,7 +141,7 @@ Ext.define('Asgard.lib.grid.msds',{
             windowDoc.removeAll();
             if(tool.type==='plus'){
                 windowDoc.setTitle(this.titleNewAuditor);
-                winContent = new Ext.create('Asgard.lib.forms.auditorsNewAuditor',{
+                winContent = new Ext.create('Asgard.lib.forms.msdsNewMSDS',{
                     flex: 1,
                     innerPanel: panel
                 });
@@ -153,12 +157,11 @@ Ext.define('Asgard.lib.grid.msds',{
                             var selData = panel.getSelectionModel().getSelection();
                             var sendData = Ext.encode(selData[0].data);
                             Ext.Ajax.request({
-                                url: 'ims/deleteauditor',
+                                url: 'ims/removemsds',
                                 params: {
                                     company: selData[0].data.company,
                                     country: selData[0].data.country,
                                     location: selData[0].data.location,
-                                    year: selData[0].data.year,
                                     id: selData[0].data.id,
                                 },
                                 success: function(response){
@@ -177,11 +180,10 @@ Ext.define('Asgard.lib.grid.msds',{
                 var AuditorCompany = selGrid[0].data.company;
                 var AuditorCountry = selGrid[0].data.country;
                 var AuditorLocation = selGrid[0].data.location;
-                var AuditorYear = selGrid[0].data.year;
-                var editAuditor = Ext.create('Asgard.lib.forms.auditorsNewAuditor', { innerPanel: panel, baseParams: { auditor_id: AuditorId }});
+                var editAuditor = Ext.create('Asgard.lib.forms.msdsNewMSDS', { innerPanel: panel, baseParams: { msds_id: AuditorId }});
                 editAuditor.getForm().load({
-                    url: 'ims/formauditor',
-                    params: { id: AuditorId, country: AuditorCountry, company: AuditorCompany, location: AuditorLocation, year: AuditorYear },
+                    url: 'ims/formmsds',
+                    params: { id: AuditorId, country: AuditorCountry, company: AuditorCompany, location: AuditorLocation },
                     failure: function(form, action) {
                         Ext.Msg.alert("Fallo Inesperado", action.result.errorMessage);
                     }
@@ -190,23 +192,6 @@ Ext.define('Asgard.lib.grid.msds',{
                 windowDoc.show();
             }
         }  
-    },
-    
-    makeTreatment: function(obj, id, component, icon, event, record, other) {
-        var win = this.createWindow();
-        var document = Ext.create('Asgard.lib.forms.RequestTreatment', {
-            flex: 1,
-            //innerItem: obj,
-            baseParams: {
-                country: record.data.country,
-                company: record.data.company,
-                location:  record.data.location,
-                doc_id:  record.data.doc_id,
-                doc_newid:  record.data.doc_newid
-            }
-        });
-        win.add(document);
-        win.show();
     }
     
 });

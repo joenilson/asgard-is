@@ -1,0 +1,110 @@
+<?php
+
+/* 
+ * Copyright (C) 2014 Joe Nilson <joenilson at gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+?>
+<script>
+function deployCombos(comboField,comboValue){
+    var combo = form<?=$this->panelId;?>.getForm().findField(comboField);
+    var store = combo.store;
+    store.on("load", function(store, records, state, operation, opts) {
+            combo.setValue(comboValue);
+    });
+}
+
+function fnCCLProcess(button, opt, obj) {
+    var values = button.up('form').getForm().getValues();
+    var companies = values['companiesCombo'];
+    var countries = values['countriesCombo'];
+    var locations = values['locationsCombo'];
+
+    gridStore<?= $this->panelId; ?>.load({ params: { module: 'master', company: companies, country: countries, location: locations }});
+
+}
+var gridStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.MSDS');
+
+var form<?=$this->panelId;?> = Ext.create('Asgard.lib.forms.comboCCL', { innerGrid: 'gridMSDS' });
+
+var grid<?=$this->panelId;?> = Ext.create('Asgard.lib.grid.msds', { 
+    store: gridStore<?= $this->panelId; ?>, 
+    id: 'gridMSDS',
+    region: 'west',
+    layout: 'fit',
+    flex: 1,
+    height: '100%',
+});
+var innerview<?=$this->panelId;?> = Ext.create('Asgard.lib.dataview.MSDS', { 
+    //store: viewStore<?= $this->panelId; ?>,
+    flex: 1,
+});
+
+var view<?=$this->panelId; ?> = Ext.create('Asgard.lib.Panels.MSDSPanel',{
+    id: 'panelMSDS',
+    items: innerview<?=$this->panelId;?>,
+    region: 'center',
+    layout: 'fit',
+    flex: 3,
+    height: '100%',
+});
+
+grid<?=$this->panelId;?>.getSelectionModel().on('selectionchange', function(sm, selectedRecord) {
+    if ((selectedRecord.length) && (selectedRecord[0].data.filename!='')) {
+        var detailPanel = Ext.getCmp('panelMSDS');
+        detailPanel.removeAll();
+        var documentFile = Ext.create('Ext.ux.panel.PDF', {
+                flex: 1,
+                layout: 'fit',
+                //width    : document.documentElement.clientWidth - 50,
+                //height   : document.documentElement.clientHeight - 50,
+                //pageScale: 1,                                           // Initial scaling of the PDF. 1 = 100%
+                src      : selectedRecord[0].data.filename, // URL to the PDF - Same Domain or Server with CORS Support
+                //loadingMessage: this.loadingFileText
+            });
+        detailPanel.add(documentFile);
+    }
+});
+
+deployCombos('companiesCombo','<?=$this->companyId;?>');
+deployCombos('countriesCombo','<?=$this->countryId;?>');
+deployCombos('locationsCombo','<?=$this->locationId;?>');
+
+var libraryViewport<?=$this->panelId; ?> = Ext.create('Ext.panel.Panel', {
+    layout: {
+        type: 'vbox',
+        align : 'stretch',
+        pack  : 'start'
+    },
+    items: [
+        form<?=$this->panelId; ?>,
+    {   
+        //layout: 'hbox',
+        flex: 1,
+        layout: 'hbox',
+        xtype: 'panel',
+        items: [
+            grid<?=$this->panelId; ?>,
+            view<?=$this->panelId; ?>
+        ]
+    }
+        
+   ]
+});
+
+Ext.getCmp('content-panel').getActiveTab().add(libraryViewport<?= $this->panelId; ?>);
+</script>
+

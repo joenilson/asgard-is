@@ -11,11 +11,11 @@ use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Sql\TableIdentifier;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Predicate\Expression;
-use IMS\Model\Entity\Objectives;
+use IMS\Model\Entity\MSDS;
 
-class ObjectivesTable extends AbstractTableGateway {
+class MSDSTable extends AbstractTableGateway {
 
-    protected $table_name = 'objectives';
+    protected $table_name = 'msds';
     protected $schema_name = 'ims';
 
     private function processList($value)
@@ -84,12 +84,16 @@ class ObjectivesTable extends AbstractTableGateway {
         return $id;
     }
    
-    public function save(Objectives $object)
+    public function save(MSDS $object)
     {
         $data = array(
             'company' => $object->getCompany(),
             'country' => $object->getCountry(),
             'location' => $object->getLocation(),
+            'is_toxic' => $object->getIs_toxic(),
+            'is_flammable' => $object->getIs_flammable(),
+            'is_reactive' => $object->getIs_reactive(),
+            'is_other' => $object->getIs_other(),
             'id' => $object->getId(),
             'description' => $object->getDescription(),
             'status' => $object->getStatus(),
