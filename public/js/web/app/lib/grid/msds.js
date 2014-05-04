@@ -70,7 +70,7 @@ Ext.define('Asgard.lib.grid.msds',{
             }],
             items: [
                 {text: this.idText, flex: 1, sortable: false, hidden: false, dataIndex: 'id', filter: true},
-                {text: this.nameText, flex: 3, sortable: false, hidden: false, dataIndex: 'description', filter: true},
+                {text: this.nameText, flex: 3, sortable: false, hidden: false, dataIndex: 'description', filter: true, tdCls: 'wrapText'}
             ]
         };
         
