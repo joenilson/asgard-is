@@ -9,7 +9,7 @@ if(!empty($this->role)){
 }
 ?>
 Ext.tip.QuickTipManager.init();
-var objectivesStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.Objetives');
+var objectivesStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.Objectives');
 var requirementsStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.Requirements');
 var viewStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.Organigram');
 var ownersStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.OwnersProfile');
@@ -17,16 +17,20 @@ var commStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.Communication
 var tpStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.TrainingPlan');
 
 function showObjetives(){
-    var objectivesgrid<?=$this->panelId;?> = Ext.create('Asgard.lib.grid.objetives', { 
+    var view<?=$this->panelId;?> = Ext.create('Asgard.lib.dataview.objectives', { 
         store: objectivesStore<?= $this->panelId; ?>, 
-        id: 'grid<?=$this->panelId;?>'
+    });
+    var contentObj<?=$this->panelId; ?> = Ext.create('Ext.panel.Panel',{
+        flex: 1,
+        layout: 'fit',
+        items: view<?=$this->panelId;?>
     });
     var winAdd = Ext.create('Asgard.lib.window.windowGeneric',{
         height: document.documentElement.clientHeight - 50,
-        width: document.documentElement.clientWidth - 550,
+        width: document.documentElement.clientWidth - 550
     });
-    winAdd.setTitle('Objetives');
-    winAdd.add(objectivesgrid<?=$this->panelId;?>);
+    winAdd.setTitle('Objectives');
+    winAdd.add(contentObj<?=$this->panelId;?>);
     winAdd.show();
     objectivesStore<?= $this->panelId; ?>.load({ params: { module: 'master', company: '<?=$companyId;?>', country: '<?=$countryId;?>', location: '<?=$locationId;?>'  }});
 }

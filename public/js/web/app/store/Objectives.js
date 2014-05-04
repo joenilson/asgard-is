@@ -3,13 +3,13 @@
  * @version 1.0.0 devel
  * @author Joe Nilson <joenilson@gmail.com>
  */
-Ext.define('Asgard.store.Objetives', {
+Ext.define('Asgard.store.Objectives', {
     extend: 'Ext.data.Store',
-    model: 'Asgard.model.Objetives',
+    model: 'Asgard.model.Objectives',
     groupField: 'policy',
     proxy: {
         type: 'ajax',
-        url: 'ims/getobjetives',
+        url: 'ims/getobjectives',
         reader: {
             type: 'json',
             root: 'results'

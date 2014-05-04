@@ -9,7 +9,7 @@
  * @param {Object} config The config object
  */
 
-Ext.define('Asgard.lib.Panels.drilssPhotosPanel', {
+Ext.define('Asgard.lib.Panels.drillsPhotosPanel', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.drilssphotospanel',
     bodyPadding: 5,

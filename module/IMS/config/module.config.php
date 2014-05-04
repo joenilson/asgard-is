@@ -88,31 +88,31 @@ return array(
                             ),
                         ),
                     ),
-                    'objetives' => array(
+                    'objectives' => array(
                         'type'    => 'Segment',
                         'options' => array(
-                            'route'    => '/objetives[/:id]',
+                            'route'    => '/objectives[/:id]',
                             'constraints' => array(
                                 'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'id'         => '[0-9_-]*',
                             ),
                             'defaults' => array(
-                                'action' => 'objetives'
+                                'action' => 'objectives'
                             ),
                         ),
                     ),
-                    'getobjetives' => array(
+                    'getobjectives' => array(
                         'type'    => 'Segment',
                         'options' => array(
-                            'route'    => '/getobjetives[/:id]',
+                            'route'    => '/getobjectives[/:id]',
                             'constraints' => array(
                                 'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'id'         => '[0-9_-]*',
                             ),
                             'defaults' => array(
-                                'action' => 'getobjetives'
+                                'action' => 'getobjectives'
                             ),
                         ),
                     ),

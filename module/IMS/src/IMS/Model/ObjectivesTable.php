@@ -123,7 +123,7 @@ class ObjectivesTable extends AbstractTableGateway {
                     array('company'=> $company,'country'=> $country,'location'=>$location,'id' => $id) );
             return $data['id'];
         } else {
-            throw new \Exception('company or country or location or id in object Requirements does not exist');
+            throw new \Exception('company or country or location or id in object Objectives does not exist');
         }
     }
 

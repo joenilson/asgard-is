@@ -37,7 +37,7 @@ Ext.define('Asgard.view.Viewport', {
     'Asgard.store.HiraUpload','Asgard.lib.grid.hira_upload','Asgard.lib.forms.hiraMasterFileUpload',
     'Asgard.store.Requirements','Asgard.lib.grid.requirements','Asgard.store.ReqsUpload',
     'Asgard.lib.forms.reqsMasterFileUpload','Asgard.lib.grid.requirements_upload',
-    'Asgard.store.Objetives','Asgard.lib.grid.objetives','Asgard.lib.grid.ownersprofile',
+    'Asgard.store.Objectives','Asgard.lib.dataview.objectives','Asgard.lib.grid.ownersprofile',
     'Asgard.store.OwnersProfile','Asgard.lib.dataview.organigram','Asgard.store.Organigram',
     'Asgard.lib.Panels.OrganigramPanel','Asgard.lib.forms.organigramNewOrganigram',
     'Asgard.store.Communications','Asgard.lib.grid.communications','Asgard.lib.forms.commNewCommunication',
@@ -48,8 +48,9 @@ Ext.define('Asgard.view.Viewport', {
     'Asgard.store.IEEA_Thread','Asgard.lib.grid.ieea_thread','Asgard.lib.forms.ownersprofileNewProfile',
     'Asgard.lib.forms.RequirementTypeCombo','Asgard.store.RequirementsHelper',
     'Asgard.lib.forms.requirementNewRequirement','Asgard.lib.dataview.drillsphotos',
-    'Asgard.lib.dataview.MSDS','Asgard.lib.Panels.MSDSPanel','Asgard.lib.Panels.drilssPhotosPanel',
-    'Asgard.lib.dataview.objectives','Asgard.lib.Panels.ObjectivesPanel'
+    'Asgard.lib.dataview.MSDS','Asgard.lib.Panels.MSDSPanel','Asgard.lib.Panels.drillsPhotosPanel',
+    'Asgard.lib.dataview.objectives','Asgard.lib.Panels.ObjectivesPanel',
+    
   ],
   menuTitleText: 'Main Menu',
     defaults: {

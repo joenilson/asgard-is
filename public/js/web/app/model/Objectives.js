@@ -19,22 +19,19 @@
  * @version 1.0.0 devel
  * @author Joe Nilson <joenilson@gmail.com>
  */
-Ext.define('Asgard.model.Objetives', {
+Ext.define('Asgard.model.Objectives', {
     extend: 'Ext.data.Model',
     fields: [
         {name: 'company', type: 'string' }, 
         {name: 'country', type: 'string' }, 
         {name: 'location', type: 'string' }, 
         {name: 'id', type: 'float' }, 
-        {name: 'policy', type: 'string' }, 
-        {name: 'objetives', type: 'string' }, 
-        {name: 'indicators', type: 'string' }, 
-        {name: 'goal', type: 'string' }, 
-        {name: 'goal_control', type: 'string' }, 
+        {name: 'description', type: 'string' }, 
+        {name: 'filename', type: 'string' }, 
         {name: 'status', type: 'string' },
         {name: 'user_creation', type: 'float' },
-        {name: 'date_creation', type: 'date', format: 'c' },
-        {name: 'user_mod', type: 'float' },
-        {name: 'date_modification', type: 'date', format: 'c' }
+        {name: 'date_creation', type: 'date', dateFormat: 'c' },
+        {name: 'user_modification', type: 'float' },
+        {name: 'date_modification', type: 'date', dateFormat: 'c' }
     ]
 });
