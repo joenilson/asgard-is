@@ -367,3 +367,23 @@ Ext.define('Asgard.locales.lib.grid.requirements',{
     chooseTitleBodyDelete: 'Ela irá remover um documento!. <br />Quer continuar com esta ação?',
     chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?'    
 });
+
+Ext.define('Asgard.locales.lib.grid.inspectionprogram',{
+    override: 'Asgard.lib.grid.inspectionprogram',
+
+    titleText: 'Programa de Inspeção',
+    idText: 'Id',
+    nameText: 'Descrição',
+    fileText: 'Arquivo',
+    toolViewDocText: 'Visualizar Arquivo',
+    toolAddText: 'Adicionar',
+    toolRemoveText: 'Excluir documento',
+    toolChangeText: 'Alterar documento',
+    titleNewAuditor: 'Adicionar Programa de Inspeção',
+    titleEditAuditor: 'Alterar Programa de Inspeção',
+    loadingFileText: 'Carregando Documento... por favor aguarde...',
+    chooseTitleText: 'Aviso',
+    emptyFileMessage: 'Não há nenhum arquivo associado com este documento...',
+    chooseTitleBodyDelete: 'Ela irá remover um documento!. <br />Quer continuar com esta ação?',
+    chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?',
+});

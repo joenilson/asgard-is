@@ -19,20 +19,20 @@
  * @version 1.0.0 devel
  * @author Joe Nilson <joenilson@gmail.com>
  */
-Ext.define('Asgard.model.Auditors', {
+Ext.define('Asgard.model.InspectionProgram', {
     extend: 'Ext.data.Model',
     fields: [
         {name: 'company', type: 'string' }, 
         {name: 'country', type: 'string' }, 
         {name: 'location', type: 'string' }, 
         {name: 'id', type: 'float' }, 
-        {name: 'auditor_name', type: 'string' }, 
-        {name: 'auditor_dip', type: 'string' }, 
-        {name: 'year', type: 'float' }, 
+        {name: 'description', type: 'string' }, 
+        {name: 'filename', type: 'string' }, 
+        {name: 'year_date', type: 'float' }, 
         {name: 'status', type: 'string' },
-        {name: 'user_id', type: 'float' },
+        {name: 'user_creation', type: 'float' },
         {name: 'date_creation', type: 'date', dateFormat: 'c' },
-        {name: 'user_mod', type: 'float' },
+        {name: 'user_modification', type: 'float' },
         {name: 'date_modification', type: 'date', dateFormat: 'c' }
     ]
 });

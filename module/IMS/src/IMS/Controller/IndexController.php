@@ -24,6 +24,7 @@ use IMS\Model\Entity\Organigram;
 use IMS\Model\Entity\Objectives;
 use IMS\Model\Entity\Communications;
 use IMS\Model\Entity\TrainingPlan;
+use IMS\Model\Entity\InspectionProgram;
 use IMS\Model\Entity\EmergencyPlan;
 use IMS\Model\Entity\IEEA;
 use IMS\Model\Entity\MSDS;
@@ -85,6 +86,7 @@ class IndexController extends AbstractActionController
     protected $emergencyplanTable;
     protected $msdsTable;
     protected $hazardoussuppliesTable;
+    protected $ispectionprogramTable;
     
     public function indexAction()
     {
@@ -159,6 +161,166 @@ class IndexController extends AbstractActionController
             'countryId'=>$userData->country,
             'lang'=>$lang,
             'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0)));
+    }
+    
+    public function inspectionprogramAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        return array(
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'lang'=>$lang,
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
+        );
+    }
+    
+    public function getinspectionprogramAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang = $userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $companyParams = $request->getQuery('company');
+        $countryParams = $request->getQuery('country');
+        $locationParams = $request->getQuery('location');
+        $yearParams = $request->getQuery('year');
+        
+        $sql = $this->getInspectionProgramTable();
+        $listDocuments = $sql->getObjectByCCLY($companyParams,$countryParams,$locationParams,$yearParams);
+        
+        if(!empty($listDocuments)){
+            $data['success']=true;
+            $data['results']=$listDocuments;
+            $data['msg']="";
+        }else{
+            $data['success']=true;
+            $data['results']="";
+            $data['msg']="Error trying to get the information...";
+        }
+        $result = new JsonModel($data);
+    	return $result;   
+    }
+    
+    public function removeinspectionprogramAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $company = $request->getPost('company');
+        $country = $request->getPost('country');
+        $location = $request->getPost('location');
+        $year = $request->getPost('year');
+        $ip_id = $request->getPost('id');
+        $dataResult = array();
+        $sql = $this->getInspectionProgramTable();
+        $dataObject = $sql->getObjectByCCLId($company,$country,$location,$ip_id);
+        if($dataObject){
+            $dataU['status']='I';
+            $dataU['user_modification']=$userData->id;
+            $dataU['date_modification']=\date('Y-m-d H:i:s');
+            $dataIdx['company']=$dataObject[0]['company'];
+            $dataIdx['country']=$dataObject[0]['country'];
+            $dataIdx['location']=$dataObject[0]['location'];
+            $dataIdx['year_date']=$dataObject[0]['year_date'];
+            $dataIdx['id']=$dataObject[0]['id'];
+            try {
+                $sql->update($dataU,$dataIdx);
+                $dataResult['success'] = true; 
+            } catch (\Exception $ex) {
+                //$error = $ex;
+                $dataResult['success'] = false; 
+                $dataResult['message'] = $ex->getMessage(); 
+            }
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function addinspectionprogramAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $company = $request->getPost('companiesCombo');
+        $country = $request->getPost('countriesCombo');
+        $location = $request->getPost('locationsCombo');
+        $year = $request->getPost('yearsCombo');
+        $description = (string) $request->getPost('description');
+        $files =  $request->getFiles()->toArray();
+        $id = $request->getPost('ip_id');
+        $date_creation = \date('Y-m-d h:i:s');
+
+        $dataResult = array();
+        
+        $sql = $this->getInspectionProgramTable();
+        $object = new InspectionProgram();
+        $object->setDescription($description)
+                ->setCompany($company)
+                ->setCountry($country)
+                ->setLocation($location)
+                ->setYear_date($year)
+                ->setUser_creation($userData->id)
+                ->setStatus('A')
+                ->setDate_creation($date_creation);
+        if($id){
+            $object->setId($id);
+        }
+        $dataResult['success'] = true; 
+        try {
+            $newId = $sql->save($object);
+            
+        } catch (\Exception $ex) {
+            //$error = $ex;
+            
+            $dataResult['success'] = false; 
+            $dataResult['message'] = $ex->getMessage(); 
+        }
+
+        $valid = new \Zend\Validator\File\UploadFile();
+        
+        if(isset($newId) AND $valid->isValid($files['inspectionprogram'])){
+            $fileName = "ip_{$company}_{$country}_{$location}_".$newId.".pdf";
+            $this->savefile('library/inspectionprogram', $files['inspectionprogram'], $fileName, false, null);
+            $sql->update(array('filename'=>'library/inspectionprogram/'.$fileName),array('id'=>$newId));
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function forminspectionprogramAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+
+        $request = $this->getRequest();
+        $object_id = $request->getPost('ip_id');
+        $company = $request->getPost('company');
+        $country = $request->getPost('country');
+        $location = $request->getPost('location');
+        $year = $request->getPost('year');
+        
+        
+        $sql = $this->getInspectionProgramTable();
+        $AuditData = $sql->getObjectByCCLId($company,$country,$location,$object_id);
+        $dataResult = array();
+        foreach($AuditData as $key=>$values){
+            $dataResult['companiesCombo']=$values['company'];
+            $dataResult['countriesCombo']=$values['country'];
+            $dataResult['locationsCombo']=$values['location'];
+            $dataResult['yearCombo']=$values['year_date'];
+            $dataResult['description']=$values['description'];
+        }
+        $data = array();
+        if(count($dataResult>0)){
+            $data['success']=true;
+            $data['data']=$dataResult;
+        }else{
+            $data['success']=false;
+            $data['data']="";
+        }
+        
+        return new JsonModel($data);
     }
     
     public function objectivesAction(){
@@ -4673,6 +4835,15 @@ class IndexController extends AbstractActionController
         $imagine->open($file)
                 ->thumbnail(new \Imagine\Image\Box(171,180),$mode)
                 ->save($dst);
+    }
+    
+    private function getInspectionProgramTable()
+    {
+    	if (!$this->ispectionprogramTable) {
+            $sm = $this->getServiceLocator();
+            $this->ispectionprogramTable = $sm->get('IMS\Model\InspectionProgramTable');
+    	}
+    	return $this->ispectionprogramTable;
     }
     
     private function getHSTable()

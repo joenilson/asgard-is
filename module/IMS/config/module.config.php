@@ -130,6 +130,76 @@ return array(
                             ),
                         ),
                     ),
+                    'inspectionprogram' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/inspectionprogram[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'inspectionprogram'
+                            ),
+                        ),
+                    ),
+                    'getinspectionprogram' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/getinspectionprogram[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'getinspectionprogram'
+                            ),
+                        ),
+                    ),
+                    'addinspectionprogram' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/addinspectionprogram[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'addinspectionprogram'
+                            ),
+                        ),
+                    ),
+                    'removeinspectionprogram' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/removeinspectionprogram[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'removeinspectionprogram'
+                            ),
+                        ),
+                    ),
+                    'forminspectionprogram' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/forminspectionprogram[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'forminspectionprogram'
+                            ),
+                        ),
+                    ),
                     'listmsds' => array(
                         'type'    => 'Segment',
                         'options' => array(

@@ -53,6 +53,7 @@ use IMS\Model\RequirementsHelperTable;
 use IMS\Model\SGIObjectivesTable;
 use IMS\Model\CommunicationsTable;
 use IMS\Model\TrainingPlanTable;
+use IMS\Model\InspectionProgramTable;
 use IMS\Model\EmergencyPlanTable;
 use IMS\Model\OrganigramTable;
 use IMS\Model\ObjectivesTable;
@@ -106,6 +107,11 @@ class Module implements AutoloaderProviderInterface
     {
         return array(
             'factories' => array(
+                'IMS\Model\InspectionProgramTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new InspectionProgramTable($dbAdapter);
+                    return $table;
+                },
                 'IMS\Model\ObjectivesTable'=> function($sm){
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new ObjectivesTable($dbAdapter);
