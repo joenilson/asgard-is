@@ -11,11 +11,11 @@ use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Sql\TableIdentifier;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Predicate\Expression;
-use IMS\Model\Entity\Organigram;
+use IMS\Model\Entity\Objectives;
 
-class OrganigramTable extends AbstractTableGateway {
+class ObjectivesTable extends AbstractTableGateway {
 
-    protected $table_name = 'organigram';
+    protected $table_name = 'objectives';
     protected $schema_name = 'ims';
 
     private function processList($value)
@@ -46,7 +46,7 @@ class OrganigramTable extends AbstractTableGateway {
         return $resultSet->toArray();
     }
     
-    public function getOrganigramByCCL($company,$country,$location)
+    public function getObjectByCCL($company,$country,$location)
     {
         $row = $this->select(function (Select $select) use ($company,$country,$location){
             $select->where(array('company'=>(string) $company,
@@ -60,7 +60,7 @@ class OrganigramTable extends AbstractTableGateway {
         return $row->toArray();
     }
     
-    public function getOrganigramByCCLId($company,$country,$location,$id)
+    public function getObjectByCCLId($company,$country,$location,$id)
     {
         $row = $this->select(function (Select $select) use ($company,$country,$location,$id){
             $select->where(array('company'=>(string) $company,
@@ -84,7 +84,7 @@ class OrganigramTable extends AbstractTableGateway {
         return $id;
     }
    
-    public function save(Organigram $object)
+    public function save(Objectives $object)
     {
         $data = array(
             'company' => $object->getCompany(),
@@ -93,10 +93,6 @@ class OrganigramTable extends AbstractTableGateway {
             'id' => $object->getId(),
             'description' => $object->getDescription(),
             'status' => $object->getStatus(),
-            'user_creation' => $object->getUser_creation(),
-            'date_creation' => $object->getDate_creation(),
-            'user_modification' => $object->getUser_modification(),
-            'date_modification' => $object->getDate_modification()
         );
         
         $id = (int) $object->getId();
@@ -114,6 +110,8 @@ class OrganigramTable extends AbstractTableGateway {
         }
         
         if (!$this->getOrganigramByCCLId($company,$country,$location,$id)) {
+            $data['date_creation']= $object->getDate_creation();
+            $data['user_creation'] = $object->getUser_creation();
             if (!$this->insert($data)){
                 throw new \Exception('insert statement can\'t be executed');
             }

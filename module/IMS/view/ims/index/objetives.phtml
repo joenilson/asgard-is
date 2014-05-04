@@ -32,15 +32,22 @@ function fnCCLProcess(button, opt, obj) {
     var companies = values['companiesCombo'];
     var countries = values['countriesCombo'];
     var locations = values['locationsCombo'];
-    gridStore<?= $this->panelId; ?>.load({ params: { module: 'master', company: companies, country: countries, location: locations  }});
+    viewStore<?= $this->panelId; ?>.load({ params: { module: 'master', company: companies, country: countries, location: locations  }});
 
 }
-var gridStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.Objetives');
+var viewStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.Objectives');
 
-var form<?=$this->panelId;?> = Ext.create('Asgard.lib.forms.comboCCL', { innerGrid: grid<?=$this->panelId;?> });
-var grid<?=$this->panelId;?> = Ext.create('Asgard.lib.grid.objetives', { 
-    store: gridStore<?= $this->panelId; ?>, 
-    id: 'grid<?=$this->panelId;?>'
+//var form<?=$this->panelId;?> = Ext.create('Asgard.lib.forms.comboCCL', { innerPanel: grid<?=$this->panelId;?> });
+
+var view<?=$this->panelId;?> = Ext.create('Asgard.lib.dataview.objectives', { 
+    store: viewStore<?= $this->panelId; ?>, 
+});
+
+   
+var form<?=$this->panelId;?> = Ext.create('Asgard.lib.forms.comboCCL', { innerPanel: view<?=$this->panelId;?> });
+
+var content<?=$this->panelId; ?> = Ext.create('Asgard.lib.Panels.ObjectivesPanel',{
+    items: view<?=$this->panelId;?>
 });
 
 deployCombos('companiesCombo','<?=$this->companyId;?>');
@@ -55,7 +62,7 @@ var libraryViewport<?=$this->panelId; ?> = Ext.create('Ext.panel.Panel', {
     },
     items: [
         form<?=$this->panelId; ?>,
-        grid<?=$this->panelId; ?>
+        content<?=$this->panelId; ?>
    ]
 });
 Ext.getCmp('content-panel').getActiveTab().add(libraryViewport<?= $this->panelId; ?>);
