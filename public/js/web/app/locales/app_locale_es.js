@@ -387,3 +387,22 @@ Ext.define('Asgard.locales.lib.grid.inspectionprogram',{
     chooseTitleBodyDelete: 'Va eliminar un documento!. <br />Desea seguir con esta acción?',
     chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?',
 });
+
+Ext.define('Asgard.locales.lib.grid.hazardoussupplies',{
+    override: 'Asgard.lib.grid.hazardoussupplies',
+
+    titleText: 'Insumos Peligrosos',
+    idText: 'Id',
+    nameText: 'Insumo',
+    typeText: 'Tipo',
+    toolAddText: 'Agregar Insumo Peligroso',
+    toolRemoveText: 'Eliminar Insumo Peligroso',
+    toolChangeText: 'Cambiar Insumo Peligroso',
+    
+    titleNewAuditor: 'Agrega nuevo Insumo Peligroso',
+    titleEditAuditor: 'Editar Insumo Peligroso',
+    
+    chooseTitleText: 'Advertencia',
+    chooseTitleBodyDelete: 'Va eliminar un registro!. <br />Desea seguir con esta acción?',
+    chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?',
+});

@@ -16,6 +16,7 @@ use IMS\Model\Entity\HazardousSupplies;
 class HazardousSuppliesTable extends AbstractTableGateway {
 
     protected $table_name = 'hazardous_supplies';
+    protected $type_table_name = 'hazardous_supplies_types';
     protected $schema_name = 'ims';
 
     private function processList($value)
@@ -60,6 +61,45 @@ class HazardousSuppliesTable extends AbstractTableGateway {
         return $row->toArray();
     }
     
+    public function getObjectByCCLByLang($company,$country,$location,$lang)
+    {
+        $row = $this->select(function (Select $select) use ($company,$country,$location,$lang){
+            $select->join(
+                array('h1'=>new TableIdentifier($this->type_table_name, $this->schema_name)), 
+                new Expression ( $this->table_name.'.id_type = h1.id AND h1.status=\'A\' AND h1.lang=\''.$lang.'\''),
+                array('desc_type'=>'description')
+            );
+            $select->where(array('company'=>(string) $company,
+                                'country'=>(string) $country,
+                                'location'=>(string) $location,
+                                $this->table_name.'.status'=>'A'));
+            $select->order('id_type DESC');
+        });
+        if (!$row)
+            return false;
+        return $row->toArray();
+    }
+    
+    public function getObjectByCCLByTL($company,$country,$location,$type,$lang)
+    {
+        $row = $this->select(function (Select $select) use ($company,$country,$location,$type,$lang){
+            $select->join(
+                array('h1'=>new TableIdentifier($this->type_table_name, $this->schema_name)), 
+                new Expression ( $this->table_name.'.id_type = h1.id AND h1.status=\'A\' AND h1.lang=\''.$lang.'\''),
+                array('desc_type'=>'description')
+            );
+            $select->where(array('company'=>(string) $company,
+                                'country'=>(string) $country,
+                                'location'=>(string) $location,
+                                'id_type'=>(int) $type,
+                                $this->table_name.'.status'=>'A'));
+            $select->order('id_type DESC');
+        });
+        if (!$row)
+            return false;
+        return $row->toArray();
+    }
+    
     public function getObjectByCCLId($company,$country,$location,$id)
     {
         $row = $this->select(function (Select $select) use ($company,$country,$location,$id){
@@ -80,7 +120,7 @@ class HazardousSuppliesTable extends AbstractTableGateway {
             $select->where(array('company'=>(string) $company,
                                 'country'=>(string) $country,
                                 'location'=>(string) $location,
-                                'id_type'=>(string) $type,
+                                'id_type'=>(int) $type,
                                 'id'=>(int) $id));
             //$select->order('class_req,type_req ASC');
         });

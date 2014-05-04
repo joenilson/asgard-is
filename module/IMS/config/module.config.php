@@ -200,6 +200,76 @@ return array(
                             ),
                         ),
                     ),
+                    'hazardoussupplies' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/hazardoussupplies[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'hazardoussupplies'
+                            ),
+                        ),
+                    ),
+                    'gethazardoussupplies' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/gethazardoussupplies[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'gethazardoussupplies'
+                            ),
+                        ),
+                    ),
+                    'addhazardoussupplies' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/addhazardoussupplies[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'addhazardoussupplies'
+                            ),
+                        ),
+                    ),
+                    'removehazardoussupplies' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/removehazardoussupplies[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'removehazardoussupplies'
+                            ),
+                        ),
+                    ),
+                    'formhazardoussupplies' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/formhazardoussupplies[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'formhazardoussupplies'
+                            ),
+                        ),
+                    ),
                     'listmsds' => array(
                         'type'    => 'Segment',
                         'options' => array(

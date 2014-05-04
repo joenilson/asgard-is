@@ -323,6 +323,207 @@ class IndexController extends AbstractActionController
         return new JsonModel($data);
     }
     
+    public function hazardoussuppliesAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        return array(
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'lang'=>$lang,
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
+        );
+    }
+    
+    public function gethazardoussuppliesAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang = $userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $companyParams = $request->getQuery('company');
+        $countryParams = $request->getQuery('country');
+        $locationParams = $request->getQuery('location');
+        
+        $sql = $this->getHSTable();
+        $listDocuments = $sql->getObjectByCCLByLang($companyParams,$countryParams,$locationParams,$lang);
+        
+        if(!empty($listDocuments)){
+            $data['success']=true;
+            $data['results']=$listDocuments;
+            $data['msg']="";
+        }else{
+            $data['success']=true;
+            $data['results']="";
+            $data['msg']="Error trying to get the information...";
+        }
+        $result = new JsonModel($data);
+    	return $result;   
+    }
+    
+    public function removehazardoussuppliesAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $company = $request->getPost('company');
+        $country = $request->getPost('country');
+        $location = $request->getPost('location');
+        $type = $request->getPost('type');
+        $hs_id = $request->getPost('id');
+        $dataResult = array();
+        $sql = $this->getHSTable();
+        $dataObject = $sql->getObjectByCCLIT($company,$country,$location,$hs_id,$type);
+        if($dataObject){
+            $dataU['status']='I';
+            $dataU['user_modification']=$userData->id;
+            $dataU['date_modification']=\date('Y-m-d H:i:s');
+            $dataIdx['company']=$dataObject[0]['company'];
+            $dataIdx['country']=$dataObject[0]['country'];
+            $dataIdx['location']=$dataObject[0]['location'];
+            $dataIdx['id_type']=$dataObject[0]['id_type'];
+            $dataIdx['id']=$dataObject[0]['id'];
+            try {
+                $sql->update($dataU,$dataIdx);
+                $dataResult['success'] = true; 
+            } catch (\Exception $ex) {
+                //$error = $ex;
+                $dataResult['success'] = false; 
+                $dataResult['message'] = $ex->getMessage(); 
+            }
+        }else{
+            $dataResult['fields']=$dataObject;
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function addhazardoussuppliesAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $company = $request->getPost('companiesCombo');
+        $country = $request->getPost('countriesCombo');
+        $location = $request->getPost('locationsCombo');
+        $toxic = (string) $request->getPost('toxic');
+        $flammable = (string) $request->getPost('flammable');
+        $reactive = (string) $request->getPost('reactive');
+        $other = (string) $request->getPost('other');
+        $description = (string) $request->getPost('description');
+        $id = $request->getPost('hs_id');
+        $date_creation = \date('Y-m-d h:i:s');
+        
+        $dataResult = array();
+
+        $sql2 = $this->getHSTable();
+        if($toxic=='on'){
+            $object2 = new HazardousSupplies();
+            $object2->setCompany($company)
+                    ->setCountry($country)
+                    ->setLocation($location)
+                    ->setUser_creation($userData->id)
+                    ->setStatus('A')
+                    ->setDescription($description)
+                    ->setDate_creation($date_creation)
+                    ->setId_type(1);
+            if($id){
+                $object2->setId($id);
+            }
+            $sql2->save($object2);
+        }
+        if($flammable=='on'){
+            $object2 = new HazardousSupplies();
+            $object2->setCompany($company)
+                    ->setCountry($country)
+                    ->setLocation($location)
+                    ->setUser_creation($userData->id)
+                    ->setStatus('A')
+                    ->setDescription($description)
+                    ->setDate_creation($date_creation)
+                    ->setId_type(2);
+            if($id){
+                $object2->setId($id);
+            }
+            $sql2->save($object2);
+        }
+        
+        if($reactive=='on'){
+            $object2 = new HazardousSupplies();
+            $object2->setCompany($company)
+                    ->setCountry($country)
+                    ->setLocation($location)
+                    ->setUser_creation($userData->id)
+                    ->setStatus('A')
+                    ->setDescription($description)
+                    ->setDate_creation($date_creation)
+                    ->setId_type(3);
+            if($id){
+                $object2->setId($id);
+            }
+            $sql2->save($object2);
+        }
+        
+        if($other=='on'){
+            $object2 = new HazardousSupplies();
+            $object2->setCompany($company)
+                    ->setCountry($country)
+                    ->setLocation($location)
+                    ->setUser_creation($userData->id)
+                    ->setStatus('A')
+                    ->setDescription($description)
+                    ->setDate_creation($date_creation)
+                    ->setId_type(4);
+            if($id){
+                $object2->setId($id);
+            }
+            $sql2->save($object2);
+        }
+        $dataResult['success'] = true; 
+
+        return new JsonModel($dataResult);
+    }
+    
+    public function formhazardoussuppliesAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+
+        $request = $this->getRequest();
+        $object_id = $request->getPost('hs_id');
+        $company = $request->getPost('company');
+        $country = $request->getPost('country');
+        $location = $request->getPost('location');
+        $type = $request->getPost('type');
+        
+        
+        $sql = $this->getHSTable();
+        $oldData = $sql->getObjectByCCLIT($company,$country,$location,$object_id,$type);
+        $dataResult = array();
+        foreach($oldData as $key=>$values){
+            $dataResult['description']=$oldData[0]['description'];
+            $dataResult['companiesCombo']=$oldData[0]['company'];
+            $dataResult['countriesCombo']=$oldData[0]['country'];
+            $dataResult['locationsCombo']=$oldData[0]['location'];
+            $dataResult['toxic']=($oldData[0]['id_type']==1)?"on":"";
+            $dataResult['flammable']=($oldData[0]['id_type']==2)?"on":"";
+            $dataResult['reactive']=($oldData[0]['id_type']==3)?"on":"";
+            $dataResult['other']=($oldData[0]['id_type']==4)?"on":"";
+            $dataResult['id']=$oldData[0]['id'];
+        }
+        $data = array();
+        if(count($dataResult>0)){
+            $data['success']=true;
+            $data['data']=$dataResult;
+        }else{
+            $data['success']=false;
+            $data['data']="";
+        }
+        
+        return new JsonModel($data);
+    }
+    
     public function objectivesAction(){
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
         $userData = $this->getServiceLocator()->get('userSessionData');
