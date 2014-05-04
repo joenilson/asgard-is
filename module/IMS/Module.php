@@ -62,6 +62,7 @@ use IMS\Model\ProcessOwnerProfileTable;
 use IMS\Model\SafetyCommitteeTable;
 use IMS\Model\SafetyCommitteePositionsTable;
 use IMS\Model\SafetyCommitteeProceedingsTable;
+use IMS\Model\RiskSurveyTable;
 
 class Module implements AutoloaderProviderInterface
 {
@@ -116,6 +117,11 @@ class Module implements AutoloaderProviderInterface
                 'IMS\Model\SecurityHandbookTable'=> function($sm){
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new SecurityHandbookTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\RiskSurveyTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new RiskSurveyTable($dbAdapter);
                     return $table;
                 },
                 'IMS\Model\ObjectivesTable'=> function($sm){

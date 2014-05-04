@@ -664,7 +664,6 @@ return array(
                             ),
                         ),
                     ),  
-                    
                     'trainingplan' => array(
                         'type'    => 'Segment',
                         'options' => array(
@@ -735,6 +734,77 @@ return array(
                             ),
                         ),
                     ),
+                    'risksurvey' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/risksurvey[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'risksurvey'
+                            ),
+                        ),
+                    ),
+                    'getrisksurvey' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/getrisksurvey[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'getrisksurvey'
+                            ),
+                        ),
+                    ),
+                    'removerisksurvey' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/removerisksurvey[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'removerisksurvey'
+                            ),
+                        ),
+                    ),
+                    'addrisksurvey' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/addrisksurvey[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'addrisksurvey'
+                            ),
+                        ),
+                    ),
+                    'formrisksurvey' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/formrisksurvey[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'formrisksurvey'
+                            ),
+                        ),
+                    ),
+
                     'organigram' => array(
                         'type'    => 'Segment',
                         'options' => array(

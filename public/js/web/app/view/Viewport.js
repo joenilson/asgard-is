@@ -55,7 +55,8 @@ Ext.define('Asgard.view.Viewport', {
     'Asgard.store.InspectionProgram','Asgard.store.HazardousSupplies',
     'Asgard.lib.grid.hazardoussupplies','Asgard.lib.forms.hsNewHS','Asgard.store.SecurityHandbook',
     'Asgard.lib.forms.shNewSecurityHandbook','Asgard.lib.Panels.SecurityHandbookPanel',
-    'Asgard.lib.dataview.securityhandbook'
+    'Asgard.lib.dataview.securityhandbook','Asgard.store.RiskSurvey','Asgard.lib.forms.risksurveyNewRiskSurvey',
+    'Asgard.lib.grid.risksurvey'
     
     
   ],
