@@ -28,10 +28,10 @@ use IMS\Model\Entity\InspectionProgram;
 use IMS\Model\Entity\EmergencyPlan;
 use IMS\Model\Entity\IEEA;
 use IMS\Model\Entity\MSDS;
+use IMS\Model\Entity\SecurityHandbook;
 use IMS\Model\Entity\HazardousSupplies;
 use AsgardLib\Versioning\Documents;
 use AsgardLib\Versioning\Scope;
-
 //use PHPExcel;
 use PHPExcel\Reader\Excel5;
 
@@ -87,6 +87,7 @@ class IndexController extends AbstractActionController
     protected $msdsTable;
     protected $hazardoussuppliesTable;
     protected $ispectionprogramTable;
+    protected $securityhandbookTable;
     
     public function indexAction()
     {
@@ -653,6 +654,139 @@ class IndexController extends AbstractActionController
             $fileName = "objective_{$company}_{$country}_{$location}_".$newId.".pdf";
             $this->savefile('library/objectives', $files['objective'], $fileName, false, null);
             $sql->update(array('filename'=>'library/objectives/'.$fileName),array('id'=>$newId));
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function securityhandbookAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        return array(
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'lang'=>$lang,
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
+        );
+    }
+    
+    public function getsecurityhandbookAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang = $userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $companyParams = $request->getQuery('company');
+        $countryParams = $request->getQuery('country');
+        $locationParams = $request->getQuery('location');
+        
+        $sql = $this->getSecurityHandbookTable();
+        $listDocuments = $sql->getObjectByCCL($companyParams,$countryParams,$locationParams);
+        
+        if(!empty($listDocuments)){
+            $data['success']=true;
+            $data['results']=$listDocuments;
+            $data['msg']="";
+        }else{
+            $data['success']=true;
+            $data['results']="";
+            $data['msg']="Error trying to get the information...";
+        }
+        $result = new JsonModel($data);
+    	return $result;   
+    }
+    
+    public function removesecurityhandbookAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $company = $request->getPost('companiesCombo');
+        $country = $request->getPost('countriesCombo');
+        $location = $request->getPost('locationsCombo');
+        $sh_id = $request->getPost('id');
+        $dataResult = array();
+        $sql = $this->getSecurityHandbookTable();
+        $objectData = $sql->getObjectByCCLId($company,$country,$location,$sh_id);
+        if($objectData){
+            $dataU['status']='I';
+            $dataU['user_modification']=$userData->id;
+            $dataU['date_modification']=\date('Y-m-d H:i:s');
+            $dataIdx['company']=$objectData[0]['company'];
+            $dataIdx['country']=$objectData[0]['country'];
+            $dataIdx['location']=$objectData[0]['location'];
+            $dataIdx['id']=$objectData[0]['id'];
+            try {
+                $sql->update($dataU,$dataIdx);
+
+            } catch (\Exception $ex) {
+                //$error = $ex;
+
+                $dataResult['success'] = false; 
+                $dataResult['message'] = $ex->getMessage(); 
+            }
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function addsecurityhandbookAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $company = $request->getPost('companiesCombo');
+        $country = $request->getPost('countriesCombo');
+        $location = $request->getPost('locationsCombo');
+        $description = (string) $request->getPost('description');
+        $files =  $request->getFiles()->toArray();
+        $id = $request->getPost('objective_id');
+        $date_creation = \date('Y-m-d h:i:s');
+
+        $dataResult = array();
+        
+        $sql = $this->getSecurityHandbookTable();
+        $oldObject = $sql->getObjectByCCL($company,$country,$location);
+        if($oldObject){
+            $dataU['status']='I';
+            $dataU['user_modification']=$userData->id;
+            $dataU['date_modification']=\date('Y-m-d H:i:s');
+            $dataIdx['company']=$oldObject[0]['company'];
+            $dataIdx['country']=$oldObject[0]['country'];
+            $dataIdx['location']=$oldObject[0]['location'];
+            $dataIdx['id']=$oldObject[0]['id'];
+            $sql->update($dataU,$dataIdx);
+        }
+        
+        $object = new SecurityHandbook();
+        $object->setDescription($description)
+                ->setCompany($company)
+                ->setCountry($country)
+                ->setLocation($location)
+                ->setUser_creation($userData->id)
+                ->setStatus('A')
+                ->setDate_creation($date_creation);
+        if($id){
+            $object->setId($id);
+        }
+        $dataResult['success'] = true; 
+        try {
+            $newId = $sql->save($object);
+            
+        } catch (\Exception $ex) {
+            //$error = $ex;
+            
+            $dataResult['success'] = false; 
+            $dataResult['message'] = $ex->getMessage(); 
+        }
+
+        $valid = new \Zend\Validator\File\UploadFile();
+        
+        if(isset($newId) AND $valid->isValid($files['securityhandbook'])){
+            $fileName = "sh_{$company}_{$country}_{$location}_".$newId.".pdf";
+            $this->savefile('library/securityhandbook', $files['securityhandbook'], $fileName, false, null);
+            $sql->update(array('filename'=>'library/securityhandbook/'.$fileName),array('id'=>$newId));
         }
         return new JsonModel($dataResult);
     }
@@ -5036,6 +5170,15 @@ class IndexController extends AbstractActionController
         $imagine->open($file)
                 ->thumbnail(new \Imagine\Image\Box(171,180),$mode)
                 ->save($dst);
+    }
+    
+    private function getSecurityHandbookTable()
+    {
+    	if (!$this->securityhandbookTable) {
+            $sm = $this->getServiceLocator();
+            $this->securityhandbookTable = $sm->get('IMS\Model\SecurityHandbookTable');
+    	}
+    	return $this->securityhandbookTable;
     }
     
     private function getInspectionProgramTable()

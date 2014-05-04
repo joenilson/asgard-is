@@ -53,7 +53,10 @@ Ext.define('Asgard.view.Viewport', {
     'Asgard.store.MSDS','Asgard.lib.forms.msdsNewMSDS','Asgard.lib.forms.objectivesNewObjective',
     'Asgard.lib.forms.ipNewInspectionProgram','Asgard.lib.grid.inspectionprogram',
     'Asgard.store.InspectionProgram','Asgard.store.HazardousSupplies',
-    'Asgard.lib.grid.hazardoussupplies','Asgard.lib.forms.hsNewHS'
+    'Asgard.lib.grid.hazardoussupplies','Asgard.lib.forms.hsNewHS','Asgard.store.SecurityHandbook',
+    'Asgard.lib.forms.shNewSecurityHandbook','Asgard.lib.Panels.SecurityHandbookPanel',
+    'Asgard.lib.dataview.securityhandbook'
+    
     
   ],
   menuTitleText: 'Main Menu',

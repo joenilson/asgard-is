@@ -57,6 +57,7 @@ use IMS\Model\InspectionProgramTable;
 use IMS\Model\EmergencyPlanTable;
 use IMS\Model\OrganigramTable;
 use IMS\Model\ObjectivesTable;
+use IMS\Model\SecurityHandbookTable;
 use IMS\Model\ProcessOwnerProfileTable;
 use IMS\Model\SafetyCommitteeTable;
 use IMS\Model\SafetyCommitteePositionsTable;
@@ -110,6 +111,11 @@ class Module implements AutoloaderProviderInterface
                 'IMS\Model\InspectionProgramTable'=> function($sm){
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new InspectionProgramTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\SecurityHandbookTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new SecurityHandbookTable($dbAdapter);
                     return $table;
                 },
                 'IMS\Model\ObjectivesTable'=> function($sm){

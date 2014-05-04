@@ -130,6 +130,48 @@ return array(
                             ),
                         ),
                     ),
+                    'securityhandbook' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/securityhandbook[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'securityhandbook'
+                            ),
+                        ),
+                    ),
+                    'getsecurityhandbook' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/getsecurityhandbook[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'getsecurityhandbook'
+                            ),
+                        ),
+                    ),
+                    'addsecurityhandbook' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/addsecurityhandbook[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'addsecurityhandbook'
+                            ),
+                        ),
+                    ),
                     'inspectionprogram' => array(
                         'type'    => 'Segment',
                         'options' => array(
