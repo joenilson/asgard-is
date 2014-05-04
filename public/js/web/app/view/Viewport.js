@@ -56,7 +56,8 @@ Ext.define('Asgard.view.Viewport', {
     'Asgard.lib.grid.hazardoussupplies','Asgard.lib.forms.hsNewHS','Asgard.store.SecurityHandbook',
     'Asgard.lib.forms.shNewSecurityHandbook','Asgard.lib.Panels.SecurityHandbookPanel',
     'Asgard.lib.dataview.securityhandbook','Asgard.store.RiskSurvey','Asgard.lib.forms.risksurveyNewRiskSurvey',
-    'Asgard.lib.grid.risksurvey'
+    'Asgard.lib.grid.risksurvey','Asgard.lib.grid.msds_upload','Asgard.lib.forms.msdsMasterFileUpload',
+    'Asgard.store.MSDSUpload'
     
     
   ],

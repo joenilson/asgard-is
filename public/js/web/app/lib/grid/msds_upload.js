@@ -19,9 +19,9 @@
  * @version 1.0.0 devel
  * @author Joe Nilson <joenilson@gmail.com>
  */
-Ext.define('Asgard.lib.grid.msds',{
+Ext.define('Asgard.lib.grid.msds_upload',{
     extend: 'Asgard.lib.GridPanel',
-    alias: 'widget.gridmsds',
+    alias: 'widget.gridmsds_upload',
     autoShow: true,
     autoDestroy: true,
     autoScroll: true,
@@ -32,43 +32,73 @@ Ext.define('Asgard.lib.grid.msds',{
     titleText: 'MSDS List',
     idText: 'Id',
     nameText: 'MSDS',
+    fileText: 'File',
     
-    toolAddText: 'Add MSDS',
-    toolRemoveText: 'Remove MSDS',
-    toolChangeText: 'Change MSDS',
+    addToolText: 'Add',
     uploadToolText: 'Mass Upload',
-    titleNewAuditor: 'Add new MSDS',
-    titleEditAuditor: 'Edit MSDS data',
-    
+    emptyTextText: 'No IEEA associated to this Location.',
+    resultTitleText: 'Success',
+    resultMessageText: 'incidents processed.',
+    failureTitleText: 'Warning',
+    failureMessageText: 'Server dont process the files, <br />please review your items.',
+    buttonAcceptText: 'Save Upload',
+    emptyTitleText: 'No data selected',
+    emptyMessageText: 'No one items was selected to process, <br />Please select one at last...',
+    wrongTitleText: 'Incorrect Status',
+    wrongMessageText: 'The incident status is wrong, <br />Please review your Incident\'s Procedure...',
     chooseTitleText: 'Warning',
-    chooseTitleBodyDelete: 'You are choosing delete this item. <br />Would you like to save your changes?',
+    chooseTitleBodyDelete: 'You are choosing delete this items. <br />Would you like to save your changes?',
     chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?',
+    viewConfig: {
+        stripeRows: true
+    },
     
     processChangeValue: 'yes',
     
     initComponent: function(){
         var me = this;
-        this.tools = [{
-            type: 'minus',
-            tooltip: this.toolRemoveText,
-            handler: this.fnLibraryTool,
-            scope: this
-        },{
-            type: 'gear',
-            tooltip: this.toolChangeText,
-            handler: this.fnLibraryTool,
-            scope: this
-        },{
-            type: 'plus',
-            tooltip: this.toolAddText,
-            handler: this.fnLibraryTool,
-            scope: this
-        },{
-            type: 'expand',
-            tooltip: this.uploadToolText,
-            handler: this.fnLibraryTool,
-            scope: this
+        this.selType = 'checkboxmodel';
+        this.columnLines = true;
+        this.dockedItems = [{
+            xtype: 'toolbar',
+            ui: 'footer',
+            dock: 'bottom',
+            items: ['->', {
+                text: this.buttonAcceptText,
+                scope: me,
+                handler: function(){
+                    var gridStore = this.getStore();
+                    var gridSel = this.getSelectionModel().getSelection();
+                    if(gridSel.length > 0){
+                        var sendData = [];
+                        for(i=0; i<gridSel.length; i++){
+                            sendData.push(gridSel[i].data);
+                        }
+                        Ext.Ajax.request({
+                            url: 'ims/processmassmsds',
+                            params: {
+                                data: Ext.encode(sendData)
+                            },
+                            success: function(response){
+                                var text = response.responseText;
+                                var result = Ext.decode(text);
+                                if(result.success){
+                                    for(i=0; i<gridSel.length; i++){
+                                        gridStore.remove(gridSel[i]);
+                                    }
+                                    me.showResultMessage(result.docs_processed);
+                                }else{
+                                    me.showFailureMessage();
+                                }
+                            }
+                        }, this);
+                    }else{
+                        this.showEmptyMessage();
+                    }
+                }
+            }]
         }];
+
         this.title = this.titleText;
         this.columns =  {
             plugins: [{
@@ -76,7 +106,8 @@ Ext.define('Asgard.lib.grid.msds',{
             }],
             items: [
                 {text: this.idText, flex: 1, sortable: false, hidden: false, dataIndex: 'id', filter: true},
-                {text: this.nameText, flex: 3, sortable: false, hidden: false, dataIndex: 'description', filter: true, tdCls: 'wrapText'}
+                {text: this.nameText, flex: 3, sortable: false, hidden: false, dataIndex: 'description', filter: true, tdCls: 'wrapText'},
+                {text: this.fileText, flex: 3, sortable: false, hidden: false, dataIndex: 'filename', filter: true, tdCls: 'wrapText'}
             ]
         };
         
@@ -196,15 +227,46 @@ Ext.define('Asgard.lib.grid.msds',{
                 });
                 windowDoc.add(editAuditor);
                 windowDoc.show();
-            }else if(tool.type==='expand'){
-                //var windowDoc = this.createWindow();
-                windowDoc.setTitle('Upload Master Files');
-                //windowDoc.setHeight(250);
-                winContent = Ext.create('Asgard.lib.forms.msdsMasterFileUpload');
-                windowDoc.add(winContent);
-                windowDoc.show();
             }
         }  
+    },
+    showEmptyMessage: function(){
+        var emptyMsg = Ext.MessageBox.show({
+           title: this.emptyTitleText,
+           msg: this.emptyMessageText,
+           buttons: Ext.MessageBox.OK,
+           icon: Ext.MessageBox.WARNING
+        });
+       return emptyMsg;
+
+    },
+    showWrongMessage: function(){
+        var wrongMsg = Ext.MessageBox.show({
+           title: this.wrongTitleText,
+           msg: this.wrongMessageText,
+           buttons: Ext.MessageBox.OK,
+           icon: Ext.MessageBox.WARNING
+        });
+       return wrongMsg;
+
+    },
+    showResultMessage: function(items){
+        var resultMsg = Ext.MessageBox.show({
+           title: this.resultTitleText,
+           msg: items+' '+this.resultMessageText,
+           buttons: Ext.MessageBox.OK,
+           icon: Ext.MessageBox.INFO
+        });
+       return resultMsg;
+    },
+    showFailureMessage: function(){
+        var failureMsg = Ext.MessageBox.show({
+           title: this.failureTitleText,
+           msg: this.failureMessageText,
+           buttons: Ext.MessageBox.OK,
+           icon: Ext.MessageBox.WARNING
+        });
+       return failureMsg;
+
     }
-    
 });

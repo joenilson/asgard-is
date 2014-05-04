@@ -406,3 +406,13 @@ Ext.define('Asgard.locales.lib.grid.hazardoussupplies',{
     chooseTitleBodyDelete: 'Va eliminar un registro!. <br />Desea seguir con esta acción?',
     chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?',
 });
+
+Ext.define('Asgard.locales.lib.Panels.SecurityHandbookPanel',{
+    override: 'Asgard.lib.Panels.SecurityHandbookPanel',
+
+    barAddText: 'Agregar Cartilla de Seguridad',
+    barRemoveText: 'Eliminar Cartilla de Seguridad',
+    warningTitle: 'advertencia',
+    warningBody: 'No se puede procesar el formulario, por favor revise sus datos',
+    warningTitleBodyDelete: 'You are choosing delete this member. <br />Would you like to save your changes?',
+});

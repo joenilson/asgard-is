@@ -2568,6 +2568,135 @@ class IndexController extends AbstractActionController
         
     }
     
+    public function massmsdsprocessAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $company = $request->getPost('companiesCombo');
+        $country = $request->getPost('countriesCombo');
+        $location = $request->getPost('locationsCombo');
+        $lang_docs = $request->getPost('languageCombo');
+        $files =  $request->getFiles()->toArray();
+        $date_creation = \date('Y-m-d h:i:s');
+        $zipfolder = '/tmp/temp_'.\date('Ymdhis').'/';
+        
+        $dataResult = array();
+
+        //$reader = new \PHPExcel();
+        $reader = new \PHPExcel_Reader_Excel5();
+        $worksheetData = $reader->listWorksheetInfo($files['excel_file']['tmp_name']);
+        $objPHPExcel = $reader->load($files['excel_file']['tmp_name']);
+        $sheetData = $objPHPExcel->getActiveSheet()->toArray(null,true,true,true);
+        
+        if(!is_dir($zipfolder)){
+            mkdir($zipfolder, 0777);
+        }
+        move_uploaded_file($files['zip_file']['tmp_name'], '/tmp/'.$files['zip_file']['name']);
+        $zip = new \ZipArchive;
+        if ($zip->open('/tmp/'.$files['zip_file']['name']) === TRUE) {
+            $dataResult['numfiles']=$zip->numFiles;
+            $zipList = array();
+            $zipdir = "";
+            for($i = 0; $i < $zip->numFiles; $i++)
+            {  
+                if(strpos(".",$zip->getNameIndex($i))){
+                    $zipList[]=$zip->getNameIndex($i);
+                    
+                }
+            }
+            $zipdir = $zip->getNameIndex(0);
+            $dataResult['unziped']=$zipdir;
+            $zip->extractTo($zipfolder);
+            $zip->close();
+        } else {
+            $dataResult['unziped']="ERROR";
+        }
+        
+        $arrayMasterData = array();
+        $counter = 1;
+        foreach($sheetData as $key=>$content){
+            if($counter != 1 and !empty($content['A'])){
+            $id = (int) trim($content['A']);
+            $description = (string) trim($content['B']);
+            $filename = (string) $zipdir.trim($content['C']);
+            $arrayMasterData[]=array(
+                'id'=>(int) $id,
+                'description'=>$description,
+                'filename'=>(is_file($zipfolder.$filename))?$zipfolder.$filename:"File not found",
+                'company'=>$company,
+                'country'=>$country,
+                'location'=>$location,
+                'date_creation'=>$date_creation,
+                'user_creation'=>$userData->id
+            );
+            
+            }
+            $counter++;
+            
+        }
+        foreach($worksheetData as $worksheet){
+            $dataResult['worksheetName']=$worksheet['worksheetName'];
+            $dataResult['totalRows']=$worksheet['totalRows'];
+            $dataResult['totalColumns']=$worksheet['totalColumns'];
+            $dataResult['lastColumnLetter']=$worksheet['lastColumnLetter'];
+            //$dataResult['process']=$date;
+            
+        }
+        $dataResult['file_results']=$arrayMasterData;
+        $dataResult['success']=true;
+        return new JsonModel($dataResult);    
+    }
+    
+    public function processmassmsdsAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $dataBulk = $request->getPost('data');
+        $data = \json_decode($dataBulk);
+        $dataCount = count($data);
+        if(is_array($data)){
+            $sqlDocs = $this->getMSDSTable();
+            
+            foreach ($data as $dataContent){
+                $id = $sqlDocs->getNextId();
+                $doc_company = (!empty($dataContent->company))?$dataContent->company:$userData->company;
+                $doc_country = (!empty($dataContent->country))?$dataContent->country:$userData->country;
+                $doc_location = (!empty($dataContent->location))?$dataContent->location:$userData->location;
+                $doc_desc = (!empty($dataContent->description))?trim($dataContent->description):"No description - please fix it";
+                $doc_user_creation = (!empty($dataContent->user_creation))?trim($dataContent->user_creation):$userData->id;
+                $doc_date_creation = (!empty($dataContent->date_creation))?trim($dataContent->date_creation):\date('Y-m-d H:i:s');
+                $doc_file = (!empty($dataContent->filename))?'library/msds/'."msds_{$doc_company}_{$doc_country}_{$doc_location}_".$id.".pdf":"";
+                if(!empty($doc_file)){
+                    $this->movefile('library/msds/', $dataContent->filename, "msds_{$doc_company}_{$doc_country}_{$doc_location}_".$id.".pdf");
+                }
+                $doc = new MSDS();
+                $doc->setCompany($doc_company)
+                    ->setCountry($doc_country)
+                    ->setLocation($doc_location)
+                    ->setId($id)
+                    ->setUser_creation($doc_user_creation)
+                    ->setDate_creation($doc_date_creation)
+                    ->setDescription($doc_desc)
+                    ->setFilename($doc_file)
+                    ->setStatus('A');
+                $sqlDocs->save($doc);
+            }
+            $dataResult['success']=true;
+            $dataResult['message']="$dataCount documents proccessed";
+            //$dataResult['test']=$date;
+            $dataResult['docs_processed']=$dataCount;
+        }else{
+            $dataResult['success']=false;
+            $dataResult['message']="No data was sent";
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    
     public function massdocprocessAction(){
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
         $userData = $this->getServiceLocator()->get('userSessionData');
@@ -3248,7 +3377,7 @@ class IndexController extends AbstractActionController
         }
         
         if(isset($newId) AND $valid->isValid($files['msds_file'])){
-            $fileName = "organigram_{$company}_{$country}_{$location}_".$newId.".pdf";
+            $fileName = "msds_{$company}_{$country}_{$location}_".$newId.".pdf";
             $this->savefile('library/msds', $files['msds_file'], $fileName, false, null);
             $sql->update(array('filename'=>'library/msds/'.$fileName),array('id'=>$newId));
         }
@@ -3561,19 +3690,6 @@ class IndexController extends AbstractActionController
             $validEnd = (string) trim($content['F']);
             $filename = (string) $zipdir.trim($content['G']).'.pdf';
             //$statusType =  (string) trim($content['H']);
-            /*
-            $version_date_dump = (strpos($content['E'], '/') !== false)?explode("/",$content['E']):explode("-",$content['E']);
-            $revision_date_dump = (strpos($content['F'], '/') !== false)?explode("/",$content['F']):explode("-",$content['F']);
-
-            $dateVersionDump = (strpos($content['E'], '/') !== false)?$version_date_dump[2]."-".$version_date_dump[1]."-".$version_date_dump[0]:$version_date_dump[2]."-".$version_date_dump[0]."-".$version_date_dump[1];
-            $dateRevisionDump = (strpos($content['F'], '/') !== false)?$revision_date_dump[2]."-".$revision_date_dump[1]."-".$revision_date_dump[0]:$revision_date_dump[2]."-".$revision_date_dump[0]."-".$revision_date_dump[1];
-
-            $validBegin = \date("Y-m-d", strtotime($dateVersionDump));
-            $validEnd = \date("Y-m-d", strtotime($dateRevisionDump));
-            $date['VERSION_new'] = $version_date_dump;
-            $date['REVISION_new'] = $revision_date_dump;
-             * 
-             */
             
             $arrayMasterData[]=array(
                 'req_id'=>(int) $id,
