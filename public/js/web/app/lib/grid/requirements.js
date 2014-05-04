@@ -44,8 +44,8 @@ Ext.define('Asgard.lib.grid.requirements',{
     toolRemoveText: 'Remove Entry',
     toolChangeText: 'Change Entry',
     toolViewDocText: 'View File',
-    titleNewAuditPlan: 'Add new Audit Plan',
-    titleEditAuditPlan: 'Edit Audit Plan data',
+    titleNewAuditPlan: 'Add new Requirement',
+    titleEditAuditPlan: 'Edit Requirement data',
     loadingFileText: 'Loading Document.. please wait...',
     chooseTitleText: 'Warning',
     emptyFileMessage: 'No document is linked to this record...',
@@ -180,7 +180,7 @@ Ext.define('Asgard.lib.grid.requirements',{
                             var selData = panel.getSelectionModel().getSelection();
                             var sendData = Ext.encode(selData[0].data);
                             Ext.Ajax.request({
-                                url: 'ims/removerequirement',
+                                url: 'ims/removerequirements',
                                 params: {
                                     company: selData[0].data.company,
                                     country: selData[0].data.country,
@@ -203,9 +203,9 @@ Ext.define('Asgard.lib.grid.requirements',{
                 var AuditCompany = selGrid[0].data.company;
                 var AuditCountry = selGrid[0].data.country;
                 var AuditLocation = selGrid[0].data.location;
-                var editAuditPlan = Ext.create('Asgard.lib.forms.requirementNewRequirement', { innerPanel: panel, baseParams: { auditplan_id: AuditId }});
+                var editAuditPlan = Ext.create('Asgard.lib.forms.requirementNewRequirement', { innerPanel: panel, baseParams: { requirement_id: AuditId }});
                 editAuditPlan.getForm().load({
-                    url: 'ims/formrequirement',
+                    url: 'ims/formrequirements',
                     params: { id: AuditId, country: AuditCountry, company: AuditCompany, location: AuditLocation },
                     failure: function(form, action) {
                         Ext.Msg.alert("Fallo Inesperado", action.result.errorMessage);

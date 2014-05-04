@@ -153,7 +153,7 @@ Ext.define('Asgard.lib.grid.ownersprofile',{
             windowDoc.removeAll();
             if(tool.type==='plus'){
                 windowDoc.setTitle(this.titleNewAuditPlan);
-                winContent = new Ext.create('Asgard.lib.forms.requirementNewRequirement',{
+                winContent = new Ext.create('Asgard.lib.forms.ownersprofileNewProfile',{
                     flex: 1,
                     innerPanel: panel
                 });
@@ -192,7 +192,7 @@ Ext.define('Asgard.lib.grid.ownersprofile',{
                 var AuditCompany = selGrid[0].data.company;
                 var AuditCountry = selGrid[0].data.country;
                 var AuditLocation = selGrid[0].data.location;
-                var editAuditPlan = Ext.create('Asgard.lib.forms.requirementNewRequirement', { innerPanel: panel, baseParams: { auditplan_id: AuditId }});
+                var editAuditPlan = Ext.create('Asgard.lib.forms.ownersprofileNewProfile', { innerPanel: panel, baseParams: { ownersprofile_id: AuditId }});
                 editAuditPlan.getForm().load({
                     url: 'ims/formownersprofile',
                     params: { id: AuditId, country: AuditCountry, company: AuditCompany, location: AuditLocation },
@@ -212,7 +212,7 @@ Ext.define('Asgard.lib.grid.ownersprofile',{
         }  
     },
     showDocument: function(obj, id, component, icon, event, record){
-        if(record.data.audit_file!==''){
+        if(record.data.profile_desc!==''){
             var windowDoc = this.createWindow();
             //windowDoc.removeAll();
             windowDoc.setTitle(record.data.profile_desc);

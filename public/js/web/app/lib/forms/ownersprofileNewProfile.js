@@ -19,28 +19,24 @@
  * @version 1.0.0 devel
  * @author Joe Nilson <joenilson@gmail.com>
  */
-Ext.define('Asgard.lib.forms.auditsNewAudit',{
+Ext.define('Asgard.lib.forms.ownersprofileNewProfile',{
     extend: 'Ext.form.Panel',
-    alias: 'widget.newaudit',
-    url: 'ims/saveaudit',
+    alias: 'widget.newownerprofile',
+    url: 'ims/addownersprofile',
 
-    auditdescText: 'Description',
-    audittypeText: 'Type',
-    auditdateText: 'Date',
-    auditfileText: 'File',
+    descText: 'Description',
+    fileText: 'File',
     fileFieldEmptyText: 'Choose a document',    
     textSubmitButton: 'Send',
     textCancelButton: 'Cancel',
 
     warningTitle: 'Warning',
-    warningText: 'Audit exists!, revise your data',
+    warningText: 'Owner Profile exists!, revise your data',
     required: '<span style="color:red;font-weight:bold" data-qtip="Required">*</span>',
     successText: 'Audit loaded succefully!',
     failureText: 'Something is wrong, please try it again',
-    auditdescField: undefined,
-    audittypeField: undefined,
-    auditdateField: undefined,
-    auditfileField: undefined,
+    descField: undefined,
+    fileField: undefined,
     companiesField: undefined,
     countriesField: undefined,
     locationsField: undefined,
@@ -54,53 +50,24 @@ Ext.define('Asgard.lib.forms.auditsNewAudit',{
     
     initComponent: function(){
         var me = this;
-        var audits = new Ext.create('Asgard.store.Audits');
-        this.auditdescField = this.auditdescField || [];
-        this.auditdescField = Ext.Object.merge({
-            fieldLabel: this.auditdescText,
+        this.descField = this.descField || [];
+        this.descField = Ext.Object.merge({
+            fieldLabel: this.descText,
             afterLabelTextTpl: this.required,
             xtype: 'textfield',
-            name: 'auditdesc',
+            name: 'description',
             anchor: '100%',
-            listeners:{
-                change: function(field, valueForm, other) {
-                    audits.clearFilter();
-                    audits.load();
-                    scope: this;
-                    var match = audits.find( "audit_desc", valueForm, 0, false, false, true );
-                    me = field.up('form');
-                    if(match>-1){
-                        Ext.MessageBox.alert(me.warningTitle, me.warningText);
-                    }
-                }
-            },
             allowBlank:false
-        }, this.auditdescField);
+        }, this.descField);
         
-        this.audittypeField = this.audittypeField || [];
-        this.audittypeField = Ext.Object.merge({
-            xtype: 'audittypecombo',
-            anchor: '100%',
-            store: new Ext.create('Asgard.store.AuditType')
-        }, this.audittypeField);
-        
-        this.auditdateField = this.auditdateField || [];
-        this.auditdateField = Ext.Object.merge({
-            fieldLabel: this.auditdateText,
-            xtype: 'vdatefield',
-            name: 'auditdate',
-            width: 350,
-            allowBlank:true
-        }, this.auditdateField);
-        
-        this.auditfileField = this.auditfileField || [];
-        this.auditfileField = Ext.Object.merge({
-            fieldLabel: this.auditfileText,
+        this.fileField = this.fileField || [];
+        this.fileField = Ext.Object.merge({
+            fieldLabel: this.fileText,
             allowBlank:true,
             xtype: 'filefield',
             anchor: '100%',
             emptyText: this.fileFieldEmptyText,
-            name: 'audit_file',
+            name: 'profile_file',
             listeners:{
                 afterrender:function(cmp){
                     cmp.fileInputEl.set({
@@ -112,7 +79,7 @@ Ext.define('Asgard.lib.forms.auditsNewAudit',{
             buttonConfig: {
                 iconCls: 'upload-icon'
             }
-        }, this.auditfileField);        
+        }, this.fileField);        
         
         this.companiesField = this.companiesField || [];
         this.companiesField = Ext.Object.merge({
@@ -180,10 +147,8 @@ Ext.define('Asgard.lib.forms.auditsNewAudit',{
             this.companiesField,
             this.countriesField,
             this.locationsField,
-            this.auditdescField,
-            this.audittypeField,
-            this.auditdateField,
-            this.auditfileField
+            this.descField,
+            this.fileField
         ]);
         
         this.buttons = this.buttons || [];
@@ -198,21 +163,22 @@ Ext.define('Asgard.lib.forms.auditsNewAudit',{
         var companyId = panel.items.getAt(0).getValue();
         var countryId = panel.items.getAt(1).getValue();
         var locationId = panel.items.getAt(2).getValue();
-        var yearId = panel.items.getAt(3).getValue();
         var grid = panel.innerPanel;
         if(form.isValid()){
             form.submit({
                 params: {
-                    module: 'imsauditors'
+                    module: 'imsownersprofile'
                 },
                 success: function(fp, o, m, r) {
                     form.reset();
                     var winActive = Ext.WindowManager.getActive();
                     winActive.hide();
-                    grid.getStore().load({params: { company: companyId, country: countryId, location: locationId, year: yearId }});
+                    grid.getStore().load({params: { company: companyId, country: countryId, location: locationId }});
                     Ext.Msg.alert('Success', me.successText);
                 },
                 failure: function(fp, o, u){
+                    console.log(fp);
+                    console.log(o);
                     Ext.Msg.alert('Failure', me.failureText);
                 }
             });

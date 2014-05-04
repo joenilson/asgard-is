@@ -60,7 +60,8 @@ class RequirementsTable extends AbstractTableGateway {
                     );
             $select->where(array('company'=>(string) $company,
                                 'country'=>(string) $country,
-                                'location'=>(string) $location));
+                                'location'=>(string) $location,
+                                $this->table_name.'.status'=>'A'));
             $select->order('class_req, type_req ASC');
         });
         if (!$row)
@@ -88,6 +89,7 @@ class RequirementsTable extends AbstractTableGateway {
             $select->where(array('company'=>(string) $company,
                                 'country'=>(string) $country,
                                 'location'=>(string) $location,
+                                'status'=>'A',
                                 new Expression ( 'valid_begin like \''.$date.'%\'')));
             $select->order('class_req,type_req ASC');
         });

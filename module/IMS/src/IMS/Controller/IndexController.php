@@ -86,7 +86,7 @@ class IndexController extends AbstractActionController
     {
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
         $userData = $this->getServiceLocator()->get('userSessionData');
-        
+        $lang=$userPrefs[0]['lang'];
         $moduleParams = explode('-',$this->params()->fromRoute('id', 0));
         $idUser = $userPrefs[0]['user_id'];
         $idModule = $moduleParams[0];
@@ -2236,15 +2236,110 @@ class IndexController extends AbstractActionController
     }
     
     public function addownersprofileAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
         
+        $request = $this->getRequest();
+        $company = $request->getPost('companiesCombo');
+        $country = $request->getPost('countriesCombo');
+        $location = $request->getPost('locationsCombo');
+        $description = (string) $request->getPost('description');
+        $files =  $request->getFiles()->toArray();
+        $id = $request->getPost('ownersprofile_id');
+        $date_creation = \date('Y-m-d h:i:s');
+
+        $dataResult = array();
+        
+        $sql = $this->getPOPTable();
+        $oldData = $sql->getOwnerProfile($lang,$id,$company,$country,$location);
+        if($oldData){
+            $dataUpd['profile_desc']=$this->PersonName($description);
+            $dataUpd['date_modification']=$date_creation;
+            $dataUpd['user_modification']=$userData->id;
+            $dataIdx['company']=$oldData[0]['company'];
+            $dataIdx['country']=$oldData[0]['country'];
+            $dataIdx['location']=$oldData[0]['location'];
+            $dataIdx['lang']=$oldData[0]['lang'];
+            $dataIdx['id']=$oldData[0]['id'];
+        }
+        $valid = new \Zend\Validator\File\UploadFile();
+        
+        if(isset($id) AND $valid->isValid($files['profile_file'])){
+            $fileName = "pop_{$company}_{$country}_{$location}_".$id.".pdf";
+            $dataUpd['profile_file']='library/owners/'.$fileName;
+            $this->savefile('library/owners', $files['profile_file'], $fileName, false, null);
+        }
+        
+        try {
+            $sql->update($dataUpd,$dataIdx);
+            $dataResult['success']=true;
+        } catch (Exception $ex) {
+            $dataResult['success']=false;
+            $dataResult['msg']=$ex->getMessage();
+        }
+        return new JsonModel($dataResult);
     }
     
     public function removeownersprofileAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
         
+        $request = $this->getRequest();
+        $company = $request->getPost('company');
+        $country = $request->getPost('country');
+        $location = $request->getPost('location');
+        $id = (int) $request->getPost('id');
+        $dataResult = array();
+        $sql = $this->getPOPTable();
+        $object = $sql->getOwnerProfile($lang,$id,$company,$country,$location);
+        if($object){
+            $dataU['status']='I';
+            $dataU['user_modification']=$userData->id;
+            $dataU['date_modification']=\date('Y-m-d H:i:s');
+            $dataIdx['company']=$object[0]['company'];
+            $dataIdx['country']=$object[0]['country'];
+            $dataIdx['location']=$object[0]['location'];
+            $dataIdx['lang']=$object[0]['lang'];
+            $dataIdx['id']=$object[0]['id'];
+            try {
+                $sql->update($dataU,$dataIdx);
+
+            } catch (\Exception $ex) {
+                //$error = $ex;
+
+                $dataResult['success'] = false; 
+                $dataResult['message'] = $ex->getMessage(); 
+            }
+        }
+        return new JsonModel($dataResult);
     }
     
     public function formownersprofileAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang=$userPrefs[0]['lang'];
+        $request = $this->getRequest();
+        $company = $request->getPost('company');
+        $country = $request->getPost('country');
+        $location = $request->getPost('location');
+        $id = $request->getPost('ownersprofile_id');
+        $sql = $this->getPOPTable();
+        $oldData = $sql->getOwnerProfile($lang,$id,$company,$country,$location);
+        if($oldData){
+            $dataIdx['description']=$oldData[0]['profile_desc'];
+            $dataIdx['companiesCombo']=$oldData[0]['company'];
+            $dataIdx['countriesCombo']=$oldData[0]['country'];
+            $dataIdx['locationsCombo']=$oldData[0]['location'];
+            $dataIdx['lang']=$oldData[0]['lang'];
+            $dataIdx['id']=$oldData[0]['id'];
+            $dataResult['success']=true;
+            $dataResult['data']=$dataIdx;
+        }else{
+            $dataResult['success']=false;
+        }
         
+        return new JsonModel($dataResult);
     }
     
     public function getownersprofileAction(){
@@ -2280,15 +2375,125 @@ class IndexController extends AbstractActionController
     }
     
     public function addrequirementsAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
         
+        $request = $this->getRequest();
+        $company = $request->getPost('companiesCombo');
+        $country = $request->getPost('countriesCombo');
+        $location = $request->getPost('locationsCombo');
+        $description = (string) $request->getPost('description');
+        $id_class = (int) $request->getPost('req_class');
+        $id_type = (int) $request->getPost('req_type');
+        $code = (string) $request->getPost('code');
+        $validfrom = (string) $request->getPost('validfrom');
+        $validuntil = (string) $request->getPost('validuntil');
+        $files =  $request->getFiles()->toArray();
+        $id = $request->getPost('requirement_id');
+        $date_creation = \date('Y-m-d h:i:s');
+        $dataResult = array();
+        $sql = $this->getRequirementsTable();
+        
+        $object = new Requirements();
+        $object->setCompany($company)
+                ->setCountry($country)
+                ->setLocation($location)
+                ->setClass_req($id_class)
+                ->setType_req($id_type)
+                ->setDescription($description)
+                ->setCode_req($code)
+                ->setValid_begin($validfrom)
+                ->setValid_end($validuntil)
+                ->setStatus('A')
+                ->setDate_creation($date_creation)
+                ->setUser_id($userData->id);
+        
+        if($id){
+            $object->setId($id);
+        }
+        $dataResult['success'] = true; 
+        try {
+            $newId = $sql->save($object);
+            
+        } catch (\Exception $ex) {
+            //$error = $ex;
+            
+            $dataResult['success'] = false; 
+            $dataResult['message'] = $ex->getMessage(); 
+        }
+
+        $valid = new \Zend\Validator\File\UploadFile();
+        
+        if(isset($newId) AND $valid->isValid($files['req_file'])){
+            $fileName = "req_{$company}_{$country}_{$location}_".$newId.".pdf";
+            $this->savefile('library/reqs', $files['req_file'], $fileName, false, null);
+            $sql->update(array('file_req'=>'library/reqs/'.$fileName),array('id'=>$newId));
+        }
+        return new JsonModel($dataResult);
     }
     
     public function removerequirementsAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
         
+        $request = $this->getRequest();
+        $company = $request->getPost('company');
+        $country = $request->getPost('country');
+        $location = $request->getPost('location');
+        $id = (int) $request->getPost('id');
+        $dataResult = array();
+        $sql = $this->getRequirementsTable();
+        $object = $sql->getRequirementByCCLId($company,$country,$location,$id);
+        if($object){
+            $dataU['status']='I';
+            $dataU['user_modification']=$userData->id;
+            $dataU['date_modification']=\date('Y-m-d H:i:s');
+            $dataIdx['company']=$object[0]['company'];
+            $dataIdx['country']=$object[0]['country'];
+            $dataIdx['location']=$object[0]['location'];
+            $dataIdx['id']=$object[0]['id'];
+            try {
+                $sql->update($dataU,$dataIdx);
+                $dataResult['success'] = true; 
+            } catch (\Exception $ex) {
+                //$error = $ex;
+                $dataResult['success'] = false; 
+                $dataResult['message'] = $ex->getMessage(); 
+            }
+        }
+        return new JsonModel($dataResult);
     }
     
     public function formrequirementsAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang=$userPrefs[0]['lang'];
+        $request = $this->getRequest();
+        $company = $request->getPost('company');
+        $country = $request->getPost('country');
+        $location = $request->getPost('location');
+        $id = $request->getPost('requirement_id');
+        $sql = $this->getRequirementsTable();
+        $oldData = $sql->getRequirementByCCLId($company,$country,$location,$id);
+        if($oldData){
+            $dataIdx['description']=$oldData[0]['description'];
+            $dataIdx['companiesCombo']=$oldData[0]['company'];
+            $dataIdx['countriesCombo']=$oldData[0]['country'];
+            $dataIdx['locationsCombo']=$oldData[0]['location'];
+            $dataIdx['validfrom']=$oldData[0]['valid_begin'];
+            $dataIdx['validuntil']=$oldData[0]['valid_end'];
+            $dataIdx['code']=$oldData[0]['code_req'];
+            $dataIdx['req_class']=$oldData[0]['class_req'];
+            $dataIdx['req_type']=$oldData[0]['type_req'];
+            $dataIdx['id']=$oldData[0]['id'];
+            $dataResult['success']=true;
+            $dataResult['data']=$dataIdx;
+        }else{
+            $dataResult['success']=false;
+        }
         
+        return new JsonModel($dataResult);
     }
     
     public function getrequirementsAction(){
@@ -2300,6 +2505,23 @@ class IndexController extends AbstractActionController
         $location = $request->getQuery('location');
         $sql = $this->getRequirementsTable();
         $dataRequirement = $sql->getRequirementByCCL($company,$country,$location,$lang);
+        if($dataRequirement){
+            $dataResult['success']=true;
+            $dataResult['results']=$dataRequirement;
+        }else{
+            $dataResult['success']=true;
+            $dataResult['results']=$dataRequirement;
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function getrequirementshelperAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang=$userPrefs[0]['lang'];
+        $request = $this->getRequest();
+        $type = $request->getQuery('helper');
+        $sql = $this->getRequirementsHelperTable();
+        $dataRequirement = $sql->getHelperByTL($type,$lang);
         if($dataRequirement){
             $dataResult['success']=true;
             $dataResult['results']=$dataRequirement;

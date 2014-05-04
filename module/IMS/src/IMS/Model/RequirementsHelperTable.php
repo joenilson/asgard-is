@@ -41,7 +41,7 @@ class RequirementsHelperTable extends AbstractTableGateway {
 
     public function fetchAll() {
         $resultSet = $this->select(function (Select $select) {
-            $select->order(array('helper,id ASC'));
+            $select->order(array('helper','id ASC'));
         });
         return $resultSet->toArray();
     }
@@ -62,7 +62,7 @@ class RequirementsHelperTable extends AbstractTableGateway {
     {
         $row = $this->select(function (Select $select) use ($type,$id,$lang){
             $select->where(array('lang'=>(string) $lang,
-                                'helper'=>(int) $type,
+                                'helper'=>(string) $type,
                                 'id'=>(int) $id,
                                 'status'=>(string) 'A'));
         });
@@ -74,8 +74,20 @@ class RequirementsHelperTable extends AbstractTableGateway {
     public function getHelperById($type,$id)
     {
         $row = $this->select(function (Select $select) use ($type,$id){
-            $select->where(array('helper'=>(int) $type,
+            $select->where(array('helper'=>(string) $type,
                                 'id'=>(int) $id,
+                                'status'=>(string) 'A'));
+        });
+        if (!$row)
+            return false;
+        return $row->toArray();
+    }
+    
+    public function getHelperByTL($type,$lang)
+    {
+        $row = $this->select(function (Select $select) use ($type,$lang){
+            $select->where(array('helper'=>(string) $type,
+                                'lang'=>(string) $lang,
                                 'status'=>(string) 'A'));
         });
         if (!$row)

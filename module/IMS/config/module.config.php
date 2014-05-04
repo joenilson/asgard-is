@@ -553,6 +553,34 @@ return array(
                             ),
                         ),
                     ),
+                    'addownersprofile' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/addownersprofile[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'addownersprofile'
+                            ),
+                        ),
+                    ),
+                    'formownersprofile' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/formownersprofile[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'formownersprofile'
+                            ),
+                        ),
+                    ),
                     'requirements' => array(
                         'type'    => 'Segment',
                         'options' => array(
@@ -606,6 +634,20 @@ return array(
                             ),
                             'defaults' => array(
                                 'action' => 'getrequirements'
+                            ),
+                        ),
+                    ),
+                    'getrequirementshelper' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/getrequirementshelper[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'getrequirementshelper'
                             ),
                         ),
                     ),

@@ -341,3 +341,29 @@ Ext.define('Asgard.locales.lib.grid.emergencyplan',{
     chooseTitleBodyDelete: 'Ela irá remover um documento!. <br />Quer continuar com esta ação?',
     chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?'
 });
+
+Ext.define('Asgard.locales.lib.grid.requirements',{
+    override: 'Asgard.lib.grid.requirements',
+    titleText: 'Lista de Requisitos Legais',
+    idText: 'Id',
+    classText: 'Classe',
+    typeText: 'Tipo', 
+    nameText: 'Descrição',
+    codeText: 'Código',
+    datebeginText: 'Válida a partir',
+    dateendText: 'Válido até',
+    fileText: 'Arquivo',
+    statusText: 'Estado',
+    toolAddText: 'Adicionar Documento',
+    toolUploadText: 'Carregar Template',
+    toolRemoveText: 'Excluir Documento',
+    toolChangeText: 'Alterar Documento',
+    toolViewDocText: 'Visualizar Documento',
+    titleNewAuditPlan: 'Adicionar novo Requisito',
+    titleEditAuditPlan: 'Alterar Requisito',
+    loadingFileText: 'Carregando Documento... por favor aguarde...',
+    chooseTitleText: 'Aviso',
+    emptyFileMessage: 'Não há nenhum arquivo associado com este documento...',
+    chooseTitleBodyDelete: 'Ela irá remover um documento!. <br />Quer continuar com esta ação?',
+    chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?'    
+});
