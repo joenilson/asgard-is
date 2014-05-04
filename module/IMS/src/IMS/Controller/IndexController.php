@@ -2671,6 +2671,8 @@ class IndexController extends AbstractActionController
                 $doc_date_creation = (!empty($dataContent->date_creation))?trim($dataContent->date_creation):\date('Y-m-d H:i:s');
                 $doc_file = (!empty($dataContent->filename))?'library/msds/'."msds_{$doc_company}_{$doc_country}_{$doc_location}_".$id.".pdf":"";
                 if(!empty($doc_file)){
+                    $doc_file = str_replace(".pdf","",$doc_file);
+                    $doc_file = str_replace(".PDF","",$doc_file);
                     $this->movefile('library/msds/', $dataContent->filename, "msds_{$doc_company}_{$doc_country}_{$doc_location}_".$id.".pdf");
                 }
                 $doc = new MSDS();
