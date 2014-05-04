@@ -23,7 +23,7 @@ Ext.define('Asgard.lib.dataview.objectives',{
     trackOver: false,
     itemSelector: 'object',
     overItemCls: 'x-item-over',
-    emptyTextText: 'No organigram to display',
+    emptyTextText: 'No objective to display',
     template: [
         '<tpl for=".">',
         '<object data="{filename}#toolbar=1&amp;navpanes=0&amp;scrollbar=1&amp;page=1&amp;view=FitH"',

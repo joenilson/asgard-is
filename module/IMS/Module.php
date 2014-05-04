@@ -55,6 +55,7 @@ use IMS\Model\CommunicationsTable;
 use IMS\Model\TrainingPlanTable;
 use IMS\Model\EmergencyPlanTable;
 use IMS\Model\OrganigramTable;
+use IMS\Model\ObjectivesTable;
 use IMS\Model\ProcessOwnerProfileTable;
 use IMS\Model\SafetyCommitteeTable;
 use IMS\Model\SafetyCommitteePositionsTable;
@@ -105,6 +106,11 @@ class Module implements AutoloaderProviderInterface
     {
         return array(
             'factories' => array(
+                'IMS\Model\ObjectivesTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new ObjectivesTable($dbAdapter);
+                    return $table;
+                },
                 'IMS\Model\CommitteeProceedingsTable'=> function($sm){
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new SafetyCommitteeProceedingsTable($dbAdapter);

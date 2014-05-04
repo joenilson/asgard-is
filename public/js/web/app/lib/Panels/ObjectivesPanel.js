@@ -17,8 +17,8 @@ Ext.define('Asgard.lib.Panels.ObjectivesPanel', {
     flex: 1,
     layout: 'fit',
     autoScroll: true,
-    barAddText: 'Add Organigram',
-    barRemoveText: 'Remove Organigram',
+    barAddText: 'Add Objectives',
+    barRemoveText: 'Remove Objectives',
     warningTitle: 'Warning',
     warningBody: 'Your submit can\'t be process, please review your data',
     warningTitleBodyDelete: 'You are choosing delete this member. <br />Would you like to save your changes?',
@@ -31,14 +31,14 @@ Ext.define('Asgard.lib.Panels.ObjectivesPanel', {
             scope: me,
             handler: function() {
                 var window = Ext.create('Ext.window.Window',{
-                    flex: 1,
+                    //flex: 1,
                     title: this.barAddText,
                     width: '40%',
-                    height: '310px',
-                    layout: 'anchor'
+                    //height: '310px',
+                    layout: 'fit'
                 });
                 var dv = this.items.getAt(0);
-                var contentWin = Ext.create('Asgard.lib.forms.organigramNewOrganigram', { innerPanel: dv });
+                var contentWin = Ext.create('Asgard.lib.forms.objectivesNewObjective', { innerPanel: dv });
                 window.items.add(contentWin);
                 window.show();
             }

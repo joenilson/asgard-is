@@ -21,6 +21,7 @@ use IMS\Model\Entity\DocsLibrary;
 use IMS\Model\Entity\Requirements;
 use IMS\Model\Entity\hiraIncidentDetails;
 use IMS\Model\Entity\Organigram;
+use IMS\Model\Entity\Objectives;
 use IMS\Model\Entity\Communications;
 use IMS\Model\Entity\TrainingPlan;
 use IMS\Model\Entity\EmergencyPlan;
@@ -160,7 +161,7 @@ class IndexController extends AbstractActionController
             'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0)));
     }
     
-    public function objetivesAction(){
+    public function objectivesAction(){
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
         $userData = $this->getServiceLocator()->get('userSessionData');
         $lang=$userPrefs[0]['lang'];
@@ -173,7 +174,7 @@ class IndexController extends AbstractActionController
         );
     }
     
-    public function getobjetivesAction(){
+    public function getobjectivesAction(){
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
         $lang = $userPrefs[0]['lang'];
         
@@ -182,8 +183,8 @@ class IndexController extends AbstractActionController
         $countryParams = $request->getQuery('country');
         $locationParams = $request->getQuery('location');
         
-        $sql = $this->getSgiObjectivesTable();
-        $listDocuments = $sql->getObjetivesByCCL($companyParams,$countryParams,$locationParams);
+        $sql = $this->getObjectivesTable();
+        $listDocuments = $sql->getObjectByCCL($companyParams,$countryParams,$locationParams);
         
         if(!empty($listDocuments)){
             $data['success']=true;
@@ -196,6 +197,101 @@ class IndexController extends AbstractActionController
         }
         $result = new JsonModel($data);
     	return $result;   
+    }
+    
+    public function removeobjectivesAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $company = $request->getPost('companiesCombo');
+        $country = $request->getPost('countriesCombo');
+        $location = $request->getPost('locationsCombo');
+        $organigram_id = $request->getPost('id');
+        $dataResult = array();
+        $sql = $this->getObjectivesTable();
+        $organigram = $sql->getObjectByCCLId($company,$country,$location,$organigram_id);
+        if($organigram){
+            $dataU['status']='I';
+            $dataU['user_modification']=$userData->id;
+            $dataU['date_modification']=\date('Y-m-d H:i:s');
+            $dataIdx['company']=$organigram[0]['company'];
+            $dataIdx['country']=$organigram[0]['country'];
+            $dataIdx['location']=$organigram[0]['location'];
+            $dataIdx['id']=$organigram[0]['id'];
+            try {
+                $sql->update($dataU,$dataIdx);
+
+            } catch (\Exception $ex) {
+                //$error = $ex;
+
+                $dataResult['success'] = false; 
+                $dataResult['message'] = $ex->getMessage(); 
+            }
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function addobjectivesAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $company = $request->getPost('companiesCombo');
+        $country = $request->getPost('countriesCombo');
+        $location = $request->getPost('locationsCombo');
+        $description = (string) $request->getPost('description');
+        $files =  $request->getFiles()->toArray();
+        $id = $request->getPost('objective_id');
+        $date_creation = \date('Y-m-d h:i:s');
+
+        $dataResult = array();
+        
+        $sql = $this->getObjectivesTable();
+        $oldObject = $sql->getObjectByCCL($company,$country,$location);
+        if($oldObject){
+            $dataU['status']='I';
+            $dataU['user_modification']=$userData->id;
+            $dataU['date_modification']=\date('Y-m-d H:i:s');
+            $dataIdx['company']=$oldObject[0]['company'];
+            $dataIdx['country']=$oldObject[0]['country'];
+            $dataIdx['location']=$oldObject[0]['location'];
+            $dataIdx['id']=$oldObject[0]['id'];
+            $sql->update($dataU,$dataIdx);
+        }
+        
+        $object = new Objectives();
+        $object->setDescription($description)
+                ->setCompany($company)
+                ->setCountry($country)
+                ->setLocation($location)
+                ->setUser_creation($userData->id)
+                ->setStatus('A')
+                ->setDate_creation($date_creation);
+        if($id){
+            $object->setId($id);
+        }
+        $dataResult['success'] = true; 
+        try {
+            $newId = $sql->save($object);
+            
+        } catch (\Exception $ex) {
+            //$error = $ex;
+            
+            $dataResult['success'] = false; 
+            $dataResult['message'] = $ex->getMessage(); 
+        }
+
+        $valid = new \Zend\Validator\File\UploadFile();
+        
+        if(isset($newId) AND $valid->isValid($files['objective'])){
+            $fileName = "objective_{$company}_{$country}_{$location}_".$newId.".pdf";
+            $this->savefile('library/objectives', $files['objective'], $fileName, false, null);
+            $sql->update(array('filename'=>'library/objectives/'.$fileName),array('id'=>$newId));
+        }
+        return new JsonModel($dataResult);
     }
     
     public function ieeaAction(){
@@ -4660,11 +4756,11 @@ class IndexController extends AbstractActionController
     	return $this->processOwnerProfileTable;
     }
     
-    private function getSgiObjectivesTable()
+    private function getObjectivesTable()
     {
     	if (!$this->sgiObjectivesTable) {
             $sm = $this->getServiceLocator();
-            $this->sgiObjectivesTable = $sm->get('IMS\Model\SGIObjectivesTable');
+            $this->sgiObjectivesTable = $sm->get('IMS\Model\ObjectivesTable');
     	}
     	return $this->sgiObjectivesTable;
     }
