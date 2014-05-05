@@ -397,6 +397,119 @@ return array(
                         ),
                     ),
                     
+                    'drillsphotos' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/drillsphotos[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'drillsphotos'
+                            ),
+                        ),
+                    ),
+                    'getdrillsphotos' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/getdrillsphotos[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'getdrillsphotos'
+                            ),
+                        ),
+                    ),
+                    'adddrillsphotos' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/adddrillsphotos[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'adddrillsphotos'
+                            ),
+                        ),
+                    ),
+                    'removedrillsphotos' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/removedrillsphotos[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'removedrillsphotos'
+                            ),
+                        ),
+                    ),
+                    'formdrillsphotos' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/formdrillsphotos[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'formdrillsphotos'
+                            ),
+                        ),
+                    ),
+                    'getalbumphotos' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/getalbumphotos[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'getalbumphotos'
+                            ),
+                        ),
+                    ),
+                    'addalbumphotos' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/addalbumphotos[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'addalbumphotos'
+                            ),
+                        ),
+                    ),
+                    'removealbumphotos' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/removealbumphotos[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'removealbumphotos'
+                            ),
+                        ),
+                    ),
+                    
                     'massmsdsprocess' => array(
                         'type'    => 'Segment',
                         'options' => array(

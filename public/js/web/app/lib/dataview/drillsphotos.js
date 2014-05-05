@@ -27,7 +27,7 @@ Ext.define('Asgard.lib.dataview.drillsphotos',{
     template: [
         '<tpl for=".">',
             '<div class="thumb-wrap" style="" id="{id:stripTags}">',
-                '<div class="thumb"><img src="{thumbnail}" title="{fullname:htmlEncode}"></div>',
+                '<div class="thumb"><a href="{filename}"><img src="{thumbnail}" title="{description:htmlEncode}"></a></div>',
                 '<span>{description:htmlEncode}</span><br />',
             '</div>',
         '</tpl>',

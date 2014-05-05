@@ -65,6 +65,8 @@ use IMS\Model\SafetyCommitteeProceedingsTable;
 use IMS\Model\RiskSurveyTable;
 use IMS\Model\OHRTable;
 use IMS\Model\OHRTypeTable;
+use IMS\Model\SimulationAlbumsTable;
+use IMS\Model\SimulationPhotosTable;
 
 class Module implements AutoloaderProviderInterface
 {
@@ -111,6 +113,16 @@ class Module implements AutoloaderProviderInterface
     {
         return array(
             'factories' => array(
+                'IMS\Model\SimulationAlbumsTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new SimulationAlbumsTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\SimulationPhotosTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new SimulationPhotosTable($dbAdapter);
+                    return $table;
+                },
                 'IMS\Model\InspectionProgramTable'=> function($sm){
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new InspectionProgramTable($dbAdapter);

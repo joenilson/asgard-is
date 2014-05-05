@@ -32,6 +32,8 @@ use IMS\Model\Entity\SecurityHandbook;
 use IMS\Model\Entity\RiskSurvey;
 use IMS\Model\Entity\HazardousSupplies;
 use IMS\Model\Entity\OHR;
+use IMS\Model\Entity\SimulationAlbums;
+use IMS\Model\Entity\SimulationPhotos;
 
 use AsgardLib\Versioning\Documents;
 use AsgardLib\Versioning\Scope;
@@ -94,6 +96,8 @@ class IndexController extends AbstractActionController
     protected $risksurveyTable;
     protected $ohrTable;
     protected $ohrtypeTable;
+    protected $simulationalbumsTable;
+    protected $simulationphotosTable;
     
     public function indexAction()
     {
@@ -2669,8 +2673,8 @@ class IndexController extends AbstractActionController
         $country = $request->getQuery('country');
         $location = $request->getQuery('location');
         $year = $request->getQuery('year');
-        $sql = $this->getCommitteeProceedingsTable();
-        $dataProceedings = $sql->getProceedingsByCCLY($company,$country,$location,$year);
+        $sql = $this->getSimulationAlbumsTable();
+        $dataProceedings = $sql->getObjectByCCL($company,$country,$location);
         if($dataProceedings){
             $dataResult['success']=true;
             $dataResult['results']=$dataProceedings;
@@ -2693,6 +2697,18 @@ class IndexController extends AbstractActionController
         
     }
     
+    public function getalbumphotosAction(){
+        
+    }
+    
+    public function addalbumphotosAction(){
+        
+    }
+    
+    public function removealbumphotosAction(){
+        
+    }
+        
     public function drillsminutesAction(){
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
         $userData = $this->getServiceLocator()->get('userSessionData');
@@ -2843,6 +2859,7 @@ class IndexController extends AbstractActionController
                 if(!empty($doc_file)){
                     $doc_file = str_replace(".pdf","",$doc_file);
                     $doc_file = str_replace(".PDF","",$doc_file);
+                    $filename = "msds_{$doc_company}_{$doc_country}_{$doc_location}_".$id.".pdf";
                     $this->movefile('library/msds/', $dataContent->filename, "msds_{$doc_company}_{$doc_country}_{$doc_location}_".$id.".pdf");
                 }
                 $doc = new MSDS();
@@ -2853,7 +2870,7 @@ class IndexController extends AbstractActionController
                     ->setUser_creation($doc_user_creation)
                     ->setDate_creation($doc_date_creation)
                     ->setDescription($doc_desc)
-                    ->setFilename($doc_file)
+                    ->setFilename($filename)
                     ->setStatus('A');
                 $sqlDocs->save($doc);
             }
@@ -5601,6 +5618,24 @@ class IndexController extends AbstractActionController
         $imagine->open($file)
                 ->thumbnail(new \Imagine\Image\Box(171,180),$mode)
                 ->save($dst);
+    }
+    
+    private function getSimulationAlbumsTable()
+    {
+    	if (!$this->simulationalbumsTable) {
+            $sm = $this->getServiceLocator();
+            $this->simulationalbumsTable = $sm->get('IMS\Model\SimulationAlbumsTable');
+    	}
+    	return $this->simulationalbumsTable;
+    }
+    
+    private function getSimulationPhotosTable()
+    {
+    	if (!$this->simulationphotosTable) {
+            $sm = $this->getServiceLocator();
+            $this->simulationphotosTable = $sm->get('IMS\Model\SimulationPhotosTable');
+    	}
+    	return $this->simulationphotosTable;
     }
     
     private function getOHRTable()
