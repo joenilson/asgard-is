@@ -63,6 +63,8 @@ use IMS\Model\SafetyCommitteeTable;
 use IMS\Model\SafetyCommitteePositionsTable;
 use IMS\Model\SafetyCommitteeProceedingsTable;
 use IMS\Model\RiskSurveyTable;
+use IMS\Model\OHRTable;
+use IMS\Model\OHRTypeTable;
 
 class Module implements AutoloaderProviderInterface
 {
@@ -112,6 +114,16 @@ class Module implements AutoloaderProviderInterface
                 'IMS\Model\InspectionProgramTable'=> function($sm){
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new InspectionProgramTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\OHRTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new OHRTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\OHRTypeTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new OHRTypeTable($dbAdapter);
                     return $table;
                 },
                 'IMS\Model\SecurityHandbookTable'=> function($sm){

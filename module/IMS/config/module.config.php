@@ -312,6 +312,91 @@ return array(
                             ),
                         ),
                     ),
+                    'ohr' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/ohr[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'ohr'
+                            ),
+                        ),
+                    ),
+                    'getohr' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/getohr[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'getohr'
+                            ),
+                        ),
+                    ),
+                    'getohrtypes' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/getohrtypes[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'getohrtypes'
+                            ),
+                        ),
+                    ),
+                    'addohr' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/addohr[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'addohr'
+                            ),
+                        ),
+                    ),
+                    'removeohr' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/removeohr[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'removeohr'
+                            ),
+                        ),
+                    ),
+                    'formohr' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/formohr[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'formohr'
+                            ),
+                        ),
+                    ),
+                    
                     'massmsdsprocess' => array(
                         'type'    => 'Segment',
                         'options' => array(

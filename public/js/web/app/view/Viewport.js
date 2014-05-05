@@ -57,7 +57,8 @@ Ext.define('Asgard.view.Viewport', {
     'Asgard.lib.forms.shNewSecurityHandbook','Asgard.lib.Panels.SecurityHandbookPanel',
     'Asgard.lib.dataview.securityhandbook','Asgard.store.RiskSurvey','Asgard.lib.forms.risksurveyNewRiskSurvey',
     'Asgard.lib.grid.risksurvey','Asgard.lib.grid.msds_upload','Asgard.lib.forms.msdsMasterFileUpload',
-    'Asgard.store.MSDSUpload'
+    'Asgard.store.MSDSUpload','Asgard.store.OHR','Asgard.store.OHRType','Asgard.lib.grid.ohr',
+    'Asgard.lib.forms.OHRTypeCombo','Asgard.lib.forms.ohrNewOHR'
     
     
   ],

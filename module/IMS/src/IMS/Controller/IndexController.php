@@ -31,6 +31,8 @@ use IMS\Model\Entity\MSDS;
 use IMS\Model\Entity\SecurityHandbook;
 use IMS\Model\Entity\RiskSurvey;
 use IMS\Model\Entity\HazardousSupplies;
+use IMS\Model\Entity\OHR;
+
 use AsgardLib\Versioning\Documents;
 use AsgardLib\Versioning\Scope;
 //use PHPExcel;
@@ -90,6 +92,8 @@ class IndexController extends AbstractActionController
     protected $ispectionprogramTable;
     protected $securityhandbookTable;
     protected $risksurveyTable;
+    protected $ohrTable;
+    protected $ohrtypeTable;
     
     public function indexAction()
     {
@@ -932,8 +936,8 @@ class IndexController extends AbstractActionController
                 $id = $filesProcessed;
                 $ieeaType = (string) strtoupper(trim($content['A']));
                 $ieeaCycle = (string) strtoupper(trim($content['B']));
-                $processMain = (string) trim($content['C']);
-                $processThread = (string) trim($content['D']);
+                $processMain = (string) $this->PersonName(trim($content['C']));
+                $processThread = (string) $this->PersonName(trim($content['D']));
                 $envAspects = (string) strtoupper(trim($content['E']));
                 $envImpact = (string) strtoupper(trim($content['F']));
                 $quantity = (int) trim($content['G']);
@@ -1513,6 +1517,172 @@ class IndexController extends AbstractActionController
             $dataDocuments['companiesCombo'] = $objectData[0]['company'];
             $dataDocuments['countriesCombo'] = $objectData[0]['country'];
             $dataDocuments['locationsCombo'] = $objectData[0]['location'];
+            $dataResult['success']=true;
+            $dataResult['data']=$dataDocuments;
+        }else{
+            $dataResult['success']=false;
+            $dataResult['results']="";
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function ohrAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        return array(
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'lang'=>$lang,
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
+        );
+    }
+    
+    public function getohrAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang = $userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $companyParams = $request->getQuery('company');
+        $countryParams = $request->getQuery('country');
+        $locationParams = $request->getQuery('location');
+        $yearParams = $request->getQuery('year');
+        $sql = $this->getOHRTable();
+        $listDocuments = $sql->getObjectByCCLYByLang($companyParams,$countryParams,$locationParams,$yearParams,$lang);
+        
+        if(!empty($listDocuments)){
+            $data['success']=true;
+            $data['results']=$listDocuments;
+            $data['msg']="";
+        }else{
+            $data['success']=true;
+            $data['results']="";
+            $data['msg']="Error trying to get the information...";
+        }
+        $result = new JsonModel($data);
+    	return $result;
+    }
+    
+    public function getohrtypesAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang = $userPrefs[0]['lang'];
+        $sql = $this->getOHRTypeTable();
+        $listDocuments = $sql->getOHRTypeList($lang);
+        
+        if(!empty($listDocuments)){
+            $data['success']=true;
+            $data['results']=$listDocuments;
+            $data['msg']="";
+        }else{
+            $data['success']=true;
+            $data['results']="";
+            $data['msg']="Error trying to get the information...";
+        }
+        return new JsonModel($data);
+    }
+    
+    public function addohrAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $company = $request->getPost('companiesCombo');
+        $country = $request->getPost('countriesCombo');
+        $location = $request->getPost('locationsCombo');
+        $year = $request->getPost('yearsCombo');
+        $description = $request->getPost('description');
+        $type = $request->getPost('ohrtypeCombo');
+        $files =  $request->getFiles()->toArray();
+        $id = $request->getPost('ohr_id');
+        $date_creation = \date('Y-m-d h:i:s');
+
+        $dataResult = array();
+        
+        $sql = $this->getOHRTable();
+        
+        $object = new OHR();
+        $object->setDescription($description)
+                ->setCompany($company)
+                ->setCountry($country)
+                ->setLocation($location)
+                ->setId_type($type)
+                ->setYear_date($year)
+                ->setUser_creation($userData->id)
+                ->setStatus('A')
+                ->setDate_creation($date_creation);
+        if($id){
+            $object->setId($id);
+        }
+        $dataResult['success'] = true; 
+        try {
+            $newId = $sql->save($object);
+            
+        } catch (\Exception $ex) {
+            //$error = $ex;
+            
+            $dataResult['success'] = false; 
+            $dataResult['message'] = $ex->getMessage(); 
+        }
+
+        $valid = new \Zend\Validator\File\UploadFile();
+        
+        if(isset($newId) AND $valid->isValid($files['ohr_file'])){
+            $fileName = "ohr_{$company}_{$country}_{$location}_".$newId.".pdf";
+            $this->savefile('library/ohr', $files['ohr_file'], $fileName, false, null);
+            $sql->update(array('filename'=>'library/ohr/'.$fileName),array('id'=>$newId));
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function removeohrAction(){
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $request = $this->getRequest();
+        $object_id = $request->getPost('id');
+        $company = $request->getPost('company');
+        $country = $request->getPost('country');
+        $location = $request->getPost('location');
+        $year = $request->getPost('year');
+        $type = $request->getPost('type');
+        $sql = $this->getOHRTable();
+        $objectData = $sql->getObjectByCCLId($company,$country,$location,$object_id);
+        $dataRemove = array();
+        $dataResult = array();
+        $dataResult['success'] = false;
+        if(count($objectData)>0){
+            $dataRemove['company']=$company;
+            $dataRemove['country']=$country;
+            $dataRemove['location']=$location;
+            $dataRemove['year_date']=$year;
+            $dataRemove['id_type']=$type;
+            $dataRemove['id']=$object_id;
+            $dataUp['status']="I";
+            $dataUp['date_modification']=\date('Y-m-d H:i:s');
+            $dataUp['user_modification']=$userData->id;
+            $sql->update($dataUp,$dataRemove);
+            $dataResult['success'] = true;
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function formohrAction(){
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $request = $this->getRequest();
+        $object_id = $request->getPost('id');
+        $type_id = $request->getPost('type');
+        $company = $request->getPost('company');
+        $country = $request->getPost('country');
+        $location = $request->getPost('location');
+        $sql = $this->getOHRTable();
+        $objectData = $sql->getObjectByCCLIT($company,$country,$location,$object_id,$type_id);
+        if($objectData){
+            $dataDocuments['description'] = $objectData[0]['description'];
+            $dataDocuments['year_date'] = $objectData[0]['year_date'];
+            $dataDocuments['companiesCombo'] = $objectData[0]['company'];
+            $dataDocuments['countriesCombo'] = $objectData[0]['country'];
+            $dataDocuments['locationsCombo'] = $objectData[0]['location'];
+            $dataDocuments['ohrtypeCombo'] = $objectData[0]['id_type'];
             $dataResult['success']=true;
             $dataResult['data']=$dataDocuments;
         }else{
@@ -5357,7 +5527,6 @@ class IndexController extends AbstractActionController
         //return stripslashes($value);
         return htmlspecialchars($value);
     }
-
     
     private function PersonName($name){
         return ucwords(strtolower(htmlspecialchars(trim($name))));
@@ -5432,6 +5601,24 @@ class IndexController extends AbstractActionController
         $imagine->open($file)
                 ->thumbnail(new \Imagine\Image\Box(171,180),$mode)
                 ->save($dst);
+    }
+    
+    private function getOHRTable()
+    {
+    	if (!$this->ohrTable) {
+            $sm = $this->getServiceLocator();
+            $this->ohrTable = $sm->get('IMS\Model\OHRTable');
+    	}
+    	return $this->ohrTable;
+    }
+    
+    private function getOHRTypeTable()
+    {
+    	if (!$this->ohrtypeTable) {
+            $sm = $this->getServiceLocator();
+            $this->ohrtypeTable = $sm->get('IMS\Model\OHRTypeTable');
+    	}
+    	return $this->ohrtypeTable;
     }
     
     private function getRiskSurveyTable()
