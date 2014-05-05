@@ -10,13 +10,19 @@
         <!-- Le styles -->
         <?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'))
             ->prependStylesheet($this->basePath() . '/css/webapp/menu.css')
+            //->prependStylesheet($this->basePath() . '/css/prettyPhoto.css')
+            ->prependStylesheet($this->basePath() . '/css/slimbox2.css')
             ->prependStylesheet($this->basePath() . '/css/webapp/general.css')
             ->prependStylesheet($this->basePath() . '/js/extjs/resources/css/ext-all-neptune.css')
          ?>
 
         <!-- Scripts -->
         <?php 
-	      echo $this->headScript()->prependFile($this->basePath() . '/js/extjs/src/ux/panel/PDF.js')
+	      echo $this->headScript()
+                    //->prependFile($this->basePath('js/jquery.prettyPhoto.js'))
+                      ->prependFile($this->basePath('js/slimbox2.js'))
+                      ->prependFile($this->basePath('js/jquery-1.8.3.min.js'))
+                      ->prependFile($this->basePath() . '/js/extjs/src/ux/panel/PDF.js')
                       ->prependFile($this->basePath() . '/js/extjs/src/ux/CTemplate.js')
                       ->prependFile($this->basePath() . '/js/extjs/features/FixedSummary.js')
                                       ->prependFile($this->basePath() . '/js/web/app.js')
@@ -25,6 +31,7 @@
                                       ->prependFile($this->basePath() . '/js/pdf.js/pdf.js')
 				      ->prependFile($this->basePath() . '/js/tinymce/tiny_mce_src.js')
                                       ->prependFile($this->basePath() . '/js/webrootkit.base64.js')
+
 
 	 ?>
     </head>

@@ -22,20 +22,35 @@ Ext.define('Asgard.lib.dataview.drillsphotos',{
     flex: 1,
     trackOver: true,
     overItemCls: 'x-item-over',
-    itemSelector: 'div.thumb-wrap',
+    itemSelector: 'div.thumbsimulations-wrap',
     emptyTextText: 'No images to display',
     template: [
         '<tpl for=".">',
-            '<div class="thumb-wrap" style="" id="{id:stripTags}">',
-                '<div class="thumb"><a href="{filename}"><img src="{thumbnail}" title="{description:htmlEncode}"></a></div>',
-                '<span>{description:htmlEncode}</span><br />',
+            '<div class="thumbsimulations-wrap">',
+            '<div class="thumb"><a href="#" rel="lightbox-album{id_album}" title="{description:htmlEncode}"><img src="{thumbnail}"></div>',
+            '<span>{description:htmlEncode}</span><br />',
             '</div>',
         '</tpl>',
         '<div class="x-clear"></div>'
     ],
+
     initComponent: function(){
         this.tpl = this.template;
         this.emptyText = this.emptyTextText;
         this.callParent();
     }
 });
+
+/*
+ * 
+ * template: [
+        '<tpl for=".">',
+            '<div class="thumbsimulations-wrap" style="" id="{id:stripTags}">',
+                '<div class="thumb"><a href="{filename}" title="{description}" rel="prettyPhoto[album{id_album}]"><img src="{thumbnail}" title="{description:htmlEncode}"></a></div>',
+                '<span>{description:htmlEncode}</span><br />',
+            '</div>',
+        '</tpl>',
+        '<div class="x-clear"></div>'
+    ],
+ * 
+ */

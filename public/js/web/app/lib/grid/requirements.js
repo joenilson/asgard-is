@@ -83,12 +83,12 @@ Ext.define('Asgard.lib.grid.requirements',{
             }],
             items: [
                 {text: this.idText, sortable: false, hidden: true, dataIndex: 'id', filter: false},
-                {text: this.classText, flex: 1, sortable: false, hidden: false, dataIndex: 'desc_class', filter: true},
-                {text: this.typeText, flex: 1, sortable: false, hidden: false, dataIndex: 'desc_type', filter: true},
-                {text: this.nameText, flex: 3, sortable: false, hidden: false, dataIndex: 'description', filter: true},
-                {text: this.codeText, flex: 1, sortable: false, hidden: false, dataIndex: 'code_req', filter: true},
-                {text: this.datebeginText, flex: 1, sortable: false, hidden: false, dataIndex: 'valid_begin', filter: true},
-                {text: this.dateendText, flex: 1, sortable: false, hidden: false, dataIndex: 'valid_end', filter: true},
+                {text: this.classText, flex: 1, sortable: true, hidden: false, dataIndex: 'desc_class', filter: true},
+                {text: this.typeText, flex: 1, sortable: true, hidden: false, dataIndex: 'desc_type', filter: true},
+                {text: this.nameText, flex: 3, sortable: true, hidden: false, dataIndex: 'description', filter: true},
+                {text: this.codeText, flex: 1, sortable: true, hidden: false, dataIndex: 'code_req', filter: true},
+                {text: this.datebeginText, flex: 1, sortable: true, hidden: false, dataIndex: 'valid_begin', filter: true},
+                {text: this.dateendText, flex: 1, sortable: true, hidden: false, dataIndex: 'valid_end', filter: true},
                 {xtype: 'actioncolumn', flex: 1, sortable: false, menuDisabled: true,
                     items: [
                         {

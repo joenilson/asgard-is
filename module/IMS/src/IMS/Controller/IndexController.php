@@ -13,7 +13,8 @@ use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 use Zend\Escaper\Escaper;
 use Zend\Validator\File;
-
+use Zend\Validator\File\UploadFile;
+use Zend\Validator\File\IsImage;
 use IMS\Model\Entity\ContentText;
 use IMS\Model\Entity\ProcessRelations;
 use IMS\Model\Entity\DocsRequest;
@@ -2293,6 +2294,7 @@ class IndexController extends AbstractActionController
     }
     
     public function removesafetycommitteeAction(){
+        $userData = $this->getServiceLocator()->get('userSessionData');
         $request = $this->getRequest();
         $committee_ids = json_decode($this->cleanTags($request->getPost('ids')));
         $company = $request->getPost('company');
@@ -2313,6 +2315,8 @@ class IndexController extends AbstractActionController
                     $dataVars['location']=$location;
                     $dataVars['id']=$committee_id;
                     $dataRemove['status']="I";
+                    $dataRemove['user_modification']=$userData->id;
+                    $dataRemove['date_modification']=\date('Y-m-d H:i:s');
                     $sql->update($dataRemove,$dataVars);
                     $dataResult['success'] = true;
                 }
@@ -2686,7 +2690,47 @@ class IndexController extends AbstractActionController
     }
     
     public function adddrillsphotosAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
         
+        $request = $this->getRequest();
+        $company = $request->getPost('companiesCombo');
+        $country = $request->getPost('countriesCombo');
+        $location = $request->getPost('locationsCombo');
+        $description = $request->getPost('description');
+        $date = $request->getPost('date_simulation');
+        $files =  $request->getFiles()->toArray();
+        $id = $request->getPost('album_id');
+        $date_creation = \date('Y-m-d h:i:s');
+
+        $dataResult = array();
+        
+        $sql = $this->getSimulationAlbumsTable();
+        
+        $object = new SimulationAlbums();
+        $object->setDescription($description)
+                ->setCompany($company)
+                ->setCountry($country)
+                ->setLocation($location)
+                ->setDate_simulation($date)
+                ->setUser_creation($userData->id)
+                ->setStatus('A')
+                ->setDate_creation($date_creation);
+        if($id){
+            $object->setId($id);
+        }
+        $dataResult['success'] = true; 
+        try {
+            $newId = $sql->save($object);
+            
+        } catch (\Exception $ex) {
+            //$error = $ex;
+            
+            $dataResult['success'] = false; 
+            $dataResult['message'] = $ex->getMessage(); 
+        }
+        return new JsonModel($dataResult);
     }
     
     public function removedrillsphotosAction(){
@@ -2698,15 +2742,117 @@ class IndexController extends AbstractActionController
     }
     
     public function getalbumphotosAction(){
-        
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang=$userPrefs[0]['lang'];
+
+        $request = $this->getRequest();
+        $albumId = $request->getQuery('album_id');
+        $sql = $this->getSimulationPhotosTable();
+        $dataProceedings = $sql->getObjectByAlbum($albumId);
+        if($dataProceedings){
+            $dataResult['success']=true;
+            $dataResult['results']=$dataProceedings;
+        }else{
+            $dataResult['success']=true;
+            $dataResult['results']="";
+        }
+        return new JsonModel($dataResult);    
     }
     
     public function addalbumphotosAction(){
-        
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+
+        $request = $this->getRequest();
+        $albumId = $request->getPost('album_id');
+        $photoDesc[1] =(string) $request->getPost('description_1');
+        $photoDesc[2] =(string) $request->getPost('description_2');
+        $photoDesc[3] =(string) $request->getPost('description_3');
+        $files =  $request->getFiles()->toArray();
+        $date_creation = \date('Y-m-d H:i:s');
+        $fileDate = \date('YmdHis');
+        if(empty($albumId)){
+            $dataResult['success']=false;
+            return new JsonModel($dataResult);
+        }
+        $sql = $this->getSimulationPhotosTable();
+        $valid = new UploadFile();
+        $validator = new IsImage();
+        $photoFile[1] = array('valid'=>$valid->isValid($files['photo_1']),'data'=>$files['photo_1']);
+        $photoFile[2] = array('valid'=>$valid->isValid($files['photo_2']),'data'=>$files['photo_2']);
+        $photoFile[3] = array('valid'=>$valid->isValid($files['photo_3']),'data'=>$files['photo_3']);
+        $path = "library/simulations/album$albumId";
+        $counterPhotos = 0;
+        foreach($photoFile as $key=>$vals){
+            //$dataResult['archivos'][$key] = $validator->isValid($vals['data']['tmp_name']);
+            if($vals['valid'] and $validator->isValid($vals['data']['tmp_name'])){
+                $path_parts = \pathinfo($vals['data']['name']);
+                $filename = "photo_".$albumId."_".$fileDate.".".$path_parts['extension'];
+                $thumb = true;
+                $thumbnail = "thumb_".$albumId."_".$fileDate.".".$path_parts['extension'];
+                $file = $vals['data'];
+                $this->savefile($path,$file,$filename,$thumb,$thumbnail);
+                $object = new SimulationPhotos();
+                
+                $object->setId_album($albumId)
+                        ->setDescription($photoDesc[$key])
+                        ->setUser_creation($userData->id)
+                        ->setDate_creation($date_creation)
+                        ->setStatus('A')
+                        ->setFilename($path.'/'.$filename)
+                        ->setThumbnail($path.'/'.$thumbnail);
+                $sql->save($object);
+                $counterPhotos++;
+            }
+        }
+        //$sql = $this->getSimulationPhotosTable();
+        //$dataProceedings = $sql->getObjectByAlbum($albumId);
+        $dataResult['success']=true;
+        $dataResult['results']=$counterPhotos;
+        return new JsonModel($dataResult);
     }
     
     public function removealbumphotosAction(){
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $request = $this->getRequest();
+        $photo_ids = json_decode($this->cleanTags($request->getPost('ids')));
+        $album = $request->getPost('album_id');
+        $sql = $this->getSimulationPhotosTable();
         
+        if(is_array($photo_ids) and count($photo_ids)>0){
+            $dataResult = array();
+            foreach ($photo_ids as $photo_id){
+                $objectData = $sql->getObjectByAlbumId($album,$photo_id);
+                $dataRemove = array();
+                $dataVars = array();
+                $dataResult['success'] = false;
+                if(count($objectData)>0){
+                    $dataVars['id_album']=$album;
+                    $dataVars['id']=$photo_id;
+                    $dataRemove['status']="I";
+                    $dataRemove['user_modification']=$userData->id;
+                    $dataRemove['date_modification']=\date('Y-m-d H:i:s');
+                    $sql->update($dataRemove,$dataVars);
+                    $dataResult['success'] = true;
+                }
+            }
+        }elseif($photo_ids>0){
+            $objectData = $sql->getObjectByAlbumId($album,$photo_ids);
+            $dataRemove = array();
+            $dataVars = array();
+            $dataResult['success'] = false;
+            if(count($objectData)>0){
+                $dataVars['id_album']=$album;
+                    $dataVars['id']=$photo_ids;
+                    $dataRemove['status']="I";
+                    $dataRemove['user_modification']=$userData->id;
+                    $dataRemove['date_modification']=\date('Y-m-d H:i:s');
+                $sql->update($dataRemove,$dataVars);
+                $dataResult['success'] = true;
+            }
+        }
+        return new JsonModel($dataResult);
     }
         
     public function drillsminutesAction(){
@@ -5568,10 +5714,25 @@ class IndexController extends AbstractActionController
         if (!is_dir($filesPath)){
             mkdir($filesPath,0777,true);
         }
-        
+        $validator = new IsImage();
+        $imageUploaded = $validator->isValid($file['tmp_name']);
         if(!move_uploaded_file($file['tmp_name'],$filesPath.$filename)) {
             return false;
         } else {
+            if($imageUploaded){
+                $file = $filesPath.$filename;
+                $maxHeight = 800;
+                $imagine = new \Imagine\Gd\Imagine();
+                list($width, $height, $type, $attribs) = getimagesize($file);
+
+                if($height>$maxHeight){
+                    $newWidth = ceil(($maxHeight*$height)/$width);
+
+                    $imagine->open($file)
+                            ->thumbnail(new \Imagine\Image\Box($newWidth,$maxHeight))
+                            ->save($file);
+                }
+            }
             if($thumb){
                 $this->imageResize($filesPath.$filename,$filesPath.$thumbname);
             }

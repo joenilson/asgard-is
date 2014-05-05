@@ -196,6 +196,13 @@ body {
     height: 270px;
 }
 
+.thumbsimulations-wrap {
+    float: left; 
+    padding: 5px; 
+    width: 185px; 
+    height: 200px;
+}
+
 .thumb {
     padding: 3px;
 }

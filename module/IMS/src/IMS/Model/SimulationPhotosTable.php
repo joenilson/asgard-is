@@ -85,16 +85,14 @@ class SimulationPhotosTable extends AbstractTableGateway {
     {
         $data = array(
             'id_album' => $object->getId_album(),
-            'id' => $object->getId(),
-            'date_simulation' => $object->getDate_simulation(),
             'description' => $object->getDescription(),
             'status' => $object->getStatus(),
         );
         
         $id = (int) $object->getId();
         $album = (int) $object->getId_album();
-        $file = (int) $object->getFilename();
-        $thumb = (int) $object->getThumbnail();
+        $file = (string) $object->getFilename();
+        $thumb = (string) $object->getThumbnail();
         if(empty($id)){
             $id = $this->getNextId();
             $data['id'] = $id;
@@ -103,11 +101,11 @@ class SimulationPhotosTable extends AbstractTableGateway {
         if(!empty($file)){
             $data['filename']=$file;
         }
-        if(!empty($file)){
+        if(!empty($thumb)){
             $data['thumbnail']=$thumb;
         }
         
-        if (!$this->getObjectByAlbumIdId($album,$id)) {
+        if (!$this->getObjectByAlbumId($album,$id)) {
             $data['date_creation']= $object->getDate_creation();
             $data['user_creation'] = $object->getUser_creation();
             if (!$this->insert($data)){

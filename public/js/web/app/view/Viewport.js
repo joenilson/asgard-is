@@ -58,9 +58,9 @@ Ext.define('Asgard.view.Viewport', {
     'Asgard.lib.dataview.securityhandbook','Asgard.store.RiskSurvey','Asgard.lib.forms.risksurveyNewRiskSurvey',
     'Asgard.lib.grid.risksurvey','Asgard.lib.grid.msds_upload','Asgard.lib.forms.msdsMasterFileUpload',
     'Asgard.store.MSDSUpload','Asgard.store.OHR','Asgard.store.OHRType','Asgard.lib.grid.ohr',
-    'Asgard.lib.forms.OHRTypeCombo','Asgard.lib.forms.ohrNewOHR'
-    
-    
+    'Asgard.lib.forms.OHRTypeCombo','Asgard.lib.forms.ohrNewOHR','Asgard.store.SimulationAlbums',
+    'Asgard.store.SimulationPhotos','Asgard.lib.grid.simulationsalbums','Asgard.lib.forms.simulationNewAlbum',
+    'Asgard.lib.forms.simulationNewPhoto'
   ],
   menuTitleText: 'Main Menu',
     defaults: {

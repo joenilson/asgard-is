@@ -63,12 +63,16 @@ Ext.define('Asgard.lib.grid.simulationsalbums',{
             tooltip: this.toolAddText,
             handler: this.fnLibraryTool,
             scope: this
-        },{
+        }
+        /*
+        ,{
             type: 'expand',
             tooltip: this.uploadToolText,
             handler: this.fnLibraryTool,
             scope: this
-        }];
+        }
+        */
+        ];
         this.title = this.titleText;
         this.columns =  {
             plugins: [{
@@ -148,7 +152,7 @@ Ext.define('Asgard.lib.grid.simulationsalbums',{
             windowDoc.removeAll();
             if(tool.type==='plus'){
                 windowDoc.setTitle(this.titleNewAuditor);
-                winContent = new Ext.create('Asgard.lib.forms.msdsNewMSDS',{
+                winContent = new Ext.create('Asgard.lib.forms.simulationNewAlbum',{
                     flex: 1,
                     innerPanel: panel
                 });
@@ -164,7 +168,7 @@ Ext.define('Asgard.lib.grid.simulationsalbums',{
                             var selData = panel.getSelectionModel().getSelection();
                             var sendData = Ext.encode(selData[0].data);
                             Ext.Ajax.request({
-                                url: 'ims/removemsds',
+                                url: 'ims/removedrillsphotos',
                                 params: {
                                     company: selData[0].data.company,
                                     country: selData[0].data.country,
@@ -187,9 +191,9 @@ Ext.define('Asgard.lib.grid.simulationsalbums',{
                 var AuditorCompany = selGrid[0].data.company;
                 var AuditorCountry = selGrid[0].data.country;
                 var AuditorLocation = selGrid[0].data.location;
-                var editAuditor = Ext.create('Asgard.lib.forms.msdsNewMSDS', { innerPanel: panel, baseParams: { msds_id: AuditorId }});
+                var editAuditor = Ext.create('Asgard.lib.forms.simulationNewAlbum', { innerPanel: panel, baseParams: { msds_id: AuditorId }});
                 editAuditor.getForm().load({
-                    url: 'ims/formmsds',
+                    url: 'ims/formdrillsphotos',
                     params: { id: AuditorId, country: AuditorCountry, company: AuditorCompany, location: AuditorLocation },
                     failure: function(form, action) {
                         Ext.Msg.alert("Fallo Inesperado", action.result.errorMessage);

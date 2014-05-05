@@ -19,6 +19,17 @@
 
 ?>
 <script>
+function lightbox(){
+    console.log($('.thumbsimulations a'));
+    $('.thumbsimulations a').lightBox({
+        imageLoading: '<?=$this->basePath('images/lightbox/loading.gif');?>',
+        imageBtnClose: '<?=$this->basePath('images/lightbox/close.gif');?>',
+        imageBtnPrev: '<?=$this->basePath('images/lightbox/prevlabel.gif');?>',
+        imageBtnNext: '<?=$this->basePath('images/lightbox/nextlabel.gif');?>',
+        imageBlank: '<?=$this->basePath('images/lightbox/lightbox-blank.gif');?>'
+    });
+}
+
 function deployCombos(comboField,comboValue){
     var combo = form<?=$this->panelId;?>.getForm().findField(comboField);
     var store = combo.store;
@@ -41,7 +52,7 @@ var viewStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.SimulationPho
 
 var form<?=$this->panelId;?> = Ext.create('Asgard.lib.forms.comboCCL', { innerGrid: 'gridSimulationAlbums' });
 
-var grid<?=$this->panelId;?> = Ext.create('Asgard.lib.grid.simulationalbums', { 
+var grid<?=$this->panelId;?> = Ext.create('Asgard.lib.grid.simulationsalbums', { 
     store: gridStore<?= $this->panelId; ?>, 
     id: 'gridSimulationAlbums',
     region: 'west',
@@ -49,34 +60,45 @@ var grid<?=$this->panelId;?> = Ext.create('Asgard.lib.grid.simulationalbums', {
     flex: 1,
     height: '100%'
 });
-var innerview<?=$this->panelId;?> = Ext.create('Asgard.lib.dataview.SimulationPhotos', { 
+var innerview<?=$this->panelId;?> = Ext.create('Asgard.lib.dataview.drillsphotos', { 
     store: viewStore<?= $this->panelId; ?>,
     flex: 1,
+    id: 'innerview<?=$this->panelId;?>',
+    listeners: {
+        dblclick: {
+            element: 'el', //bind to the underlying el property on the panel
+            fn: function(dv, node, o, b){ 
+                var selected = innerview<?=$this->panelId;?>.getSelectionModel().getSelection();
+                var store = innerview<?=$this->panelId;?>.getStore();
+                var index = store.indexOf(selected[0]);
+                var imgData = [];
+                var imgDataInner = [];
+                store.each(function(record,idx){
+                    imgData[idx] = new Array(record.get('filename'),record.get('description'));
+                });
+                if(selected[0].data.filename !== ''){ 
+                    jQuery.slimbox(imgData,index);
+                }
+            }
+        }
+    }
+    
 });
 
-var view<?=$this->panelId; ?> = Ext.create('Asgard.lib.Panels.SimulationAlbumsPanel',{
+var view<?=$this->panelId; ?> = Ext.create('Asgard.lib.Panels.drillsPhotosPanel',{
     id: 'panelSimulationAlbums',
     items: innerview<?=$this->panelId;?>,
     region: 'center',
     layout: 'fit',
     flex: 3,
     height: '100%'
+    
 });
 
 grid<?=$this->panelId;?>.getSelectionModel().on('selectionchange', function(sm, selectedRecord) {
-    if ((selectedRecord.length) && (selectedRecord[0].data.filename!='')) {
-        var detailPanel = Ext.getCmp('panelSimulationAlbums');
-        detailPanel.removeAll();
-        var documentFile = Ext.create('Ext.ux.panel.PDF', {
-                flex: 1,
-                layout: 'fit',
-                //width    : document.documentElement.clientWidth - 50,
-                //height   : document.documentElement.clientHeight - 50,
-                //pageScale: 1,                                           // Initial scaling of the PDF. 1 = 100%
-                src      : selectedRecord[0].data.filename, // URL to the PDF - Same Domain or Server with CORS Support
-                //loadingMessage: this.loadingFileText
-            });
-        detailPanel.add(documentFile);
+    if ((selectedRecord.length)) {
+        viewStore<?= $this->panelId; ?>.load({ params: { album_id: selectedRecord[0].data.id }});
+        view<?=$this->panelId; ?>.albumId = selectedRecord[0].data.id;
     }
 });
 
@@ -105,7 +127,6 @@ var libraryViewport<?=$this->panelId; ?> = Ext.create('Ext.panel.Panel', {
         
    ]
 });
-
 Ext.getCmp('content-panel').getActiveTab().add(libraryViewport<?= $this->panelId; ?>);
 </script>
 
