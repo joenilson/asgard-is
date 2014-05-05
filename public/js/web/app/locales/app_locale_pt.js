@@ -416,3 +416,24 @@ Ext.define('Asgard.locales.lib.Panels.SecurityHandbookPanel',{
     warningBody: 'Não é possível processar o formulário, por favor, verifique seus dado',
     warningTitleBodyDelete: 'You are choosing delete this member. <br />Would you like to save your changes?',
 });
+
+Ext.define('Asgard.locales.lib.grid.ohr',{
+    override: 'Asgard.lib.grid.ohr',
+    titleText: 'Registro de Saúde Ocupacional',
+    typeText: 'Tipo',
+    descText: 'Descrição',
+    fileText: 'Documento',
+    toolAddText: 'Adicionar Registro',
+    toolUploadText: 'Carregar Template',
+    toolRemoveText: 'Excluir Registro',
+    toolChangeText: 'Alterar Registro',
+    toolViewDocText: 'Ver Arquivo',
+    titleNewAuditPlan: 'Adicionar Novo Registro',
+    titleEditAuditPlan: 'Editar Registro',
+    loadingFileText: 'Carregando Documento... por favor aguarde...',
+    chooseTitleText: 'Aviso',
+    emptyFileMessage: 'Não há nenhum arquivo associado com este documento...',
+    chooseTitleBodyDelete: 'Ela irá remover um documento!. <br />Quer continuar com esta ação?',
+    chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?',
+});
+
