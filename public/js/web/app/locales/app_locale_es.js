@@ -436,3 +436,36 @@ Ext.define('Asgard.locales.lib.grid.ohr',{
     chooseTitleBodyDelete: 'Va eliminar un documento!. <br />Desea seguir con esta acción?',
     chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?',
 });
+
+Ext.define('Asgard.locales.lib.grid.simulationsalbums',{
+    override: 'Asgard.lib.grid.simulationsalbums',
+
+    titleText: 'Simulacros',
+    idText: 'Id',
+    nameText: 'Descripcion',
+    dateText: 'Fecha',    
+    toolAddText: 'Agregar Simulacro',
+    toolRemoveText: 'Eliminar Simulacro',
+    toolChangeText: 'Cambiar Simulacro',
+    uploadToolText: 'Mass Upload',
+    titleNewAuditor: 'Agregar nuevo Simulacro',
+    titleEditAuditor: 'Editar Simulacro',
+    
+    chooseTitleText: 'Advertencia',
+    chooseTitleBodyDelete: 'Va eliminar un album incluidas las fotos!. <br />Desea seguir con esta acción?',
+    chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?' 
+});
+
+Ext.define('Asgard.locales.lib.Panels.drillsPhotosPanel',{
+    override: 'Asgard.lib.Panels.drillsPhotosPanel',
+
+    barAddText: 'Agregar Imágenes',
+    barRemoveText: 'Eliminar Imágen(es)',
+    
+    warningTitle: 'Advertencia',
+    warningBody: 'No se pudieron procesar las imágenes, por favor revise los archivos',
+    warningTitleBodyDelete: 'Esta seguro que quiere eliminar esta(s) imágen(es). <br />Desea seguir con esta acción?',
+    emptyTitleText: 'Simulacro no seleccionado',
+    emptyMessageText: 'No se ha seleccionado un simulacro, <br />Por favor seleccione uno para agregarle fotos...',
+
+});

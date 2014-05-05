@@ -437,3 +437,35 @@ Ext.define('Asgard.locales.lib.grid.ohr',{
     chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?',
 });
 
+Ext.define('Asgard.locales.lib.grid.simulationsalbums',{
+    override: 'Asgard.lib.grid.simulationsalbums',
+
+    titleText: 'Simulações',
+    idText: 'Id',
+    nameText: 'Descrição',
+    dateText: 'Data',    
+    toolAddText: 'Adicionar Simulação',
+    toolRemoveText: 'Excluir Simulação',
+    toolChangeText: 'Alterar Simulação',
+    uploadToolText: 'Mass Upload',
+    titleNewAuditor: 'Adicionar Nova Simulação',
+    titleEditAuditor: 'Editar Simulação',
+    
+    chooseTitleText: 'Aviso',
+    chooseTitleBodyDelete: 'Va remover um álbum, incluindo fotos!. <br />Quer continuar com esta ação?',
+    chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?' 
+});
+
+Ext.define('Asgard.locales.lib.Panels.drillsPhotosPanel',{
+    override: 'Asgard.lib.Panels.drillsPhotosPanel',
+
+    barAddText: 'Adicionar Images',
+    barRemoveText: 'Eliminar Fotos',
+    
+    warningTitle: 'Aviso',
+    warningBody: 'Falha ao processar as imagens, por favor, verifique os arquivos',
+    warningTitleBodyDelete: 'Tem certeza de que deseja excluir esta(s) imagem(s). <br />Quer continuar com esta ação?',
+    emptyTitleText: 'Simulação não selecionado',
+    emptyMessageText: 'Você não selecionou uma simulação, <br />Por favor, selecione um para adicionar fotos...',
+
+});

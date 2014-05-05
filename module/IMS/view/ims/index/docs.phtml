@@ -45,6 +45,8 @@ var formDataRequest<?=$this->panelId; ?> = Ext.create('Asgard.lib.forms.comboCCL
  */
 var DocumentsGrid<?=$this->panelId; ?> = Ext.create('Asgard.lib.grid.documents',{
     store: DocsLibraryStore<?= $this->panelId; ?>,
+    petitionerEmail: '<?=$userData[0]['email'];?>',
+    petitionerAlias: '<?=$userData[0]['fullname'];?>'
     //tools: toolsLibrary
 });
 
