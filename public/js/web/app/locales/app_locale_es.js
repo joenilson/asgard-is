@@ -469,3 +469,42 @@ Ext.define('Asgard.locales.lib.Panels.drillsPhotosPanel',{
     emptyMessageText: 'No se ha seleccionado un simulacro, <br />Por favor seleccione uno para agregarle fotos...',
 
 });
+
+Ext.define('Asgard.locales.lib.grid.hira_incidents',{
+    override: 'Asgard.lib.grid.hira_incidents',
+
+
+    titleText: 'Lista de Incidentes',
+    idText: 'Id',
+    nctypeText: 'No Conformidad',
+    typeText: 'Tipo Incidente',
+    descriptionText: 'Descripcion',
+    authorText: 'Registrante',
+    processText: 'Proceso',
+    threadText: 'Subproceso',
+    emailText: 'Email',
+    dateText: 'Fecha',
+    statusText: 'Estado',
+    causesToolText: 'Causas del Incidente',
+    closeToolText: 'Cierre del Incidente',
+    validityToolText: 'Validación del Cierre',
+    deleteToolText: 'Eliminar Incidente',
+    addToolText: 'Agregar Incidente',
+    resultTitleText: 'Correcto!',
+    resultMessageText: 'incidentes procesados.',
+    failureTitleText: 'Advertencia',
+    failureMessageText: 'El servidor no pudo procesar los datos, <br />por favor revise el formulario.',
+    buttonAcceptText: 'Guardar Archivos',
+    emptyTitleText: 'No hay nada seleccionado',
+    emptyMessageText: 'No se ha seleccionado un Incidente, <br />Por favor seleccione uno para procesar...',
+    wrongTitleText: 'Estado Incorrecto',
+    wrongMessageText: 'El estado del Incidente es incorrecto, <br />Por favor realice el tratamiento correcto...',
+    chooseTitleText: 'Advertencia',
+    chooseTitleBodyDelete: 'Va eliminar un Incidente!. <br />Desea seguir con esta acción?',
+    chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?',
+    titleCausesTool: 'Causas de No Conformidad',
+    valTreatment1: 'Abierto',
+    valTreatment2: 'Cerrado',
+    valTreatment4: 'Cerrado y Validado',
+    titleIncident: 'Incidente: '
+});
