@@ -5098,12 +5098,22 @@ class IndexController extends AbstractActionController
             $dataResult[$arrayCauses[$vals['id_cause']].'_registerLastname']=trim($lastname[1]);
         }
         $data = array();
-        if(count($dataResult>0)){
+        if(count($dataResult)>0){
             $data['success']=true;
             $data['data']=$dataResult;
+            $data['data_count']=count($dataResult);
         }else{
-            $data['success']=false;
-            $data['data']="";
+            foreach($arrayCauses as $key=>$identity) {
+                $dataResult[$identity.'_IncidentType']="";
+                $dataResult[$identity.'_IncidentIA']="";
+                $dataResult[$identity.'_IncidentCA']="";
+                $dataResult[$identity.'_registerName']="";
+                $dataResult[$identity.'_registerSurname']="";
+                $dataResult[$identity.'_registerLastname']="";
+            }
+            $data['success']=true;
+            $data['data']=$dataResult;
+            $data['data_count']=0;
         }
         
         return new JsonModel($data);
