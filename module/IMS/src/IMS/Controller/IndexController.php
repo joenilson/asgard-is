@@ -5460,21 +5460,21 @@ class IndexController extends AbstractActionController
         $arrayProcess = $sqlProcess->getAllMainProcess($lang_docs,'A',$company,$country,$location);
         $process = array();
         foreach($arrayProcess as $key=>$process_values){
-            $process[trim($process_values['value'])]=array('id'=>$process_values['id'],'desc'=>$process_values['value']);
+            $process[$this->PersonName(trim($process_values['value']))]=array('id'=>$process_values['id'],'desc'=>$process_values['value']);
         }
         
         $sqlThreads = $this->getProcessThreadTable();
         $arrayThreads = $sqlThreads->getAllThreads($lang_docs,'A',$company,$country,$location);
         $threads = array();
         foreach($arrayThreads as $key=>$thread_values){
-            $threads[trim($thread_values['value'])]=array('id'=>$thread_values['id'],'desc'=>$thread_values['value']);
+            $threads[$this->PersonName(trim($thread_values['value']))]=array('id'=>$thread_values['id'],'desc'=>$thread_values['value']);
         }    
         
         $sqlActivity = $this->getProcessActivityTable();
         $arrayActivity = $sqlActivity->getAllActivities($lang_docs,'A',$company,$country,$location);
         $activities = array();
         foreach($arrayActivity as $key=>$activity_values){
-            $activities[$activity_values['value']]=array('id'=>$activity_values['id'],'desc'=>$activity_values['value']);
+            $activities[$this->PersonName(trim($activity_values['value']))]=array('id'=>$activity_values['id'],'desc'=>$activity_values['value']);
         }
         
         $sqlDanger = $this->getHiraDangerTable();
@@ -5482,7 +5482,7 @@ class IndexController extends AbstractActionController
         
         $dangers = array();
         foreach($arrayDanger as $key=>$obj_values){
-            $dangers[$obj_values['desc_danger']]=array('id'=>$obj_values['id_danger'],'desc'=>$obj_values['desc_danger']);
+            $dangers[$this->PersonName($obj_values['desc_danger'])]=array('id'=>$obj_values['id_danger'],'desc'=>$obj_values['desc_danger']);
         }
         
         $sqlRisk = $this->getHiraRiskTable();
@@ -5490,7 +5490,7 @@ class IndexController extends AbstractActionController
         
         $risks = array();
         foreach($arrayRisk as $key=>$obj_values){
-            $risks[$obj_values['desc_risk']]=array('id'=>$obj_values['id_risk'],'desc'=>$obj_values['desc_risk']);
+            $risks[$this->PersonName($obj_values['desc_risk'])]=array('id'=>$obj_values['id_risk'],'desc'=>$obj_values['desc_risk']);
         }
         //
         //$reader = new \PHPExcel();
@@ -5517,11 +5517,11 @@ class IndexController extends AbstractActionController
                 $filesProcessed++;
                 $id = $filesProcessed;
                 //$processType = (int) trim($content['A']);
-                $processMain = (string) trim($content['B']);
-                $processThread = (string) trim($content['C']);
-                $processActivity = (string) trim($content['D']);
-                $documentDanger = (string) trim($content['E']);
-                $documentRisk = (string) trim($content['F']);
+                $processMain = (string) $this->PersonName(trim($content['B']));
+                $processThread = (string) $this->PersonName(trim($content['C']));
+                $processActivity = (string) $this->PersonName(trim($content['D']));
+                $documentDanger = (string) $this->PersonName(trim($content['E']));
+                $documentRisk = (string) $this->PersonName(trim($content['F']));
                 $iperHigh = (int) trim($content['G']);
                 $iperMedium = (int) trim($content['H']);
                 $iperLow = (int) trim($content['I']);

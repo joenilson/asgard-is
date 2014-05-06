@@ -60,8 +60,6 @@ Ext.define('Asgard.lib.grid.hira_general',{
     chooseTitleText: 'Warning',
     chooseTitleBodyDelete: 'You are choosing delete this items. <br />Would you like to save your changes?',
     chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?',
-
-    
     
     initComponent: function(){
         this.title = this.titleText;

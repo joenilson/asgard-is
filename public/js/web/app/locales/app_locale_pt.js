@@ -508,3 +508,38 @@ Ext.define('Asgard.locales.lib.grid.hira_incidents',{
     valTreatment4: 'Fechado e Validado',
     titleIncident: 'Incidente: '
 });
+
+Ext.define('Asgard.locales.lib.grid.hira_general',{
+    override: 'Asgard.lib.grid.hira_general',
+    titleText: 'Identificação de Perigos e Avaliação de Riscos :: IPAR',
+    idText: 'Id',
+    processText: 'Processo',
+    threadText: 'Fio',
+    activityText: 'Atividade',
+    dangerText: 'Perigo',
+    riskText: 'Risco',
+    evaluationHiraText: 'Avaliação IPAR',
+    evaluationHiraHText: 'A',
+    evaluationHiraMText: 'M',
+    evaluationHiraLText: 'B',
+    controlMeasuresText: 'Medidas a serem implementadas',
+    residualRiskText: 'Avaliação de Risco Residual',
+    residualRiskHText: 'A',
+    residualRiskMText: 'M',
+    residualRiskLText: 'B',
+    editToolText: 'Editar',
+    deleteToolText: 'Remover',
+    addToolText: 'Adicionar',
+    uploadToolText: 'Fazer Upload de Template',
+    emptyTextText: 'Este local não possui IPAR atribuídos',
+    resultTitleText: 'Sucesso',
+    resultMessageText: 'incidentes procesados.',
+    failureTitleText: 'Aviso',
+    failureMessageText: 'O servidor não pôde processar o arquivo, <br />Por favor, reveja os seus dados.',
+    buttonAcceptText: 'Salvar dados',
+    emptyTitleText: 'Nada é selecionado',
+    emptyMessageText: 'Não é um item selecionado, <br />Por favor, selecione uma para o processamento...',
+    chooseTitleText: 'Advertencia',
+    chooseTitleBodyDelete: 'Va eliminar un item!. <br />Desea seguir con esta acción?',
+    chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?'
+});
