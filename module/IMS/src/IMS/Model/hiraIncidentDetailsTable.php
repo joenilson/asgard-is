@@ -56,9 +56,11 @@ class hiraIncidentDetailsTable extends AbstractTableGateway {
         $resultSet = $this->select(function (Select $select) use ($var_companies, $var_countries, $var_locations, $id_incident,$lang) {
             $select->join(
                     array('ct'=>new TableIdentifier($this->ct_table_name, $this->schema_name)),
-                        new Expression($this->table_name.'.id_cause = ct.id and ct.lang =\''.$lang.'\''), array('cause_desc'=>'description')
+                        new Expression($this->table_name.'.id_cause = ct.id and ct.lang =\''.$lang.'\''), array('cause_desc'=>'description'),
+                    'left'
                     );
-            $select->where(array('company'=>$var_companies,'country'=>$var_countries,'location'=>$var_locations,new Expression("hira_incidents_details.status!='0'")));
+            //$select->where(array('company'=>$var_companies,'country'=>$var_countries,'location'=>$var_locations,$this->table_name.'.id'=>$id_incident,new Expression("hira_incidents_details.status!='0'")));
+            $select->where(array('company'=>$var_companies,'country'=>$var_countries,'location'=>$var_locations,$this->table_name.'.id'=>$id_incident,new Expression("hira_incidents_details.status!='0'")));
             $select->order('id_cause ASC');
         });
         return $resultSet->toArray();

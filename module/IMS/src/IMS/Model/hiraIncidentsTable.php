@@ -136,7 +136,7 @@ class hiraIncidentsTable extends AbstractTableGateway {
         $resultSet = $this->select(function (Select $select) use ($var_companies, $var_countries, $var_locations, $dateValue, $lang) {
             $select->join(
                     array('ht'=>new TableIdentifier($this->ht_table_name, $this->schema_name)),
-                        new Expression($this->table_name.'.id_type::INT = ht.id_incident and ht.lang =\''.$lang.'\''), array('val_incident')
+                        new Expression($this->table_name.'.id_type::INT = ht.id_incident and ht.lang =\''.$lang.'\''), array('val_incident'),'left'
                     );
             $select->join(
                     array('nc'=>new TableIdentifier($this->nc_table_name, $this->schema_name)),
@@ -151,7 +151,7 @@ class hiraIncidentsTable extends AbstractTableGateway {
                         new Expression($this->table_name.'.incident_thread = pt.id and pt.lang =\''.$lang.'\''), array('incident_thread_desc'=>'value'),'left'
                     );
             $select->where(array('company'=>$var_companies,'country'=>$var_countries,'location'=>$var_locations,new Expression("date_incident::TEXT like '$dateValue%' and general_status!=0")));
-            $select->order('date_incident ASC');
+            $select->order($this->table_name.'.id_incident DESC');
         });
         return $resultSet->toArray();
     }
