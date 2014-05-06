@@ -5721,17 +5721,13 @@ class IndexController extends AbstractActionController
         } else {
             if($imageUploaded){
                 $file = $filesPath.$filename;
-                $maxHeight = 800;
+                $maxHeight = 760;
                 $imagine = new \Imagine\Gd\Imagine();
-                list($width, $height, $type, $attribs) = getimagesize($file);
+                list($width, $height, $type, $attribs) = \getimagesize($file);
 
-                if($height>$maxHeight){
-                    $newWidth = ceil(($maxHeight*$height)/$width);
-
-                    $imagine->open($file)
-                            ->thumbnail(new \Imagine\Image\Box($newWidth,$maxHeight))
-                            ->save($file);
-                }
+                $imagine->open($file)
+                        ->thumbnail(new \Imagine\Image\Box(760,540))
+                        ->save($file);
             }
             if($thumb){
                 $this->imageResize($filesPath.$filename,$filesPath.$thumbname);
