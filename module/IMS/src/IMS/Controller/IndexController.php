@@ -5141,8 +5141,10 @@ class IndexController extends AbstractActionController
             $data['success']=true;
             $data['data']=$dataResult;
         }else{
-            $data['success']=false;
-            $data['data']="";
+            $dataResult['close_description']="";
+            $dataResult['incident_desc']="";
+            $data['success']=true;
+            $data['data']=$dataResult;
         }
         
         return new JsonModel($data);
@@ -5170,8 +5172,10 @@ class IndexController extends AbstractActionController
             $data['success']=true;
             $data['data']=$dataResult;
         }else{
-            $data['success']=false;
-            $data['data']="";
+            $dataResult['validity_description']="";
+            $dataResult['incident_desc']="";
+            $data['success']=true;
+            $data['data']=$dataResult;
         }
         
         return new JsonModel($data);
