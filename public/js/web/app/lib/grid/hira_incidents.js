@@ -186,7 +186,7 @@ Ext.define('Asgard.lib.grid.hira_incidents',{
                 var IncidentCompany = selectedItems[0].data.company;
                 var IncidentCountry = selectedItems[0].data.country;
                 var IncidentLocation = selectedItems[0].data.location;
-                var viewIncidentCauses = Ext.create('Asgard.lib.forms.hiraIncidentCauses', { innerPanel: panel, baseParams: { incident_id: IncidentId }});
+                var viewIncidentCauses = Ext.create('Asgard.lib.forms.hiraIncidentCauses', { innerPanel: panel, baseParams: { incident_id: IncidentId, country: IncidentCountry, company: IncidentCompany, location: IncidentLocation }});
                 viewIncidentCauses.getForm().load({
                     url: 'ims/formincidentcauses',
                     params: { id: IncidentId, country: IncidentCountry, company: IncidentCompany, location: IncidentLocation },
