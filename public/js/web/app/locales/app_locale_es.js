@@ -473,7 +473,6 @@ Ext.define('Asgard.locales.lib.Panels.drillsPhotosPanel',{
 Ext.define('Asgard.locales.lib.grid.hira_incidents',{
     override: 'Asgard.lib.grid.hira_incidents',
 
-
     titleText: 'Lista de Incidentes',
     idText: 'Id',
     nctypeText: 'No Conformidad',
@@ -507,4 +506,39 @@ Ext.define('Asgard.locales.lib.grid.hira_incidents',{
     valTreatment2: 'Cerrado',
     valTreatment4: 'Cerrado y Validado',
     titleIncident: 'Incidente: '
+});
+
+Ext.define('Asgard.locales.lib.grid.hira_general',{
+    override: 'Asgard.lib.grid.hira_general',
+    titleText: 'Identificacion de Peligros y Evaluación de Riesgos :: IPER',
+    idText: 'Id',
+    processText: 'Proceso',
+    threadText: 'Subproceso',
+    activityText: 'Actividad',
+    dangerText: 'Peligro',
+    riskText: 'Riesgo',
+    evaluationHiraText: 'Evaluación IPER',
+    evaluationHiraHText: 'A',
+    evaluationHiraMText: 'M',
+    evaluationHiraLText: 'B',
+    controlMeasuresText: 'Medidas a implementar',
+    residualRiskText: 'Evaluación del Riesgo Residual',
+    residualRiskHText: 'A',
+    residualRiskMText: 'M',
+    residualRiskLText: 'B',
+    editToolText: 'Editar',
+    deleteToolText: 'Eliminar',
+    addToolText: 'Agregar',
+    uploadToolText: 'Subir Plantilla',
+    emptyTextText: 'Esta Ubicación no tiene un IPER asignado.',
+    resultTitleText: 'Exito',
+    resultMessageText: 'incidentes procesados.',
+    failureTitleText: 'Advertencia',
+    failureMessageText: 'El servidor no pudo procesar el archivo, <br />por favor revise sus datos.',
+    buttonAcceptText: 'Guardar Datos',
+    emptyTitleText: 'No se seleccionó nada',
+    emptyMessageText: 'No se ha seleccionado un item, <br />Por favor seleccione uno para procesar...',
+    chooseTitleText: 'Advertencia',
+    chooseTitleBodyDelete: 'Va eliminar un item!. <br />Desea seguir con esta acción?',
+    chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?'
 });
