@@ -1367,6 +1367,118 @@ return array(
                             ),
                         ),
                     ),
+                    'isoplan' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/isoplan[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'isoplan'
+                            ),
+                        ),
+                    ),
+                    'addisoplan' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/addisoplan[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'addisoplan'
+                            ),
+                        ),
+                    ),
+                    'removeisoplan' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/removeisoplan[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'removeisoplan'
+                            ),
+                        ),
+                    ),
+                    'getisoplan' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/getisoplan[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'getisoplan'
+                            ),
+                        ),
+                    ),
+                    'getisoplanhelpers' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/getisoplanhelpers[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'getisoplanhelpers'
+                            ),
+                        ),
+                    ),
+                    'formisoplan' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/formisoplan[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'formisoplan'
+                            ),
+                        ),
+                    ),
+                    'massisoplanprocess' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/massisoplanprocess[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'massisoplanprocess'
+                            ),
+                        ),
+                    ),
+                    'processmassisoplan' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/processmassisoplan[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'processmassisoplan'
+                            ),
+                        ),
+                    ),
                     'ieea' => array(
                         'type'    => 'Segment',
                         'options' => array(

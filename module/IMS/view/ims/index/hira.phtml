@@ -48,7 +48,7 @@ var HIRAStore<?=$this->panelId; ?> = Ext.create('Asgard.store.HiraDocuments');
 //echo 'HIRAStore'.$this->panelId.'.load();'; 
 ?>
 
-var formDataRequest<?=$this->panelId; ?> = Ext.create('Asgard.lib.forms.comboCCL',{
+var formDataRequest<?=$this->panelId; ?> = Ext.create('Asgard.lib.forms.comboCCLP',{
     region: 'north'
 });
 
@@ -56,121 +56,6 @@ var HIRAGridPanel<?=$this->panelId; ?> = Ext.create('Asgard.lib.grid.hira_genera
     store: HIRAStore<?=$this->panelId; ?>,
     region: 'center'
 });
-/*
-var <?php echo 'HIRAGridPanel'.$this->panelId; ?> = Ext.create('Asgard.lib.GridPanel', {
-  autoShow: true,
-  autoDestroy: true,
-  autoScroll: true,
-  border: false,
-  frame: false,
-  region: 'center',
-  layout: 'fit',
-  flex: 0.90,
-  selType: 'checkboxmodel',
-  store: <?php echo 'HIRAStore'.$this->panelId; ?>,
-  dockedItems: [{
-    xtype: toolbarType<?php echo $this->panelId; ?>
-  }],
-  tools: [{
-    type: 'expand',
-    tooltip: 'Upload Master File',
-    handler: fnLibraryTool
-  }],
-  columns: {
-      plugins: [{
-            ptype: 'gridautoresizer'
-            
-        }
-    ],
-      items: [
-            {text: "Id", flex:0.25, sortable: true, dataIndex: 'id_danger_risk', hidden: true },
-            {text: "<?=$this->HiraGridHeaderTypeProcess; ?>", flex:1, sortable: true, filter: 'combo', dataIndex: 'type_desc', tdCls: 'wrapText'},
-            {text: "<?=$this->HiraGridHeaderProcess; ?>", flex:1, sortable: true, filter: 'combo', dataIndex: 'process_sup_desc', tdCls: 'wrapText'},
-            {text: "<?=$this->HiraGridHeaderSubProcess; ?>", flex:1.3, sortable: true, filter: 'combo', dataIndex: 'process_main_desc', tdCls: 'wrapText'},
-            {text: "<?=$this->HiraGridHeaderDangerDesc; ?>", flex:1.5, sortable: true, filter: 'combo', dataIndex: 'desc_danger', tdCls: 'wrapText'},
-            {text: "<?=$this->HiraGridHeaderRiskDesc; ?>", flex:1.2, sortable: true, filter: true, dataIndex: 'desc_risk', tdCls: 'wrapText'},
-            {text: "<?=$this->HiraGridHeaderHiraEval; ?>",
-            columns: [{
-                    text     : '<?=$this->HiraGridHeaderScaleHigh; ?>',
-                    width    : 50,
-                    sortable : true,
-                    filter: true,
-                    dataIndex: 'eval_iper_h',
-                    align: 'center',
-                    renderer : riskleveler,
-                    editor : { xtype: 'numberfield', allowBlank: false, minValue: 0, maxValue: 25,
-                        hideTrigger: true, keyNavEnabled: false, mouseWheelEnabled: false
-                    }
-                }, {
-                    text     : '<?=$this->HiraGridHeaderScaleMedium; ?>',
-                    width    : 50,
-                    sortable : true,
-                    filter: true,
-                    renderer :  riskleveler,
-                    align: 'center',
-                    dataIndex: 'eval_iper_m',
-                    editor : { xtype: 'numberfield', allowBlank: false, minValue: 0, maxValue: 25,
-                        hideTrigger: true, keyNavEnabled: false, mouseWheelEnabled: false
-                    }
-                }, {
-                    text     : '<?=$this->HiraGridHeaderScaleLow; ?>',
-                    width    : 50,
-                    sortable : true,
-                    align: 'center',
-                    filter: true,
-                    renderer : riskleveler,
-                    dataIndex: 'eval_iper_l',
-                    editor : { xtype: 'numberfield', allowBlank: false, minValue: 0, maxValue: 25,
-                        hideTrigger: true, keyNavEnabled: false, mouseWheelEnabled: false
-                    }
-                }]
-            },
-            {text: "<?=$this->HiraGridHeaderMeasures; ?>", flex:1.2, sortable: true, filter: true, dataIndex: 'control_measures', 
-                editor: {
-                    xtype: 'textareafield', allowBlank: false
-                },
-                tdCls: 'wrapText'
-            },
-            {text: "<?=$this->HiraGridHeaderResidualRiskEval; ?>",
-            columns: [{
-                    text     : '<?=$this->HiraGridHeaderScaleHigh; ?>',
-                    width    : 50,
-                    sortable : true, 
-                    filter: true,
-                    align: 'center',
-                    dataIndex: 'eval_risk_h',
-                    renderer : riskleveler,
-                    editor : { xtype: 'numberfield', allowBlank: false, minValue: 0, maxValue: 25,
-                        hideTrigger: true, keyNavEnabled: false, mouseWheelEnabled: false
-                    }
-                }, {
-                    text     : '<?=$this->HiraGridHeaderScaleMedium; ?>',
-                    width    : 50,
-                    sortable : true, 
-                    filter: true,
-                    align: 'center',
-                    renderer : riskleveler,
-                    dataIndex: 'eval_risk_m',
-                    editor : { xtype: 'numberfield', allowBlank: false, minValue: 0, maxValue: 25,
-                        hideTrigger: true, keyNavEnabled: false, mouseWheelEnabled: false
-                    }
-                }, {
-                    text     : '<?=$this->HiraGridHeaderScaleLow; ?>',
-                    width    : 50,
-                    sortable : true, 
-                    filter: true,
-                    align: 'center',
-                    renderer : riskleveler,
-                    dataIndex: 'eval_risk_l',
-                    editor : { xtype: 'numberfield', allowBlank: false, minValue: 0, maxValue: 25,
-                        hideTrigger: true, keyNavEnabled: false, mouseWheelEnabled: false
-                    }
-                }]
-            }
-        ]
-    },
-});
-*/
 <?php
 /*
 if ($this->userRole!='Viewer'){
@@ -180,12 +65,13 @@ if ($this->userRole!='Viewer'){
  * */
  ?>
     
-function fnCCLProcess(button, opt, obj) {
+function fnCCLPProcess(button, opt, obj) {
     var values = button.up('form').getForm().getValues();
     var companies = values['companiesCombo'];
     var countries = values['countriesCombo'];
     var locations = values['locationsCombo'];
-    HIRAStore<?= $this->panelId; ?>.load({ params: { module: 'hira', company: companies, country: countries, location: locations}});
+    var process_id = values['processCombo'];
+    HIRAStore<?= $this->panelId; ?>.load({ params: { module: 'hira', company: companies, country: countries, location: locations, process: process_id }});
 
 }
 

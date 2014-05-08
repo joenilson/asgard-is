@@ -119,13 +119,69 @@ class IEEATable extends AbstractTableGateway {
         return $listItems;
     }
     
+    public function getIEEAByP($lang,$companies,$countries,$locations,$process){
+        $companies = $this->processArray($companies);
+        $countries = $this->processArray($countries);
+        $locations = $this->processArray($locations);
+        $process_id = (int) $process;
+        $row = $this->select(function (Select $select) use ($lang,$companies,$countries,$locations,$process_id) {
+            $select->join(
+                array('h1'=>new TableIdentifier($this->table_helper, $this->schema_name)), 
+                new Expression ( $this->table_name.'.id_type = h1.id AND h1.helper=\'type\' and h1.status=\'A\' AND h1.lang=\''.$lang.'\''),
+                array('desc_type'=>'description')
+            );
+            $select->join(
+                array('h2'=>new TableIdentifier($this->table_helper, $this->schema_name)), 
+                new Expression ( $this->table_name.'.id_cycle = h2.id AND h2.helper=\'cycle\' and h2.status=\'A\' AND h2.lang=\''.$lang.'\''), 
+                array('desc_cycle'=>'description')
+            );
+            $select->join(
+                array('h3'=>new TableIdentifier($this->table_helper, $this->schema_name)), 
+                new Expression ( $this->table_name.'.id_ea = h3.id AND h3.helper=\'ea\' and h3.status=\'A\' AND h3.lang=\''.$lang.'\''), 
+                array('desc_ea'=>'description')
+            );
+            $select->join(
+                array('h4'=>new TableIdentifier($this->table_helper, $this->schema_name)), 
+                new Expression ( $this->table_name.'.id_ei = h4.id AND h4.helper=\'ei\' and h4.status=\'A\' AND h4.lang=\''.$lang.'\''), 
+                array('desc_ei'=>'description')
+            );
+            $select->join(
+                array('h5'=>new TableIdentifier($this->table_helper, $this->schema_name)), 
+                new Expression ( $this->table_name.'.unit_measure = h5.id AND h5.helper=\'um\' and h5.status=\'A\' AND h5.lang=\''.$lang.'\''), 
+                array('desc_unit_measure'=>'description')
+            );
+            $select->join(
+                array('pm'=>new TableIdentifier($this->table_process, $this->schema_name)), 
+                new Expression ( $this->table_name.'.id_process = pm.id AND pm.lang=\''.$lang.'\''), 
+                array('desc_process'=>'value')
+            );
+            $select->join(
+                array('pt'=>new TableIdentifier($this->table_thread, $this->schema_name)), 
+                new Expression ( $this->table_name.'.id_thread = pt.id AND pt.lang=\''.$lang.'\''), 
+                array('desc_thread'=>'value')
+            );
+            $select->where(array($this->table_name.'.status'=>'A','company'=>$companies,'country'=>$countries,'location'=>$locations, 'id_process'=>$process_id));
+            $select->order(array('id_process','id_thread','id_type','id_cycle','id'));
+            //echo $select->getSqlString();
+        });
+        
+        if (!$row)
+            return false;
+        $listItems=array();
+        for ($index = 0; $index < $row->count(); $index++) {
+            $listItems[]=$row->current();
+            $row->next();
+        }
+        return $listItems;
+    }
+    
     public function getIEEA($lang,$companies,$countries,$locations) {
         $companies = $this->processArray($companies);
         $countries = $this->processArray($countries);
         $locations = $this->processArray($locations);
+       
         $row = $this->select(function (Select $select) use ($lang,$companies,$countries,$locations) {
-            //$select->columns(array('id','ordering','status'));
-                       $select->join(
+            $select->join(
                 array('h1'=>new TableIdentifier($this->table_helper, $this->schema_name)), 
                 new Expression ( $this->table_name.'.id_type = h1.id AND h1.helper=\'type\' and h1.status=\'A\' AND h1.lang=\''.$lang.'\''),
                 array('desc_type'=>'description')

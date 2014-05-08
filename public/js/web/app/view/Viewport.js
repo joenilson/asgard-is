@@ -61,7 +61,8 @@ Ext.define('Asgard.view.Viewport', {
     'Asgard.lib.forms.OHRTypeCombo','Asgard.lib.forms.ohrNewOHR','Asgard.store.SimulationAlbums',
     'Asgard.store.SimulationPhotos','Asgard.lib.grid.simulationsalbums','Asgard.lib.forms.simulationNewAlbum',
     'Asgard.lib.forms.simulationNewPhoto','Asgard.store.MTMType','Asgard.store.MTM','Asgard.lib.forms.mtmNewDocument',
-    'Asgard.lib.grid.mtm','Asgard.lib.forms.GenTypeCombo'
+    'Asgard.lib.grid.mtm','Asgard.lib.forms.GenTypeCombo','Asgard.lib.forms.comboCCLP','Asgard.store.IsoPlanHelpers',
+    'Asgard.store.IsoPlan','Asgard.lib.grid.isoplan'
   ],
   menuTitleText: 'Main Menu',
     defaults: {

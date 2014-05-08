@@ -19,20 +19,17 @@
  * @version 1.0.0 devel
  * @author Joe Nilson <joenilson@gmail.com>
  */
-Ext.define('Asgard.lib.forms.ProcessCombo',{
-    extend: 'Ext.form.ComboBox',
-    alias: 'widget.processcombo',
-    fieldLabelText: 'Process',
-    queryMode: 'local',
-    displayField: 'value',
-    valueField: 'id',
-    anchor: '100%',
-    name: 'processCombo',
-    forceSelection: false,
-    emptyTextText: 'No values at this time',
-    initComponent: function() {
-        this.fieldLabel = this.fieldLabelText;
-        this.emptyText = this.emptyTextText;
-        this.callParent();
-    }
+Ext.define('Asgard.model.IsoPlanHelpers', {
+    extend: 'Ext.data.Model',
+    fields: [
+        {name: 'lang', type: 'string' }, 
+        {name: 'id', type: 'float' }, 
+        {name: 'helper', type: 'string' }, 
+        {name: 'description', type: 'string' }, 
+        {name: 'status', type: 'string' },
+        {name: 'user_creation', type: 'float' },
+        {name: 'date_creation', type: 'date', dateFormat: 'c' },
+        {name: 'user_modification', type: 'float' },
+        {name: 'date_modification', type: 'date', dateFormat: 'c' }
+    ]
 });

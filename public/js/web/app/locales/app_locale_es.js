@@ -562,3 +562,30 @@ Ext.define('Asgard.locales.lib.grid.mtm',{
     chooseTitleBodyDelete: 'Va eliminar un item!. <br />Desea seguir con esta acción?',
     chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?',
 });
+
+Ext.define('Asgard.locales.lib.grid.isoplan',{
+    override: 'Asgard.lib.grid.isoplan',
+
+    titleText: 'Plan de calidad, medioambiente, seguridad y salud ocupacional',
+    processText: 'Proceso',
+    threadText: 'Subproceso',
+    ownerText: 'Propietario',
+    docText: 'Documento',
+    indicatorText: 'Indicador',
+    varsText: 'Variables',
+    recordfileText: 'Registro de Control',
+    frequencyText: 'Frecuencia',
+    fileText: 'Documento',
+    toolAddText: 'Agregar Valores',
+    toolUploadText: 'cargar Plantilla',
+    toolRemoveText: 'Eliminar Entrada',
+    toolChangeText: 'Cambiar Entrada',
+    toolViewDocText: 'Ver documento',
+    titleNewAuditPlan: 'Agregar nuevo Documento',
+    titleEditAuditPlan: 'Editar Entrada',
+    loadingFileText: 'Cargando Documento... por favor espere...',
+    chooseTitleText: 'Advertencia',
+    emptyFileMessage: 'No hay un documento asociado a esta entrada...',
+    chooseTitleBodyDelete: 'Va eliminar un item!. <br />Desea seguir con esta acción?',
+    chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?'
+});

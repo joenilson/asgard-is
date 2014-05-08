@@ -27,19 +27,18 @@ function deployCombos(comboField,comboValue){
     });
 }
 
-function fnCCLPProcess(button, opt, obj) {
+function fnCCLProcess(button, opt, obj) {
     var values = button.up('form').getForm().getValues();
     var companies = values['companiesCombo'];
     var countries = values['countriesCombo'];
     var locations = values['locationsCombo'];
-    var process_id = values['processCombo'];
-    gridStore<?= $this->panelId; ?>.load({ params: { module: 'master', company: companies, country: countries, location: locations, process: process_id  }});
+    gridStore<?= $this->panelId; ?>.load({ params: { module: 'master', company: companies, country: countries, location: locations  }});
 
 }
-var gridStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.IEEA');
+var gridStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.IsoPlan');
 
-var form<?=$this->panelId;?> = Ext.create('Asgard.lib.forms.comboCCLP', { innerGrid: grid<?=$this->panelId;?> });
-var grid<?=$this->panelId;?> = Ext.create('Asgard.lib.grid.ieea', { 
+var form<?=$this->panelId;?> = Ext.create('Asgard.lib.forms.comboCCL', { innerGrid: grid<?=$this->panelId;?> });
+var grid<?=$this->panelId;?> = Ext.create('Asgard.lib.grid.isoplan', { 
     store: gridStore<?= $this->panelId; ?>, 
     id: 'grid<?=$this->panelId;?>'
 });

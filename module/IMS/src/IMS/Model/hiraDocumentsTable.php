@@ -75,8 +75,10 @@ class hiraDocumentsTable extends AbstractTableGateway {
         return $resultSet->toArray();
     }
     
-    public function fetchAllView($lang,$country,$company,$location) {
-        $row = $this->select(function (Select $select) use ($lang,$country,$company,$location){
+    public function fetchAllView($lang,$country,$company,$location,$process_id) {
+        
+        $row = $this->select(function (Select $select) use ($lang,$country,$company,$location,$process_id){
+            $sqlPRocess = ($process_id==0)?"":" and p2.id = $process_id ";
             //$select->columns(array('id','ordering','status'));
             $select->join( array('pr'=>new TableIdentifier($this->pr_table_name, $this->schema_name)),
                 new Expression( 
@@ -89,7 +91,7 @@ class hiraDocumentsTable extends AbstractTableGateway {
             );
             $select->join(
                     array('p2'=>new TableIdentifier($this->pr_table_name, $this->schema_name)),
-                        new Expression('pr.parent_id = p2.id and p2.type=\'p\' and pr.country = p2.country '), array('type'=>'parent_id')
+                        new Expression('pr.parent_id = p2.id and p2.type=\'p\' and pr.country = p2.country '.$sqlPRocess), array('type'=>'parent_id')
                     );
             $select->join(
                     array('pti2'=>new TableIdentifier($this->pmi_table_name, $this->schema_name)),
@@ -138,7 +140,7 @@ class hiraDocumentsTable extends AbstractTableGateway {
         });
         return $row->toArray();
     }
-    
+        
     public function getNextId() {
         $resultSet = $this->select(function (Select $select) {
             $select->columns(array(new Expression('max(id_danger_risk) as id_danger_risk')));

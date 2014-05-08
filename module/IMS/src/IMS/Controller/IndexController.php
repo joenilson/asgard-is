@@ -23,6 +23,7 @@ use IMS\Model\Entity\Requirements;
 use IMS\Model\Entity\hiraIncidentDetails;
 use IMS\Model\Entity\Organigram;
 use IMS\Model\Entity\Objectives;
+use IMS\Model\Entity\POP;
 use IMS\Model\Entity\Communications;
 use IMS\Model\Entity\TrainingPlan;
 use IMS\Model\Entity\InspectionProgram;
@@ -36,6 +37,7 @@ use IMS\Model\Entity\OHR;
 use IMS\Model\Entity\MTM;
 use IMS\Model\Entity\SimulationAlbums;
 use IMS\Model\Entity\SimulationPhotos;
+use IMS\Model\Entity\ISOPlan;
 
 use AsgardLib\Versioning\Documents;
 use AsgardLib\Versioning\Scope;
@@ -102,6 +104,8 @@ class IndexController extends AbstractActionController
     protected $simulationphotosTable;
     protected $mtmTable;
     protected $mtmtypeTable;
+    protected $isoplanTable;
+    protected $isoplanhelpersTable;
     
     public function indexAction()
     {
@@ -823,12 +827,17 @@ class IndexController extends AbstractActionController
         $lang = $userPrefs[0]['lang'];
         
         $request = $this->getRequest();
-        $companyParams = $request->getQuery('company');
-        $countryParams = $request->getQuery('country');
-        $locationParams = $request->getQuery('location');
+        $companyParams = (string) $request->getQuery('company');
+        $countryParams = (string) $request->getQuery('country');
+        $locationParams = (string) $request->getQuery('location');
+        $processParams = (int) $request->getQuery('process');
         
         $sql = $this->getIEEATable();
-        $listDocuments = $sql->getIEEA($lang,$companyParams,$countryParams,$locationParams);
+        if($processParams==0){
+            $listDocuments = $sql->getIEEA($lang,$companyParams,$countryParams,$locationParams);
+        }else{
+            $listDocuments = $sql->getIEEAByP($lang,$companyParams,$countryParams,$locationParams,$processParams);
+        }
         
         if(!empty($listDocuments)){
             $data['success']=true;
@@ -1390,6 +1399,181 @@ class IndexController extends AbstractActionController
             $dataResult['success'] = true;
         }
         return new JsonModel($dataResult);
+    }
+    
+    public function isoplanAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        return array(
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'lang'=>$lang,
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
+        );
+    }
+    
+    public function getisoplanAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang = $userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $companyParams = $request->getQuery('company');
+        $countryParams = $request->getQuery('country');
+        $locationParams = $request->getQuery('location');
+        
+        $sql = $this->getIsoPlanTable();
+        $listDocuments = $sql->getObjectByCCLByLang($companyParams,$countryParams,$locationParams,$lang);
+        
+        if(!empty($listDocuments)){
+            $data['success']=true;
+            $data['results']=$listDocuments;
+            $data['msg']="";
+        }else{
+            $data['success']=true;
+            $data['results']="";
+            $data['msg']="Error trying to get the information...";
+        }
+        $result = new JsonModel($data);
+    	return $result;   
+    }
+    
+    public function getisoplanhelpersAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang = $userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $companyParams = $request->getQuery('company');
+        $countryParams = $request->getQuery('country');
+        $locationParams = $request->getQuery('location');
+        
+        $sql = $this->getTrainingPlanTable();
+        $listDocuments = $sql->getTrainingPlanByCCL($companyParams,$countryParams,$locationParams);
+        
+        if(!empty($listDocuments)){
+            $data['success']=true;
+            $data['results']=$listDocuments;
+            $data['msg']="";
+        }else{
+            $data['success']=true;
+            $data['results']="";
+            $data['msg']="Error trying to get the information...";
+        }
+        $result = new JsonModel($data);
+    	return $result;   
+    }
+    
+    public function addisoplanAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $company = $request->getPost('companiesCombo');
+        $country = $request->getPost('countriesCombo');
+        $location = $request->getPost('locationsCombo');
+        $description = $request->getPost('description');
+        $files =  $request->getFiles()->toArray();
+        $id = $request->getPost('trainingplan_id');
+        $date_creation = \date('Y-m-d h:i:s');
+
+        $dataResult = array();
+        
+        $sql = $this->getTrainingPlanTable();
+        
+        $object = new TrainingPlan();
+        $object->setDescription($description)
+                ->setCompany($company)
+                ->setCountry($country)
+                ->setLocation($location)
+                ->setUser_creation($userData->id)
+                ->setStatus('A')
+                ->setDate_creation($date_creation);
+        if($id){
+            $object->setId($id);
+        }
+        $dataResult['success'] = true; 
+        try {
+            $newId = $sql->save($object);
+            
+        } catch (\Exception $ex) {
+            //$error = $ex;
+            
+            $dataResult['success'] = false; 
+            $dataResult['message'] = $ex->getMessage(); 
+        }
+
+        $valid = new \Zend\Validator\File\UploadFile();
+        
+        if(isset($newId) AND $valid->isValid($files['training_file'])){
+            $fileName = "training_{$company}_{$country}_{$location}_".$newId.".pdf";
+            $this->savefile('library/training', $files['training_file'], $fileName, false, null);
+            $sql->update(array('filename'=>'library/training/'.$fileName),array('id'=>$newId));
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function removeisoplanAction(){
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $request = $this->getRequest();
+        $object_id = $request->getPost('id');
+        $company = $request->getPost('company');
+        $country = $request->getPost('country');
+        $location = $request->getPost('location');
+        $sql = $this->getTrainingPlanTable();
+        $objectData = $sql->getTrainingPlanByCCLId($company,$country,$location,$object_id);
+        $dataRemove = array();
+        $dataResult = array();
+        $dataResult['success'] = false;
+        if(count($objectData)>0){
+            $dataRemove['company']=$company;
+            $dataRemove['country']=$country;
+            $dataRemove['location']=$location;
+            $dataRemove['id']=$object_id;
+            $dataUp['status']="I";
+            $dataUp['date_modification']=\date('Y-m-d H:i:s');
+            $dataUp['user_modification']=$userData->id;
+            $sql->update($dataUp,$dataRemove);
+            $dataResult['success'] = true;
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function formisoplanAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+
+        $request = $this->getRequest();
+        $object_id = $request->getPost('mtm_id');
+        $company = $request->getPost('company');
+        $country = $request->getPost('country');
+        $location = $request->getPost('location');
+        $type = $request->getPost('type');
+        
+        $sql = $this->getMTMTable();
+        $AuditData = $sql->getObjectByCCLIT($company,$country,$location,$object_id,$type);
+        $dataResult = array();
+        foreach($AuditData as $key=>$values){
+            $dataResult['companiesCombo']=$values['company'];
+            $dataResult['countriesCombo']=$values['country'];
+            $dataResult['locationsCombo']=$values['location'];
+            $dataResult['description']=$values['description'];
+            $dataResult['yearsCombo']=$values['year_date'];
+            $dataResult['gentypeCombo']=$values['id_type'];
+        }
+        $data = array();
+        if(count($dataResult>0)){
+            $data['success']=true;
+            $data['data']=$dataResult;
+        }else{
+            $data['success']=false;
+            $data['data']="";
+            $data['msg']="No content to show";
+        }
+        
+        return new JsonModel($data);
     }
     
     public function mtmAction(){
@@ -3625,52 +3809,42 @@ class IndexController extends AbstractActionController
         $location = $request->getPost('locationsCombo');
         $description = (string) $request->getPost('description');
         $files =  $request->getFiles()->toArray();
-        $id = $request->getPost('organigram_id');
+        $id = $request->getPost('ownersprofile_id');
         $date_creation = \date('Y-m-d h:i:s');
 
         $dataResult = array();
         
-        $sql = $this->getOrganigramTable();
-        $oldORganigram = $sql->getOrganigramByCCL($company,$country,$location);
+        $sql = $this->getPOPTable();
+        $oldORganigram = $sql-> getOwnerProfile($lang,$id,$company,$country,$location);
         if($oldORganigram){
-            $dataU['status']='I';
-            $dataU['user_modification']=$userData->id;
-            $dataU['date_modification']=\date('Y-m-d H:i:s');
-            $dataIdx['company']=$oldORganigram[0]['company'];
-            $dataIdx['country']=$oldORganigram[0]['country'];
-            $dataIdx['location']=$oldORganigram[0]['location'];
-            $dataIdx['id']=$oldORganigram[0]['id'];
-            $sql->update($dataU,$dataIdx);
-        }
-        
-        $object = new Organigram();
-        $object->setDescription($description)
-                ->setCompany($company)
-                ->setCountry($country)
-                ->setLocation($location)
-                ->setUser_creation($userData->id)
-                ->setStatus('A')
-                ->setDate_creation($date_creation);
-        if($id){
-            $object->setId($id);
-        }
-        $dataResult['success'] = true; 
-        try {
-            $newId = $sql->save($object);
-            
-        } catch (\Exception $ex) {
-            //$error = $ex;
-            
-            $dataResult['success'] = false; 
-            $dataResult['message'] = $ex->getMessage(); 
-        }
+            $object = new \IMS\Model\Entity\ProcessOwnerProfile();
+            $object->setProfile_desc($description)
+                    ->setId($id)
+                    ->setCompany($company)
+                    ->setCountry($country)
+                    ->setLocation($location)
+                    ->setUser_creation($userData->id)
+                    ->setLang($lang)
+                    ->setStatus('A')
+                    ->setDate_creation($date_creation);
+            $dataResult['success'] = true; 
+            try {
+                $newId = $sql->save($object);
 
-        $valid = new \Zend\Validator\File\UploadFile();
-        
-        if(isset($newId) AND $valid->isValid($files['organigram'])){
-            $fileName = "organigram_{$company}_{$country}_{$location}_".$newId.".pdf";
-            $this->savefile('library/organigrams', $files['organigram'], $fileName, false, null);
-            $sql->update(array('filename'=>'library/organigrams/'.$fileName),array('id'=>$newId));
+            } catch (\Exception $ex) {
+                //$error = $ex;
+
+                $dataResult['success'] = false; 
+                $dataResult['message'] = $ex->getMessage(); 
+            }
+
+            $valid = new \Zend\Validator\File\UploadFile();
+
+            if(isset($newId) AND $valid->isValid($files['profile_file'])){
+                $fileName = "pop_{$company}_{$country}_{$location}_".$newId.".pdf";
+                $this->savefile('library/ownersprofile', $files['profile_file'], $fileName, false, null);
+                $sql->update(array('profile_file'=>'library/ownersprofile/'.$fileName),array('id'=>$newId));
+            }
         }
         return new JsonModel($dataResult);
     }
@@ -5544,9 +5718,10 @@ class IndexController extends AbstractActionController
         $company = (string) $request->getQuery('company');
         $country = (string) $request->getQuery('country');
         $location = (string) $request->getQuery('location');
+        $process = (int) $request->getQuery('process');
         $hiraDocuments = $this->getHiraDocumentsTable();
         //$listDocuments = $hiraDocuments->fetchAll();
-        $listDocuments = $hiraDocuments->fetchAllView($lang,$country,$company,$location);
+        $listDocuments = $hiraDocuments->fetchAllView($lang,$country,$company,$location,$process);
         $data = array();
         if(!empty($listDocuments)){
             $data['success']=true;
@@ -5897,6 +6072,7 @@ class IndexController extends AbstractActionController
             return false;
         }
     }
+    
     private function savefile($path,$file,$filename,$thumb,$thumbname){
         $filesPath = getcwd().DIRECTORY_SEPARATOR.'public'.DIRECTORY_SEPARATOR.$path.DIRECTORY_SEPARATOR;
         
@@ -5904,13 +6080,11 @@ class IndexController extends AbstractActionController
             mkdir($filesPath,0777,true);
         }
         $validator = new IsImage();
-        $imageUploaded = $validator->isValid($file['tmp_name']);
         if(!move_uploaded_file($file['tmp_name'],$filesPath.$filename)) {
             return false;
         } else {
-            if($imageUploaded){
+            if($validator->isValid($filesPath.$filename)){
                 $file = $filesPath.$filename;
-                $maxHeight = 760;
                 $imagine = new \Imagine\Gd\Imagine();
                 list($width, $height, $type, $attribs) = \getimagesize($file);
 
@@ -5964,6 +6138,24 @@ class IndexController extends AbstractActionController
         $imagine->open($file)
                 ->thumbnail(new \Imagine\Image\Box(171,180),$mode)
                 ->save($dst);
+    }
+    
+    private function getIsoPlanTable()
+    {
+    	if (!$this->isoplanTable) {
+            $sm = $this->getServiceLocator();
+            $this->isoplanTable = $sm->get('IMS\Model\ISOPlanTable');
+    	}
+    	return $this->isoplanTable;
+    }
+    
+    private function getIsoPlanHelpersTable()
+    {
+    	if (!$this->isoplanhelpersTable) {
+            $sm = $this->getServiceLocator();
+            $this->isoplanhelpersTable = $sm->get('IMS\Model\ISOPlanHelpersTable');
+    	}
+    	return $this->isoplanhelpersTable;
     }
     
     private function getSimulationAlbumsTable()

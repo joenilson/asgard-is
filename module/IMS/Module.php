@@ -69,6 +69,8 @@ use IMS\Model\OHRTable;
 use IMS\Model\OHRTypeTable;
 use IMS\Model\SimulationAlbumsTable;
 use IMS\Model\SimulationPhotosTable;
+use IMS\Model\ISOPlanTable;
+use IMS\Model\ISOPlanHelpersTable;
 
 class Module implements AutoloaderProviderInterface
 {
@@ -128,6 +130,16 @@ class Module implements AutoloaderProviderInterface
                 'IMS\Model\InspectionProgramTable'=> function($sm){
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new InspectionProgramTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\ISOPlanTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new ISOPlanTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\ISOPlanHelpersTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new ISOPlanHelpersTable($dbAdapter);
                     return $table;
                 },
                 'IMS\Model\MTMTable'=> function($sm){

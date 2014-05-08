@@ -90,49 +90,64 @@ class ProcessOwnerProfileTable extends AbstractTableGateway {
     {
         $data = array(
             'lang' => $object->getLang(),
-            'id' => $object->getId(),
             'profile_desc' => $object->getProfile_desc(),
-            'date_creation' => $object->getDate_creation(),
-            'user_creation' => $object->getUser_creation(),
             'country' => $object->getCountry(),
             'company' => $object->getCompany(),
             'location' => $object->getLocation(),
             'status' => $object->getStatus()
         );
-
         $id = (int) $object->getId();
         $country = (string) $object->getCountry();
         $company = (string) $object->getCompany();
         $location = (string) $object->getLocation();
         $file = (string) $object->getProfile_file();
         $lang = (string) $object->getLang();
+        
+        
         if(empty($id)){
             $id = $this->getNextId();
-            $data['id'] = $id;
         }
+        $data['id'] = $id;
         
         if(!empty($file)){
-            $data['file_req'] = $file;
+            $data['profile_file'] = $file;
         }
         
+        if (!$this->getOwnerProfile($lang,$id,$country,$company,$location)) {
+            $data['user_creation']=$object->getUser_creation();
+            $data['date_creation']=$object->getDate_creation();
+            if (!$this->insert($data)){
+                throw new \Exception('insert statement can\'t be executed');
+            }
+            return $data['id'];
+        } elseif ($this->getOwnerProfile($lang,$id,$country,$company,$location)) {
+            $data['date_modification'] = $object->getDate_creation();
+            $data['user_modification'] = $object->getUser_creation();
+            $this->update( $data, 
+                    array('company'=> $company,'country'=> $country,'location'=>$location,'id' => $id, 'lang' => $lang) );
+            return $data['id'];
+        } else {
+            throw new \Exception('company or country or location or id in object IEEA does not exist');
+        }
         
-        if (count($this->getOwnerProfile($country,$company,$location,$id,$lang)===0)) {
+        /*
+        if (count($this->getOwnerProfile($lang,$id,$country,$company,$location)===0)) {
             if (!$this->insert($data))
                 throw new \Exception('insert statement can\'t be executed');
             return true;
-        } elseif (count($this->getOwnerProfile($country,$company,$location,$id,$lang)!==0)) {
+        } elseif (count($this->getOwnerProfile($lang,$id,$country,$company,$location)!==0)) {
             $this->updateOwnerProfile($country,$company,$location,$id,$lang,$data);
             return true;
         } else {
             throw new \Exception('id or parent_id or type in object process_relations does not exist');
         }
+         * 
+         */
     }
 
     public function updateOwnerProfile($country,$company,$location,$id,$lang,$data)
     {
         $id = (int) $id;
-        $parent_id = (int) $parent_id;
-        $type = (string) $type;
         $this->update($data, array(
                     'country' => $country,
                     'company' => $company,
