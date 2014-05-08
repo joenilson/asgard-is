@@ -56,7 +56,9 @@ Ext.define('Asgard.lib.forms.hiraNewIncident',{
     objectRegisterEmailField: undefined,
     objectIncidentDescField: undefined,
     objectIncidentDateField: undefined,
-    
+    companiesValue: '',
+    countriesValue: '',
+    locationsValue: '',
     defaults: {
         labelWidth: 180
     },
@@ -88,6 +90,9 @@ Ext.define('Asgard.lib.forms.hiraNewIncident',{
                     var panel = combo.up('panel');
                     var countriesCombo = panel.getForm().findField('countriesCombo');
                     countriesCombo.store.load({params: {cid: combo.getValue('id')}});
+                    if(me.countriesValue !== ''){
+                        countriesCombo.setValue(me.countriesValue);
+                    }
                 }
             }
         }, this.objectCompanyField);
@@ -105,6 +110,9 @@ Ext.define('Asgard.lib.forms.hiraNewIncident',{
                     var comboValue = combo.getValue();
                     var comboRecord = combo.store.data.get(comboValue);
                     locationsCombo.store.load({params: {cid: combo.getValue('id')}});
+                    if(me.locationsValue !== ''){
+                        locationsCombo.setValue(me.locationsValue);
+                    }
                     languageField.setValue(comboRecord.data.locale);
                 }
             }

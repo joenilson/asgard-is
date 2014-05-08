@@ -150,6 +150,7 @@ Ext.define('Asgard.lib.grid.committeeproceedings',{
             if(tool.type==='plus'){
                 windowDoc.setTitle(this.titleNewAuditPlan);
                 winContent = new Ext.create('Asgard.lib.forms.CommitteeProcedings',{
+                    companiesValue: companies, countriesValue: countries, locationsValue: locations,
                     flex: 1,
                     innerPanel: panel
                 });
@@ -188,7 +189,7 @@ Ext.define('Asgard.lib.grid.committeeproceedings',{
                 var objCompany = selGrid[0].data.company;
                 var objCountry = selGrid[0].data.country;
                 var objLocation = selGrid[0].data.location;
-                var editAuditPlan = Ext.create('Asgard.lib.forms.CommitteeProcedings', { innerPanel: panel, baseParams: { auditplan_id: AuditId }});
+                var editAuditPlan = Ext.create('Asgard.lib.forms.CommitteeProcedings', { companiesValue: objCompany, countriesValue: objCountry, locationsValue: objLocation, innerPanel: panel, baseParams: { auditplan_id: AuditId }});
                 editAuditPlan.getForm().load({
                     url: 'ims/formcommitteeproceedings',
                     params: { id: objId, country: objCountry, company: objCompany, location: objLocation },

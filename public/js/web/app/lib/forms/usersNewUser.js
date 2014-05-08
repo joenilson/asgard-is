@@ -47,6 +47,10 @@ Ext.define('Asgard.lib.forms.usersNewUser',{
     locationsField: undefined,
     langField: undefined,
     usersList: undefined,
+    companiesValue: '',
+    countriesValue: '',
+    locationsValue: '',
+
     defaults: {
         labelWidth: 180,
         msgTarget: 'qtip'
@@ -55,7 +59,7 @@ Ext.define('Asgard.lib.forms.usersNewUser',{
     width: 540,
     
     initComponent: function(){
-        
+        var me = this;
         var users = new Ext.create('Asgard.store.Users');
         this.usernameField = this.usernameField || [];
         this.usernameField = Ext.Object.merge({
@@ -135,10 +139,13 @@ Ext.define('Asgard.lib.forms.usersNewUser',{
             anchor: '100%',
             store: new Ext.create('Asgard.store.Companies',{ autoLoad: true}),
             listeners:{
-                select: function(combo, records, opts) {
+                change: function(combo, records, opts) {
                     var panel = combo.up('panel');
                     var countriesCombo = panel.items.getAt(1);
                     countriesCombo.store.load({params: {cid: combo.getValue('id')}});
+                    if(me.countriesValue !== ''){
+                        countriesCombo.setValue(me.countriesValue);
+                    }
                 }
             }
         }, this.companiesField);
@@ -149,14 +156,14 @@ Ext.define('Asgard.lib.forms.usersNewUser',{
             anchor: '100%',
             store: new Ext.create('Asgard.store.Countries'),
             listeners:{
-                select: function(combo, records, opts) {
+                change: function(combo, records, opts) {
                     var panel = combo.up('panel');
                     var locationsCombo = panel.items.getAt(2);
-                    var languageField = panel.items.getAt(8);
                     var comboValue = combo.getValue();
-                    var comboRecord = combo.store.data.get(comboValue);
                     locationsCombo.store.load({params: {cid: combo.getValue('id')}});
-                    languageField.setValue(comboRecord.data.locale);
+                    if(me.locationsValue !== ''){
+                        locationsCombo.setValue(me.locationsValue);
+                    }
                 }
             }
         }, this.countriesField);

@@ -140,6 +140,7 @@ Ext.define('Asgard.lib.grid.auditors',{
             if(tool.type==='plus'){
                 windowDoc.setTitle(this.titleNewAuditor);
                 winContent = new Ext.create('Asgard.lib.forms.auditorsNewAuditor',{
+                    companiesValue: companies, countriesValue: countries, locationsValue: locations, 
                     flex: 1,
                     innerPanel: panel
                 });
@@ -180,7 +181,7 @@ Ext.define('Asgard.lib.grid.auditors',{
                 var AuditorCountry = selGrid[0].data.country;
                 var AuditorLocation = selGrid[0].data.location;
                 var AuditorYear = selGrid[0].data.year;
-                var editAuditor = Ext.create('Asgard.lib.forms.auditorsNewAuditor', { innerPanel: panel, baseParams: { auditor_id: AuditorId }});
+                var editAuditor = Ext.create('Asgard.lib.forms.auditorsNewAuditor', { companiesValue: AuditorCompany, countriesValue: AuditorCountry, locationsValue: AuditorLocation, innerPanel: panel, baseParams: { auditor_id: AuditorId }});
                 editAuditor.getForm().load({
                     url: 'ims/formauditor',
                     params: { id: AuditorId, country: AuditorCountry, company: AuditorCompany, location: AuditorLocation, year: AuditorYear },

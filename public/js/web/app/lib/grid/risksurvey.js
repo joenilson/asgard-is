@@ -143,6 +143,7 @@ Ext.define('Asgard.lib.grid.risksurvey',{
             if(tool.type==='plus'){
                 windowDoc.setTitle(this.titleNewAuditor);
                 winContent = new Ext.create('Asgard.lib.forms.risksurveyNewRiskSurvey',{
+                    companiesValue: companies, countriesValue: countries, locationsValue: locations,
                     flex: 1,
                     innerPanel: panel
                 });
@@ -183,7 +184,7 @@ Ext.define('Asgard.lib.grid.risksurvey',{
                 var AuditorCountry = selGrid[0].data.country;
                 var AuditorLocation = selGrid[0].data.location;
                 var AuditorYear = selGrid[0].data.year_date;
-                var editAuditor = Ext.create('Asgard.lib.forms.risksurveyNewRiskSurvey', { innerPanel: panel, baseParams: { risksurvey_id: AuditorId }});
+                var editAuditor = Ext.create('Asgard.lib.forms.risksurveyNewRiskSurvey', { companiesValue: AuditorCompany, countriesValue: AuditorCountry, locationsValue: AuditorLocation, innerPanel: panel, baseParams: { risksurvey_id: AuditorId }});
                 editAuditor.getForm().load({
                     url: 'ims/formrisksurvey',
                     params: { id: AuditorId, country: AuditorCountry, company: AuditorCompany, location: AuditorLocation, year: AuditorYear },

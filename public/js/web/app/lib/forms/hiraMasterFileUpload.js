@@ -39,6 +39,9 @@ Ext.define('Asgard.lib.forms.hiraMasterFileUpload',{
     countriesField: undefined,
     locationsField: undefined,
     languageField: undefined,
+    companiesValue: '',
+    countriesValue: '',
+    locationsValue: '',
 
     defaults: {
         labelWidth: 180,
@@ -58,7 +61,6 @@ Ext.define('Asgard.lib.forms.hiraMasterFileUpload',{
             anchor: '100%',
             emptyText: this.excelFieldEmptyText,
             name: 'excel_file',
-            /*
             listeners:{
                 afterrender:function(cmp){
                     cmp.fileInputEl.set({
@@ -66,7 +68,6 @@ Ext.define('Asgard.lib.forms.hiraMasterFileUpload',{
                     });
                 }
             },
-            */
             buttonText: '',
             buttonConfig: {
                 iconCls: 'uploadexcel-icon'
@@ -83,11 +84,9 @@ Ext.define('Asgard.lib.forms.hiraMasterFileUpload',{
                     var panel = combo.up('panel');
                     var countriesCombo = panel.items.getAt(1);
                     countriesCombo.store.load({params: {cid: combo.getValue('id')}});
-                },
-                load: function(combo, records, opts) {
-                    var panel = combo.up('panel');
-                    var countriesCombo = panel.items.getAt(1);
-                    countriesCombo.store.load({params: {cid: combo.getValue('id')}});
+                    if(me.countriesValue !== ''){
+                        countriesCombo.setValue(me.countriesValue);
+                    }
                 }
             }
         }, this.companiesField);
@@ -103,6 +102,10 @@ Ext.define('Asgard.lib.forms.hiraMasterFileUpload',{
                     var locationsCombo = panel.items.getAt(2);
                     var comboValue = combo.getValue();
                     locationsCombo.store.load({params: {cid: combo.getValue('id')}});
+                    if(me.locationsValue !== ''){
+                        locationsCombo.setValue(me.locationsValue);
+                    }
+
                 }
             }
         }, this.countriesField);

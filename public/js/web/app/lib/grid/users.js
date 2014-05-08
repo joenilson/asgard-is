@@ -102,10 +102,7 @@ Ext.define('Asgard.lib.grid.users',{
     },
 
     changePassword: function(button, form, store) {
-        //console.log(button);
-        //console.log(form);
         var record = button.up('panel').getSelectionModel().getSelection();
-        //console.log(record);
         var win = Ext.create('Ext.window.Window',{
             closable: true,
             closeAction: 'hide',

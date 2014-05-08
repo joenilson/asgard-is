@@ -66,17 +66,18 @@ deployCombos('companiesCombo','<?=$this->companyId;?>');
 deployCombos('countriesCombo','<?=$this->countryId;?>');
 deployCombos('locationsCombo','<?=$this->locationId;?>');
 
-
+if(windowDoc){
+    windowDoc.destroy();
+}
 var windowDoc = Ext.create('Ext.window.Window',{
     closable: true,
-    closeAction: 'hide',
+    closeAction: 'destroy',
     maximizable : true,
     layout: 'fit',
     height : document.documentElement.clientHeight - 50
     //height : document.documentElement.clientHeight - 50
 });
-
-
+/*
 function fnLibraryTool(me, e, object, tool) {
     var panel = tool.up('panel');
     
@@ -100,12 +101,12 @@ function fnLibraryTool(me, e, object, tool) {
             }else if(tool.type==='gear'){
                 windowDoc.setTitle('Change Request Queue');
                 innerStore.load({ params: { module: 'master', company: companies, country: countries, location: locations } });
-                grid = new Ext.create('Asgard.lib.grid.changeRequestQueue',{
+                var grid = new Ext.create('Asgard.lib.grid.changeRequestQueue',{
                         store: innerStore,
                         flex: 1,
                         region: 'north'
                     });
-                    
+                
                 winContent = Ext.create('Ext.Panel', {
                     frame: false,
                     width: 580,
@@ -113,18 +114,13 @@ function fnLibraryTool(me, e, object, tool) {
                     //flex: 1,
                     layout: 'border',
                     items: [
-                        grid, {
-                        id: 'detailPanel',
-                        region: 'center',
-                        bodyPadding: 7,
-                        bodyStyle: "background: #ffffff;",
-                        html: 'Please Select a request to see the details.'
-                    }]
+                        grid, detailPanel]
                 });
                 
                 grid.getSelectionModel().on('selectionchange', function(sm, selectedRecord) {
                     if (selectedRecord.length) {
-                        var detailPanel = Ext.getCmp('detailPanel');
+                        console.log(grid.up('panel').items.getAt(1))
+                        //var detailPanel = Ext.getCmp('detailPanel');
                         detailPanel.update(Ext.htmlDecode(selectedRecord[0].data.desc_request));
                     }
                 });
@@ -141,7 +137,7 @@ function fnLibraryTool(me, e, object, tool) {
         }
     
 }
-
+*/
 function fnCCLProcess(button, opt, obj) {
     var values = button.up('form').getForm().getValues();
     var companies = values['companiesCombo'];

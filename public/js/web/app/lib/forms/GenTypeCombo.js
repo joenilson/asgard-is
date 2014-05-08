@@ -19,15 +19,15 @@
  * @version 1.0.0 devel
  * @author Joe Nilson <joenilson@gmail.com>
  */
-Ext.define('Asgard.lib.forms.OHRTypeCombo',{
+Ext.define('Asgard.lib.forms.GenTypeCombo',{
     extend: 'Ext.form.ComboBox',
-    alias: 'widget.ohrtypecombo',
+    alias: 'widget.gentypecombo',
     fieldLabelText: 'Registry Type',
     queryMode: 'local',
     displayField: 'description',
     valueField: 'id',
     anchor: '33%',
-    name: 'ohrtypeCombo',
+    name: 'gentypeCombo',
     forceSelection: true,
     emptyTextText: 'No values at this time',
     initComponent: function() {

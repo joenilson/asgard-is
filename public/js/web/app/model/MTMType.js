@@ -19,20 +19,17 @@
  * @version 1.0.0 devel
  * @author Joe Nilson <joenilson@gmail.com>
  */
-Ext.define('Asgard.lib.forms.OHRTypeCombo',{
-    extend: 'Ext.form.ComboBox',
-    alias: 'widget.ohrtypecombo',
-    fieldLabelText: 'Registry Type',
-    queryMode: 'local',
-    displayField: 'description',
-    valueField: 'id',
-    anchor: '33%',
-    name: 'ohrtypeCombo',
-    forceSelection: true,
-    emptyTextText: 'No values at this time',
-    initComponent: function() {
-        this.fieldLabel = this.fieldLabelText;
-        this.emptyText = this.emptyTextText;
-        this.callParent();
-    }
+Ext.define('Asgard.model.MTMType', {
+    extend: 'Ext.data.Model',
+    fields: [
+        {name: 'lang', type: 'string' }, 
+        {name: 'id', type: 'float' }, 
+        {name: 'description', type: 'string' }, 
+        {name: 'ordering', type: 'float' }, 
+        {name: 'status', type: 'string' },
+        {name: 'user_creation', type: 'float' },
+        {name: 'date_creation', type: 'date', dateFormat: 'c' },
+        {name: 'user_modification', type: 'float' },
+        {name: 'date_modification', type: 'date', dateFormat: 'c' }
+    ]
 });

@@ -149,7 +149,12 @@ Ext.define('Asgard.lib.grid.hira_general',{
     },
     fnLibraryTool: function(object, event, panel, button){
         var me = this;
-        //console.log(button);
+        var panel = button.up('panel');
+        var form = panel.up('panel').up('panel').down('form');
+        var values = form.getForm().getValues();
+        var companies = values['companiesCombo'];
+        var countries = values['countriesCombo'];
+        var locations = values['locationsCombo'];
         if(button.type==='minus'){
             var gridStore = this.getStore();
             var selectedItems = this.getSelectionModel().getSelection();
@@ -194,7 +199,7 @@ Ext.define('Asgard.lib.grid.hira_general',{
                 height: document.documentElement.clientHeight - 50,
                 innerPanel : this
             });
-            winAdd.add(Ext.create('Asgard.lib.forms.hiraNewIncident'));
+            winAdd.add(Ext.create('Asgard.lib.forms.hiraNewIncident',{companiesValue: companies, countriesValue: countries, locationsValue: locations}));
             winAdd.show();
         }else if(button.type==='gear'){
             var gridStore = this.getStore();
@@ -225,7 +230,7 @@ Ext.define('Asgard.lib.grid.hira_general',{
             var windowDoc = this.createWindow();
             windowDoc.setTitle('Upload Master Files');
             windowDoc.setHeight(250);
-            winContent = Ext.create('Asgard.lib.forms.hiraMasterFileUpload');
+            winContent = Ext.create('Asgard.lib.forms.hiraMasterFileUpload',{companiesValue: companies, countriesValue: countries, locationsValue: locations});
             windowDoc.add(winContent);
             windowDoc.show();
         }

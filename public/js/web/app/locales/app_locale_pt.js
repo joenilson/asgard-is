@@ -460,13 +460,13 @@ Ext.define('Asgard.locales.lib.Panels.drillsPhotosPanel',{
     override: 'Asgard.lib.Panels.drillsPhotosPanel',
 
     barAddText: 'Adicionar Images',
-    barRemoveText: 'Eliminar Fotos',
+    barRemoveText: 'Eliminar Images',
     
     warningTitle: 'Aviso',
     warningBody: 'Falha ao processar as imagens, por favor, verifique os arquivos',
     warningTitleBodyDelete: 'Tem certeza de que deseja excluir esta(s) imagem(s). <br />Quer continuar com esta ação?',
     emptyTitleText: 'Simulação não selecionado',
-    emptyMessageText: 'Você não selecionou uma simulação, <br />Por favor, selecione um para adicionar fotos...',
+    emptyMessageText: 'Você não selecionou uma simulação, <br />Por favor, selecione um para adicionar Images...',
 
 });
 
@@ -542,4 +542,24 @@ Ext.define('Asgard.locales.lib.grid.hira_general',{
     chooseTitleText: 'Advertencia',
     chooseTitleBodyDelete: 'Va eliminar un item!. <br />Desea seguir con esta acción?',
     chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?'
+});
+
+Ext.define('Asgard.locales.lib.grid.mtm',{
+    override: 'Asgard.lib.grid.mtm',
+    titleText: 'Medição e Monitoramento',
+    typeText: 'Tipo ',
+    descText: 'Descrição',
+    fileText: 'Documento',
+    toolAddText: 'Adicionar Documento',
+    toolUploadText: 'Fazer Upload de Template',
+    toolRemoveText: 'Excluir documento',
+    toolChangeText: 'Alterar Documento',
+    toolViewDocText: 'Visualizar documento',
+    titleNewAuditPlan: 'Adicionar Novo Documento',
+    titleEditAuditPlan: 'Editar Documento',
+    loadingFileText: 'Carregando Documento... por favor aguarde...',
+    chooseTitleText: 'Aviso',
+    emptyFileMessage: 'Não há nenhum arquivo associado com este documento...',
+    chooseTitleBodyDelete: 'Ela irá remover um documento!. <br />Quer continuar com esta ação?',
+    chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?',
 });

@@ -542,3 +542,23 @@ Ext.define('Asgard.locales.lib.grid.hira_general',{
     chooseTitleBodyDelete: 'Va eliminar un item!. <br />Desea seguir con esta acción?',
     chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?'
 });
+
+Ext.define('Asgard.locales.lib.grid.mtm',{
+    override: 'Asgard.lib.grid.mtm',
+    titleText: 'Monitoreo, Seguimiento y Medición',
+    typeText: 'Tipo ',
+    descText: 'Descripción',
+    fileText: 'Documento',
+    toolAddText: 'Agregar Documento',
+    toolUploadText: 'Subir Plantilla',
+    toolRemoveText: 'Eliminar documento',
+    toolChangeText: 'Cambiar Documento',
+    toolViewDocText: 'Ver Documento',
+    titleNewAuditPlan: 'Agregar nuevo Documento',
+    titleEditAuditPlan: 'Editar Documento',
+    loadingFileText: 'Cargando Documento... espere por favor...',
+    chooseTitleText: 'Advertencia',
+    emptyFileMessage: 'No document is linked to this record...',
+    chooseTitleBodyDelete: 'Va eliminar un item!. <br />Desea seguir con esta acción?',
+    chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?',
+});

@@ -166,6 +166,7 @@ Ext.define('Asgard.lib.grid.ohr',{
             if(tool.type==='plus'){
                 windowDoc.setTitle(this.titleNewAuditPlan);
                 winContent = new Ext.create('Asgard.lib.forms.ohrNewOHR',{
+                    companiesValue: companies, countriesValue: countries, locationsValue: locations,
                     flex: 1,
                     innerPanel: panel
                 });
@@ -206,7 +207,7 @@ Ext.define('Asgard.lib.grid.ohr',{
                 var AuditCountry = selGrid[0].data.country;
                 var AuditLocation = selGrid[0].data.location;
                 var Type = selGrid[0].data.id_type;
-                var editAuditPlan = Ext.create('Asgard.lib.forms.ohrNewOHR', { innerPanel: panel, baseParams: { ohr_id: AuditId }});
+                var editAuditPlan = Ext.create('Asgard.lib.forms.ohrNewOHR', { companiesValue: AuditCompany, countriesValue: AuditCountry, locationsValue: AuditLocation, innerPanel: panel, baseParams: { ohr_id: AuditId }});
                 editAuditPlan.getForm().load({
                     url: 'ims/formohr',
                     params: { id: AuditId, country: AuditCountry, company: AuditCompany, location: AuditLocation, type: Type },

@@ -59,7 +59,7 @@ Ext.define('Asgard.lib.forms.docsChangeRequest',{
     cancelButton: undefined,
     
     initComponent: function(){
-        
+        var me = this;
         this.petitionerField = this.petitionerField || [];
         this.petitionerField = Ext.Object.merge({
             fieldLabel: this.petitionerFieldText,

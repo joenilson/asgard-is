@@ -166,6 +166,7 @@ Ext.define('Asgard.lib.grid.emergencyplan',{
             if(tool.type==='plus'){
                 windowDoc.setTitle(this.titleNewAuditPlan);
                 winContent = new Ext.create('Asgard.lib.forms.emergencyNewEmergencyPlan',{
+                    companiesValue: companies, countriesValue: countries, locationsValue: locations,
                     flex: 1,
                     innerPanel: panel
                 });
@@ -204,7 +205,7 @@ Ext.define('Asgard.lib.grid.emergencyplan',{
                 var AuditCompany = selGrid[0].data.company;
                 var AuditCountry = selGrid[0].data.country;
                 var AuditLocation = selGrid[0].data.location;
-                var editAuditPlan = Ext.create('Asgard.lib.forms.emergencyNewEmergencyPlan', { innerPanel: panel, baseParams: { emergencyplan_id: AuditId }});
+                var editAuditPlan = Ext.create('Asgard.lib.forms.emergencyNewEmergencyPlan', { companiesValue: AuditCompany, countriesValue: AuditCountry, locationsValue: AuditLocation, innerPanel: panel, baseParams: { emergencyplan_id: AuditId }});
                 editAuditPlan.getForm().load({
                     url: 'ims/formemergencyplan',
                     params: { id: AuditId, country: AuditCountry, company: AuditCompany, location: AuditLocation },

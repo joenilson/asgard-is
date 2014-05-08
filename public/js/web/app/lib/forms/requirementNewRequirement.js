@@ -50,6 +50,9 @@ Ext.define('Asgard.lib.forms.requirementNewRequirement',{
     companiesField: undefined,
     countriesField: undefined,
     locationsField: undefined,
+    companiesValue: '',
+    countriesValue: '',
+    locationsValue: '',
 
     defaults: {
         labelWidth: 180,
@@ -147,11 +150,9 @@ Ext.define('Asgard.lib.forms.requirementNewRequirement',{
                     var panel = combo.up('panel');
                     var countriesCombo = panel.items.getAt(1);
                     countriesCombo.store.load({params: {cid: combo.getValue('id')}});
-                },
-                load: function(combo, records, opts) {
-                    var panel = combo.up('panel');
-                    var countriesCombo = panel.items.getAt(1);
-                    countriesCombo.store.load({params: {cid: combo.getValue('id')}});
+                    if(me.countriesValue !== ''){
+                        countriesCombo.setValue(me.countriesValue);
+                    }
                 }
             }
         }, this.companiesField);
@@ -167,6 +168,10 @@ Ext.define('Asgard.lib.forms.requirementNewRequirement',{
                     var locationsCombo = panel.items.getAt(2);
                     var comboValue = combo.getValue();
                     locationsCombo.store.load({params: {cid: combo.getValue('id')}});
+                    if(me.locationsValue !== ''){
+                        locationsCombo.setValue(me.locationsValue);
+                    }
+
                 }
             }
         }, this.countriesField);

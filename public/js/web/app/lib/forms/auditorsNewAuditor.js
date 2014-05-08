@@ -41,7 +41,9 @@ Ext.define('Asgard.lib.forms.auditorsNewAuditor',{
     countriesField: undefined,
     locationsField: undefined,
     yearsField: undefined,
-
+    companiesValue: '',
+    countriesValue: '',
+    locationsValue: '',
     defaults: {
         labelWidth: 180,
         msgTarget: 'qtip'
@@ -50,7 +52,7 @@ Ext.define('Asgard.lib.forms.auditorsNewAuditor',{
     width: 540,
     
     initComponent: function(){
-        
+        var me = this;
         var auditors = new Ext.create('Asgard.store.Auditors');
         this.auditornameField = this.auditornameField || [];
         this.auditornameField = Ext.Object.merge({
@@ -94,11 +96,9 @@ Ext.define('Asgard.lib.forms.auditorsNewAuditor',{
                     var panel = combo.up('panel');
                     var countriesCombo = panel.items.getAt(1);
                     countriesCombo.store.load({params: {cid: combo.getValue('id')}});
-                },
-                load: function(combo, records, opts) {
-                    var panel = combo.up('panel');
-                    var countriesCombo = panel.items.getAt(1);
-                    countriesCombo.store.load({params: {cid: combo.getValue('id')}});
+                    if(me.countriesValue !== ''){
+                        countriesCombo.setValue(me.countriesValue);
+                    }
                 }
             }
         }, this.companiesField);
@@ -114,6 +114,10 @@ Ext.define('Asgard.lib.forms.auditorsNewAuditor',{
                     var locationsCombo = panel.items.getAt(2);
                     var comboValue = combo.getValue();
                     locationsCombo.store.load({params: {cid: combo.getValue('id')}});
+                    if(me.locationsValue !== ''){
+                        locationsCombo.setValue(me.locationsValue);
+                    }
+
                 }
             }
         }, this.countriesField);

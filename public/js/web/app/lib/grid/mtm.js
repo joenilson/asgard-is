@@ -19,9 +19,9 @@
  * @version 1.0.0 devel
  * @author Joe Nilson <joenilson@gmail.com>
  */
-Ext.define('Asgard.lib.grid.communications',{
+Ext.define('Asgard.lib.grid.mtm',{
     extend: 'Asgard.lib.GridPanel',
-    alias: 'widget.gridcommunications',
+    alias: 'widget.gridmtm',
     autoShow: true,
     autoDestroy: true,
     autoScroll: true,
@@ -30,26 +30,24 @@ Ext.define('Asgard.lib.grid.communications',{
     flex: 1,
     layout: 'fit',
     idText: 'Id',
-    titleText: 'Communications',
-    typeText: 'Type Comm',
-    descText: 'Communication',
+    titleText: 'Monitoring Tracking and Measures',
+    typeText: 'Type',
+    descText: 'Description',
     fileText: 'Document',
     toolAddText: 'Add Values',
     toolUploadText: 'Upload Template',
     toolRemoveText: 'Remove Entry',
     toolChangeText: 'Change Entry',
     toolViewDocText: 'View File',
-    titleNewAuditPlan: 'Add new Communication',
-    titleEditAuditPlan: 'Edit Communication',
-    loadingFileText: 'Loading Communication... please wait...',
+    titleNewAuditPlan: 'Add new Record',
+    titleEditAuditPlan: 'Edit Record',
+    loadingFileText: 'Loading Document... please wait...',
     chooseTitleText: 'Warning',
     emptyFileMessage: 'No document is linked to this record...',
     chooseTitleBodyDelete: 'You are choosing delete this item. <br />Would you like to save your changes?',
     chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?',
-    InternalText: 'Internal',
-    ExternalText: 'External',
     processChangeValue: 'yes',
-    
+    userRole: 0,
     initComponent: function(){
         this.tools = [{
             type: 'minus',
@@ -76,6 +74,15 @@ Ext.define('Asgard.lib.grid.communications',{
         }
         */
         ];
+        
+        this.features = [{
+            ftype: 'grouping',
+            groupHeaderTpl: this.typeText+': {name} ({rows.length} Item{[values.rows.length > 1 ? "s" : ""]})',
+            hideGroupedHeader: true,
+            startCollapsed: true,
+            id: 'typeGrouping'
+        }];
+        
         this.title = this.titleText;
         this.columns =  {
             plugins: [{
@@ -83,7 +90,7 @@ Ext.define('Asgard.lib.grid.communications',{
             }],
             items: [
                 {text: this.idText, sortable: true, hidden: false, dataIndex: 'id', filter: true},
-                {text: this.typeText, flex: 1, sortable: true, hidden: false, dataIndex: 'type_comm', filter: true, renderer: this.renderType},
+                {text: this.typeText, flex: 1, sortable: true, hidden: false, dataIndex: 'desc_type', filter: true},
                 {text: this.descText, flex: 3, sortable: true, hidden: false, dataIndex: 'description', filter: true},
                 {xtype: 'actioncolumn', flex: 1, sortable: false, menuDisabled: true,
                     items: [
@@ -99,14 +106,7 @@ Ext.define('Asgard.lib.grid.communications',{
         
         this.callParent();
     },
-    renderType: function(val){
-        if (val === 'I') {
-            return this.InternalText;
-        }else if (val === 'E') {
-            return this.ExternalText;
-        }
-        return val;
-    },
+
     createWindow: function() {
         var windowAudit = Ext.create('Ext.window.Window',{
                 closable: true,
@@ -167,7 +167,7 @@ Ext.define('Asgard.lib.grid.communications',{
             windowDoc.removeAll();
             if(tool.type==='plus'){
                 windowDoc.setTitle(this.titleNewAuditPlan);
-                winContent = new Ext.create('Asgard.lib.forms.commNewCommunication',{
+                winContent = new Ext.create('Asgard.lib.forms.mtmNewDocument',{
                     companiesValue: companies, countriesValue: countries, locationsValue: locations,
                     flex: 1,
                     innerPanel: panel
@@ -184,12 +184,13 @@ Ext.define('Asgard.lib.grid.communications',{
                             var selData = panel.getSelectionModel().getSelection();
                             var sendData = Ext.encode(selData[0].data);
                             Ext.Ajax.request({
-                                url: 'ims/removecommunication',
+                                url: 'ims/removemtm',
                                 params: {
                                     company: selData[0].data.company,
                                     country: selData[0].data.country,
                                     location: selData[0].data.location,
-                                    id: selData[0].data.id
+                                    id: selData[0].data.id,
+                                    type: selData[0].data.id_type
                                 },
                                 success: function(response){
                                     var text = response.responseText;
@@ -207,20 +208,22 @@ Ext.define('Asgard.lib.grid.communications',{
                 var AuditCompany = selGrid[0].data.company;
                 var AuditCountry = selGrid[0].data.country;
                 var AuditLocation = selGrid[0].data.location;
-                var editAuditPlan = Ext.create('Asgard.lib.forms.commNewCommunication', { companiesValue: AuditCompany, countriesValue: AuditCountry, locationsValue: AuditLocation, innerPanel: panel, baseParams: { communication_id: AuditId }});
+                var Type = selGrid[0].data.id_type;
+                var editAuditPlan = Ext.create('Asgard.lib.forms.mtmNewDocument', { companiesValue: AuditCompany, countriesValue: AuditCountry, locationsValue: AuditLocation, innerPanel: panel, baseParams: { mtm_id: AuditId, country: AuditCountry, company: AuditCompany, location: AuditLocation, type: Type }});
                 editAuditPlan.getForm().load({
-                    url: 'ims/formcommunication',
-                    params: { id: AuditId, country: AuditCountry, company: AuditCompany, location: AuditLocation },
+                    url: 'ims/formmtm',
+                    params: { id: AuditId, country: AuditCountry, company: AuditCompany, location: AuditLocation, type: Type },
                     failure: function(form, action) {
                         Ext.Msg.alert("Fallo Inesperado", action.result.errorMessage);
                     }
                 });
+                //editAuditPlan.companiesValue = AuditCountry;
                 windowDoc.add(editAuditPlan);
                 windowDoc.show();
             }else if(tool.type === 'expand'){
                 windowDoc.setTitle('Upload Master Files');
                 windowDoc.setHeight(250);
-                winContent = Ext.create('Asgard.lib.forms.commsMasterFileUpload');
+                winContent = Ext.create('Asgard.lib.forms.ohrMasterFileUpload');
                 windowDoc.add(winContent);
                 windowDoc.show();
             }

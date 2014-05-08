@@ -148,6 +148,7 @@ Ext.define('Asgard.lib.grid.msds',{
             if(tool.type==='plus'){
                 windowDoc.setTitle(this.titleNewAuditor);
                 winContent = new Ext.create('Asgard.lib.forms.msdsNewMSDS',{
+                    companiesValue: companies, countriesValue: countries, locationsValue: locations,
                     flex: 1,
                     innerPanel: panel
                 });
@@ -186,7 +187,7 @@ Ext.define('Asgard.lib.grid.msds',{
                 var AuditorCompany = selGrid[0].data.company;
                 var AuditorCountry = selGrid[0].data.country;
                 var AuditorLocation = selGrid[0].data.location;
-                var editAuditor = Ext.create('Asgard.lib.forms.msdsNewMSDS', { innerPanel: panel, baseParams: { msds_id: AuditorId }});
+                var editAuditor = Ext.create('Asgard.lib.forms.msdsNewMSDS', { companiesValue: AuditorCompany, countriesValue: AuditorCountry, locationsValue: AuditorLocation, innerPanel: panel, baseParams: { msds_id: AuditorId }});
                 editAuditor.getForm().load({
                     url: 'ims/formmsds',
                     params: { id: AuditorId, country: AuditorCountry, company: AuditorCompany, location: AuditorLocation },

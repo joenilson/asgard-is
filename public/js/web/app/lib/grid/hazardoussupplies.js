@@ -149,6 +149,7 @@ Ext.define('Asgard.lib.grid.hazardoussupplies',{
             if(tool.type==='plus'){
                 windowDoc.setTitle(this.titleNewAuditor);
                 winContent = new Ext.create('Asgard.lib.forms.hsNewHS',{
+                    companiesValue: companies, countriesValue: countries, locationsValue: locations,
                     flex: 1,
                     innerPanel: panel
                 });
@@ -188,7 +189,7 @@ Ext.define('Asgard.lib.grid.hazardoussupplies',{
                 var AuditorCompany = selGrid[0].data.company;
                 var AuditorCountry = selGrid[0].data.country;
                 var AuditorLocation = selGrid[0].data.location;
-                var editAuditor = Ext.create('Asgard.lib.forms.hsNewHS', { innerPanel: panel, baseParams: { hs_id: AuditorId, type: selGrid[0].data.id_type }});
+                var editAuditor = Ext.create('Asgard.lib.forms.hsNewHS', { companiesValue: AuditorCompany, countriesValue: AuditorCountry, locationsValue: AuditorLocation, innerPanel: panel, baseParams: { hs_id: AuditorId, type: selGrid[0].data.id_type }});
                 editAuditor.getForm().load({
                     url: 'ims/formhazardoussupplies',
                     params: { id: AuditorId, country: AuditorCountry, company: AuditorCompany, location: AuditorLocation },

@@ -82,7 +82,7 @@ Ext.define('Asgard.lib.grid.documents',{
             type: 'plus',
             tooltip: this.toolAddText,
             scope: this,
-            handler: fnLibraryTool
+            handler: this.fnLibraryTool
         },{
             type: 'expand',
             tooltip: this.toolMassText,
@@ -151,6 +151,7 @@ Ext.define('Asgard.lib.grid.documents',{
                 windowDoc.setTitle(this.toolAddText);
                 windowDoc.setHeight(200);
                 winContent = new Ext.create('Asgard.lib.forms.docsNewDocument',{
+                    companiesValue: companies, countriesValue: countries, locationsValue: locations,
                     flex: 1
                 });
                 windowDoc.add(winContent);
@@ -167,7 +168,7 @@ Ext.define('Asgard.lib.grid.documents',{
                         flex: 1,
                         region: 'north'
                     });
-                    
+                var detailPanel = this.detailPanel();
                 winContent = Ext.create('Ext.Panel', {
                     frame: false,
                     width: 580,
@@ -175,18 +176,12 @@ Ext.define('Asgard.lib.grid.documents',{
                     flex: 1,
                     layout: 'border',
                     items: [
-                        grid, {
-                        id: 'detailPanel',
-                        region: 'center',
-                        bodyPadding: 7,
-                        bodyStyle: "background: #ffffff;",
-                        html: 'Please Select a request to see the details.'
-                    }]
+                        grid, detailPanel ]
                 });
                 
                 grid.getSelectionModel().on('selectionchange', function(sm, selectedRecord) {
                     if (selectedRecord.length) {
-                        var detailPanel = Ext.getCmp('detailPanel');
+                        //var detailPanel = Ext.getCmp('detailPanel');
                         detailPanel.update(Ext.htmlDecode(selectedRecord[0].data.desc_request));
                     }
                 });
@@ -250,10 +245,19 @@ Ext.define('Asgard.lib.grid.documents',{
         windowDoc.add(documentFile);
         windowDoc.show();
     },
+    detailPanel: function() {
+        var detailsPanel = Ext.create('Ext.panel.Panel',{
+            region: 'center',
+            bodyPadding: 7,
+            bodyStyle: "background: #ffffff;",
+            html: 'Please Select a request to see the details.'
+        });
+         return detailsPanel;
+    },
     createWindow: function() {
         var windowDocs = Ext.create('Ext.window.Window',{
                 closable: true,
-                closeAction: 'hide',
+                closeAction: 'destroy',
                 maximizable : true,
                 layout: 'fit'
             });

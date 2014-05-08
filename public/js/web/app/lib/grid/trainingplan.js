@@ -164,6 +164,7 @@ Ext.define('Asgard.lib.grid.trainingplan',{
             if(tool.type==='plus'){
                 windowDoc.setTitle(this.titleNewAuditPlan);
                 winContent = new Ext.create('Asgard.lib.forms.trainingNewTrainingPlan',{
+                    companiesValue: companies, countriesValue: countries, locationsValue: locations,
                     flex: 1,
                     innerPanel: panel
                 });
@@ -202,7 +203,7 @@ Ext.define('Asgard.lib.grid.trainingplan',{
                 var AuditCompany = selGrid[0].data.company;
                 var AuditCountry = selGrid[0].data.country;
                 var AuditLocation = selGrid[0].data.location;
-                var editAuditPlan = Ext.create('Asgard.lib.forms.trainingNewTrainingPlan', { innerPanel: panel, baseParams: { trainingplan_id: AuditId }});
+                var editAuditPlan = Ext.create('Asgard.lib.forms.trainingNewTrainingPlan', { companiesValue: AuditCompany, countriesValue: AuditCountry, locationsValue: AuditLocation, innerPanel: panel, baseParams: { trainingplan_id: AuditId }});
                 editAuditPlan.getForm().load({
                     url: 'ims/formtrainingplan',
                     params: { id: AuditId, country: AuditCountry, company: AuditCompany, location: AuditLocation },

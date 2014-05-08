@@ -19,84 +19,79 @@
  * @version 1.0.0 devel
  * @author Joe Nilson <joenilson@gmail.com>
  */
-Ext.define('Asgard.lib.forms.msdsMasterFileUpload',{
+Ext.define('Asgard.lib.forms.mtmNewDocument',{
     extend: 'Ext.form.Panel',
-    alias: 'widget.msdsmasterfileupload',
-    url: 'ims/massmsdsprocess',
+    alias: 'widget.newmtm',
+    url: 'ims/addmtm',
 
-    excelFileText: 'Master File',
-    zipFileText: 'Zip File',
-    excelFieldEmptyText: 'Choose a Excel File',    
-    zipFieldEmptyText: 'Choose a Zip File',    
+    descText: 'Description',
+    yearsText: 'Year',
+    fileText: 'File',
+    fileFieldEmptyText: 'Choose a document',    
     textSubmitButton: 'Send',
     textCancelButton: 'Cancel',
 
     warningTitle: 'Warning',
-    warningText: 'Data incomplete!, revise your data',
+    warningText: 'Monitoring Tracking and Measures Registry exists!, revise your data',
     required: '<span style="color:red;font-weight:bold" data-qtip="Required">*</span>',
-    successText: 'Documents added succefully!',
+    successText: 'Monitoring Tracking and Measures Registry loaded succefully!',
     failureText: 'Something is wrong, please try it again',
-    excelField: undefined,
-    zipField: undefined,
+    descField: undefined,
+    yearsField: undefined,
+    fileField: undefined,
+    typeField: undefined,
     companiesField: undefined,
     countriesField: undefined,
     locationsField: undefined,
-    languageField: undefined,
     companiesValue: '',
     countriesValue: '',
     locationsValue: '',
-
     defaults: {
         labelWidth: 180,
         msgTarget: 'qtip'
     },
     anchor: '100%',
     width: 540,
-    flex: 1,
+    
     initComponent: function(){
         var me = this;
+        this.descField = this.descField || [];
+        this.descField = Ext.Object.merge({
+            fieldLabel: this.descText,
+            afterLabelTextTpl: this.required,
+            xtype: 'textfield',
+            name: 'description',
+            anchor: '100%',
+            allowBlank:false
+        }, this.descField);
         
-        this.excelField = this.excelField || [];
-        this.excelField = Ext.Object.merge({
-            fieldLabel: this.excelFileText,
+        this.yearsField = this.yearsField || [];
+        this.yearsField = Ext.Object.merge({
+            xtype: 'yearscombo',
+            anchor: '100%',
+            allowBlank: false
+        }, this.yearsField);
+        
+        this.fileField = this.fileField || [];
+        this.fileField = Ext.Object.merge({
+            fieldLabel: this.fileText,
             allowBlank:true,
             xtype: 'filefield',
             anchor: '100%',
-            emptyText: this.excelFieldEmptyText,
-            name: 'excel_file',
+            emptyText: this.fileFieldEmptyText,
+            name: 'ohr_file',
             listeners:{
                 afterrender:function(cmp){
                     cmp.fileInputEl.set({
-                        accept:'application/vnd.ms-excel'
+                        accept:'application/pdf'
                     });
                 }
             },
             buttonText: '',
             buttonConfig: {
-                iconCls: 'uploadexcel-icon'
+                iconCls: 'upload-icon'
             }
-        }, this.excelField);        
-        
-        this.zipField = this.zipField || [];
-        this.zipField = Ext.Object.merge({
-            fieldLabel: this.zipFileText,
-            allowBlank:true,
-            xtype: 'filefield',
-            anchor: '100%',
-            emptyText: this.zipFieldEmptyText,
-            name: 'zip_file',
-            listeners:{
-                afterrender:function(cmp){
-                    cmp.fileInputEl.set({
-                        accept:'application/x-zip-compressed'
-                    });
-                }
-            },
-            buttonText: '',
-            buttonConfig: {
-                iconCls: 'uploadzip-icon'
-            }
-        }, this.zipField);
+        }, this.fileField);        
         
         this.companiesField = this.companiesField || [];
         this.companiesField = Ext.Object.merge({
@@ -141,6 +136,13 @@ Ext.define('Asgard.lib.forms.msdsMasterFileUpload',{
             store: new Ext.create('Asgard.store.Locations')
         }, this.locationsField);
         
+        this.typeField = this.typeField || [];
+        this.typeField = Ext.Object.merge({
+            xtype: 'gentypecombo',
+            anchor: '100%',
+            store: new Ext.create('Asgard.store.MTMType')
+        }, this.typeField);
+
         this.submitButton = this.submitButton || []; 
         this.submitButton = Ext.Object.merge({
                 text: this.textSubmitButton,
@@ -166,8 +168,10 @@ Ext.define('Asgard.lib.forms.msdsMasterFileUpload',{
             this.companiesField,
             this.countriesField,
             this.locationsField,
-            this.excelField,
-            this.zipField
+            this.typeField,
+            this.descField,
+            this.yearsField,
+            this.fileField
         ]);
         
         this.buttons = this.buttons || [];
@@ -182,55 +186,26 @@ Ext.define('Asgard.lib.forms.msdsMasterFileUpload',{
         var companyId = panel.items.getAt(0).getValue();
         var countryId = panel.items.getAt(1).getValue();
         var locationId = panel.items.getAt(2).getValue();
+        var yearmonth = panel.items.getAt(5).getValue();
         var grid = panel.innerPanel;
-        var windowDocs = this.createWindow();
         if(form.isValid()){
             form.submit({
                 params: {
-                    module: 'imsmassdocsupload'
+                    module: 'imsohr'
                 },
                 success: function(fp, o, m, r) {
-                    console.log(fp);
-                    //console.log(o.response.responseText);
-                    var result = Ext.decode(o.response.responseText);
-                    console.log(result);
-
-                    windowDocs.setHeight(document.documentElement.clientHeight - 50);
-                    windowDocs.setWidth(document.documentElement.clientWidth - 50);
-                    //width    : document.documentElement.clientWidth - 50,
-                    //height   : document.documentElement.clientHeight - 50,
-
-                    var gridStore = Ext.create('Asgard.store.MSDSUpload',{
-                       data: result.file_results
-                    });
-                    gridContent = Ext.create('Asgard.lib.grid.msds_upload',{
-                        store: gridStore
-                    });
-                    windowDocs.add(gridContent);
-                    windowDocs.show();
-                    //form.reset();
-                    //var winActive = Ext.WindowManager.getActive();
-                    //winActive.hide();
-                    //grid.getStore().load({params: { company: companyId, country: countryId, location: locationId }});
-                    //Ext.Msg.alert('Success', me.successText);
+                    form.reset();
+                    var winActive = Ext.WindowManager.getActive();
+                    winActive.hide();
+                    grid.getStore().load({params: { company: companyId, country: countryId, location: locationId, year: yearmonth }});
+                    Ext.Msg.alert('Success', me.successText);
                 },
                 failure: function(fp, o, u){
-                    console.log(fp);
                     console.log(o);
-                    Ext.Msg.alert('Failure', me.failureText);
+                    var result = Ext.decode(o.response.ResponseText);
+                    Ext.Msg.alert('Failure', o.result.message);
                 }
             });
         }
-    },
-    
-    createWindow: function() {
-        var windowFileProcess = Ext.create('Ext.window.Window',{
-                closable: true,
-                closeAction: 'hide',
-                maximizable : true,
-                layout: 'fit'
-            });
-         return windowFileProcess;
-    },
-
+    }
 });

@@ -165,6 +165,7 @@ Ext.define('Asgard.lib.grid.requirements',{
             if(tool.type==='plus'){
                 windowDoc.setTitle(this.titleNewAuditPlan);
                 winContent = new Ext.create('Asgard.lib.forms.requirementNewRequirement',{
+                    companiesValue: companies, countriesValue: countries, locationsValue: locations,
                     flex: 1,
                     innerPanel: panel
                 });
@@ -203,7 +204,7 @@ Ext.define('Asgard.lib.grid.requirements',{
                 var AuditCompany = selGrid[0].data.company;
                 var AuditCountry = selGrid[0].data.country;
                 var AuditLocation = selGrid[0].data.location;
-                var editAuditPlan = Ext.create('Asgard.lib.forms.requirementNewRequirement', { innerPanel: panel, baseParams: { requirement_id: AuditId }});
+                var editAuditPlan = Ext.create('Asgard.lib.forms.requirementNewRequirement', { companiesValue: AuditCompany, countriesValue: AuditCountry, locationsValue: AuditLocation, innerPanel: panel, baseParams: { requirement_id: AuditId }});
                 editAuditPlan.getForm().load({
                     url: 'ims/formrequirements',
                     params: { id: AuditId, country: AuditCountry, company: AuditCompany, location: AuditLocation },

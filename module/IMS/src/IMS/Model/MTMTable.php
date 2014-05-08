@@ -159,9 +159,13 @@ class MTMTable extends AbstractTableGateway {
         $company = (string) $object->getCompany();
         $country = (string) $object->getCountry();
         $location = (string) $object->getLocation();
+        $file = (string) $object->getFilename();
         if(empty($id)){
             $id = $this->getNextId();
             $data['id'] = $id;
+        }
+        if(!empty($file)){
+            $data['filename'] = $file;
         }
         
         if (!$this->getObjectByCCLIT($company,$country,$location,$id,$id_type)) {

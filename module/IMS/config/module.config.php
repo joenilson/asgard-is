@@ -1255,6 +1255,118 @@ return array(
                             ),
                         ),
                     ),
+                    'mtm' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/mtm[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'mtm'
+                            ),
+                        ),
+                    ),
+                    'addmtm' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/addmtm[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'addmtm'
+                            ),
+                        ),
+                    ),
+                    'removemtm' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/removemtm[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'removemtm'
+                            ),
+                        ),
+                    ),
+                    'getmtm' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/getmtm[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'getmtm'
+                            ),
+                        ),
+                    ),
+                    'getmtmtype' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/getmtmtype[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'getmtmtype'
+                            ),
+                        ),
+                    ),
+                    'formmtm' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/formmtm[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'formmtm'
+                            ),
+                        ),
+                    ),
+                    'massmtmprocess' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/massmtmprocess[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'massmtmprocess'
+                            ),
+                        ),
+                    ),
+                    'processmassmtm' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/processmassmtm[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'processmassmtm'
+                            ),
+                        ),
+                    ),
                     'ieea' => array(
                         'type'    => 'Segment',
                         'options' => array(

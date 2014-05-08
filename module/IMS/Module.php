@@ -53,6 +53,8 @@ use IMS\Model\RequirementsHelperTable;
 use IMS\Model\SGIObjectivesTable;
 use IMS\Model\CommunicationsTable;
 use IMS\Model\TrainingPlanTable;
+use IMS\Model\MTMTable;
+use IMS\Model\MTMTypeTable;
 use IMS\Model\InspectionProgramTable;
 use IMS\Model\EmergencyPlanTable;
 use IMS\Model\OrganigramTable;
@@ -126,6 +128,16 @@ class Module implements AutoloaderProviderInterface
                 'IMS\Model\InspectionProgramTable'=> function($sm){
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new InspectionProgramTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\MTMTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new MTMTable($dbAdapter);
+                    return $table;
+                },
+                'IMS\Model\MTMTypeTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new MTMTypeTable($dbAdapter);
                     return $table;
                 },
                 'IMS\Model\OHRTable'=> function($sm){

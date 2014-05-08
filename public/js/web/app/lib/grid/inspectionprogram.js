@@ -143,6 +143,7 @@ Ext.define('Asgard.lib.grid.inspectionprogram',{
             if(tool.type==='plus'){
                 windowDoc.setTitle(this.titleNewAuditor);
                 winContent = new Ext.create('Asgard.lib.forms.ipNewInspectionProgram',{
+                    companiesValue: companies, countriesValue: countries, locationsValue: locations,
                     flex: 1,
                     innerPanel: panel
                 });
@@ -183,7 +184,7 @@ Ext.define('Asgard.lib.grid.inspectionprogram',{
                 var AuditorCountry = selGrid[0].data.country;
                 var AuditorLocation = selGrid[0].data.location;
                 var AuditorYear = selGrid[0].data.year_date;
-                var editAuditor = Ext.create('Asgard.lib.forms.ipNewInspectionProgram', { innerPanel: panel, baseParams: { ip_id: AuditorId }});
+                var editAuditor = Ext.create('Asgard.lib.forms.ipNewInspectionProgram', { companiesValue: AuditorCompany, countriesValue: AuditorCountry, locationsValue: AuditorLocation, innerPanel: panel, baseParams: { ip_id: AuditorId }});
                 editAuditor.getForm().load({
                     url: 'ims/forminspectionprogram',
                     params: { id: AuditorId, country: AuditorCountry, company: AuditorCompany, location: AuditorLocation, year: AuditorYear },

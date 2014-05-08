@@ -65,7 +65,7 @@ Ext.define('Asgard.lib.forms.docsNewDocument',{
     anchor: '100%',
     width: 540,
     initComponent: function(){
-
+        var me = this;
         this.documentClassField = this.documentClassField || [];
         this.documentClassField = Ext.Object.merge({
             fieldLabel: this.documentClassText,

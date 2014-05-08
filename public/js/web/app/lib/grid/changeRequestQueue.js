@@ -130,6 +130,7 @@ Ext.define('Asgard.lib.grid.changeRequestQueue',{
     makeTreatment: function(obj, id, component, icon, event, record, other) {
         var win = this.createWindow();
         var document = Ext.create('Asgard.lib.forms.RequestTreatment', {
+            companiesValue: record.data.company, countriesValue: record.data.country, locationsValue: record.data.location,
             flex: 1,
             //innerItem: obj,
             baseParams: {
