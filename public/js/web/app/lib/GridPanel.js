@@ -15,11 +15,13 @@ Ext.define('Asgard.lib.GridPanel',{
     viewConfig: {
           stripeRows: true
     },
+    loadMask: true,
     plugins: [{
         ptype: 'filterbar',
         renderHidden: false,
         showShowHideButton: false,
-        showClearAllButton: false
+        showClearAllButton: false,
+        bufferedrenderer: true
     }],
   initComponent: function(){
     this.callParent(arguments);

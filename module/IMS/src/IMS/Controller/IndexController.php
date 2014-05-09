@@ -4831,12 +4831,12 @@ class IndexController extends AbstractActionController
         
         $request = $this->getRequest();
         
-        $module = $request->getQuery('module');
-        $company= $request->getQuery('company');
-        $country= $request->getQuery('country');
-        $location= $request->getQuery('location');
-        $process= $request->getQuery('process');
-        $thread= $request->getQuery('thread');
+        $module = (string) $request->getQuery('module');
+        $company= (string) $request->getQuery('company');
+        $country= (string) $request->getQuery('country');
+        $location= (string) $request->getQuery('location');
+        $process= (int) $request->getQuery('process');
+        $thread= (int) $request->getQuery('thread');
         
         
         if($module){
@@ -4844,7 +4844,7 @@ class IndexController extends AbstractActionController
             if(!empty($process) and !empty($thread)){
                 $listDocuments = $sql->getLibraryByPT($lang,$company,$country,$location,$process,$thread);
             }else{
-                $listDocuments = $sql->getLibrary($lang,$company,$country,$location);
+                $listDocuments = $sql->getLibrary($lang,$company,$country,$location,$process);
             }
             //print_r($listDocuments);
             if(!empty($listDocuments)){
@@ -4852,6 +4852,7 @@ class IndexController extends AbstractActionController
                 $data['country']=$country;
                 $data['company']=$company;
                 $data['location']=$location;
+                $data['process']=$process;
                 $data['results']=$listDocuments;
                 $data['msg']="";
             }else{

@@ -18,6 +18,7 @@ class DocsLibraryTable extends AbstractTableGateway {
     protected $table_name = 'docs_library';
     protected $schema_name = 'ims';
     protected $table_helper = 'docs_helpers';
+    protected $table_owners = 'process_owner';
     protected $empty_value = '0000';
     
     public function __construct(Adapter $adapter) {
@@ -117,11 +118,12 @@ class DocsLibraryTable extends AbstractTableGateway {
         return $listItems;
     }
     
-    public function getLibrary($lang,$companies,$countries,$locations) {
+    public function getLibrary($lang,$companies,$countries,$locations,$process) {
         $companies = $this->processArray($companies);
         $countries = $this->processArray($countries);
         $locations = $this->processArray($locations);
-        $row = $this->select(function (Select $select) use ($lang,$companies,$countries,$locations) {
+        $row = $this->select(function (Select $select) use ($lang,$companies,$countries,$locations,$process) {
+            
             //$select->columns(array('id','ordering','status'));
             $select->join(
                 array('h1'=>new TableIdentifier($this->table_helper, $this->schema_name)), 
@@ -158,8 +160,19 @@ class DocsLibraryTable extends AbstractTableGateway {
                 new Expression ( $this->table_name.'.doc_retention = h7.id AND h7.helper=\'retention\' AND h7.lang=\''.$lang.'\''), 
                 array('desc_retention'=>'description')
             );
-
-            $select->where(array('doc_status_general'=>'A','company'=>$companies,'country'=>$countries,'location'=>$locations));
+            $select->join(
+                array('h8'=>new TableIdentifier($this->table_owners, $this->schema_name)), 
+                new Expression ( $this->table_name.'.doc_owner = h8.id AND h8.lang=\''.$lang.'\''), 
+                array('desc_owner'=>'name'),'left'
+            );
+            $dataSelect['doc_status_general']='A';
+            $dataSelect['company']=$companies;
+            $dataSelect['country']=$countries;
+            $dataSelect['location']=$locations;
+            if($process!=0){
+                $dataSelect['id_process']= (int) $process;
+            }
+            $select->where($dataSelect);
             $select->order('doc_id ASC');
             //echo $select->getSqlString();
         });

@@ -35,6 +35,7 @@ Ext.define('Asgard.model.DocsLibrary', {
         {name: 'doc_protection', type: 'float' }, 
         {name: 'desc_protection', type: 'string' },
         {name: 'doc_owner', type: 'float' }, 
+        {name: 'desc_owner', type: 'string' }, 
         {name: 'doc_location', type: 'float' }, 
         {name: 'desc_location', type: 'string' }, 
         {name: 'doc_origin', type: 'float' },

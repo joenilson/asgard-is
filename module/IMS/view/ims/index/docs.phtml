@@ -38,7 +38,7 @@ var innerStore = new Ext.create('Asgard.store.DocsRequest');
 /*
  * Form Panel to attach
  */
-var formDataRequest<?=$this->panelId; ?> = Ext.create('Asgard.lib.forms.comboCCL');
+var formDataRequest<?=$this->panelId; ?> = Ext.create('Asgard.lib.forms.comboCCLP');
 
 /*
  * Grid to show the Docs Documents
@@ -138,13 +138,14 @@ function fnLibraryTool(me, e, object, tool) {
     
 }
 */
-function fnCCLProcess(button, opt, obj) {
+function fnCCLPProcess(button, opt, obj) {
     var values = button.up('form').getForm().getValues();
     var companies = values['companiesCombo'];
     var countries = values['countriesCombo'];
     var locations = values['locationsCombo'];
+    var process_id = values['processCombo'];
 
-    DocsLibraryStore<?= $this->panelId; ?>.load({ params: { module: 'master', company: companies, country: countries, location: locations}});
+    DocsLibraryStore<?= $this->panelId; ?>.load({ params: { module: 'master', company: companies, country: countries, location: locations, process: process_id}});
 
 }
 
