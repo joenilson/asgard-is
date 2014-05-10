@@ -119,12 +119,12 @@ class IEEATable extends AbstractTableGateway {
         return $listItems;
     }
     
-    public function getIEEAByP($lang,$companies,$countries,$locations,$process){
+    public function getIEEAByP($lang,$companies,$countries,$locations,$process,$limit,$offset){
         $companies = $this->processArray($companies);
         $countries = $this->processArray($countries);
         $locations = $this->processArray($locations);
         $process_id = (int) $process;
-        $row = $this->select(function (Select $select) use ($lang,$companies,$countries,$locations,$process_id) {
+        $row = $this->select(function (Select $select) use ($lang,$companies,$countries,$locations,$process_id,$limit,$offset) {
             $select->join(
                 array('h1'=>new TableIdentifier($this->table_helper, $this->schema_name)), 
                 new Expression ( $this->table_name.'.id_type = h1.id AND h1.helper=\'type\' and h1.status=\'A\' AND h1.lang=\''.$lang.'\''),
@@ -162,6 +162,10 @@ class IEEATable extends AbstractTableGateway {
             );
             $select->where(array($this->table_name.'.status'=>'A','company'=>$companies,'country'=>$countries,'location'=>$locations, 'id_process'=>$process_id));
             $select->order(array('id_process','id_thread','id_type','id_cycle','id'));
+            if($limit!=0){
+                $select->limit($limit);
+                $select->offset($offset);
+            }
             //echo $select->getSqlString();
         });
         
@@ -175,12 +179,12 @@ class IEEATable extends AbstractTableGateway {
         return $listItems;
     }
     
-    public function getIEEA($lang,$companies,$countries,$locations) {
+    public function getIEEA($lang,$companies,$countries,$locations,$limit,$offset) {
         $companies = $this->processArray($companies);
         $countries = $this->processArray($countries);
         $locations = $this->processArray($locations);
        
-        $row = $this->select(function (Select $select) use ($lang,$companies,$countries,$locations) {
+        $row = $this->select(function (Select $select) use ($lang,$companies,$countries,$locations,$limit,$offset) {
             $select->join(
                 array('h1'=>new TableIdentifier($this->table_helper, $this->schema_name)), 
                 new Expression ( $this->table_name.'.id_type = h1.id AND h1.helper=\'type\' and h1.status=\'A\' AND h1.lang=\''.$lang.'\''),
@@ -208,17 +212,20 @@ class IEEATable extends AbstractTableGateway {
             );
             $select->join(
                 array('pm'=>new TableIdentifier($this->table_process, $this->schema_name)), 
-                new Expression ( $this->table_name.'.id_process = pm.id AND pm.lang=\''.$lang.'\''), 
-                array('desc_process'=>'value')
+                new Expression ( $this->table_name.'.id_process = pm.id AND pm.lang=\''.$lang.'\''), array('desc_process'=>'value')
             );
             $select->join(
                 array('pt'=>new TableIdentifier($this->table_thread, $this->schema_name)), 
-                new Expression ( $this->table_name.'.id_thread = pt.id AND pt.lang=\''.$lang.'\''), 
-                array('desc_thread'=>'value')
+                new Expression ( $this->table_name.'.id_thread = pt.id AND pt.lang=\''.$lang.'\''), array('desc_thread'=>'value')
             );
 
             $select->where(array($this->table_name.'.status'=>'A','company'=>$companies,'country'=>$countries,'location'=>$locations));
             $select->order(array('id_process','id_thread','id_type','id_cycle','id'));
+            if($limit!=0){
+                $select->limit($limit);
+                $select->offset($offset);
+            }
+
             //echo $select->getSqlString();
         });
         if (!$row)

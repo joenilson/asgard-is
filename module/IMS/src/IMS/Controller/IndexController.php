@@ -831,12 +831,15 @@ class IndexController extends AbstractActionController
         $countryParams = (string) $request->getQuery('country');
         $locationParams = (string) $request->getQuery('location');
         $processParams = (int) $request->getQuery('process');
-        
+        //$limit = (int) $request->getQuery('limit');
+        //$offset = (int) $request->getQuery('start');
+        $limit = 0;
+        $offset = 0;
         $sql = $this->getIEEATable();
         if($processParams==0){
-            $listDocuments = $sql->getIEEA($lang,$companyParams,$countryParams,$locationParams);
+            $listDocuments = $sql->getIEEA($lang,$companyParams,$countryParams,$locationParams,$limit,$offset);
         }else{
-            $listDocuments = $sql->getIEEAByP($lang,$companyParams,$countryParams,$locationParams,$processParams);
+            $listDocuments = $sql->getIEEAByP($lang,$companyParams,$countryParams,$locationParams,$processParams,$limit,$offset);
         }
         
         if(!empty($listDocuments)){
@@ -910,14 +913,14 @@ class IndexController extends AbstractActionController
         $arrayProcess = $sqlProcess->getAllMainProcess($lang_docs,'A',$company,$country,$location);
         $process = array();
         foreach($arrayProcess as $key=>$process_values){
-            $process[trim($process_values['value'])]=array('id'=>$process_values['id'],'desc'=>$process_values['value']);
+            $process[$this->PersonName(trim($process_values['value']))]=array('id'=>$process_values['id'],'desc'=>$process_values['value']);
         }
         
         $sqlThreads = $this->getProcessThreadTable();
         $arrayThreads = $sqlThreads->getAllThreads($lang_docs,'A',$company,$country,$location);
         $threads = array();
         foreach($arrayThreads as $key=>$thread_values){
-            $threads[trim($thread_values['value'])]=array('id'=>$thread_values['id'],'desc'=>$thread_values['value']);
+            $threads[$this->PersonName(trim($thread_values['value']))]=array('id'=>$thread_values['id'],'desc'=>$thread_values['value']);
         }    
         
         $sqlHelpers = $this->getIEEAHelperTable();

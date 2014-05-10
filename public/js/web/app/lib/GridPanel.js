@@ -21,7 +21,10 @@ Ext.define('Asgard.lib.GridPanel',{
         renderHidden: false,
         showShowHideButton: false,
         showClearAllButton: false,
-        bufferedrenderer: true
+    },{
+        ptype: 'bufferedrenderer',
+        trailingBufferZone: 20,  // Keep 20 rows rendered in the table behind scroll
+        leadingBufferZone: 50  
     }],
   initComponent: function(){
     this.callParent(arguments);

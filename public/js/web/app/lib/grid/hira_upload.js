@@ -107,9 +107,9 @@ Ext.define('Asgard.lib.grid.hira_upload',{
             }],
             items: [
                 {text: this.idText, sortable: false, hidden: true, dataIndex: 'id_danger_risk', filter: false},
-                {text: this.processText, flex: 1, sortable: false, hidden: false, dataIndex: 'process_sup_desc', filter: true, tdCls: 'wrapText'},
-                {text: this.threadText, flex: 1, sortable: false, hidden: false, dataIndex: 'process_main_desc', filter: true, tdCls: 'wrapText'},
-                {text: this.activityText, flex: 2, sortable: false, hidden: false, dataIndex: 'activity_desc', filter: true, tdCls: 'wrapText'},
+                {text: this.processText, flex: 1, sortable: false, hidden: false, dataIndex: 'process_sup_desc', filter: 'combo', tdCls: 'wrapText'},
+                {text: this.threadText, flex: 1, sortable: false, hidden: false, dataIndex: 'process_main_desc', filter: 'combo', tdCls: 'wrapText'},
+                {text: this.activityText, flex: 2, sortable: false, hidden: false, dataIndex: 'activity_desc', filter: 'combo', tdCls: 'wrapText'},
                 {text: this.dangerText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'desc_danger', tdCls: 'wrapText'},
                 {text: this.riskText, flex: 1.5, sortable: true, filter: true, dataIndex: 'desc_risk', tdCls: 'wrapText'},
                 {text: this.evaluationHiraText,
