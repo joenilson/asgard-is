@@ -589,3 +589,22 @@ Ext.define('Asgard.locales.lib.grid.isoplan',{
     chooseTitleBodyDelete: 'Va eliminar un item!. <br />Desea seguir con esta acción?',
     chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?'
 });
+
+Ext.define('Asgard.locales.lib.grid.IPGrid',{
+    override: 'Asgard.lib.grid.IPGrid',
+    idText: 'Id',
+    nameText: 'Descripción',
+    typeText: 'Subproceso',
+    threadText: 'Subproceso',
+    ioText: 'I/O'
+});
+
+Ext.define('Asgard.locales.lib.Panels.ISOPlanDetailPanel',{
+    override: 'Asgard.lib.Panels.ISOPlanDetailPanel',
+    ownersText: 'Propietarios',
+    iperText: 'Peligros y Riesgos',
+    ioText: 'Entradas (I) / Salidas (O)',
+    eaText: 'Impacto Ambiental',
+    recordsText: 'Registros',
+    documentsText: 'Procedimientos de Control Operacional'
+});
