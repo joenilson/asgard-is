@@ -22,6 +22,8 @@ class ISOPlanTable extends AbstractTableGateway {
     protected $owners_table_name = 'process_owner';
     protected $thread_table_name = 'process_thread_i18n';
     protected $docs_table_name = 'docs_library';
+    protected $ieea_table_name = 'ieea_helper';
+    protected $iper_table_name = 'hira_danger';
     protected $schema_name = 'ims';
 
     private function processList($value)
@@ -129,6 +131,7 @@ class ISOPlanTable extends AbstractTableGateway {
                 $this->table_name.'.location'=>(string) $location,
                 $this->table_name.'.status'=>'A'));
             $select->order(array('id_process','id_thread','id_doc'));
+            //echo $select->getSqlString();
         });
         if (!$row)
             return false;
@@ -148,16 +151,118 @@ class ISOPlanTable extends AbstractTableGateway {
             return false;
         return $row->toArray();
     }
-    
-    public function getObjectByCCLIT($company,$country,$location,$id,$type)
+       
+    public function getObjectByCCLIT($company,$country,$location,$id,$type,$lang)
     {
-        $row = $this->select(function (Select $select) use ($company,$country,$location,$id,$type){
+        $row = $this->select(function (Select $select) use ($company,$country,$location,$id,$type,$lang){
+            $select->join(
+                array('h1'=>new TableIdentifier($this->docshelpers_table_name, $this->schema_name)), 
+                new Expression ( $this->table_name.'.id_type = h1.helper AND h1.status=\'A\' AND h1.lang=\''.$lang.'\''),
+                array('description')
+            );
             $select->where(array('company'=>(string) $company,
                                 'country'=>(string) $country,
                                 'location'=>(string) $location,
                                 'id_type'=>(int) $type,
                                 'id'=>(int) $id));
             //$select->order('class_req,type_req ASC');
+        });
+        if (!$row)
+            return false;
+        return $row->toArray();
+    }
+    
+    public function getObjectByCCLPT($company,$country,$location,$id_process,$type,$lang)
+    {
+        $row = $this->select(function (Select $select) use ($company,$country,$location,$id_process,$type,$lang){
+            if($type=='quality_vars' OR $type=='record_file'){
+                $select->join(
+                    array('h1'=>new TableIdentifier($this->helpers_table_name, $this->schema_name)), 
+                    new Expression ( $this->table_name.'.id_type = h1.helper AND '.$this->table_name.'.id_variable = h1.id AND h1.status=\'A\' AND h1.lang=\''.$lang.'\''),
+                    array('description')
+                );
+            }elseif($type=='ea'){
+                $select->join(
+                    array('h1'=>new TableIdentifier($this->ieea_table_name, $this->schema_name)), 
+                    new Expression ( $this->table_name.'.id_type = h1.helper AND '.$this->table_name.'.id_variable = h1.id AND h1.status=\'A\' AND h1.lang=\''.$lang.'\''),
+                    array('description')
+                );
+            }elseif($type=='iper'){
+                $select->join(
+                    array('h1'=>new TableIdentifier($this->iper_table_name, $this->schema_name)), 
+                    new Expression ( $this->table_name.'.id_variable = h1.id_danger AND h1.lang=\''.$lang.'\''),
+                    array('description'=>'desc_danger')
+                );
+            }elseif($type=='owners' OR $type=='assoc'){
+                $select->join(
+                    array('h1'=>new TableIdentifier($this->owners_table_name, $this->schema_name)), 
+                    new Expression ( $this->table_name.'.id_variable = h1.id AND h1.lang=\''.$lang.'\''),
+                    array('description'=>'name')
+                );
+            }elseif($type=='doc'){
+                $select->join(
+                    array('h1'=>new TableIdentifier($this->docs_table_name, $this->schema_name)), 
+                    new Expression ( $this->table_name.'.id_variable = h1.doc_id '),
+                    array('description'=>'doc_desc')
+                );
+            }
+            
+            $select->join(
+                array('h2'=>new TableIdentifier($this->thread_table_name, $this->schema_name)), 
+                new Expression ( $this->table_name.'.id_thread = h2.id AND h2.lang=\''.$lang.'\''),
+                array('desc_thread'=>'value')
+            );
+            $select->join(
+                array('h3'=>new TableIdentifier($this->process_table_name, $this->schema_name)), 
+                new Expression ( $this->table_name.'.id_process = h3.id AND h3.lang=\''.$lang.'\''),
+                array('desc_process'=>'value')
+            );
+            $dataSelect [$this->table_name.'.company'] = $company;
+            $dataSelect [$this->table_name.'.country'] = $country;
+            $dataSelect [$this->table_name.'.location'] = $location;
+            $dataSelect ['id_type'] = $type;
+            if($id_process!=0){
+                $dataSelect[$this->table_name.'.id_process'] = $id_process;
+            }
+            $select->where($dataSelect);
+            
+            $select->order(array('id_process','id_thread','id_io'));
+            //echo $select->getSqlString();
+        });
+        if (!$row)
+            return false;
+        return $row->toArray();
+    }
+    
+    public function getIEEAByCCLPT($company,$country,$location,$id_process,$type,$lang)
+    {
+        $row = $this->select(function (Select $select) use ($company,$country,$location,$id_process,$type,$lang){
+            $select->join(
+                array('h1'=>new TableIdentifier($this->ieea_table_name, $this->schema_name)), 
+                new Expression ( $this->table_name.'.id_type = h1.helper AND '.$this->table_name.'.id_variable = h1.id AND h1.status=\'A\' AND h1.lang=\''.$lang.'\''),
+                array('description')
+            );
+            $select->join(
+                array('h2'=>new TableIdentifier($this->thread_table_name, $this->schema_name)), 
+                new Expression ( $this->table_name.'.id_thread = h2.id AND h2.lang=\''.$lang.'\''),
+                array('desc_thread'=>'value')
+            );
+            $select->join(
+                array('h3'=>new TableIdentifier($this->process_table_name, $this->schema_name)), 
+                new Expression ( $this->table_name.'.id_process = h3.id AND h3.lang=\''.$lang.'\''),
+                array('desc_process'=>'value')
+            );
+            $dataSelect ['company'] = $company;
+            $dataSelect ['country'] = $country;
+            $dataSelect ['location'] = $location;
+            $dataSelect ['id_type'] = $type;
+            if($id_process!=0){
+                $dataSelect['id_process'] = $id_process;
+            }
+            $select->where($dataSelect);
+            
+            $select->order(array('id_process','id_thread','id_io'));
+            //echo $select->getSqlString();
         });
         if (!$row)
             return false;

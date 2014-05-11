@@ -3,12 +3,13 @@
  * @version 1.0.0 devel
  * @author Joe Nilson <joenilson@gmail.com>
  */
-Ext.define('Asgard.store.IsoPlan', {
+Ext.define('Asgard.store.IsoPlanDetails', {
     extend: 'Ext.data.Store',
-    model: 'Asgard.model.IsoPlan',
+    model: 'Asgard.model.IsoPlanDetails',
+    groupField: 'desc_thread',
     proxy: {
         type: 'ajax',
-        url: 'ims/getisoplan',
+        url: 'ims/getisoplandetails',
         reader: {
             type: 'json',
             root: 'results'

@@ -24,24 +24,23 @@ namespace IMS\Model\Entity;
  * @author Joe Nilson <joenilson@grupoism.com.do>
  */
 class ISOPlan {
-
+    
     protected $company;
     protected $country;
-    protected $date_creation;
-    protected $date_modification;
+    protected $location;
     protected $id;
-    protected $id_doc;
-    protected $id_frequency;
-    protected $id_indicator;
-    protected $id_owner;
     protected $id_process;
     protected $id_thread;
-    protected $location;
-    protected $record_file;
+    protected $id_io;
+    protected $id_type;
+    protected $id_variable;
+    protected $id_owner_assoc;
+    protected $year_date;
     protected $status;
     protected $user_creation;
+    protected $date_creation;
     protected $user_modification;
-    protected $variables;
+    protected $date_modification;
     
     public function __construct(array $options = null)
     {
@@ -88,32 +87,12 @@ class ISOPlan {
         return $this->country;
     }
 
-    public function getDate_creation() {
-        return $this->date_creation;
-    }
-
-    public function getDate_modification() {
-        return $this->date_modification;
+    public function getLocation() {
+        return $this->location;
     }
 
     public function getId() {
         return $this->id;
-    }
-
-    public function getId_doc() {
-        return $this->id_doc;
-    }
-
-    public function getId_frequency() {
-        return $this->id_frequency;
-    }
-
-    public function getId_indicator() {
-        return $this->id_indicator;
-    }
-
-    public function getId_owner() {
-        return $this->id_owner;
     }
 
     public function getId_process() {
@@ -124,12 +103,20 @@ class ISOPlan {
         return $this->id_thread;
     }
 
-    public function getLocation() {
-        return $this->location;
+    public function getId_type() {
+        return $this->id_type;
     }
 
-    public function getRecord_file() {
-        return $this->record_file;
+    public function getId_variable() {
+        return $this->id_variable;
+    }
+
+    public function getId_owner_assoc() {
+        return $this->id_owner_assoc;
+    }
+
+    public function getYear_date() {
+        return $this->year_date;
     }
 
     public function getStatus() {
@@ -140,12 +127,16 @@ class ISOPlan {
         return $this->user_creation;
     }
 
+    public function getDate_creation() {
+        return $this->date_creation;
+    }
+
     public function getUser_modification() {
         return $this->user_modification;
     }
 
-    public function getVariables() {
-        return $this->variables;
+    public function getDate_modification() {
+        return $this->date_modification;
     }
 
     public function setCompany($company) {
@@ -158,38 +149,13 @@ class ISOPlan {
         return $this;
     }
 
-    public function setDate_creation($date_creation) {
-        $this->date_creation = $date_creation;
-        return $this;
-    }
-
-    public function setDate_modification($date_modification) {
-        $this->date_modification = $date_modification;
+    public function setLocation($location) {
+        $this->location = $location;
         return $this;
     }
 
     public function setId($id) {
         $this->id = $id;
-        return $this;
-    }
-
-    public function setId_doc($id_doc) {
-        $this->id_doc = $id_doc;
-        return $this;
-    }
-
-    public function setId_frequency($id_frequency) {
-        $this->id_frequency = $id_frequency;
-        return $this;
-    }
-
-    public function setId_indicator($id_indicator) {
-        $this->id_indicator = $id_indicator;
-        return $this;
-    }
-
-    public function setId_owner($id_owner) {
-        $this->id_owner = $id_owner;
         return $this;
     }
 
@@ -203,13 +169,23 @@ class ISOPlan {
         return $this;
     }
 
-    public function setLocation($location) {
-        $this->location = $location;
+    public function setId_type($id_type) {
+        $this->id_type = $id_type;
         return $this;
     }
 
-    public function setRecord_file($record_file) {
-        $this->record_file = $record_file;
+    public function setId_variable($id_variable) {
+        $this->id_variable = $id_variable;
+        return $this;
+    }
+
+    public function setId_owner_assoc($id_owner_assoc) {
+        $this->id_owner_assoc = $id_owner_assoc;
+        return $this;
+    }
+
+    public function setYear_date($year_date) {
+        $this->year_date = $year_date;
         return $this;
     }
 
@@ -223,14 +199,29 @@ class ISOPlan {
         return $this;
     }
 
+    public function setDate_creation($date_creation) {
+        $this->date_creation = $date_creation;
+        return $this;
+    }
+
     public function setUser_modification($user_modification) {
         $this->user_modification = $user_modification;
         return $this;
     }
 
-    public function setVariables($variables) {
-        $this->variables = $variables;
+    public function setDate_modification($date_modification) {
+        $this->date_modification = $date_modification;
         return $this;
     }
+
+    public function getId_io() {
+        return $this->id_io;
+    }
+
+    public function setId_io($id_io) {
+        $this->id_io = $id_io;
+        return $this;
+    }
+
 
 }

@@ -37,6 +37,47 @@ class ProcessMainView extends AbstractTableGateway {
         return $row;
     }
     
+    public function getProcessListByCCLId($company,$country,$location,$process,$lang) {
+        $row = $this->select(function (Select $select) use ($company,$country,$location,$process,$lang) {
+            $select->where(array(
+                'lang' => (string) $lang, 
+                'company'=>$company,
+                'country'=>$country,
+                'location'=>$location,
+                'id'=>$process
+            ))->order('ordering ASC');
+        });
+        //$row = $this->select(array('lang' => (string) $lang));
+        if (!$row)
+            return false;
+        $listItems=array();
+        for ($index = 0; $index < $row->count(); $index++) {
+            $listItems[]=$row->current();
+            $row->next();
+        }
+        return $listItems;
+    }
+    
+    public function getProcessListByCCL($company,$country,$location,$lang) {
+        $row = $this->select(function (Select $select) use ($company,$country,$location,$lang) {
+            $select->where(array(
+                'lang' => (string) $lang, 
+                'company'=>$company,
+                'country'=>$country,
+                'location'=>$location
+            ))->order('ordering ASC');
+        });
+        //$row = $this->select(array('lang' => (string) $lang));
+        if (!$row)
+            return false;
+        $listItems=array();
+        for ($index = 0; $index < $row->count(); $index++) {
+            $listItems[]=$row->current();
+            $row->next();
+        }
+        return $listItems;
+    }
+    
     public function getProcessList($lang) {
         $row = $this->select(function (Select $select) use ($lang) {
             $select->where(array('lang' => (string) $lang))->order('ordering ASC');

@@ -1442,6 +1442,41 @@ class IndexController extends AbstractActionController
     	return $result;   
     }
     
+    public function getisoplandetailsAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang = $userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $companyParams = (string) $request->getQuery('company');
+        $countryParams = (string) $request->getQuery('country');
+        $locationParams = (string) $request->getQuery('location');
+        $processParams = (int) $request->getQuery('process');
+        $helper = (string) $request->getQuery('helper');
+        $sql = $this->getIsoPlanTable();
+        $listDocuments = $sql->getObjectByCCLPT($companyParams,$countryParams,$locationParams,$processParams,$helper,$lang);
+        /*
+        if($helper == 'quality_vars'){
+            $listDocuments = $sql->getObjectByCCLPT($companyParams,$countryParams,$locationParams,$processParams,$helper,$lang);
+        }elseif($helper == 'ieea'){
+            $listDocuments = $sql->getIEEAByCCLPT($companyParams,$countryParams,$locationParams,$processParams,'ea',$lang);
+        }
+        */
+        //$listDocuments = $sql->getObjectList($helper,$lang);
+        
+        if(!empty($listDocuments)){
+            $data['success']=true;
+            $data['results']=$listDocuments;
+            $data['msg']="";
+        }else{
+            $data['success']=true;
+            $data['results']="";
+            $data['helper']=$helper;
+            $data['msg']="Error trying to get the information...";
+        }
+        $result = new JsonModel($data);
+    	return $result;   
+    }
+    
     public function getisoplanhelpersAction(){
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
         $lang = $userPrefs[0]['lang'];
@@ -1450,9 +1485,10 @@ class IndexController extends AbstractActionController
         $companyParams = $request->getQuery('company');
         $countryParams = $request->getQuery('country');
         $locationParams = $request->getQuery('location');
-        
-        $sql = $this->getTrainingPlanTable();
-        $listDocuments = $sql->getTrainingPlanByCCL($companyParams,$countryParams,$locationParams);
+        $helper = $request->getQuery('helper');
+        $process = $request->getQuery('process');
+        $sql = $this->getIsoPlanTable();
+        $listDocuments = $sql->getObjectByCCLPT($companyParams,$countryParams,$locationParams,$process,$helper,$lang);
         
         if(!empty($listDocuments)){
             $data['success']=true;
@@ -4791,11 +4827,24 @@ class IndexController extends AbstractActionController
     
     public function processlistAction() 
     {
+        $userData = $this->getServiceLocator()->get('userSessionData');
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
         $lang = $userPrefs[0]['lang'];
+        $request = $this->getRequest();
+        $companyParam = (string) $request->getQuery('company');
+        $countryParam = (string) $request->getQuery('country');
+        $locationParam = (string) $request->getQuery('location');
+        $processParam = (int) $request->getQuery('process');
+        $company = (!empty($companyParam))?$companyParam:$userData->company;
+        $country = (!empty($countryParam))?$countryParam:$userData->country;
+        $location = (!empty($locationParam))?$locationParam:$userData->location;
         $data['success']=false;
         $queryPL = $this->getProcessMainView();
-        $listDocuments = $queryPL->getProcessList($lang);
+        if($processParam==0){
+            $listDocuments = $queryPL->getProcessListByCCL($company,$country,$location,$lang);
+        }else{
+            $listDocuments = $queryPL->getProcessListByCCLId($company,$country,$location,$processParam,$lang);
+        }
         if($listDocuments){
             $data['success']=true;
             $data['results']=$listDocuments;

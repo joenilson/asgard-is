@@ -19,14 +19,13 @@
  * @version 1.0.0 devel
  * @author Joe Nilson <joenilson@gmail.com>
  */
-Ext.define('Asgard.model.IsoPlan', {
+Ext.define('Asgard.model.IsoPlanDetails', {
     extend: 'Ext.data.Model',
     fields: [
         {name: 'company', type: 'string' }, 
         {name: 'country', type: 'string' }, 
         {name: 'location', type: 'string' }, 
         {name: 'id', type: 'float' }, 
-        {name: 'description', type: 'string' }, 
         {name: 'id_process', type: 'float' }, 
         {name: 'desc_process', type: 'string' }, 
         {name: 'id_thread', type: 'float' }, 
@@ -36,7 +35,9 @@ Ext.define('Asgard.model.IsoPlan', {
         {name: 'id_indicator', type: 'float' }, 
         {name: 'desc_indicator', type: 'string' }, 
         {name: 'id_freqency', type: 'float' }, 
+        {name: 'id_io', type: 'string' }, 
         {name: 'desc_frequency', type: 'string' }, 
+        {name: 'description', type: 'string' }, 
         {name: 'variables', type: 'string' }, 
         {name: 'record_file', type: 'string' }, 
         {name: 'id_doc', type: 'float' }, 
