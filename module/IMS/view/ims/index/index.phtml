@@ -15,6 +15,7 @@ var viewStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.Organigram');
 var ownersStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.OwnersProfile');
 var commStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.Communications');
 var tpStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.TrainingPlan');
+var isoplanStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.IsoPlan');
 
 function showObjetives(){
     var view<?=$this->panelId;?> = Ext.create('Asgard.lib.dataview.objectives', { 
@@ -117,6 +118,32 @@ function showTrainingPlan(){
     winAdd.show();
     tpStore<?= $this->panelId; ?>.load({ params: { module: 'master', company: '<?=$companyId;?>', country: '<?=$countryId;?>', location: '<?=$locationId;?>'  }});
 }
+
+function showIsoPlan(){
+    var tabsPanel = Ext.getCmp('content-panel'); 
+    var itemTab = '10-86';
+    var tab = Ext.getCmp(itemTab);
+    
+    if (tab) {
+        tabsPanel.setActiveTab(tab);
+    } else {
+        tabsPanel.add({
+            xtype: 'panel',
+            closable: true,
+            id: itemTab,
+            title: 'Quality Plan',
+            AutoDestroy: true,
+            layout: 'fit',
+            loader: {
+                url: 'ims/isoplan/10-86',
+                autoLoad: true,
+                scripts: true
+            }
+        }).show();
+        tabsPanel.ownerCt.doLayout();    
+    }
+}
+
 
 var versioningHeader<?php echo $this->panelId; ?> = Ext.create('Asgard.lib.versioningContent',{
     anchor: '100%',
