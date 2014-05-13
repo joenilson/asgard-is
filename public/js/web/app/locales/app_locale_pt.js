@@ -609,3 +609,19 @@ Ext.define('Asgard.locales.lib.Panels.ISOPlanDetailPanel',{
     recordsText: 'Registros',
     documentsText: 'Procedimentos de Controle Operacional'
 });
+
+Ext.define('Asgard.locales.lib.forms.hiraMasterFileUpload',{
+    override: 'Asgard.lib.forms.hiraMasterFileUpload',
+    excelFileText: 'Template Excel 2003 (.xls)',
+    excelFieldEmptyText: 'Escolher arquivo Excel',    
+    textSubmitButton: 'Enviar',
+    textCancelButton: 'Cancelar',
+    warningTitle: 'Aviso',
+    warningText: 'Dados incompletos!, revisar seus dados',
+    required: '<span style="color:red;font-weight:bold" data-qtip="Obrigatório">*</span>',
+    successText: 'Documentos enviada com sucesso!',
+    failureText: 'Algo deu errado, verificar o formulário e tente novamente',
+    typeText: 'Tipo de dados',
+    additionText: 'Dados Adicionais',
+    changeText: 'Substituição de Dados'
+});

@@ -34,11 +34,15 @@ Ext.define('Asgard.lib.forms.hiraMasterFileUpload',{
     required: '<span style="color:red;font-weight:bold" data-qtip="Required">*</span>',
     successText: 'Documents added succefully!',
     failureText: 'Something is wrong, please try it again',
+    typeText: 'Type of Upload',
+    additionText: 'Additional Values',
+    changeText: 'Change Values',
     excelField: undefined,
     companiesField: undefined,
     countriesField: undefined,
     locationsField: undefined,
     languageField: undefined,
+    typeField: undefined,
     companiesValue: '',
     countriesValue: '',
     locationsValue: '',
@@ -49,9 +53,18 @@ Ext.define('Asgard.lib.forms.hiraMasterFileUpload',{
     },
     anchor: '100%',
     width: 540,
-    
     initComponent: function(){
         var me = this;
+        
+        this.typeField = this.typeField || [];
+        this.typeField = Ext.Object.merge({
+            xtype: 'radiogroup',
+            fieldLabel: this.typeText,
+            items: [
+                {boxLabel: this.additionText, name: 'type', inputValue:'A' },
+                {boxLabel: this.changeText, name: 'type', inputValue:'C' }
+            ]
+        }, this.typeField);
         
         this.excelField = this.excelField || [];
         this.excelField = Ext.Object.merge({
@@ -150,7 +163,8 @@ Ext.define('Asgard.lib.forms.hiraMasterFileUpload',{
             this.countriesField,
             this.locationsField,
             this.languageField,
-            this.excelField
+            this.excelField,
+            this.typeField
         ]);
         
         this.buttons = this.buttons || [];
