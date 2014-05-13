@@ -4908,7 +4908,8 @@ class IndexController extends AbstractActionController
                 $data['results']=$listDocuments;
                 $data['msg']="";
             }else{
-                $data['success']=false;
+                $data['success']=true;
+                $data['results']="";
                 $data['msg']="Error trying to get the information...";
             }
             $result = new JsonModel($data);

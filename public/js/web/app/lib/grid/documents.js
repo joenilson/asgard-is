@@ -99,7 +99,7 @@ Ext.define('Asgard.lib.grid.documents',{
                 {text: this.classDocText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'desc_classification', tdCls: 'wrapText'},
                 {text: this.documentText, flex: 3, sortable: true, filter: true, dataIndex: 'doc_desc', tdCls: 'wrapText'},
                 {text: this.recordText, flex: 1.5, sortable: true, filter: true, dataIndex: 'doc_record', tdCls: 'wrapText'},
-                {text: this.versionText, flex: 1, sortable: true, filter: true, dataIndex: 'doc_version_number', tdCls: 'wrapText'},
+                {text: this.versionText, flex: 0.5, sortable: true, filter: true, dataIndex: 'doc_version_number', tdCls: 'wrapText'},
                 {text: this.dateVersionText, width: 80,  sortable: true, filter: true, dataIndex: 'doc_date_creation', tdCls: 'wrapText', 
                     xtype: 'datecolumn', format:'Y-m-d'
                 },
@@ -109,7 +109,7 @@ Ext.define('Asgard.lib.grid.documents',{
                 },
                 {text: this.reviewText, flex: 1, sortable: true, filter: true, dataIndex: 'doc_review', tdCls: 'wrapText'},
                 {text: this.protectionText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'desc_protection', tdCls: 'wrapText'},
-                {text: this.ownerText, flex: 1, sortable: true, filter: true, dataIndex: 'desc_owner', tdCls: 'wrapText'},
+                {text: this.ownerText, flex: 2, sortable: true, filter: 'combo', dataIndex: 'desc_owner', tdCls: 'wrapText'},
                 {text: this.locationText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'desc_location', tdCls: 'wrapText'},
                 {text: this.originText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'desc_origin', tdCls: 'wrapText'},
                 {text: this.retentionText, flex: 1, sortable: true, filter: 'combo', dataIndex: 'desc_retention', tdCls: 'wrapText'},
