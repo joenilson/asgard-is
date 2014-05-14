@@ -3460,7 +3460,15 @@ class IndexController extends AbstractActionController
         $threads = array();
         foreach($arrayThreads as $key=>$thread_values){
             $threads[$this->PersonName(trim($thread_values['value']))]=array('id'=>$thread_values['id'],'desc'=>$thread_values['value']);
-        }    
+        }
+        
+        $sqlOwners = $this->getProcessOwnerTable();
+        $arrayOwners = $sqlOwners->getOwnersByLang($lang_docs);
+        
+        $owners = array();
+        foreach($arrayOwners as $key=>$owners_values){
+            $owners[$owners_values['id_process']]=array('id'=>$owners_values['id'],'desc'=>$owners_values['name']);
+        }
         
         $sqlHelpers = $this->getDocsHelpersTable();
         $arrayHelpers = $sqlHelpers->getHelpers($lang_docs);
@@ -3555,8 +3563,8 @@ class IndexController extends AbstractActionController
                 'retention_desc'=>(!$helpers['retention'][$retention])?"":$helpers['retention'][$retention]['desc'],
                 'description'=>$description,
                 'filename'=>(is_file($zipfolder.$filename))?$zipfolder.$filename:$filename,
-                'owner'=>(!$process[$owner])?"":$process[$owner]['id'],
-                'owner_desc'=>(!$process[$owner])?"":$process[$owner]['desc'],
+                'owner'=>(!$process[$doc_process])?"":$owners[$process[$doc_process]['id']]['id'],
+                'owner_desc'=>(!$process[$doc_process])?"":$owners[$process[$doc_process]['id']]['desc'],
                 'process'=>(!$process[$doc_process])?"":$process[$doc_process]['id'],
                 'process_desc'=>(!$process[$doc_process])?"":$process[$doc_process]['desc'],
                 'thread'=>(!$threads[$doc_thread])?"":$threads[$doc_thread]['id'],

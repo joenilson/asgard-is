@@ -83,36 +83,36 @@ class hiraDocumentsTable extends AbstractTableGateway {
             $select->join( array('pr'=>new TableIdentifier($this->pr_table_name, $this->schema_name)),
                 new Expression( 
                     $this->table_name.'.id_process_main = pr.id and type=\'s\' and pr.country=\''.$country.'\' and pr.company=\''.$company.'\' and pr.location=\''.$location.'\' '), array('parent_id')
-                    );
+                );
             $select->join(
                 array('pti'=>new TableIdentifier($this->pti_table_name, $this->schema_name)), 
                 new Expression(
                     $this->table_name.'.id_process_main = pti.id AND pr.type=\'s\' and pti.lang=\''.$lang.'\''), array('process_main_desc'=>'value')
-            );
+                );
             $select->join(
-                    array('p2'=>new TableIdentifier($this->pr_table_name, $this->schema_name)),
-                        new Expression('pr.parent_id = p2.id and p2.type=\'p\' and pr.country = p2.country '.$sqlPRocess), array('type'=>'parent_id')
-                    );
+                array('p2'=>new TableIdentifier($this->pr_table_name, $this->schema_name)),
+                    new Expression('pr.parent_id = p2.id and p2.type=\'p\' and pr.country = p2.country and pr.location=p2.location '.$sqlPRocess), array('type'=>'parent_id')
+                );
             $select->join(
-                    array('pti2'=>new TableIdentifier($this->pmi_table_name, $this->schema_name)),
-                        new Expression('p2.id = pti2.id and pti2.lang=\''.$lang.'\''), array('process_sup_desc'=>'value')
-                    );
+                array('pti2'=>new TableIdentifier($this->pmi_table_name, $this->schema_name)),
+                    new Expression('p2.id = pti2.id and pti2.lang=\''.$lang.'\''), array('process_sup_desc'=>'value')
+                );
             $select->join(
-                    array('pti3'=>new TableIdentifier($this->pyi_table_name, $this->schema_name)),
-                        new Expression('p2.parent_id = pti3.id and pti3.lang=\''.$lang.'\''), array('type_desc'=>'value')
-                    );
+                array('pti3'=>new TableIdentifier($this->pyi_table_name, $this->schema_name)),
+                    new Expression('p2.parent_id = pti3.id and pti3.lang=\''.$lang.'\''), array('type_desc'=>'value')
+                );
             $select->join(
-                    array('pai'=>new TableIdentifier($this->pai_table_name, $this->schema_name)),
-                        new Expression($this->table_name.'.id_activity = pai.id and pai.lang=\''.$lang.'\''), array('activity_desc'=>'value')
-                    ,'left');
+                array('pai'=>new TableIdentifier($this->pai_table_name, $this->schema_name)),
+                    new Expression($this->table_name.'.id_activity = pai.id and pai.lang=\''.$lang.'\''), array('activity_desc'=>'value')
+                ,'left');
             $select->join(
-                    array('hr'=>new TableIdentifier($this->hr_table_name, $this->schema_name)),
-                        new Expression($this->table_name.'.id_risk = hr.id_risk and hr.lang=\''.$lang.'\''), array('desc_risk')
-                    );
+                array('hr'=>new TableIdentifier($this->hr_table_name, $this->schema_name)),
+                    new Expression($this->table_name.'.id_risk = hr.id_risk and hr.lang=\''.$lang.'\''), array('desc_risk')
+                );
             $select->join(
-                    array('hd'=>new TableIdentifier($this->hd_table_name, $this->schema_name)),
-                        new Expression($this->table_name.'.id_danger = hd.id_danger and hd.lang=\''.$lang.'\''), array('desc_danger')
-                    );
+                array('hd'=>new TableIdentifier($this->hd_table_name, $this->schema_name)),
+                    new Expression($this->table_name.'.id_danger = hd.id_danger and hd.lang=\''.$lang.'\''), array('desc_danger')
+                );
             $select->where(array(new IsNotNull('control_measures'),$this->table_name.'.country'=>(string) $country,$this->table_name.'.company'=>(string) $company,$this->table_name.'.location'=>(string) $location,$this->table_name.'.status'=>1));
             $select->order('id_danger_risk ASC');
             //echo $select->getSqlString();
