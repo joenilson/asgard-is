@@ -193,10 +193,10 @@ var chart = Ext.create('Ext.chart.Chart', {
 });
 
 var winChart = Ext.create('Ext.Window', {
-    width: 800,
-    height: 600,
-    minHeight: 400,
-    minWidth: 550,
+    width: document.documentElement.clientWidth - 650,
+    height: document.documentElement.clientHeight - 150,
+    //minHeight: 400,
+    //minWidth: 550,
     hidden: false,
     maximizable: true,
     closeAction: 'hide',
