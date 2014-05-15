@@ -126,6 +126,73 @@ class hiraIncidentsTable extends AbstractTableGateway {
         return $postList;
     }
     
+    public function getIncidentsListResumeChart($company,$country,$location,$dateValue,$lang) 
+    {
+        $var_companies = $this->processList($company);
+        $var_countries = $this->processList($country);
+        $var_locations = $this->processList($location);
+        
+        $time=strtotime($dateValue);
+
+        $month=date("m",$time);
+        $year=date("Y",$time);
+        
+        $first = date('d-m-Y', mktime(0, 0, 0, $month, 1, $year));
+        $last = date('t-m-Y', mktime(0, 0, 0, $month, 1, $year));
+
+        $thisTime = strtotime($first);
+        $endTime = strtotime($last);
+        
+        $resultSet = $this->select(function (Select $select) use ($var_companies, $var_countries, $var_locations, $year, $month, $lang) {
+            $select->join(
+                array('h1'=>new TableIdentifier($this->ht_table_name, $this->schema_name)), 
+                new Expression ( $this->table_name.'.id_type::integer = h1.id_incident AND h1.lang=\''.$lang.'\''),
+                array('name'=>'val_incident'),'right'
+            );
+
+            $select->columns(array('id_type','values' => new Expression('COUNT(*)')));
+            $select->where(array('company'=>$var_companies,'country'=>$var_countries,'location'=>$var_locations,new Expression("date_incident::TEXT like '$year-$month-%' and general_status!=0")));
+            $select->group(array('id_type','name'));
+            $select->order(array('name ASC'));
+            //echo $select->getSqlString();
+        });
+        /*
+        $preList = $resultSet->toArray();
+        $postList = array();
+        $sumList = array();
+        $dateList=array();
+        $dateCount=array();
+        $dateNumber=0;
+        $actualDate='';
+        foreach ($preList as $key=>$val){
+            $date = \date('Y-m-d', strtotime($val['date_incident']));
+            if(!isset($sumList[$date])){
+                $sumList[$date]=0;
+            }
+            $sumList[$date] += $val['count'];
+            if(($actualDate===$date) OR empty($actualDate)){
+                $dateNumber=$dateNumber;
+            }else{
+                $dateNumber++;
+            }
+            $dateCount[$date]=$dateNumber;
+            $actualDate=$date;
+        }
+        
+        foreach ($preList as $key=>$value){
+            $date = \date('Y-m-d', strtotime($value['date_incident']));
+            $dateList[$date][$value['id_type']] = $value['count'];
+        }
+        
+        foreach($dateCount as $dateVal=>$number){
+            $postList[$number]=$dateList[$dateVal];
+            $postList[$number]['date_incident']=$dateVal;
+            $postList[$number]['summaryIncidents']=$sumList[$dateVal];
+        }
+        */
+        return $resultSet->toArray();
+    }
+    
     public function getIncidentsDetails($company,$country,$location,$datePass,$lang)
     {
         $var_companies = $this->processList($company);

@@ -63,7 +63,7 @@ Ext.define('Asgard.view.Viewport', {
     'Asgard.lib.forms.simulationNewPhoto','Asgard.store.MTMType','Asgard.store.MTM','Asgard.lib.forms.mtmNewDocument',
     'Asgard.lib.grid.mtm','Asgard.lib.forms.GenTypeCombo','Asgard.lib.forms.comboCCLP','Asgard.store.IsoPlanHelpers',
     'Asgard.store.IsoPlan','Asgard.lib.grid.isoplan','Asgard.lib.Panels.ISOPlanDetailPanel',
-    'Asgard.lib.Panels.ISOPlanPanel','Asgard.store.IsoPlanDetails','Asgard.lib.grid.IPGrid'
+    'Asgard.lib.Panels.ISOPlanPanel','Asgard.store.IsoPlanDetails','Asgard.lib.grid.IPGrid','Asgard.store.HiraIncidentsChart'
   ],
   menuTitleText: 'Main Menu',
     defaults: {

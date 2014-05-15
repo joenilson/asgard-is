@@ -5659,6 +5659,21 @@ class IndexController extends AbstractActionController
         $result = new JsonModel($data);
         return $result;
     }
+    
+    public function hirailistchartAction()
+    {
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang = $userPrefs[0]['lang'];
+        $request = $this->getRequest();
+        $hiraIncidentsList = $this->getHiraIncidentsListTable();
+        $resultList = $hiraIncidentsList->getIncidentsListResumeChart($request->getQuery('companies'),$request->getQuery('countries'),$request->getQuery('locations'),$request->getQuery('monthfield'),$lang);
+        //$resultList = $hiraIncidentsList->getIncidentsListFiltered($request->getQuery('companies'),$request->getQuery('countries'),$request->getQuery('locations'),$request->getQuery('monthfield'));
+        $data['results']=(!empty($resultList))?$resultList:"";
+        $data['success']=(!empty($resultList))?true:false;
+        $data['msg']=(!empty($resultList))?"":"Error trying to get the information...";
+        $result = new JsonModel($data);
+        return $result;
+    }
 
     public function newincidentAction(){
         $userPrefs = $this->getServiceLocator()->get('userPreferences');

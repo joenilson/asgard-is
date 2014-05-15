@@ -47,13 +47,30 @@ Ext.define('Asgard.model.HiraIncidentsList<?php echo $this->panelId; ?>', {
 });
 
 /*
+* 
+* Model to consume chart results
+* 
+ */
+Ext.define('Asgard.model.HiraIncidentsGraphs<?php echo $this->panelId; ?>', {
+    extend: 'Ext.data.Model',
+    fields: [
+        { name: 'name', type: 'string' },
+        { name: 'values', type: 'int' }
+    ]
+});
+
+var storecharts = Ext.create('Asgard.store.HiraIncidentsChart',{
+    model: 'Asgard.model.HiraIncidentsGraphs<?php echo $this->panelId; ?>'
+})
+
+/*
  * Store to get the List of Incident registered
  */
-var <?php echo 'HIRAStoreIL' . $this->panelId; ?> = Ext.create('Asgard.store.HiraIncidentsList',{
+var HIRAStoreIL<?=$this->panelId;?> = Ext.create('Asgard.store.HiraIncidentsList',{
     model: 'Asgard.model.HiraIncidentsList<?php echo $this->panelId; ?>'
 });
 
- /*
+/*
  * Grid to show the Incidents List
  */
 
@@ -68,8 +85,12 @@ var <?php echo 'HIRAGridIL' . $this->panelId; ?> = Ext.create('Asgard.lib.GridPa
     fixedsummarytips : true,
     flex: 1,
     title: 'Lista de Incidentes',
-    store: <?php echo 'HIRAStoreIL' . $this->panelId; ?>,
+    store: HIRAStoreIL<?=$this->panelId;?>,
     tools: [{
+        type: 'charts',
+        tooltip: 'View Charts',
+        handler: fnLibraryTool
+    },{
         type: 'plus',
         tooltip: 'Add Incident',
         handler: fnLibraryTool
@@ -98,6 +119,16 @@ var <?php echo 'HIRAGridIL' . $this->panelId; ?> = Ext.create('Asgard.lib.GridPa
 });
 
 function fnLibraryTool(action,mark,form,tool){
+    console.log(tool);
+    console.log(form);
+    var grid = tool.up('panel');
+    var panel = grid.up('panel');
+    console.log(panel.items.getAt(0).getForm());
+    var values = panel.items.getAt(0).getForm().getValues();
+    var companies = values['companiesCombo'];
+    var countries = values['countriesCombo'];
+    var locations = values['locationsCombo'];
+    var monthfield = values['monthfield'];
     //console.log(form);
     //console.log(tool);
     if(tool.type==='plus'){
@@ -108,23 +139,99 @@ function fnLibraryTool(action,mark,form,tool){
         winAdd.add(Ext.create('Asgard.lib.forms.hiraNewIncident'));
         //console.log('mostramos la ventana para agregar un incidente');
         winAdd.show();
+    }else if(tool.type==='charts'){
+        storecharts.load({params: {'companies': companies,'countries': countries, 'locations': locations, 'monthfield': monthfield}});
+        winChart.show();
     }
 }
+
+ var chart = Ext.create('Ext.chart.Chart', {
+    style: 'background:#fff',
+    animate: true,
+    shadow: true,
+    store: storecharts,
+    axes: [{
+        type: 'Numeric',
+        position: 'left',
+        fields: ['values'],
+        label: {
+            renderer: Ext.util.Format.numberRenderer('0.0')
+        },
+        title: 'Número de Incidentes',
+        grid: true,
+        minorTickSteps: 1,
+        minimum: 0
+    }, {
+        type: 'Category',
+        position: 'bottom',
+        fields: ['name'],
+        title: 'Tipo de Incidentes'
+    }],
+    series: [{
+        type: 'column',
+        axis: 'left',
+        highlight: true,
+        tips: {
+            trackMouse: true,
+            renderer: function(storeItem, item) {
+                this.setTitle(storeItem.get('name') + ': ' + storeItem.get('values'));
+            }
+        },
+        label: {
+            display: 'insideEnd',
+            'text-anchor': 'middle',
+            field: 'values',
+            renderer: Ext.util.Format.numberRenderer('0'),
+            orientation: 'vertical',
+            color: '#333'
+        },
+        xField: 'name',
+        yField: 'values'
+    }]
+});
+
+var winChart = Ext.create('Ext.Window', {
+    width: 800,
+    height: 600,
+    minHeight: 400,
+    minWidth: 550,
+    hidden: false,
+    maximizable: true,
+    closeAction: 'hide',
+    title: 'Bar Renderer',
+    autoShow: false,
+    layout: 'fit',
+    tbar: [{
+        text: 'Guardar Gráfico',
+        handler: function() {
+            Ext.MessageBox.confirm('Confirmar Descarga', 'Desea descargar el gráfico como una imagen?', function(choice){
+                if(choice == 'yes'){
+                    chart.save({
+                        type: 'image/png'
+                    });
+                }
+            });
+        }
+    }],
+    items: chart
+});
+
   
-        HIRAGridIL<?=$this->panelId; ?>.on('itemdblclick', function(me, record){
-            //call window to show list of incidents
-            grid = me.up('panel');
-            panel = grid.up('panel');
-            form = panel.items.getAt(0).getForm();
-            var companiesValue = form.findField('companiesCombo').getValue();
-            var countriesValue = form.findField('countriesCombo').getValue();
-            var locationsValue = form.findField('locationsCombo').getValue();
-            var dateValue = record.data.date_incident;
-            var detailsGrid = Ext.create('Asgard.lib.grid.hira_incidents_details');
-            detailsGrid.getStore().load({params: {'company': companiesValue,'country': countriesValue, 'location': locationsValue, 'date_incident': dateValue}});
-            windowDetails<?php echo $this->panelId; ?>.add(detailsGrid);
-            windowDetails<?php echo $this->panelId; ?>.show();
-        });
+HIRAGridIL<?=$this->panelId; ?>.on('itemdblclick', function(me, record){
+    //call window to show list of incidents
+    grid = me.up('panel');
+    panel = grid.up('panel');
+    form = panel.items.getAt(0).getForm();
+    var companiesValue = form.findField('companiesCombo').getValue();
+    var countriesValue = form.findField('countriesCombo').getValue();
+    var locationsValue = form.findField('locationsCombo').getValue();
+    var dateValue = record.data.date_incident;
+    var detailsGrid = Ext.create('Asgard.lib.grid.hira_incidents_details');
+    detailsGrid.getStore().load({params: {'company': companiesValue,'country': countriesValue, 'location': locationsValue, 'date_incident': dateValue}});
+    windowDetails<?php echo $this->panelId; ?>.removeAll();
+    windowDetails<?php echo $this->panelId; ?>.add(detailsGrid);
+    windowDetails<?php echo $this->panelId; ?>.show();
+});
 
 
 /*

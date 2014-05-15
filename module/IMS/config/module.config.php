@@ -2570,6 +2570,19 @@ return array(
                             ),
                         ),
                     ),
+                    'hirailistchart' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/hirailistchart',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'hirailistchart'
+                            ),
+                        ),
+                    ),
                     'saveContent' => array(
                         'type'    => 'Segment',
                         'options' => array(

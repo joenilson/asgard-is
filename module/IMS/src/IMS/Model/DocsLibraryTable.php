@@ -67,8 +67,8 @@ class DocsLibraryTable extends AbstractTableGateway {
         $locations = $this->processArray($locations);
         $process_id = (int) $process;
         $thread_id = (int) $thread;
-        $status = (string) $string;
-        $row = $this->select(function (Select $select) use ($lang,$companies,$countries,$locations,$process_id,$thread_id,$string) {
+        $status = (string) $status;
+        $row = $this->select(function (Select $select) use ($lang,$companies,$countries,$locations,$process_id,$thread_id,$status) {
             $select->join(
                 array('h1'=>new TableIdentifier($this->table_helper, $this->schema_name)), 
                 new Expression ( $this->table_name.'.doc_classification = h1.id AND h1.helper=\'classification\' AND h1.lang=\''.$lang.'\''),
