@@ -166,6 +166,9 @@ Ext.define('Asgard.locales.lib.grid.documents',{
     emptyCCLText: 'Por favor complete los campos Compañia, Pais y Ubicación',
     emptyTitleText: 'No se ha seleccionado nada',
     emptyMessageText: 'No se ha seleccionado ningún documento, <br />Para continuar primero seleccione un documento...',
+    /* Added 15 - May - 2014 */
+    toolHistoryText: 'Ver Historial de documentos',
+    historyTitle: 'Historial de Documentos'
 });
 
 Ext.define('Asgard.locales.lib.forms.CompaniesCombo',{

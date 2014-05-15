@@ -17,7 +17,6 @@
   text-shadow: 0 1px 0 #4e691f;
 }
 
-
 .app-header-userinfo {
   padding: 30px 10px 10px 10px;
   /*background: url(/images/logo.png) no-repeat 10px 11px;*/
@@ -243,4 +242,12 @@ body {
 .ext-strict .ext-ie .x-tree .x-panel-bwrap{
     position:relative;
     overflow:hidden;
+}
+
+.x-tool-history { 
+    background-image: url("../../images/default/history-icon.png") !important; 
+}
+
+.x-tool-charts { 
+    background-image: url("../../images/default/charts-icon.png") !important; 
 }

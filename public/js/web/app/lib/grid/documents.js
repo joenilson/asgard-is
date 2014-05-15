@@ -31,7 +31,7 @@ Ext.define('Asgard.lib.grid.documents',{
     
     petitionerAlias: '',
     petitionerEmail: '',
-    
+    historyTitle: 'Document History',
     titleText: 'Document\'s Center',
     idText: 'Id',
     classDocText: 'Doc Classif',
@@ -49,7 +49,7 @@ Ext.define('Asgard.lib.grid.documents',{
     retentionText: 'Retention Time',
     toolViewDocText: 'View File',
     toolRequestText: 'Change Request',
-    
+    toolHistoryText: 'View Old Documents',
     toolAddText: 'Add Values',
     toolRemoveText: 'Remove Entry',
     toolChangeText: 'View Change Requests Queue',
@@ -65,31 +65,40 @@ Ext.define('Asgard.lib.grid.documents',{
     emptyCCLText: 'Please fill the Company, Country and Locations items',
     emptyTitleText: 'No data selected',
     emptyMessageText: 'No one items was selected to process, <br />Please select one at last...',
+    
+    toolsEnabled: true,
+    
     initComponent: function(){
         this.title = this.titleText;
-        
-        this.tools = [{
-            type: 'minus',
-            tooltip: this.toolRemoveText,
-            scope: this,
-            handler: this.fnLibraryTool
-        },{
-            type: 'gear',
-            tooltip: this.toolChangeText,
-            scope: this,
-            handler: this.fnLibraryTool
-        },{
-            type: 'plus',
-            tooltip: this.toolAddText,
-            scope: this,
-            handler: this.fnLibraryTool
-        },{
-            type: 'expand',
-            tooltip: this.toolMassText,
-            scope: this,
-            handler: this.fnLibraryTool
-        }];
-        
+        if(this.toolsEnabled) {
+            this.tools = [{
+                type: 'history',
+                tooltip: this.toolHistoryText,
+                scope: this,
+
+                handler: this.fnLibraryTool
+            },{
+                type: 'minus',
+                tooltip: this.toolRemoveText,
+                scope: this,
+                handler: this.fnLibraryTool
+            },{
+                type: 'gear',
+                tooltip: this.toolChangeText,
+                scope: this,
+                handler: this.fnLibraryTool
+            },{
+                type: 'plus',
+                tooltip: this.toolAddText,
+                scope: this,
+                handler: this.fnLibraryTool
+            },{
+                type: 'expand',
+                tooltip: this.toolMassText,
+                scope: this,
+                handler: this.fnLibraryTool
+            }];
+        }
         this.columns =  {
             plugins: [{
                 ptype: 'gridautoresizer'
@@ -142,11 +151,29 @@ Ext.define('Asgard.lib.grid.documents',{
         var companies = values['companiesCombo'];
         var countries = values['countriesCombo'];
         var locations = values['locationsCombo'];
+        var process_id = values['processCombo'];
         var winContent;
         if(companies.length !== 4){
             Ext.Msg.alert(me.warningTitle,me.emptyCCLText);
         }else{
-            if(tool.type==='plus'){
+            if(tool.type==='history'){
+                var windowDoc = this.createWindow();
+                windowDoc.setTitle(this.toolHistoryText);
+                windowDoc.setWidth(document.documentElement.clientWidth - 50);
+                windowDoc.setHeight(document.documentElement.clientHeight - 50);
+                
+                var DocsHistoryStore = Ext.create('Asgard.store.DocsLibrary');
+                DocsHistoryStore.load({ params: { module: 'history', company: companies, country: countries, location: locations, process: process_id}});
+                winContent = new Ext.create('Asgard.lib.grid.documents',{
+                    store: DocsHistoryStore,
+                    toolsEnabled: false,
+                    titleText: this.historyTitle,
+                    flex: 1
+                });
+                windowDoc.add(winContent);
+                windowDoc.show();
+
+            }else if(tool.type==='plus'){
                 var windowDoc = this.createWindow();
                 windowDoc.setTitle(this.toolAddText);
                 windowDoc.setHeight(200);

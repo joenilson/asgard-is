@@ -4901,10 +4901,11 @@ class IndexController extends AbstractActionController
         
         if($module){
             $sql = $this->getDocsLibraryTable();
+            $status = ($module=='master')?"A":"I";
             if(!empty($process) and !empty($thread)){
-                $listDocuments = $sql->getLibraryByPT($lang,$company,$country,$location,$process,$thread);
+                $listDocuments = $sql->getLibraryByPT($lang,$company,$country,$location,$process,$thread,$status);
             }else{
-                $listDocuments = $sql->getLibrary($lang,$company,$country,$location,$process);
+                $listDocuments = $sql->getLibrary($lang,$company,$country,$location,$process,$status);
             }
             //print_r($listDocuments);
             if(!empty($listDocuments)){

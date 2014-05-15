@@ -61,13 +61,14 @@ class DocsLibraryTable extends AbstractTableGateway {
         return $row;
     }
     
-    public function getLibraryByPT($lang,$companies,$countries,$locations,$process,$thread){
+    public function getLibraryByPT($lang,$companies,$countries,$locations,$process,$thread,$status){
         $companies = $this->processArray($companies);
         $countries = $this->processArray($countries);
         $locations = $this->processArray($locations);
         $process_id = (int) $process;
         $thread_id = (int) $thread;
-        $row = $this->select(function (Select $select) use ($lang,$companies,$countries,$locations,$process_id,$thread_id) {
+        $status = (string) $string;
+        $row = $this->select(function (Select $select) use ($lang,$companies,$countries,$locations,$process_id,$thread_id,$string) {
             $select->join(
                 array('h1'=>new TableIdentifier($this->table_helper, $this->schema_name)), 
                 new Expression ( $this->table_name.'.doc_classification = h1.id AND h1.helper=\'classification\' AND h1.lang=\''.$lang.'\''),
@@ -103,7 +104,7 @@ class DocsLibraryTable extends AbstractTableGateway {
                 new Expression ( $this->table_name.'.doc_retention = h7.id AND h7.helper=\'retention\' AND h7.lang=\''.$lang.'\''), 
                 array('desc_retention'=>'description')
             );
-            $select->where(array('doc_status_general'=>'A','company'=>$companies,'country'=>$countries,'location'=>$locations, 'id_process'=>$process_id,'id_thread'=>$thread_id));
+            $select->where(array('doc_status_general'=>$status,'company'=>$companies,'country'=>$countries,'location'=>$locations, 'id_process'=>$process_id,'id_thread'=>$thread_id));
             $select->order('doc_id ASC');
             //echo $select->getSqlString();
         });
@@ -118,12 +119,12 @@ class DocsLibraryTable extends AbstractTableGateway {
         return $listItems;
     }
     
-    public function getLibrary($lang,$companies,$countries,$locations,$process) {
+    public function getLibrary($lang,$companies,$countries,$locations,$process,$status) {
         $companies = $this->processArray($companies);
         $countries = $this->processArray($countries);
         $locations = $this->processArray($locations);
-        $row = $this->select(function (Select $select) use ($lang,$companies,$countries,$locations,$process) {
-            
+        $status = (string) $status;
+        $row = $this->select(function (Select $select) use ($lang,$companies,$countries,$locations,$process,$status) {
             //$select->columns(array('id','ordering','status'));
             $select->join(
                 array('h1'=>new TableIdentifier($this->table_helper, $this->schema_name)), 
@@ -165,7 +166,7 @@ class DocsLibraryTable extends AbstractTableGateway {
                 new Expression ( $this->table_name.'.doc_owner = h8.id AND h8.lang=\''.$lang.'\''), 
                 array('desc_owner'=>'name'),'left'
             );
-            $dataSelect['doc_status_general']='A';
+            $dataSelect['doc_status_general']=$status;
             $dataSelect['company']=$companies;
             $dataSelect['country']=$countries;
             $dataSelect['location']=$locations;

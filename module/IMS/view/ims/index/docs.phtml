@@ -77,67 +77,7 @@ var windowDoc = Ext.create('Ext.window.Window',{
     height : document.documentElement.clientHeight - 50
     //height : document.documentElement.clientHeight - 50
 });
-/*
-function fnLibraryTool(me, e, object, tool) {
-    var panel = tool.up('panel');
-    
-    //Ext.get('toolType').value=tool.type;
-    //Ext.get('processType').value=panel.name;
-    var formCCL = formDataRequest<?=$this->panelId; ?>;
-    var values = formCCL.getForm().getValues();
-    var companies = values['companiesCombo'];
-    var countries = values['countriesCombo'];
-    var locations = values['locationsCombo'];
-    var winContent;
-        if(companies.length !== 4){
-            Ext.Msg.alert('Advertencia','Escoja primero Compañia, Pais y Ubicacion');
-        }else{
-            windowDoc.removeAll();
-            if(tool.type==='plus'){
-                windowDoc.setTitle('Add New Document');
-                winContent = new Ext.create('Asgard.lib.forms.docsNewDocument',{
-                    flex: 1
-                });
-            }else if(tool.type==='gear'){
-                windowDoc.setTitle('Change Request Queue');
-                innerStore.load({ params: { module: 'master', company: companies, country: countries, location: locations } });
-                var grid = new Ext.create('Asgard.lib.grid.changeRequestQueue',{
-                        store: innerStore,
-                        flex: 1,
-                        region: 'north'
-                    });
-                
-                winContent = Ext.create('Ext.Panel', {
-                    frame: false,
-                    width: 580,
-                    //height: 400,
-                    //flex: 1,
-                    layout: 'border',
-                    items: [
-                        grid, detailPanel]
-                });
-                
-                grid.getSelectionModel().on('selectionchange', function(sm, selectedRecord) {
-                    if (selectedRecord.length) {
-                        console.log(grid.up('panel').items.getAt(1))
-                        //var detailPanel = Ext.getCmp('detailPanel');
-                        detailPanel.update(Ext.htmlDecode(selectedRecord[0].data.desc_request));
-                    }
-                });
-                
-            }else if(tool.type==='expand') {
-                windowDoc.setTitle('Upload Master Files');
-                windowDoc.setHeight(250);
-                winContent = Ext.create('Asgard.lib.forms.docsMasterFileUpload');
-                
-            }
-            windowDoc.add(winContent);
 
-            windowDoc.show();
-        }
-    
-}
-*/
 function fnCCLPProcess(button, opt, obj) {
     var values = button.up('form').getForm().getValues();
     var companies = values['companiesCombo'];
