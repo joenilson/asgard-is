@@ -149,7 +149,6 @@ class hiraIncidentsTable extends AbstractTableGateway {
                 new Expression ( $this->table_name.'.id_type::integer = h1.id_incident AND h1.lang=\''.$lang.'\''),
                 array('name'=>'val_incident'),'right'
             );
-
             $select->columns(array('id_type','values' => new Expression('COUNT(*)')));
             $select->where(array('company'=>$var_companies,'country'=>$var_countries,'location'=>$var_locations,new Expression("date_incident::TEXT like '$year-$month-%' and general_status!=0")));
             $select->group(array('id_type','name'));

@@ -119,18 +119,13 @@ var <?php echo 'HIRAGridIL' . $this->panelId; ?> = Ext.create('Asgard.lib.GridPa
 });
 
 function fnLibraryTool(action,mark,form,tool){
-    console.log(tool);
-    console.log(form);
     var grid = tool.up('panel');
     var panel = grid.up('panel');
-    console.log(panel.items.getAt(0).getForm());
     var values = panel.items.getAt(0).getForm().getValues();
     var companies = values['companiesCombo'];
     var countries = values['countriesCombo'];
     var locations = values['locationsCombo'];
     var monthfield = values['monthfield'];
-    //console.log(form);
-    //console.log(tool);
     if(tool.type==='plus'){
         winAdd = Ext.create('Asgard.lib.window.windowGeneric',{
             height: document.documentElement.clientHeight - 50,
@@ -145,7 +140,7 @@ function fnLibraryTool(action,mark,form,tool){
     }
 }
 
- var chart = Ext.create('Ext.chart.Chart', {
+var chart = Ext.create('Ext.chart.Chart', {
     style: 'background:#fff',
     animate: true,
     shadow: true,
@@ -173,15 +168,22 @@ function fnLibraryTool(action,mark,form,tool){
         highlight: true,
         tips: {
             trackMouse: true,
+            layout: 'fit',
+            width: 140,
             renderer: function(storeItem, item) {
                 this.setTitle(storeItem.get('name') + ': ' + storeItem.get('values'));
             }
         },
         label: {
+            rotate: {
+                degrees: 45
+            }, 
             display: 'insideEnd',
             'text-anchor': 'middle',
             field: 'values',
-            renderer: Ext.util.Format.numberRenderer('0'),
+             renderer: function(s) {
+                return Ext.String.ellipsis(s,10);
+            },
             orientation: 'vertical',
             color: '#333'
         },
@@ -198,7 +200,7 @@ var winChart = Ext.create('Ext.Window', {
     hidden: false,
     maximizable: true,
     closeAction: 'hide',
-    title: 'Bar Renderer',
+    title: 'Grafico de Incidentes',
     autoShow: false,
     layout: 'fit',
     tbar: [{
