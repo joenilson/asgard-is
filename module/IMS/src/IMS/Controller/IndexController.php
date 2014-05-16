@@ -22,8 +22,9 @@ use IMS\Model\Entity\DocsLibrary;
 use IMS\Model\Entity\Requirements;
 use IMS\Model\Entity\hiraIncidentDetails;
 use IMS\Model\Entity\Organigram;
+use IMS\Model\Entity\Traceability;
 use IMS\Model\Entity\Objectives;
-use IMS\Model\Entity\POP;
+use IMS\Model\Entity\ProcessOwnerProfile;
 use IMS\Model\Entity\Communications;
 use IMS\Model\Entity\TrainingPlan;
 use IMS\Model\Entity\InspectionProgram;
@@ -37,7 +38,6 @@ use IMS\Model\Entity\OHR;
 use IMS\Model\Entity\MTM;
 use IMS\Model\Entity\SimulationAlbums;
 use IMS\Model\Entity\SimulationPhotos;
-use IMS\Model\Entity\ISOPlan;
 
 use AsgardLib\Versioning\Documents;
 use AsgardLib\Versioning\Scope;
@@ -106,6 +106,7 @@ class IndexController extends AbstractActionController
     protected $mtmtypeTable;
     protected $isoplanTable;
     protected $isoplanhelpersTable;
+    protected $traceabilityTable;
     
     public function indexAction()
     {
@@ -3832,6 +3833,129 @@ class IndexController extends AbstractActionController
         return new JsonModel($dataResult);
     }
     
+    public function traceabilityAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        return array(
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'lang'=>$lang,
+            'isAdmin'=>($userData->admin)?"true":"false",
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
+        );
+    }
+    
+    public function gettraceabilityAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang=$userPrefs[0]['lang'];
+        $request = $this->getRequest();
+        $company = $request->getQuery('company');
+        $country = $request->getQuery('country');
+        $location = $request->getQuery('location');
+        $sql = $this->getTraceabilityTable();
+        $dataList = $sql->getObjectByCCL($company,$country,$location);
+        $dataResult['success']=true;
+        $dataResult['results']=$dataList;
+        return new JsonModel($dataResult);
+    }
+    
+    public function removetraceabilityAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $company = $request->getPost('companiesCombo');
+        $country = $request->getPost('countriesCombo');
+        $location = $request->getPost('locationsCombo');
+        $organigram_id = $request->getPost('id');
+        $dataResult = array();
+        $sql = $this->getTraceabilityTable();
+        $organigram = $sql->getObjectByCCLId($company,$country,$location,$organigram_id);
+        if($organigram){
+            $dataU['status']='I';
+            $dataU['user_modification']=$userData->id;
+            $dataU['date_modification']=\date('Y-m-d H:i:s');
+            $dataIdx['company']=$organigram[0]['company'];
+            $dataIdx['country']=$organigram[0]['country'];
+            $dataIdx['location']=$organigram[0]['location'];
+            $dataIdx['id']=$organigram[0]['id'];
+            try {
+                $sql->update($dataU,$dataIdx);
+
+            } catch (\Exception $ex) {
+                //$error = $ex;
+
+                $dataResult['success'] = false; 
+                $dataResult['message'] = $ex->getMessage(); 
+            }
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function addtraceabilityAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $company = $request->getPost('companiesCombo');
+        $country = $request->getPost('countriesCombo');
+        $location = $request->getPost('locationsCombo');
+        $description = (string) $request->getPost('description');
+        $files =  $request->getFiles()->toArray();
+        $id = $request->getPost('organigram_id');
+        $date_creation = \date('Y-m-d h:i:s');
+
+        $dataResult = array();
+        
+        $sql = $this->getTraceabilityTable();
+        $oldORganigram = $sql->getObjectByCCL($company,$country,$location);
+        if($oldORganigram){
+            $dataU['status']='I';
+            $dataU['user_modification']=$userData->id;
+            $dataU['date_modification']=\date('Y-m-d H:i:s');
+            $dataIdx['company']=$oldORganigram[0]['company'];
+            $dataIdx['country']=$oldORganigram[0]['country'];
+            $dataIdx['location']=$oldORganigram[0]['location'];
+            $dataIdx['id']=$oldORganigram[0]['id'];
+            $sql->update($dataU,$dataIdx);
+        }
+        
+        $object = new Traceability();
+        $object->setDescription($description)
+                ->setCompany($company)
+                ->setCountry($country)
+                ->setLocation($location)
+                ->setUser_creation($userData->id)
+                ->setStatus('A')
+                ->setDate_creation($date_creation);
+        if($id){
+            $object->setId($id);
+        }
+        $dataResult['success'] = true; 
+        try {
+            $newId = $sql->save($object);
+            
+        } catch (\Exception $ex) {
+            //$error = $ex;
+            
+            $dataResult['success'] = false; 
+            $dataResult['message'] = $ex->getMessage(); 
+        }
+
+        $valid = new \Zend\Validator\File\UploadFile();
+        
+        if(isset($newId) AND $valid->isValid($files['traceability'])){
+            $fileName = "traceability{$company}_{$country}_{$location}_".$newId.".pdf";
+            $this->savefile('library/traceability', $files['traceability'], $fileName, false, null);
+            $sql->update(array('filename'=>'library/traceability/'.$fileName),array('id'=>$newId));
+        }
+        return new JsonModel($dataResult);
+    }
+    
     public function ownersprofileAction(){
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
         $userData = $this->getServiceLocator()->get('userSessionData');
@@ -3864,7 +3988,7 @@ class IndexController extends AbstractActionController
         $sql = $this->getPOPTable();
         $oldORganigram = $sql-> getOwnerProfile($lang,$id,$company,$country,$location);
         if($oldORganigram){
-            $object = new \IMS\Model\Entity\ProcessOwnerProfile();
+            $object = new ProcessOwnerProfile();
             $object->setProfile_desc($description)
                     ->setId($id)
                     ->setCompany($company)
@@ -6383,6 +6507,15 @@ class IndexController extends AbstractActionController
             $this->organigramTable = $sm->get('IMS\Model\OrganigramTable');
     	}
     	return $this->organigramTable;
+    }
+    
+    private function getTraceabilityTable()
+    {
+    	if (!$this->traceabilityTable) {
+            $sm = $this->getServiceLocator();
+            $this->traceabilityTable = $sm->get('IMS\Model\TraceabilityTable');
+    	}
+    	return $this->traceabilityTable;
     }
     
     private function getPOPTable()

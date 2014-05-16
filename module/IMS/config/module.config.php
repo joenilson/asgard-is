@@ -1087,6 +1087,62 @@ return array(
                             ),
                         ),
                     ),
+                    'traceability' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/traceability[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'traceability'
+                            ),
+                        ),
+                    ),
+                    'gettraceability' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/gettraceability[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'gettraceability'
+                            ),
+                        ),
+                    ),
+                    'addtraceability' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/addtraceability[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'addtraceability'
+                            ),
+                        ),
+                    ),
+                    'removetraceability' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/removetraceability[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'removetraceability'
+                            ),
+                        ),
+                    ),
                     'ownersprofile' => array(
                         'type'    => 'Segment',
                         'options' => array(

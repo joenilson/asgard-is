@@ -58,6 +58,7 @@ use IMS\Model\MTMTypeTable;
 use IMS\Model\InspectionProgramTable;
 use IMS\Model\EmergencyPlanTable;
 use IMS\Model\OrganigramTable;
+use IMS\Model\TraceabilityTable;
 use IMS\Model\ObjectivesTable;
 use IMS\Model\SecurityHandbookTable;
 use IMS\Model\ProcessOwnerProfileTable;
@@ -117,6 +118,11 @@ class Module implements AutoloaderProviderInterface
     {
         return array(
             'factories' => array(
+                'IMS\Model\TraceabilityTable'=> function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new TraceabilityTable($dbAdapter);
+                    return $table;
+                },
                 'IMS\Model\SimulationAlbumsTable'=> function($sm){
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new SimulationAlbumsTable($dbAdapter);
