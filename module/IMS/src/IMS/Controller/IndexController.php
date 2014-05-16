@@ -1715,10 +1715,10 @@ class IndexController extends AbstractActionController
 
         $valid = new \Zend\Validator\File\UploadFile();
         
-        if(isset($newId) AND $valid->isValid($files['training_file'])){
-            $fileName = "training_{$company}_{$country}_{$location}_".$newId.".pdf";
-            $this->savefile('library/training', $files['training_file'], $fileName, false, null);
-            $sql->update(array('filename'=>'library/training/'.$fileName),array('id'=>$newId));
+        if(isset($newId) AND $valid->isValid($files['mtm_file'])){
+            $fileName = "mtm_{$company}_{$country}_{$location}_".$newId.".pdf";
+            $this->savefile('library/monitoring', $files['mtm_file'], $fileName, false, null);
+            $sql->update(array('filename'=>'library/monitoring/'.$fileName),array('id'=>$newId));
         }
         return new JsonModel($dataResult);
     }

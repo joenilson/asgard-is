@@ -79,7 +79,7 @@ Ext.define('Asgard.lib.forms.mtmNewDocument',{
             xtype: 'filefield',
             anchor: '100%',
             emptyText: this.fileFieldEmptyText,
-            name: 'ohr_file',
+            name: 'mtm_file',
             listeners:{
                 afterrender:function(cmp){
                     cmp.fileInputEl.set({
