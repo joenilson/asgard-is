@@ -176,10 +176,11 @@ Ext.define('Asgard.lib.grid.documents',{
             }else if(tool.type==='plus'){
                 var windowDoc = this.createWindow();
                 windowDoc.setTitle(this.toolAddText);
-                windowDoc.setHeight(200);
+                //windowDoc.setHeight(200);
                 winContent = new Ext.create('Asgard.lib.forms.docsNewDocument',{
                     companiesValue: companies, countriesValue: countries, locationsValue: locations,
-                    flex: 1
+                    flex: 1,
+                    autoScroll: true
                 });
                 windowDoc.add(winContent);
                 windowDoc.show();
@@ -286,7 +287,8 @@ Ext.define('Asgard.lib.grid.documents',{
                 closable: true,
                 closeAction: 'destroy',
                 maximizable : true,
-                layout: 'fit'
+                layout: 'fit',
+                flex: 1
             });
          return windowDocs;
     },

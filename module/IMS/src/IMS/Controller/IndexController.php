@@ -5091,7 +5091,7 @@ class IndexController extends AbstractActionController
                 $doc_id = $sqlLib->getNextDocId();
                 
                 $doc_file = 'library/docs/'.$doc_id.'_'.$version.date('Ymdhis').'.pdf';
-                
+                $filename = $doc_id.'_'.$version.date('Ymdhis').'.pdf';
                 $object = new DocsLibrary();
                 $object->setDoc_id($doc_id)
                         ->setLang($lang)
@@ -5118,11 +5118,7 @@ class IndexController extends AbstractActionController
                         ->setId_process($id_process);
                 
                 if($sqlLib->save($object)){
-                    $docsPath = getcwd().DIRECTORY_SEPARATOR.'public'.DIRECTORY_SEPARATOR.$this->getConfig()['library']['docs_path'];
-                    if (!is_dir($docsPath)){
-                        mkdir($docsPath,0777,true);
-                    }
-                    move_uploaded_file($tmpFile, $docsPath.DIRECTORY_SEPARATOR.$doc_file);
+                    $this->savefile('library/docs', $files['new_doc'], $filename, false,null);
                 }
                 
                 $data["success"]=true;
