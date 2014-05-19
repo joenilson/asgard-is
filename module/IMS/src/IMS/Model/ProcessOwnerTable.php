@@ -77,10 +77,10 @@ class ProcessOwnerTable extends AbstractTableGateway {
     
     public function getOwnersByLang($lang)
     {
-        $rows = $this->select(function (Select $select) use ($pid,$lang) {
+        $rows = $this->select(function (Select $select) use ($lang) {
             $select->join(
                 array('lt'=>new TableIdentifier($this->link_table, $this->schema_name)), 
-                new Expression ( $this->table_name.'.id = lt.idowner AND lt.id_process='.$pid),
+                new Expression ( $this->table_name.'.id = lt.idowner '),
                 array('id_process'=>'id_process'));
             $select->where(array('lang'=>(string) $lang, 'status'=>'A'));
             $select->order('id ASC');
