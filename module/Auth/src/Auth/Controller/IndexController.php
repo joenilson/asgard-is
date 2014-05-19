@@ -172,6 +172,10 @@ class IndexController extends AbstractActionController
                             $company=($country=='0002')?'0002':$company;
                             $company=($country=='0003')?'0003':$company;
                             
+                            $location = ($country=='0001')?"0008":"0001";
+                            $location = ($country=='0002')?"0002":$location;
+                            $location = ($country=='0003')?"0001":$location;
+                            
                             $salt=md5($resultMessages->uid.$now.$country);
 
                             $prePassword = $this->getConfig()['salt'].$passAuth.$salt;
@@ -189,7 +193,7 @@ class IndexController extends AbstractActionController
                             ->setDate_lastlogin(null)
                             ->setCountry($country)
                             ->setCompany($company)
-                            ->setLocation("0001")
+                            ->setLocation($location)
                             ->setAdmin('f')
                             ->setStatus('A')
                             ->setType('single')
