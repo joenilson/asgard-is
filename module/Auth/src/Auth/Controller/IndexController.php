@@ -142,26 +142,22 @@ class IndexController extends AbstractActionController
                     //print_r($user_prefs);
                     if($userType == 'db'){
                         $userData = $this->getAuthService($userType)
-                                        ->getAdapter()
-                                        ->getResultRowObject(null,array('password','salt'));
-
+                            ->getAdapter()
+                            ->getResultRowObject(null,array('password','salt'));
                         $dataValues = array ('date_lastlogin' => $now);
 
                         $UsersTable->updateById($userData->id, $dataValues);
 
                     }elseif ($userType === 'ldap'){
-
                         $resultMessages = $this->getAuthService($userType)
-                                        ->getAdapter()
-                                        ->getAccountObject();
-                        
+                            ->getAdapter()
+                            ->getAccountObject();
                         $userRegistry = $UsersTable->getUserByUsername($resultMessages->uid,$userType);
 
                         if(!empty($userRegistry)){
                             $userData = $UsersTable->getUserByIdRaw($userRegistry[0]['id']);
                             $dataValues = array ('date_lastlogin' => $now);
                             $UsersTable->updateById($userRegistry[0]['id'], $dataValues);
-
                         }else{
                             $country=($userField[1]=='kolareal.com.do')?'0001':'0002';
                             $country=($userField[1]=='kr.com.pe')?'0002':$country;
