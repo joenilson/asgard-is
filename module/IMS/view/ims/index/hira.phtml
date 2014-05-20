@@ -71,6 +71,7 @@ function fnCCLPProcess(button, opt, obj) {
     var countries = values['countriesCombo'];
     var locations = values['locationsCombo'];
     var process_id = values['processCombo'];
+    HIRAStore<?= $this->panelId; ?>.removeAll();
     HIRAStore<?= $this->panelId; ?>.load({ params: { module: 'hira', company: companies, country: countries, location: locations, process: process_id }});
 
 }

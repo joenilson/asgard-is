@@ -103,7 +103,7 @@ Ext.define('Asgard.lib.grid.hira_incidents',{
                 {text: this.idText, flex: 0.5, sortable: true, dataIndex: 'id_incident', filter: true },
                 {text: this.nctypeText, flex: 1, sortable: true, filter: 'combo', dataIndex: 'nonconformity_type_desc', tdCls: 'wrapText' },
                 {text: this.typeText, flex: 1, sortable: true, filter: 'combo', dataIndex: 'val_incident', tdCls: 'wrapText' },
-                {text: this.descriptionText, flex: 3, sortable: true, filter: 'combo', dataIndex: 'description', tdCls: 'wrapText' },
+                {text: this.descriptionText, flex: 3, sortable: true, filter: 'combo', dataIndex: 'description', tdCls: 'wrapText', renderer: Ext.util.Format.htmlDecode },
                 {text: this.authorText, flex: 2, sortable: true, filter: 'combo', dataIndex: 'owner_fullname', tdCls: 'wrapText' },
                 {text: this.processText, flex: 1, sortable: true, filter: 'combo', dataIndex: 'process_desc', tdCls: 'wrapText' },
                 {text: this.threadText, flex: 1, sortable: true, filter: 'combo', dataIndex: 'thread_desc', tdCls: 'wrapText' },

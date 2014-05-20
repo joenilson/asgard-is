@@ -54,6 +54,7 @@ Ext.define('Asgard.lib.forms.hiraIncidentClose',{
             readOnly: true,
             height: 180,
             value: this.objectIncidentValue,
+            //renderer: Ext.util.Format.htmlDecode,
             allowBlank:false
         }, this.objectIncidentField);
         

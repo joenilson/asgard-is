@@ -61,7 +61,7 @@ Ext.define('Asgard.lib.grid.hira_incidents_details',{
                     }
                 },
                 {text: this.descriptionText, flex: 0.75, sortable: true, filter: 'combo', dataIndex: 'description', tdCls: 'wrapText',
-                    summaryType: 'count',
+                    summaryType: 'count', renderer: Ext.util.Format.htmlDecode,
                     summaryRenderer: function(value, summaryData, dataIndex) {
                         return ((value === 0 || value > 1) ? '(' + value + ' Incidents)' : '(1 Incident)');
                     }

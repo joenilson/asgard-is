@@ -5666,7 +5666,7 @@ class IndexController extends AbstractActionController
         
         foreach($listClose as $values) {
             $dataResult['close_description']=$values['close_description'];
-            $dataResult['incident_desc']=$values['incident_desc'];
+            $dataResult['incident_desc']=strip_tags(htmlspecialchars_decode($values['incident_desc']));
         }
         $data = array();
         if(count($dataResult>0)){
@@ -5697,7 +5697,7 @@ class IndexController extends AbstractActionController
         
         foreach($listClose as $values) {
             $dataResult['validity_description']=$values['validity_description'];
-            $dataResult['incident_desc']=$values['incident_desc'];
+            $dataResult['incident_desc']= $this->cleanTags(htmlspecialchars_decode($values['incident_desc']));
         }
         $data = array();
         if(count($dataResult>0)){
@@ -5801,7 +5801,7 @@ class IndexController extends AbstractActionController
         
         $request = $this->getRequest();
         $date_create = $request->getPost('IncidentDate');//	2014-02-12
-        $description = htmlspecialchars($request->getPost('IncidentDesc'));//	Se paso de pistolas el inge<br>
+        $description = $this->cleanTags(trim($request->getPost('IncidentDesc')));//	Se paso de pistolas el inge<br>
         $company = $request->getPost('companiesCombo');//	0001
         $country = $request->getPost('countriesCombo');//	0001
         $incident_owner = $request->getPost('doc_owner');//	47
