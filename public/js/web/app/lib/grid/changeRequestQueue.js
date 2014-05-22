@@ -44,13 +44,6 @@ Ext.define('Asgard.lib.grid.changeRequestQueue',{
     toolRequestText: 'Treat requirement',
 
     initComponent: function(){
-        
-        this.tbar = [
-            {
-                text: 'Tratar Solicitud'
-            }
-        ];
-        
         this.title = this.titleText,
         this.columns =  {
             plugins: [{

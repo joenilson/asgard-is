@@ -12,18 +12,32 @@ use Zend\Db\Sql\TableIdentifier;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Predicate\Expression;
 use IMS\Model\Entity\DocsRequest;
+use Zend\Db\Adapter\AdapterAwareInterface;
+use Zend\Db\ResultSet\HydratingResultSet;
 
-class DocsRequestTable extends AbstractTableGateway {
+class DocsRequestTable extends AbstractTableGateway
+    implements AdapterAwareInterface 
+{
 
     protected $table_name = 'docs_request';
     protected $schema_name = 'ims';
     protected $table_helper = 'docs_helpers';
     protected $table_library = 'docs_library';
     protected $empty_value = '0000';
-    
+    /*
     public function __construct(Adapter $adapter) {
         $this->table = new TableIdentifier($this->table_name, $this->schema_name);
         $this->adapter = $adapter;
+    }
+    */
+    
+    public function setDbAdapter(Adapter $adapter)
+    {
+        $this->table = new TableIdentifier($this->table_name, $this->schema_name);
+        $this->adapter = $adapter;
+        $this->resultSetPrototype = new HydratingResultSet();
+        
+        $this->initialize();
     }
     
     private function processArray($value)
@@ -47,7 +61,6 @@ class DocsRequestTable extends AbstractTableGateway {
         $doc_newid = (int) $id;
         $resultSet = $this->select(function (Select $select) use ($doc_newid) {
             $select->where(array('doc_newid'=> (int) $doc_newid));
-            //$select->columns(array(new Expression('max(doc_newid) AS doc_newid')));
         });
         $result = $resultSet->toArray();
         return $result;
@@ -58,7 +71,7 @@ class DocsRequestTable extends AbstractTableGateway {
             $select->columns(array(new Expression('max(doc_newid) AS doc_newid')));
         });
         $result = $resultSet->current();
-        $newid = $result->doc_newid;
+        $newid = $result['doc_newid'];
         $newid++;
         return $newid;
     }

@@ -605,10 +605,7 @@ class IndexController extends AbstractActionController
             $dataIdx['id']=$organigram[0]['id'];
             try {
                 $sql->update($dataU,$dataIdx);
-
             } catch (\Exception $ex) {
-                //$error = $ex;
-
                 $dataResult['success'] = false; 
                 $dataResult['message'] = $ex->getMessage(); 
             }
@@ -661,8 +658,6 @@ class IndexController extends AbstractActionController
             $newId = $sql->save($object);
             
         } catch (\Exception $ex) {
-            //$error = $ex;
-            
             $dataResult['success'] = false; 
             $dataResult['message'] = $ex->getMessage(); 
         }
@@ -740,8 +735,6 @@ class IndexController extends AbstractActionController
                 $sql->update($dataU,$dataIdx);
 
             } catch (\Exception $ex) {
-                //$error = $ex;
-
                 $dataResult['success'] = false; 
                 $dataResult['message'] = $ex->getMessage(); 
             }
@@ -792,10 +785,7 @@ class IndexController extends AbstractActionController
         $dataResult['success'] = true; 
         try {
             $newId = $sql->save($object);
-            
         } catch (\Exception $ex) {
-            //$error = $ex;
-            
             $dataResult['success'] = false; 
             $dataResult['message'] = $ex->getMessage(); 
         }
@@ -832,8 +822,6 @@ class IndexController extends AbstractActionController
         $countryParams = (string) $request->getQuery('country');
         $locationParams = (string) $request->getQuery('location');
         $processParams = (int) $request->getQuery('process');
-        //$limit = (int) $request->getQuery('limit');
-        //$offset = (int) $request->getQuery('start');
         $limit = 0;
         $offset = 0;
         $sql = $this->getIEEATable();
@@ -908,8 +896,6 @@ class IndexController extends AbstractActionController
         $date_creation = \date('Y-m-d h:i:s');
         
         $dataResult = array();
-
-        //$sqlMessage = $this->getMessagesTable();
         $sqlProcess = $this->getProcessMainTable();
         $arrayProcess = $sqlProcess->getAllMainProcess($lang_docs,'A',$company,$country,$location);
         $process = array();
@@ -930,17 +916,6 @@ class IndexController extends AbstractActionController
         foreach($arrayHelpers as $key=>$values){
             $helpers[$values['helper']][$values['description']]=array('id'=>$values['id'],'desc'=>$values['description']);
         }
-        
-        //
-        //$reader = new \PHPExcel();
-        //$reader = new \PHPExcel_Reader_Excel2007();
-        
-        /** Identify the type of $inputFileName **/ 
-        //$inputFileType = \PHPExcel_IOFactory::identify($files['excel_file']['tmp_name']); 
-        /** Create a new Reader of the type that has been identified **/ 
-        //$objReader = \PHPExcel_IOFactory::createReader($inputFileType); 
-        /** Load $inputFileName to a PHPExcel Object **/ 
-        //$objPHPExcel = $objReader->load($files['excel_file']['tmp_name']);
         
         $reader = new \PHPExcel_Reader_Excel5();
         $worksheetData = $reader->listWorksheetInfo($files['excel_file']['tmp_name']);
@@ -5772,7 +5747,6 @@ class IndexController extends AbstractActionController
         $request = $this->getRequest();
         $hiraIncidentsList = $this->getHiraIncidentsListTable();
         $resultList = $hiraIncidentsList->getIncidentsListResume($request->getQuery('companies'),$request->getQuery('countries'),$request->getQuery('locations'),$request->getQuery('monthfield'));
-        //$resultList = $hiraIncidentsList->getIncidentsListFiltered($request->getQuery('companies'),$request->getQuery('countries'),$request->getQuery('locations'),$request->getQuery('monthfield'));
         $data['results']=(!empty($resultList))?$resultList:"";
         $data['success']=(!empty($resultList))?true:false;
         $data['msg']=(!empty($resultList))?"":"Error trying to get the information...";
@@ -5787,7 +5761,6 @@ class IndexController extends AbstractActionController
         $request = $this->getRequest();
         $hiraIncidentsList = $this->getHiraIncidentsListTable();
         $resultList = $hiraIncidentsList->getIncidentsListResumeChart($request->getQuery('companies'),$request->getQuery('countries'),$request->getQuery('locations'),$request->getQuery('monthfield'),$lang);
-        //$resultList = $hiraIncidentsList->getIncidentsListFiltered($request->getQuery('companies'),$request->getQuery('countries'),$request->getQuery('locations'),$request->getQuery('monthfield'));
         $data['results']=(!empty($resultList))?$resultList:"";
         $data['success']=(!empty($resultList))?true:false;
         $data['msg']=(!empty($resultList))?"":"Error trying to get the information...";

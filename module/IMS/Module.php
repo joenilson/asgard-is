@@ -117,6 +117,16 @@ class Module implements AutoloaderProviderInterface
     public function getServiceConfig()
     {
         return array(
+            'initializers' => array(
+                function ($instance, $sm) {
+                    if ($instance instanceof \Zend\Db\Adapter\AdapterAwareInterface) {
+                        $instance->setDbAdapter($sm->get('Zend\Db\Adapter\Adapter'));
+                    }
+                }
+            ),
+            'abstract_factories' => array(
+                'AsgardLib\Service\CommonModelTableAbstractFactory',
+            ),
             'factories' => array(
                 'IMS\Model\TraceabilityTable'=> function($sm){
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
@@ -311,11 +321,6 @@ class Module implements AutoloaderProviderInterface
                 'IMS\Model\DocsHelpersTable'=> function($sm){
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new DocsHelpersTable($dbAdapter);
-                    return $table;
-                },
-                'IMS\Model\DocsRequestTable'=> function($sm){
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $table = new DocsRequestTable($dbAdapter);
                     return $table;
                 },
                 'IMS\Model\ProcessOwnerTable'=> function($sm){
