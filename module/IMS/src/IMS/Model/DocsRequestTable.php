@@ -24,12 +24,6 @@ class DocsRequestTable extends AbstractTableGateway
     protected $table_helper = 'docs_helpers';
     protected $table_library = 'docs_library';
     protected $empty_value = '0000';
-    /*
-    public function __construct(Adapter $adapter) {
-        $this->table = new TableIdentifier($this->table_name, $this->schema_name);
-        $this->adapter = $adapter;
-    }
-    */
     
     public function setDbAdapter(Adapter $adapter)
     {
