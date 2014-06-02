@@ -104,7 +104,7 @@ Ext.define('Asgard.lib.grid.documents',{
                 ptype: 'gridautoresizer'
             }],
             items: [
-                {text: this.idText, sortable: false, hidden: true, dataIndex: 'doc_id', filter: false},
+                {text: this.idText, sortable: false, flex: 0.5, hidden: false, dataIndex: 'doc_id', filter: true},
                 {text: this.classDocText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'desc_classification', tdCls: 'wrapText'},
                 {text: this.documentText, flex: 3, sortable: true, filter: true, dataIndex: 'doc_desc', tdCls: 'wrapText'},
                 {text: this.recordText, flex: 1.5, sortable: true, filter: true, dataIndex: 'doc_record', tdCls: 'wrapText'},
