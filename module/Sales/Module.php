@@ -1,6 +1,10 @@
 <?php
 namespace Sales;
 
+use Zend\ModuleManager\ModuleManager;
+use Zend\Mvc\ModuleRouteListener;
+
+
 class Module
 {
     public function getAutoloaderConfig()
@@ -26,9 +30,9 @@ class Module
     {
     	$sharedEvents = $moduleManager->getEventManager()->getSharedManager();
     	$sharedEvents->attach(__NAMESPACE__, 'dispatch', function($e) {
-    		// This event will only be fired when an ActionController under the MyModule namespace is dispatched.
-    		$controller = $e->getTarget();
-    		$controller->layout('layout/contentlayout');
+            // This event will only be fired when an ActionController under the Sales Module namespace is dispatched.
+            $controller = $e->getTarget();
+            $controller->layout('layout/contentlayout');
     	}, 100);
     }
     

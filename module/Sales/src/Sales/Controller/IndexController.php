@@ -36,15 +36,27 @@ class IndexController {
     public function sapConnector(){
         
         $wsdl = "http://erpqas.kolareal.com.do:8001/sap/bc/srt/wsdl/bndg_C597B55359CF1B7EE1000000C0A80373/wsdl11/allinone/standard/document?sap-client=300";
+        $wsdl_prd = "http://erpapp1.kolareal.com.do:8001/sap/bc/srt/wsdl/bndg_A0EDC953C6AB1C47E1000000C0A8036B/wsdl11/allinone/standard/document?sap-client=300";
+        
+        /**
+                *  $mappingFunctions 
+                */
         $mappingFunctions = array(
             'ListSupervisor'=>'ZFmGetSupervisor',
             'getCustomerInfo'=>'ZFmGetCustomer01',
             'getRoute'=>'ZFmGetRoute',
             'getSalesChannel'=>'ZFmGetVtweg',
-            'getLocation'=>'ZFmGetVkorg');
+            'getLocation'=>'ZFmGetVkorg',
+            'getEmployeeOffice'=>'ZFmGetBtrtl',
+            'getEmployeeList'=>'ZFmGetEmployeeData');
         
         $soap = new Soap();
-        $client = $soap->SoapConnection($wsdl, $this->getConfig()['soap']);
+        
+        try {
+            $client = $soap->SoapConnection($wsdl, $this->getConfig()['soap']);
+        } catch (Exception $ex) {
+            error_log($ex);
+        }
         
     }
     
