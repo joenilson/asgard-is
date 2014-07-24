@@ -238,3 +238,18 @@
 .uploadzip-icon {
     background: url('../images/default/16x16/upload_zip_icon.png') no-repeat 0 0 !important;
 }
+
+/* check combo */ 
+.x-combo-checker { 
+    background-position: 50% -2px; 
+    margin-left: 1px; 
+    background-color: transparent; 
+    background-image: url("../js/extjs/resources/themes/images/default/grid/unchecked.gif"); 
+    background-position: -1px -1px; 
+    background-repeat: no-repeat; 
+    height: 14px; width: 14px; 
+    display: inline-block; 
+} 
+.x-boundlist-selected .x-combo-checker { 
+    background-image: url("../js//extjs/resources/themes/images/default/grid/checked.gif"); 
+}

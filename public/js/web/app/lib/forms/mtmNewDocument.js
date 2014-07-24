@@ -27,7 +27,7 @@ Ext.define('Asgard.lib.forms.mtmNewDocument',{
     descText: 'Description',
     yearsText: 'Year',
     fileText: 'File',
-    fileFieldEmptyText: 'Choose a document',    
+    fileFieldEmptyText: 'Choose a document',
     textSubmitButton: 'Send',
     textCancelButton: 'Cancel',
 

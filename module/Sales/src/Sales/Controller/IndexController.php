@@ -18,6 +18,10 @@
 
 namespace Sales\Controller;
 
+use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
+use Zend\View\Model\ViewModel;
+
 use AsgardLib\Sources\Soap;
 
 /**
@@ -25,12 +29,73 @@ use AsgardLib\Sources\Soap;
  *
  * @author Joe Nilson <joenilson@gmail.com>
  */
-class IndexController {
+class IndexController extends AbstractActionController {
     
     protected $systemConfig;
 
     public function indexAction(){
-        
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        return array(
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'lang'=>$lang,
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
+        );
+    }
+    
+    public function masterdataAction() {
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        return array(
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'lang'=>$lang,
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
+        );
+    }
+    
+    public function freeloansAction() {
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        return array(
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'lang'=>$lang,
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
+        );
+    }
+    
+    public function agreementsAction() {
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        return array(
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'lang'=>$lang,
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
+        );
+    }
+            
+    public function rlocationAction() {
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        return array(
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'lang'=>$lang,
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
+        );
     }
     
     public function sapConnector(){

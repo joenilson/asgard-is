@@ -8,7 +8,6 @@ return array(
     ),
     'router' => array(
         'routes' => array(
-            
             'csi' => array(
                 'type'    => 'Literal',
                 'options' => array(
