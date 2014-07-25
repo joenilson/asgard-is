@@ -37,11 +37,26 @@ function fnCCLProcess(button, opt, obj) {
 }
 var gridStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.TrainingPlan');
 
+var storeCombo = new Ext.create('Asgard.store.Locations', { autoLoad: false });
+storeCombo.load({params: {cid: '0001' }});
+var comboBox = new Ext.create('Ext.ux.CheckCombo',
+{
+    //renderTo: 'checkcombowithall',
+    valueField: 'id',
+    displayField: 'location_name',
+    store: storeCombo,
+    addAllSelector: true,
+    queryMode: 'local',
+    fieldLabel: 'Organización de Ventas'
+});
+
 var form<?=$this->panelId;?> = Ext.create('Asgard.lib.forms.comboCCL', { innerGrid: grid<?=$this->panelId;?> });
 var grid<?=$this->panelId;?> = Ext.create('Asgard.lib.grid.trainingplan', { 
     store: gridStore<?= $this->panelId; ?>, 
     id: 'grid<?=$this->panelId;?>'
 });
+
+form<?=$this->panelId;?>.add(comboBox);
 
 deployCombos('companiesCombo','<?=$this->companyId;?>');
 deployCombos('countriesCombo','<?=$this->countryId;?>');

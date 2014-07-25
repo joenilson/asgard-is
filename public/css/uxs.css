@@ -251,5 +251,5 @@
     display: inline-block; 
 } 
 .x-boundlist-selected .x-combo-checker { 
-    background-image: url("../js//extjs/resources/themes/images/default/grid/checked.gif"); 
+    background-image: url("../js/extjs/resources/themes/images/default/grid/checked.gif"); 
 }

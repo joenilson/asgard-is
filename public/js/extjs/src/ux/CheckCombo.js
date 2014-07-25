@@ -77,7 +77,7 @@ Ext.define('Ext.ux.CheckCombo',
                 pageSize: me.pageSize,
                 tpl: 
                 [
-                    '<ul><tpl for=".">',
+                    '<ul class="x-list-plain"><tpl for=".">',
                         '<li role="option" class="' + Ext.baseCSSPrefix + 'boundlist-item"><span class="x-combo-checker">&nbsp;</span> {' + me.displayField + '}</li>',
                     '</tpl></ul>'
                 ]
