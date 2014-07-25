@@ -50,6 +50,34 @@ return array(
                             ),
                         ),
                     ),
+                    'salesoffices' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/salesoffices[/:society]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id_process' => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'salesoffices'
+                            ),
+                        ),
+                    ),
+                    'saleschannels' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/saleschannels[/:society]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id_process' => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'saleschannels'
+                            ),
+                        ),
+                    ),
                 ),
             ),
         ),
