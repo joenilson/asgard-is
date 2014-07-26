@@ -12,20 +12,20 @@
             ->prependStylesheet($this->basePath() . '/css/slimbox2.css')
             ->prependStylesheet($this->basePath() . '/css/webapp/general.css')
             ->prependStylesheet($this->basePath() . '/js/extjs/resources/css/ext-all-neptune.css')
-            ->prependStylesheet($this->basePath() . '/js/bootstrap/css/bootstrap-theme.min.css')
-            ->prependStylesheet($this->basePath() . '/js/bootstrap/css/bootstrap.min.css')
+            //->prependStylesheet($this->basePath() . '/js/bootstrap/css/bootstrap-theme.min.css')
+            //->prependStylesheet($this->basePath() . '/js/bootstrap/css/bootstrap.min.css')
          ?>
 
         <!-- Scripts -->
         <?php 
 	      echo $this->headScript()
-                ->prependFile($this->basePath() . '/js/html5.js', 'text/javascript', array('conditional' => 'lt IE 9',))
-                ->prependFile($this->basePath() . '/js/bootstrap/js/bootstrap.min.js')
+                //->prependFile($this->basePath() . '/js/html5.js', 'text/javascript', array('conditional' => 'lt IE 9',))
+                //->prependFile($this->basePath() . '/js/bootstrap/js/bootstrap.min.js')
                 ->prependFile($this->basePath('js/slimbox2.js'))
                 ->prependFile($this->basePath('js/jquery-1.8.3.min.js'))
                 ->prependFile($this->basePath() . '/js/extjs/src/ux/panel/PDF.js')
                 ->prependFile($this->basePath() . '/js/extjs/src/ux/CTemplate.js')
-                ->prependFile($this->basePath() . '/js/extjs/src/ux/CheckCombo.js')
+                ->prependFile($this->basePath() . '/js/extjs/src/ux/CheckComboBox.js')
                 ->prependFile($this->basePath() . '/js/extjs/features/FixedSummary.js')
                 ->prependFile($this->basePath() . '/js/web/app.js')
                 ->prependFile($this->basePath() . '/js/extjs/ext-theme-neptune.js')

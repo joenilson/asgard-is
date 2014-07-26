@@ -35,18 +35,34 @@ function fnCCLProcess(button, opt, obj) {
 }
 var gridStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.TrainingPlan');
 
-var storeCombo = new Ext.create('Asgard.store.Locations', { autoLoad: false });
-storeCombo.load({params: {cid: '0001' }});
-
-var comboBox = new Ext.create('Ext.ux.CheckCombo',
+var storeCombo = new Ext.create('Asgard.store.Companies');
+//storeCombo.load({params: {cid: '0001' }});
+//storeCombo.load({params: {cid: '0001' }});
+//storeCombo.load();
+/*
+var comboBox = new Ext.create('Ext.form.field.ComboBox',
 {
     valueField: 'id',
     displayField: 'location_name',
     store: storeCombo,
-    addAllSelector: true,
+    multiSelect: true,
     queryMode: 'local',
-    fieldLabel: 'Organización de Ventas'
+    fieldLabel: 'Organización de Ventas',
+    plugins: [ new Ext.create('Ext.ux.form.plugin.CheckComboBox') ]
+    //,addAllSelector: true
 });
+*/
+
+var comboBox = new Ext.create('Ext.ux.CheckCombo',
+{
+    valueField: 'id',
+    displayField: 'comercial_name',
+    store: storeCombo,
+    //queryMode: 'local',
+    fieldLabel: 'Organización de Ventas',
+    addAllSelector: true
+});
+
 
 var form<?=$this->panelId;?> = Ext.create('Asgard.lib.forms.comboCCL', { innerGrid: grid<?=$this->panelId;?> });
 var grid<?=$this->panelId;?> = Ext.create('Asgard.lib.grid.trainingplan', { 

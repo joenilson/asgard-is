@@ -36,13 +36,15 @@ Ext.define('Ext.ux.CheckCombo',
     oldValue: '',
     listeners:
     {
-/* uncomment if you want to reload store on every combo expand
-        beforequery: function(qe)
-        {
-            this.store.removeAll();
-            delete qe.combo.lastQuery;
-        },
-*/
+        /*
+                * uncomment if you want to reload store on every combo expand
+                */
+        /*
+                beforequery: function(qe) {
+                    this.store.removeAll();
+                    delete qe.combo.lastQuery;
+                },
+                */
         focus: function(cpt)
         {
             cpt.oldValue = cpt.getValue();
@@ -75,12 +77,19 @@ Ext.define('Ext.ux.CheckCombo',
                 displayField: me.displayField,
                 focusOnToFront: false,
                 pageSize: me.pageSize,
-                tpl: 
-                [
-                    '<ul class="x-list-plain"><tpl for=".">',
-                        '<li role="option" class="' + Ext.baseCSSPrefix + 'boundlist-item"><span class="x-combo-checker">&nbsp;</span> {' + me.displayField + '}</li>',
-                    '</tpl></ul>'
-                ]
+//                
+//                tpl: 
+//                [
+//                    '<ul class="x-list-plain"><tpl for=".">',
+//                        '<li role="option" class="' + Ext.baseCSSPrefix + 'boundlist-item"><span class="x-combo-checker">&nbsp;</span> {' + me.displayField + '}</li>',
+//                    '</tpl></ul>'
+//                ]
+//                
+                tpl: [
+                    '<tpl for=".">',
+                        '<div class="x-boundlist-item" ><span class="x-combo-checker">&nbsp;</span> {' + me.displayField + '}</div>',
+                    '</tpl>'
+               ]
             }, me.listConfig, me.defaultListConfig);
 
 
@@ -124,6 +133,17 @@ Ext.define('Ext.ux.CheckCombo',
             }
         });
 
+        if(me.store.getTotalCount() === 0) {
+             me.allSelectorHidden = true;
+            if(me.allSelector !== false) me.allSelector.setStyle('display', 'none');
+            if(me.noData !== false) me.noData.setStyle('display', 'block');
+        } else {
+            me.allSelectorHidden = false;
+            if(me.allSelector !== false) me.allSelector.setStyle('display', 'block');
+            if(me.noData !== false) me.noData.setStyle('display', 'none');
+            
+        }
+        console.log('1: '+me.noData);
 
         return picker;
     },
@@ -204,6 +224,7 @@ Ext.define('Ext.ux.CheckCombo',
             me.alignPicker();
             bodyEl.addCls(me.openCls);
 
+            console.log(me.noData);
 
             if(me.noData === false) me.noData = picker.getEl().down('.x-boundlist-list-ct').insertHtml('beforeBegin', '<div class="x-boundlist-item" role="option">'+me.noDataText+'</div>', true);
 
