@@ -40,8 +40,19 @@ class Soap {
         */
     public function SoapConnection($wsdl,$options){
         $soap_auth = $this->SoapOptions($options);
-        $client = new \SoapClient($wsdl, $soap_auth);
-        return $client;
+        
+        try {
+            $client = new \SoapClient($wsdl, $soap_auth);
+            $connection = true;
+        } catch (SoapFault $exception) {
+            $this->flashMessenger()->addMessage(array('Soap Connection Error',$exception));
+            $connection = false;
+        }
+        if ($connection){
+            return $client;
+        }else{
+            
+        }
     }
     
     /**

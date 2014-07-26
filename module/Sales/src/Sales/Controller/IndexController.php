@@ -97,7 +97,44 @@ class IndexController extends AbstractActionController {
         );
     }
     
-    public function sapConnector(){
+    public function salesofficesAction() {
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang = $userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $societyParams = $request->getQuery('society');
+        
+        /**
+                *   Here must go the soap connector to get info
+                */
+        $soap = $this->SoapPlugin();
+        $data['resultado'] = $soap->doSomething();
+        /*
+                $soap = $this->getInspectionProgramTable();
+                $listDocuments = $sql->getObjectByCCLY($societyParams);
+                */
+        $listDocuments = "";
+        if(!empty($listDocuments)){
+            $data['success']=true;
+            $data['results']=$listDocuments;
+            $data['msg']="";
+        }else{
+            $data['success']=true;
+            $data['results']="";
+            $data['msg']="Error trying to get the information...";
+        }
+        $result = new JsonModel($data);
+        
+        
+        
+    	return $result;
+    }
+    
+    private function listSupervisor() {
+        
+    }
+    
+    private function sapConnector(){
         
         $wsdl = "http://erpqas.kolareal.com.do:8001/sap/bc/srt/wsdl/bndg_C597B55359CF1B7EE1000000C0A80373/wsdl11/allinone/standard/document?sap-client=300";
         $wsdl_prd = "http://erpapp1.kolareal.com.do:8001/sap/bc/srt/wsdl/bndg_A0EDC953C6AB1C47E1000000C0A8036B/wsdl11/allinone/standard/document?sap-client=300";
