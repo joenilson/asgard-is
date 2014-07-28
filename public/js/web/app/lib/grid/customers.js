@@ -33,18 +33,15 @@ Ext.define('Asgard.lib.grid.customers',{
     //height: 490,
     titleText: 'Customer List',
     idText: 'Id',
-    nameText: 'Client Namne',
+    nameText: 'Customer Name',
     addressText: 'Address',
+    officeText: 'Office',
+    routeText: 'Route',
+    channelText: 'Channel',
     coordsText: 'Location',
     statusText: 'Status',
-
+    loadingText: 'Searching for data...',
     initComponent: function(){
-        
-        this.tbar = [
-            {
-                text: 'Customer List'
-            }
-        ];
         
         this.title = this.titleText,
         this.columns =  {
@@ -52,11 +49,14 @@ Ext.define('Asgard.lib.grid.customers',{
                 ptype: 'gridautoresizer'
             }],
             items: [
-                {text: this.idText, sortable: true, hidden: false, dataIndex: 'id', filter: true},
-                {text: this.nameText, sortable: true, hidden: false, dataIndex: 'name', filter: true},
-                {text: this.addressText, sortable: true, hidden: false, dataIndex: 'address', filter: true},
+                {text: this.idText, flex: 1, sortable: true, hidden: false, dataIndex: 'id', filter: true},
+                {text: this.nameText, flex: 3, sortable: true, hidden: false, dataIndex: 'name', filter: true},
+                {text: this.addressText, flex: 3,sortable: true, hidden: false, dataIndex: 'address', filter: true},
+                {text: this.officeText, flex: 1,sortable: true, hidden: false, dataIndex: 'office', filter: true},
+                {text: this.routeText, flex: 1,sortable: true, hidden: false, dataIndex: 'route', filter: true},
+                {text: this.channelText, flex: 1,sortable: true, hidden: false, dataIndex: 'channel', filter: true},
                 {text: this.coordsText, flex: 1, sortable: true, filter: true, dataIndex: 'coords'},
-                {text: this.statusText, flex: 1,  sortable: true, filter: true, dataIndex: 'status'}
+                {text: this.statusText, flex: 1,  sortable: true, filter: true, dataIndex: 'inactive_reason'}
             ]
         };
         

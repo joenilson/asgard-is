@@ -30,7 +30,7 @@ use AsgardLib\Sources\Soap;
 class SoapPlugin  extends AbstractPlugin {
     
     protected $systemConfig;
-    protected $wsdl = "http://erpapp1.kolareal.com.do:8001/sap/bc/srt/wsdl/bndg_A0EDC953C6AB1C47E1000000C0A8036B/wsdl11/allinone/standard/document?sap-client=300";
+    protected $wsdl = "http://erpapp1.kolareal.com.do:8001/sap/bc/srt/wsdl/bndg_BD75D653BC74CC2DE1000000C0A80374/wsdl11/allinone/standard/document?sap-client=300";
    
     public function connect() {
         $soap = new Soap();
@@ -51,7 +51,6 @@ class SoapPlugin  extends AbstractPlugin {
             foreach ($result->ItT001w as $key=>$values ){
                 foreach($values as $innerValues){
                     array_push($dataResult, array('id'=>$innerValues->Werks, 'description'=>$innerValues->Werks." - ".$innerValues->Name1));
-                    //$dataResult[$innerValues->Werks] = $innerValues->Werks." - ".$innerValues->Name1;
                 }
             }
         }
@@ -81,7 +80,7 @@ class SoapPlugin  extends AbstractPlugin {
         $dataProcess = array();
         $dataResult = array();
         $client = $this->connect();
-        
+        /*
         $params0 = array ('PVkorg'=>$office,
                         'ItRoute'=>"ZsdStrucRoute");
         try {
@@ -89,8 +88,6 @@ class SoapPlugin  extends AbstractPlugin {
         } catch (SoapFault $exception) {
             print_r($exception);
         }
-        
-        
         
         if($result0){
             foreach ($result0->ItRoute as $key=>$values ){
@@ -107,9 +104,7 @@ class SoapPlugin  extends AbstractPlugin {
                 }
             }
         }
-        
-        //echo count($dataProcess);
-        
+        */
         $params1 = array ('PKunnr'=>$customer,
                         'PLand1'=>$country,
                         'PVkorg'=>$office,
@@ -121,36 +116,23 @@ class SoapPlugin  extends AbstractPlugin {
             print_r($exception);
         }
         
-        //print_r($result);
-        
         if($result){
-            foreach ($result->ItKnvv as $key=>$values ){
+            foreach ($result->ItKnvv as $key=>$values){
                 foreach($values as $innerValues){
-                    if(!empty($dataProcess[$office][$innerValues->Kunnr])){
-                        $moreValues = array(
-                            'id'=>$innerValues->Kunnr, 
-                            'inactive_status'=>$innerValues->VtextLif,
-                            'inactive_reason'=>$innerValues->VtextFak,
-                            'coords'=>$innerValues->Zcoord,
-                            'status'=>(empty($innerValues->Au))?"Active":"Inactive",
-                            'name'=>$dataProcess[$office][$innerValues->Kunnr]['name'],
-                            'route'=>$dataProcess[$office][$innerValues->Kunnr]['route'],
-                            'supervisor'=>$dataProcess[$office][$innerValues->Kunnr]['Supervisor'],
-                            'vendor_code'=>$dataProcess[$office][$innerValues->Kunnr]['VendorCode'],
-                            'vendor'=>$dataProcess[$office][$innerValues->Kunnr]['Vendor']);
-                    }else{
-                        $moreValues = array(                       
-                            'id'=>$innerValues->Kunnr, 
-                            'inactive_status'=>$innerValues->VtextLif,
-                            'inactive_reason'=>$innerValues->VtextFak,
-                            'coords'=>$innerValues->Zcoord,
-                            'status'=>(empty($innerValues->Au))?"Active":"Inactive");
-                    }
+                    $moreValues = array(
+                        'id'=>$innerValues->Kunnr, 
+                        'inactive_status'=>($innerValues->Au)?$innerValues->Au:"",
+                        'inactive_reason'=>($innerValues->BloqueoEntrega)?$innerValues->BloqueoEntrega:"",
+                        'coords'=>($innerValues->Zcoord)?$innerValues->Zcoord:"",
+                        'name'=>$innerValues->Name1,
+                        'address'=>$innerValues->Stras,
+                        'route'=>$innerValues->Route,
+                        'channel'=>($innerValues->Vt)?$innerValues->Vt:"",
+                        'office'=>($innerValues->Vkor)?$innerValues->Vkor:"");
                     array_push($dataResult, $moreValues);
                 }
             }
         }
-        
         return $dataResult;
     }
     
@@ -161,6 +143,5 @@ class SoapPlugin  extends AbstractPlugin {
     		$this->systemConfig = $sm->get('Config');
     	}
     	return $this->systemConfig;
-    }
-    
+    }   
 }

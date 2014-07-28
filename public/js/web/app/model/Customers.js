@@ -26,6 +26,10 @@ Ext.define('Asgard.model.Customers', {
         {name: 'name', type: 'string' }, 
         {name: 'address', type: 'string' }, 
         {name: 'coords', type: 'string' }, 
-        {name: 'status', type: 'string' }
+        {name: 'office', type: 'float' }, 
+        {name: 'channel', type: 'string' }, 
+        {name: 'route', type: 'float' }, 
+        {name: 'inactive_reason', type: 'string' },
+        {name: 'inactive_status', type: 'string' }
     ]
 });
