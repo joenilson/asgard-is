@@ -25,57 +25,50 @@ function deployCombos(comboField,comboValue){
     });
 }
 
-function fnCCLProcess(button, opt, obj) {
+function fnOCProcess(button, opt, obj) {
     var values = button.up('form').getForm().getValues();
-    var companies = values['companiesCombo'];
-    var countries = values['countriesCombo'];
-    var locations = values['locationsCombo'];
-    gridStore<?= $this->panelId; ?>.load({ params: { module: 'master', company: companies, country: countries, location: locations  }});
+    var offices = values['officesCombo'];
+    var channels = values['channelsCombo'];
+    gridStore<?= $this->panelId; ?>.load({ params: { module: 'master', offices: offices, channels: channels }});
 
 }
-var gridStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.TrainingPlan');
+var gridStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.Customers');
 
-var storeCombo = new Ext.create('Asgard.store.Companies');
-//storeCombo.load({params: {cid: '0001' }});
-//storeCombo.load({params: {cid: '0001' }});
-//storeCombo.load();
 /*
-var comboBox = new Ext.create('Ext.form.field.ComboBox',
-{
-    valueField: 'id',
-    displayField: 'location_name',
-    store: storeCombo,
-    multiSelect: true,
-    queryMode: 'local',
-    fieldLabel: 'Organización de Ventas',
-    plugins: [ new Ext.create('Ext.ux.form.plugin.CheckComboBox') ]
-    //,addAllSelector: true
-});
-*/
+var storeOffices = new Ext.create('Asgard.store.SalesOffices');
 
-var comboBox = new Ext.create('Ext.ux.CheckCombo',
+var officesBox = new Ext.create('Ext.ux.CheckCombo',
 {
     valueField: 'id',
-    displayField: 'comercial_name',
-    store: storeCombo,
-    //queryMode: 'local',
+    displayField: 'description',
+    store: storeOffices,
     fieldLabel: 'Organización de Ventas',
     addAllSelector: true
 });
 
+var storeChannels = new Ext.create('Asgard.store.SalesChannels');
 
-var form<?=$this->panelId;?> = Ext.create('Asgard.lib.forms.comboCCL', { innerGrid: grid<?=$this->panelId;?> });
-var grid<?=$this->panelId;?> = Ext.create('Asgard.lib.grid.trainingplan', { 
+var channelsBox = new Ext.create('Ext.ux.CheckCombo',
+{
+    valueField: 'id',
+    displayField: 'description',
+    addAllSelector: true
+    store: storeChannels,
+    fieldLabel: 'Canales de Ventas',
+    addAllSelector: true
+});
+*/
+
+var form<?=$this->panelId;?> = Ext.create('Asgard.lib.forms.comboOC', { innerGrid: grid<?=$this->panelId;?> });
+var grid<?=$this->panelId;?> = Ext.create('Asgard.lib.grid.customers', { 
     store: gridStore<?= $this->panelId; ?>, 
     id: 'grid<?=$this->panelId;?>'
 });
-
-form<?=$this->panelId;?>.add(comboBox);
-
+/*
 deployCombos('companiesCombo','<?=$this->companyId;?>');
 deployCombos('countriesCombo','<?=$this->countryId;?>');
 deployCombos('locationsCombo','<?=$this->locationId;?>');
-
+*/
 var libraryViewport<?=$this->panelId; ?> = Ext.create('Ext.panel.Panel', {
     layout: {
         type: 'vbox',

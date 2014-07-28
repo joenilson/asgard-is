@@ -143,8 +143,6 @@ Ext.define('Ext.ux.CheckCombo',
             if(me.noData !== false) me.noData.setStyle('display', 'none');
             
         }
-        console.log('1: '+me.noData);
-
         return picker;
     },
     reset: function()
@@ -210,13 +208,11 @@ Ext.define('Ext.ux.CheckCombo',
         var    me = this,
             bodyEl, picker, collapseIf;
 
-
             if(me.rendered && !me.isExpanded && !me.isDestroyed)
             {
             bodyEl = me.bodyEl;
             picker = me.getPicker();
             collapseIf = me.collapseIf;
-
 
             // show the picker and set isExpanded flag
             picker.show();
@@ -224,10 +220,7 @@ Ext.define('Ext.ux.CheckCombo',
             me.alignPicker();
             bodyEl.addCls(me.openCls);
 
-            console.log(me.noData);
-
             if(me.noData === false) me.noData = picker.getEl().down('.x-boundlist-list-ct').insertHtml('beforeBegin', '<div class="x-boundlist-item" role="option">'+me.noDataText+'</div>', true);
-
 
             if(me.addAllSelector === true && me.allSelector === false)
             {

@@ -45,7 +45,7 @@ class Soap {
             $client = new \SoapClient($wsdl, $soap_auth);
             $connection = true;
         } catch (SoapFault $exception) {
-            $this->flashMessenger()->addMessage(array('Soap Connection Error',$exception));
+            print_r($exception);
             $connection = false;
         }
         if ($connection){

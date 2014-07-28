@@ -21,7 +21,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
-use AsgardLib\Sources\Soap;
+
 
 /**
  * Description of IndexController
@@ -98,22 +98,8 @@ class IndexController extends AbstractActionController {
     }
     
     public function salesofficesAction() {
-        $userPrefs = $this->getServiceLocator()->get('userPreferences');
-        $lang = $userPrefs[0]['lang'];
-        
-        $request = $this->getRequest();
-        $societyParams = $request->getQuery('society');
-        
-        /**
-                *   Here must go the soap connector to get info
-                */
         $soap = $this->SoapPlugin();
-        $data['resultado'] = $soap->doSomething();
-        /*
-                $soap = $this->getInspectionProgramTable();
-                $listDocuments = $sql->getObjectByCCLY($societyParams);
-                */
-        $listDocuments = "";
+        $listDocuments = $soap->getsalesoffices(1000);
         if(!empty($listDocuments)){
             $data['success']=true;
             $data['results']=$listDocuments;
@@ -124,9 +110,43 @@ class IndexController extends AbstractActionController {
             $data['msg']="Error trying to get the information...";
         }
         $result = new JsonModel($data);
+    	return $result;
+    }
+    
+    public function saleschannelsAction() {
+        $soap = $this->SoapPlugin();
+        $listDocuments = $soap->getsaleschannels();
+        if(!empty($listDocuments)){
+            $data['success']=true;
+            $data['results']=$listDocuments;
+            $data['msg']="";
+        }else{
+            $data['success']=true;
+            $data['results']="";
+            $data['msg']="Error trying to get the information...";
+        }
+        $result = new JsonModel($data);
+    	return $result;
+    }
+    //getcustomerinfo($client,$country,$office,$channel)
+    public function customerinfoAction() {
+        $request = $this->getRequest();
+        $client = $request->getQuery('client');
+        $office = $request->getQuery('offices');
+        $channel = $request->getQuery('channels');
         
-        
-        
+        $soap = $this->SoapPlugin();
+        $listDocuments = $soap->getcustomerinfo($client,'DO',$office,$channel,1000);
+        if(!empty($listDocuments)){
+            $data['success']=true;
+            $data['results']=$listDocuments;
+            $data['msg']="";
+        }else{
+            $data['success']=true;
+            $data['results']="";
+            $data['msg']="Error trying to get the information...";
+        }
+        $result = new JsonModel($data);
     	return $result;
     }
     

@@ -65,7 +65,8 @@ Ext.define('Asgard.view.Viewport', {
     'Asgard.store.IsoPlan','Asgard.lib.grid.isoplan','Asgard.lib.Panels.ISOPlanDetailPanel',
     'Asgard.lib.Panels.ISOPlanPanel','Asgard.store.IsoPlanDetails','Asgard.lib.grid.IPGrid','Asgard.store.HiraIncidentsChart',
     'Asgard.store.Traceability','Asgard.lib.forms.traceabilityNewObject','Asgard.lib.Panels.TraceabilityPanel',
-    'Asgard.lib.dataview.pdfobject'
+    'Asgard.lib.dataview.pdfobject','Asgard.store.SalesOffices','Asgard.lib.forms.comboOC','Asgard.lib.grid.customers',
+    'Asgard.store.Customers','Asgard.store.SalesChannels'
   ],
   menuTitleText: 'Main Menu',
     defaults: {

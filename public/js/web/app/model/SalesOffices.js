@@ -19,22 +19,10 @@
  * @version 1.0.0 devel
  * @author Joe Nilson <joenilson@gmail.com>
  */
-Ext.define('Asgard.model.Audits', {
+Ext.define('Asgard.model.SalesOffices', {
     extend: 'Ext.data.Model',
     fields: [
-        {name: 'company', type: 'string' }, 
-        {name: 'country', type: 'string' }, 
-        {name: 'location', type: 'string' }, 
         {name: 'id', type: 'float' }, 
-        {name: 'audit_type', type: 'float' }, 
-        {name: 'desc_type', type: 'string' }, 
-        {name: 'audit_desc', type: 'string' }, 
-        {name: 'audit_date', type: 'date', format: 'Y-m-d' }, 
-        {name: 'audit_file', type: 'string' }, 
-        {name: 'status', type: 'string' },
-        {name: 'user_id', type: 'float' },
-        {name: 'date_creation', type: 'date', format: 'c' },
-        {name: 'user_mod', type: 'float' },
-        {name: 'date_modification', type: 'date', format: 'c' }
+        {name: 'description', type: 'string' }
     ]
 });

@@ -83,6 +83,20 @@ return array(
                             ),
                         ),
                     ),
+                    'customerinfo' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/customerinfo[/:society]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id_process' => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'customerinfo'
+                            ),
+                        ),
+                    ),
                 ),
             ),
         ),
