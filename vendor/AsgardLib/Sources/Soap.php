@@ -39,9 +39,9 @@ class Soap {
         * @return \SoapClient
         */
     public function SoapConnection($wsdl,$options){
-        ini_set('default_socket_timeout', 100000);
         $soap_auth = $this->SoapOptions($options);        
         try {
+            ini_set('default_socket_timeout', 18000);
             $client = new \SoapClient($wsdl, $soap_auth);
             $connection = true;
         } catch (SoapFault $exception) {
@@ -62,10 +62,11 @@ class Soap {
         */
     private function SoapOptions($opts){
         $soap_opts = array (
-            'login'=>(empty($opts['user']))?"":trim($opts['user']),
+            'login'=>(empty($opts['login']))?"":trim($opts['login']),
             'password'=>(empty($opts['password']))?"":trim($opts['password']),
             'encoding'=>(empty($opts['encoding']))?"UTF-8":trim($opts['encoding']),
-            'connection_timeout'=>100000);
+            'connection_timeout'=>100000,
+            'trace'=>1);
         return $soap_opts;
     }
             

@@ -134,7 +134,7 @@ class IndexController extends AbstractActionController {
         $client = $request->getQuery('client');
         $office = $request->getQuery('offices');
         $channel = $request->getQuery('channels');
-        
+        ini_set('default_socket_timeout', 18000);
         $soap = $this->SoapPlugin();
         $listDocuments = $soap->getcustomerinfo($client,'DO',$office,$channel,1000);
         if(!empty($listDocuments)){

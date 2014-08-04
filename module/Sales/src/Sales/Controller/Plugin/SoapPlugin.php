@@ -33,8 +33,9 @@ class SoapPlugin  extends AbstractPlugin {
     protected $wsdl = "http://erpapp1.kolareal.com.do:8001/sap/bc/srt/wsdl/bndg_BD75D653BC74CC2DE1000000C0A80374/wsdl11/allinone/standard/document?sap-client=300";
    
     public function connect() {
+        ini_set('default_socket_timeout', 100000);
         $soap = new Soap();
-        $client = $soap->SoapConnection($this->wsdl, $this->getConfig()['soap']);
+        $client = $client = $soap->SoapConnection($this->wsdl, $this->getConfig()['soap']);
         return $client;
     }
     
@@ -79,6 +80,7 @@ class SoapPlugin  extends AbstractPlugin {
     public function getcustomerinfo($customer,$country,$office,$channel,$society) {
         $dataProcess = array();
         $dataResult = array();
+        ini_set('default_socket_timeout', 100000);
         $client = $this->connect();
         /*
         $params0 = array ('PVkorg'=>$office,
@@ -109,7 +111,8 @@ class SoapPlugin  extends AbstractPlugin {
                         'PLand1'=>$country,
                         'PVkorg'=>$office,
                         'PVtweg'=>$channel,
-                        'ItKnvv'=>"ZsdStrucKnvv");
+                        'ItKnvv'=>"ZsdStrucKnvv",
+                        'connection_timeout'=>180000);
         try {
             $result = $client->ZFmGetCustomer01($params1);
         } catch (SoapFault $exception) {
@@ -121,14 +124,14 @@ class SoapPlugin  extends AbstractPlugin {
                 foreach($values as $innerValues){
                     $moreValues = array(
                         'id'=>$innerValues->Kunnr, 
-                        'inactive_status'=>($innerValues->Au)?$innerValues->Au:"",
+                        'inactive_status'=>($innerValues->Aufsd)?$innerValues->Aufsd:"",
                         'inactive_reason'=>($innerValues->BloqueoEntrega)?$innerValues->BloqueoEntrega:"",
                         'coords'=>($innerValues->Zcoord)?$innerValues->Zcoord:"",
                         'name'=>$innerValues->Name1,
                         'address'=>$innerValues->Stras,
                         'route'=>$innerValues->Route,
-                        'channel'=>($innerValues->Vt)?$innerValues->Vt:"",
-                        'office'=>($innerValues->Vkor)?$innerValues->Vkor:"");
+                        'channel'=>($innerValues->Vtweg)?$innerValues->Vtweg:"",
+                        'office'=>($innerValues->Vkorg)?$innerValues->Vkorg:"");
                     array_push($dataResult, $moreValues);
                 }
             }
