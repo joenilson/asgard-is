@@ -1,0 +1,121 @@
+<?php
+/* 
+ * Copyright (C) 2014 Joe Nilson <joenilson at gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+?>
+<script>
+function deployCombos(comboField,comboValue){
+    var combo = formBrigade<?=$this->panelId;?>.getForm().findField(comboField);
+    var store = combo.store;
+    store.on("load", function(store, records, state, operation, opts) {
+            combo.setValue(comboValue);
+    });
+}
+
+function fnCCLProcess(button, opt, obj) {
+    var values = button.up('form').getForm().getValues();
+    var companies = values['companiesCombo'];
+    var countries = values['countriesCombo'];
+    var locations = values['locationsCombo'];
+
+    BrigadeStore<?= $this->panelId; ?>.load({ params: { module: 'master', company: companies, country: countries, location: locations }});
+
+}
+
+var BrigadeStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.SimulationsBrigade');
+
+var viewBrigade<?=$this->panelId;?> = Ext.create('Asgard.lib.dataview.simulationsbrigade', { 
+    store: BrigadeStore<?= $this->panelId; ?>, 
+});
+
+   
+var formBrigade<?=$this->panelId;?> = Ext.create('Asgard.lib.forms.comboCCL', { innerPanel: viewBrigade<?=$this->panelId;?> });
+
+var content = Ext.create('Asgard.lib.Panels.BrigadePanel',{
+    items: viewBrigade<?=$this->panelId;?>
+});
+/*
+var content = Ext.create('Ext.Panel', {
+    //id: 'images-view',
+    bodyPadding: 7,
+    heigth: '100%',
+    flex: 1,
+    autoScroll: true,
+    //layout: 'fit',
+    bodyStyle: "background: #ffffff;",
+    tbar: [{ 
+            text: 'Agregar Imagenes',
+            handler: function() {
+                var window = Ext.create('Ext.window.Window',{
+                    flex: 1,
+                    title: 'Agregar Imagenes',
+                    width: '40%',
+                    layout: 'anchor'
+                });
+                var contentWin = Ext.create('Asgard.lib.forms.committeeNewMember',{ url: 'admin/saveimages'});
+                window.items.add(contentWin);
+                window.show();
+            }
+        },{ 
+            text: 'Eliminar Imagen Seleccionada',
+            handler: function() {
+                var view = this.up('panel');
+                var dv = view.items.getAt(0);
+                var selected = dv.getSelectionModel().getSelection();
+                var dataItems = new Array();
+                for(i=0; i<selected.length; i++){
+                    dataItems[i]=selected[i].data.id;
+                }
+                Ext.Ajax.request({
+                    url: 'admin/removeimage',
+                    params: {
+                        ids: Ext.encode(dataItems)
+                    },
+                    success: function(response, action){
+                        var result = Ext.decode(response.responseText);
+                        if(result.success){
+                            var store = dv.getStore();
+                            store.remove(selected);
+                        }else{
+                            Ext.Msg.alert('Advertencia',result.message);
+                        }
+                    }
+                });
+            }
+        }],
+    items: viewCommittee<?=$this->panelId;?>
+});
+*/
+
+deployCombos('companiesCombo','<?=$this->companyId;?>');
+deployCombos('countriesCombo','<?=$this->countryId;?>');
+deployCombos('locationsCombo','<?=$this->locationId;?>');
+
+var libraryViewport<?=$this->panelId; ?> = Ext.create('Ext.panel.Panel', {
+    layout: {
+        type: 'vbox',
+        align : 'stretch',
+        pack  : 'start'
+    },
+    items: [
+        formBrigade<?=$this->panelId; ?>,
+        content
+   ]
+});
+
+Ext.getCmp('content-panel').getActiveTab().add(libraryViewport<?= $this->panelId; ?>);
+</script>

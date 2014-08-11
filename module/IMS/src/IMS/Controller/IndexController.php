@@ -102,6 +102,8 @@ class IndexController extends AbstractActionController
     protected $ohrtypeTable;
     protected $simulationalbumsTable;
     protected $simulationphotosTable;
+    protected $simulationsbrigadeTable;
+    protected $brigadepositionsTable;
     protected $mtmTable;
     protected $mtmtypeTable;
     protected $isoplanTable;
@@ -2888,6 +2890,194 @@ class IndexController extends AbstractActionController
             $data['success']=false;
             $data['data']="";
         }
+        return new JsonModel($data);
+    }
+    
+    public function simulationsbrigadeAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        return array(
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'lang'=>$lang,
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
+        );
+    }
+    
+    public function getsimulationsbrigadeAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang=$userPrefs[0]['lang'];
+
+        $request = $this->getRequest();
+        $company = $request->getQuery('company');
+        $country = $request->getQuery('country');
+        $location = $request->getQuery('location');
+
+        $sql = $this->getSimulationsBrigadeTable();
+        $dataPositions = $sql->getObjectByCCL($company,$country,$location,$lang);
+        if($dataPositions){
+            $dataResult['success']=true;
+            $dataResult['images']=$dataPositions;
+        }else{
+            $dataResult['success']=false;
+            $dataResult['images']="";
+        }
+        return new JsonModel($dataResult);        
+    }
+    
+    public function getbrigadepositionsAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang=$userPrefs[0]['lang'];
+        
+
+        $sql = $this->getBrigadePositionsTable();
+        $dataPositions = $sql->getPositionsByLang($lang);
+        if($dataPositions){
+            $dataResult['success']=true;
+            $dataResult['results']=$dataPositions;
+        }else{
+            $dataResult['success']=false;
+            $dataResult['results']="";
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function addsimulationsbrigadeAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $company = (string) $request->getPost('companiesCombo');
+        $country = (string) $request->getPost('countriesCombo');
+        $location = (string) $request->getPost('locationsCombo');
+        $id_position = (int) $request->getPost('brigadepositionsCombo');
+        $fullname = (string) $this->PersonName($request->getPost('fullname'));
+        $email = (string) $request->getPost('email');
+        $phone = (int) trim($request->getPost('phone'));
+        $files =  $request->getFiles()->toArray();
+        $id = (int) $request->getPost('id');
+        $date_creation = \date('Y-m-d h:i:s');
+
+        $dataResult = array();
+        
+        $sql = $this->getSimulationsBrigadeTable();
+        
+        $object = new \IMS\Model\Entity\SimulationsBrigade();
+        $object->setFullname($fullname)
+                ->setId_position($id_position)
+                ->setEmail($email)
+                ->setPhone($phone)
+                ->setCompany($company)
+                ->setCountry($country)
+                ->setLocation($location)
+                ->setUser_id($userData->id)
+                ->setStatus('A')
+                ->setDate_creation($date_creation);
+        if($id){
+            $object->setId($id);
+        }
+        $dataResult['success'] = true; 
+        try {
+            $newId = $sql->save($object);
+        } catch (\Exception $ex) {
+            $dataResult['success'] = false; 
+            $dataResult['message'] = $ex->getMessage(); 
+        }
+        $valid1 = new \Zend\Validator\File\UploadFile();
+        $valid2 = new \Zend\Validator\File\IsImage();
+        if(isset($newId) AND $valid1->isValid($files['photo']) and $valid2->isValid($files['photo'])){
+            $fileName = "simulationsbrigade_{$company}_{$country}_{$location}_".$newId.".jpg";
+            $this->savefile('library/simulationsbrigade', $files['photo'], $fileName, true, 'thumb_'.$fileName);
+            $sql->update(array('photo'=>'library/simulationsbrigade/'.$fileName,
+                'thumbnail'=>'library/simulationsbrigade/thumb_'.$fileName),array('id'=>$newId));
+        }
+        
+        return new JsonModel($dataResult);        
+        
+    }
+    
+    public function removesimulationsbrigadeAction(){
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $request = $this->getRequest();
+        $committee_ids = json_decode($this->cleanTags($request->getPost('ids')));
+        $company = $request->getPost('company');
+        $country = $request->getPost('country');
+        $location = $request->getPost('location');
+        $sql = $this->getSimulationsBrigadeTable();
+        
+        if(is_array($committee_ids) and count($committee_ids)>0){
+            $dataResult = array();
+            foreach ($committee_ids as $committee_id){
+                $CommitteeData = $sql->getObjectByCCLI($company,$country,$location,$committee_id);
+                $dataRemove = array();
+                $dataVars = array();
+                $dataResult['success'] = false;
+                if(count($CommitteeData)>0){
+                    $dataVars['company']=$company;
+                    $dataVars['country']=$country;
+                    $dataVars['location']=$location;
+                    $dataVars['id']=$committee_id;
+                    $dataRemove['status']="I";
+                    $dataRemove['user_modification']=$userData->id;
+                    $dataRemove['date_modification']=\date('Y-m-d H:i:s');
+                    $sql->update($dataRemove,$dataVars);
+                    $dataResult['success'] = true;
+                }
+            }
+        }elseif($committee_ids>0){
+            $CommitteeData = $sql->getObjectByCCLI($company,$country,$location,$committee_ids);
+            $dataRemove = array();
+            $dataVars = array();
+            $dataResult['success'] = false;
+            if(count($CommitteeData)>0){
+                $dataVars['company']=$company;
+                $dataVars['country']=$country;
+                $dataVars['location']=$location;
+                $dataVars['id']=$committee_id;
+                $dataRemove['status']="I";
+                $sql->update($dataRemove,$dataVars);
+                $dataResult['success'] = true;
+            }
+        }
+        
+        return new JsonModel($dataResult);
+    }
+    
+    public function formsimulationsbrigadeAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+
+        $request = $this->getRequest();
+        $committee_id = $request->getPost('id');
+        $company = $request->getPost('company');
+        $country = $request->getPost('country');
+        $location = $request->getPost('location');
+        
+        $sql = $this->getSimulationsBrigadeTable();
+        $CommitteeData = $sql->getObjectByCCLId($company,$country,$location,$committee_id);
+        $dataResult = array();
+        foreach($CommitteeData as $key=>$values){
+            $dataResult['companiesCombo']=$values['company'];
+            $dataResult['countriesCombo']=$values['country'];
+            $dataResult['locationsCombo']=$values['location'];
+            $dataResult['brigadepositionsCombo']=$values['id_position'];
+            $dataResult['fullname']=$values['fullname'];
+            $dataResult['phone']=$values['phone'];
+            $dataResult['email']=$values['email'];
+        }
+        $data = array();
+        if(count($dataResult>0)){
+            $data['success']=true;
+            $data['data']=$dataResult;
+        }else{
+            $data['success']=false;
+            $data['data']="";
+        }
+        
         return new JsonModel($data);
     }
     
@@ -6534,6 +6724,24 @@ class IndexController extends AbstractActionController
             $this->committeeproceedingsTable = $sm->get('IMS\Model\CommitteeProceedingsTable');
     	}
     	return $this->committeeproceedingsTable;
+    }
+    
+    private function getSimulationsBrigadeTable()
+    {
+    	if (!$this->simulationsbrigadeTable) {
+            $sm = $this->getServiceLocator();
+            $this->simulationsbrigadeTable = $sm->get('IMS\Model\SimulationsBrigadeTable');
+    	}
+    	return $this->simulationsbrigadeTable;
+    }
+    
+    private function getBrigadePositionsTable()
+    {
+    	if (!$this->brigadepositionsTable) {
+            $sm = $this->getServiceLocator();
+            $this->brigadepositionsTable = $sm->get('IMS\Model\BrigadePositionsTable');
+    	}
+    	return $this->brigadepositionsTable;
     }
     
     private function getRequirementsHelperTable()

@@ -2038,6 +2038,93 @@ return array(
                             ),
                         ),
                     ),
+                    
+                    
+                    'simulationsbrigade' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/simulationsbrigade[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'simulationsbrigade'
+                            ),
+                        ),
+                    ),
+                    'getbrigadepositions' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/getbrigadepositions[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'getbrigadepositions'
+                            ),
+                        ),
+                    ),
+                    'getsimulationsbrigade' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/getsimulationsbrigade[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'getsimulationsbrigade'
+                            ),
+                        ),
+                    ),
+                    'addsimulationsbrigade' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/addsimulationsbrigade[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'addsimulationsbrigade'
+                            ),
+                        ),
+                    ),
+                    'removesimulationsbrigade' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/removesimulationsbrigade[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'removesimulationsbrigade'
+                            ),
+                        ),
+                    ),
+                    'formsimulationsbrigade' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/formsimulationsbrigade[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'formsimulationsbrigade'
+                            ),
+                        ),
+                    ),
+                    
                     'massdocprocess' => array(
                         'type'    => 'Segment',
                         'options' => array(
