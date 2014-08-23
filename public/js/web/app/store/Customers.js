@@ -4,7 +4,7 @@ Ext.define('Asgard.store.Customers', {
     proxy: {
         type: 'ajax',
         url: 'sales/customerinfo',
-        timeout : 120000, 
+        timeout : 360000, 
         reader: {
             type: 'json',
             root: 'results'
