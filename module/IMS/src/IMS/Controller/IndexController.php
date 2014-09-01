@@ -3664,7 +3664,8 @@ class IndexController extends AbstractActionController
                     
                 }
             }
-            $zipdir = $zip->getNameIndex(0);
+            $zipFolderParts = explode("/",$zip->getNameIndex(0));
+            $zipdir = $zipfolder.$zipFolderParts[0].'/';
             $dataResult['unziped']=$zipdir;
             $zip->extractTo($zipfolder);
             $zip->close();
@@ -3835,7 +3836,7 @@ class IndexController extends AbstractActionController
                 $doc_record = (!empty($dataContent->doc_record))?trim($dataContent->doc_record):"";
                 $doc_file = (!empty($dataContent->filename))?'library/docs/'.$doc_new_id.'_'.$doc_version_number.'_'.date('Ymdhis').'.pdf':"";
                 if(!empty($doc_file)){
-                    $this->movefile('library/docs/', $dataContent->filename, $doc_new_id.'_'.$doc_version_number.'_'.date('Ymdhis').'.pdf');
+                    $this->movefile('library/docs', $dataContent->filename, $doc_new_id.'_'.$doc_version_number.'_'.date('Ymdhis').'.pdf');
                 }
                 $doc = new DocsLibrary();
                 $doc->setCompany($doc_company)
@@ -6427,7 +6428,7 @@ class IndexController extends AbstractActionController
             mkdir($filesPath,0777,true);
         }
         try {
-            rename('"'.$file.'"', $filesPath.$filename);
+            rename($file, $filesPath.$filename);
             return true;
         } catch (Exception $ex) {
             return false;
