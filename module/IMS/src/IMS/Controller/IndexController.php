@@ -6427,7 +6427,7 @@ class IndexController extends AbstractActionController
             mkdir($filesPath,0777,true);
         }
         try {
-            rename($file, $filesPath.$filename);
+            rename('"'.$file.'"', $filesPath.$filename);
             return true;
         } catch (Exception $ex) {
             return false;
