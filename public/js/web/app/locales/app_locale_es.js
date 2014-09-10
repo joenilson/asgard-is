@@ -627,3 +627,54 @@ Ext.define('Asgard.locales.lib.forms.hiraMasterFileUpload',{
     additionText: 'Datos Adicionales',
     changeText: 'Datos de Reemplazo'
 });
+
+Ext.define('Asgard.locales.lib.grid.employees',{
+    override: 'Asgard.lib.grid.employees',
+    titleText: 'Lista de Empleados',
+    idText: 'Id',
+    surnameText: 'Apellido Paterno',
+    lastnameText: 'Apellido Materno',
+    firstnameText: 'Nombres',
+    positionText: 'Cargo',
+    organizationText: 'Area',
+    birthdayText: 'Fecha Nacimiento',
+    officeText: 'Oficina',
+    loadingText: 'Buscando datos...',
+    toolFormText: 'Guardar datos del empleado',
+    
+    maritalStatusText: 'Estado Civil',
+    statusSingle: 'Soltero/a',
+    statusMarried: 'Casado/a',
+    statusDivorced: 'Divorciado/a',
+    statusWidowed: 'Viudo/a',
+    statusSeparated: 'Divorciado/a'
+
+});
+
+Ext.define('Asgard.locales.lib.grid.employee_dependants',{
+    override: 'Asgard.lib.grid.employee_dependants',
+
+    titleText: 'Lista de Dependientes del Empleado',
+    idText: 'Id',
+    surnameText: 'Apellido Paterno',
+    lastnameText: 'Apellido Materno',
+    firstnameText: 'Nombres',
+    birthdayText: 'Fecha Nacimiento',
+    typeText: 'Parentesco',
+    genderText: 'Genero',
+    loadingText: 'Buscando datos...',
+    
+    toolRemoveText: 'Eliminar Dependiente',
+    toolAddText: 'Guardar Dependiente',
+    
+    typeCouple: 'Conyuge',
+    typeChildren: 'Hijo',
+    
+    genderMale: 'Hombre',
+    genderFemale: 'Mujer'
+});
+
+Ext.define('Asgard.locales.lib.forms.comboOffices',{
+    override: 'Asgard.lib.forms.comboOffices',
+    textSubmitButton: 'Buscar'
+});

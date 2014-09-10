@@ -628,3 +628,4 @@ Ext.define('Asgard.locales.lib.forms.hiraMasterFileUpload',{
     additionText: 'Dados Adicionais',
     changeText: 'Substituição de Dados'
 });
+

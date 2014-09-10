@@ -1,6 +1,7 @@
 <?php
+
 /* 
- * Copyright (C) 2014 Joe Nilson <joenilson at gmail.com>
+ * Copyright (C) 2014 Joe Nilson <joenilson@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,19 +26,26 @@ function deployCombos(comboField,comboValue){
     });
 }
 
-function fnOCProcess(button, opt, obj) {
+function fnOProcess(button, opt, obj) {
     var values = button.up('form').getForm().getValues();
     var offices = values['officesCombo'];
-    var channels = values['channelsCombo'];
-    gridStore<?= $this->panelId; ?>.load({ params: { module: 'master', offices: offices, channels: channels }});
+    gridStore<?= $this->panelId; ?>.load({ params: { module: 'master', offices: offices }});
 
 }
-var gridStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.Customers');
+var gridStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.Employees');
 
-var form<?=$this->panelId;?> = Ext.create('Asgard.lib.forms.comboOC', { innerGrid: grid<?=$this->panelId;?> });
-var grid<?=$this->panelId;?> = Ext.create('Asgard.lib.grid.customers', { 
+var form<?=$this->panelId;?> = Ext.create('Asgard.lib.forms.comboOffices', { innerGrid: grid<?=$this->panelId;?> });
+
+var grid<?=$this->panelId;?> = Ext.create('Asgard.lib.grid.employees', { 
     store: gridStore<?= $this->panelId; ?>, 
     id: 'grid<?=$this->panelId;?>'
+});
+
+var gridStore2<?= $this->panelId; ?> = new Ext.create('Asgard.store.EmployeesDependants');
+
+var grid2<?=$this->panelId;?> = Ext.create('Asgard.lib.grid.employee_dependants', { 
+    store: gridStore2<?= $this->panelId; ?>,
+    id: 'grid2<?=$this->panelId;?>'
 });
 
 var libraryViewport<?=$this->panelId; ?> = Ext.create('Ext.panel.Panel', {
@@ -48,7 +56,8 @@ var libraryViewport<?=$this->panelId; ?> = Ext.create('Ext.panel.Panel', {
     },
     items: [
         form<?=$this->panelId; ?>,
-        grid<?=$this->panelId; ?>
+        grid<?=$this->panelId; ?>,
+        grid2<?=$this->panelId; ?>
    ]
 });
 Ext.getCmp('content-panel').getActiveTab().add(libraryViewport<?= $this->panelId; ?>);
