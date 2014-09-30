@@ -27,7 +27,6 @@ Ext.define('Asgard.lib.forms.comboOffices', {
         labelAlign: 'top',
         msgTarget: 'side'
     },
-    //bodyStyle: 'padding:5px 5px 5px',
     defaults: {
         border: false,
         xtype: 'panel',
@@ -63,10 +62,7 @@ Ext.define('Asgard.lib.forms.comboOffices', {
                 scope: me,
                 handler: fnOProcess
             }, this.submitButton);
-        /*
-        this.items = this.items || [];
-        this.items = this.items.concat([ this.officesField ]);
-        */
+
         this.buttons = this.buttons || [];
         this.buttons = this.buttons.concat([ this.officesField , '->', this.submitButton ]);
         

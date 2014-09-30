@@ -70,7 +70,7 @@ Ext.define('Asgard.view.Viewport', {
     'Asgard.store.Traceability','Asgard.lib.forms.traceabilityNewObject','Asgard.lib.Panels.TraceabilityPanel',
     'Asgard.lib.dataview.pdfobject','Asgard.store.SalesOffices','Asgard.lib.forms.comboOC','Asgard.lib.grid.customers',
     'Asgard.store.Customers','Asgard.store.SalesChannels','Asgard.store.Employees','Asgard.lib.forms.comboOffices',
-    'Asgard.store.EmployeeOffices','Asgard.lib.grid.employees','Asgard.lib.forms.employeeFile','Asgard.lib.grid.employee_dependants',
+    'Asgard.store.EmployeeOffices','Asgard.lib.grid.employees', 'Asgard.lib.grid.employee_dependants',
     'Asgard.store.EmployeesDependants'
   ],
   menuTitleText: 'Main Menu',
