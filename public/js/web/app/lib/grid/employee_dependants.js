@@ -22,7 +22,7 @@
  */
 
 Ext.define('Asgard.lib.grid.employee_dependants',{
-    extend: 'Asgard.lib.GridPanel',
+    extend: 'Ext.grid.Panel',
     alias: 'widget.gridemployee_dependants',
     itemId: 'gridEmployeeDependants',
     autoShow: true,
@@ -31,6 +31,7 @@ Ext.define('Asgard.lib.grid.employee_dependants',{
     border: true,
     frame: false,
     flex: 1,
+    xtype: 'cell-editing',
     layout: 'fit',
     titleText: 'Employee Dependants List',
     idText: 'Id',
@@ -60,6 +61,10 @@ Ext.define('Asgard.lib.grid.employee_dependants',{
         'Asgard.model.EmployeesDependants'
     ],
     eui: 0,
+    
+    //selModel: { selType: 'cellmodel' },
+    selType : 'cellmodel',
+    
     initComponent: function(){
         this.cellEditing = new Ext.grid.plugin.CellEditing({
             clicksToEdit: 1
@@ -79,16 +84,16 @@ Ext.define('Asgard.lib.grid.employee_dependants',{
                 ptype: 'gridautoresizer'
             }],
             items: [
-                {text: this.idText, flex: 0.5, sortable: true, hidden: true, dataIndex: 'id', filter: false},
+                {text: this.idText, flex: 0.5, sortable: true, hidden: true, dataIndex: 'id_employee', filter: false},
                 {text: this.idText, flex: 0.5, sortable: true, hidden: true, dataIndex: 'id_dependant', filter: false},
                 {text: this.surnameText, flex: 1, sortable: true, hidden: false, dataIndex: 'surname', filter: true,
-                editor: { allowBlank: false }},
+                    editor: { allowBlank: false }},
                 {text: this.lastnameText, flex: 1, sortable: true, hidden: false, dataIndex: 'lastname', filter: true,
-                editor: { allowBlank: true }},
+                    editor: { allowBlank: true }},
                 {text: this.firstnameText, flex: 1, sortable: true, hidden: false, dataIndex: 'firstname', filter: true,
-                editor: { allowBlank: false }},
+                    editor: { allowBlank: false }},
                 {text: this.birthdayText, flex: 0.5, sortable: true, hidden: false, dataIndex: 'birthday', filter: true, renderer: Ext.util.Format.dateRenderer('d-m-Y'),
-                editor: { xtype: 'datefield', format: 'd-m-Y' }},
+                    editor: { xtype: 'datefield', format: 'd-m-Y' }},
                 {text: this.typeText, flex: 0.5, sortable: true, hidden: false, dataIndex: 'type', filter: true, 
                 editor: new Ext.form.field.ComboBox({
                     typeAhead: true,
@@ -134,11 +139,10 @@ Ext.define('Asgard.lib.grid.employee_dependants',{
     initEvents: function() {
         // call the superclass's initEvents implementation
         this.callParent();
-
         this.on('edit', this.onCellEdit, this);
     },
     
-    onCellEdit: function( editor, e) {
+    onCellEdit: function( editor, e, a, b, c) {
         var record = this.getStore().getAt(e.rowIdx);
         if( e.originalValue !== '' && e.originalValue !== e.value && record.data.id_dependant !== 0 ){
             
@@ -150,26 +154,26 @@ Ext.define('Asgard.lib.grid.employee_dependants',{
             }
             var fieldName = e.field;
             Ext.Ajax.request({
-            url: 'hcm/addemployeesdependants',
-            params: {
-                action: 'upd',
-                id: record.data.id,
-                id_dependant: record.data.id_dependant,
-                field: fieldName,
-                value: valueUpdated
-            },
-            scope: this,
-            success: function(response){
-                var text = response.responseText;
-                this.getStore().reload();
-                // process server response here
-            },
-            failure: function(response){
-                var text = response.responseText;
-                console.log(text);
-                // 
-            }
-        });
+                url: 'hcm/addemployeesdependants',
+                params: {
+                    action: 'upd',
+                    id: record.data.id,
+                    id_dependant: record.data.id_dependant,
+                    field: fieldName,
+                    value: valueUpdated
+                },
+                scope: this,
+                success: function(response){
+                    var text = response.responseText;
+                    this.getStore().reload();
+                    // process server response here
+                },
+                failure: function(response){
+                    var text = response.responseText;
+                    console.log(text);
+                    // 
+                }
+            });
         }
     },
     

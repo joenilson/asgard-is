@@ -32,5 +32,6 @@ Ext.define('Asgard.model.EmployeesDependants', {
         {name: 'gender', type: 'string' },
         {name: 'user_id', type: 'float' },
         {name: 'date_creation', type: 'date', dateFormat: 'c' }
-    ]
+    ],
+    idProperty: 'id_dependant'
 });

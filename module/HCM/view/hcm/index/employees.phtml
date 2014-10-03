@@ -38,14 +38,14 @@ var form<?=$this->panelId;?> = Ext.create('Asgard.lib.forms.comboOffices', { inn
 
 var grid<?=$this->panelId;?> = Ext.create('Asgard.lib.grid.employees', { 
     store: gridStore<?= $this->panelId; ?>, 
-    id: 'grid<?=$this->panelId;?>'
+    id: 'grid01<?=$this->panelId;?>'
 });
 
 var gridStore2<?= $this->panelId; ?> = new Ext.create('Asgard.store.EmployeesDependants');
 
 var grid2<?=$this->panelId;?> = Ext.create('Asgard.lib.grid.employee_dependants', { 
     store: gridStore2<?= $this->panelId; ?>,
-    id: 'grid2<?=$this->panelId;?>'
+    id: 'grid02<?=$this->panelId;?>'
 });
 
 var libraryViewport<?=$this->panelId; ?> = Ext.create('Ext.panel.Panel', {
