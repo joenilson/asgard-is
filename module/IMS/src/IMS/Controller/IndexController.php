@@ -5169,7 +5169,7 @@ class IndexController extends AbstractActionController
         $process_id  = (int) $this->params()->fromRoute('process_id', 0);
         $module_id = explode("-",$this->params()->fromRoute('mid', 0));
 
-        $userRole = $this->getUserRole($userData->id, $module_id[0], $module_id[0]);
+        $userRole = $this->getUserRole($userData->id, $module_id[0], $module_id[1]);
         
         $queryPM = $this->getProcessThreadTable();
         $listDocuments = $queryPM->getThreadInfo($lang,$thread_id);
