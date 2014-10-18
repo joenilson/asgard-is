@@ -2081,7 +2081,6 @@ class IndexController extends AbstractActionController
         $userData = $this->getServiceLocator()->get('userSessionData');
         
         $lang=$userPrefs[0]['lang'];
-        
         $translator = $this->getTranslationTable();
         $imsMainProcess = $translator->getTranslationItem($lang,'diagram','ims-main-process');
         $imsStrategicProcess = $translator->getTranslationItem($lang,'diagram','ims-strategic-process');
@@ -2095,6 +2094,7 @@ class IndexController extends AbstractActionController
             'locationId'=>$userData->location,
             'countryId'=>$userData->country,
             'lang'=>$lang,
+            'module_id'=>$this->params()->fromRoute('id', 0),
             'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
         );
     }
@@ -4958,6 +4958,7 @@ class IndexController extends AbstractActionController
         $location  = $this->params()->fromRoute('location', 0);
         $parent_id  = $this->params()->fromRoute('parent_id', 0);
         $type_process = $this->params()->fromRoute('type', 0);
+        $module_id = $this->params()->fromRoute('mid', 0);
         
         $companyRequest = $this->getCompaniesTable()->getCompanyById($company);
         $countryRequest = $this->getCountriesTable()->getCountryById($country);
@@ -4973,7 +4974,8 @@ class IndexController extends AbstractActionController
                     'country'=>$country,
                     'countryDesc'=>$countryRequest[0]['name'],
                     'location'=>$location,
-                    'locationDesc'=>$locationRequest[0]['location_name']
+                    'locationDesc'=>$locationRequest[0]['location_name'],
+                    'module_id'=>$module_id
                 )
             );
     }
@@ -5156,6 +5158,7 @@ class IndexController extends AbstractActionController
     
     public function threaddetailsAction()
     {
+        $userData = $this->getServiceLocator()->get('userSessionData');
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
         $lang = $userPrefs[0]['lang'];
         
@@ -5164,6 +5167,10 @@ class IndexController extends AbstractActionController
         $country  = (string) $this->params()->fromRoute('country', 0);
         $location  = (string) $this->params()->fromRoute('location', 0);
         $process_id  = (int) $this->params()->fromRoute('process_id', 0);
+        $module_id = explode("-",$this->params()->fromRoute('mid', 0));
+
+        $userRole = $this->getUserRole($userData->id, $module_id[0], $module_id[0]);
+        
         $queryPM = $this->getProcessThreadTable();
         $listDocuments = $queryPM->getThreadInfo($lang,$thread_id);
         $queryPTO = $this->getProcessThreadOwnerTable();
@@ -5177,7 +5184,8 @@ class IndexController extends AbstractActionController
             'location'=>$location,
             'threadData'=>$listDocuments,
             'owner'=>$owner_name[0]['name'],
-            'lang'=>$lang
+            'lang'=>$lang,
+            'user_role'=>$userRole
         );
     }
     
@@ -7123,6 +7131,17 @@ class IndexController extends AbstractActionController
     		$this->systemConfig = $sm->get('Config');
     	}
     	return $this->systemConfig;
+    }
+    
+    private function getUserRole($idUser, $idModule, $idSubmodule){
+        $userGrantedAccess = $this->getAdminUserSubmodulesTable()->getUserSubmodulesAccess($idUser, $idModule, $idSubmodule);
+        $role='Viewer';
+        if(!empty($userGrantedAccess)){
+            $role=($userGrantedAccess[0]['admin']==1)?'Admin':$role;
+            $role=($userGrantedAccess[0]['add']==1)?'Key User':$role;
+            $role=($userGrantedAccess[0]['edit']==1)?'Editor':$role;
+        }
+        return $role;
     }
     
     protected function getViewHelper($helperName)

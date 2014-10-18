@@ -284,7 +284,7 @@ function fnButton (button, object)
             AutoDestroy: true,
             layout: 'fit',
             loader: {
-                url: 'ims/process/'+companies+'/'+countries+'/'+locations+'/'+button.path,
+                url: 'ims/process/<?=$this->module_id;?>/'+companies+'/'+countries+'/'+locations+'/'+button.path,
                 autoLoad: true,
                 scripts: true
             }

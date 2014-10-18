@@ -2170,7 +2170,7 @@ return array(
                     'process' => array(
                         'type'    => 'Segment',
                         'options' => array(
-                            'route' => '/process[/:company[/:country[/:location[/:process_id[/:parent_id[/:type]]]]]]',
+                            'route' => '/process[/:mid[/:company[/:country[/:location[/:process_id[/:parent_id[/:type]]]]]]]',
                             'constraints' => array(
                                 'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
@@ -2338,7 +2338,7 @@ return array(
                     'threaddetails' => array(
                         'type'    => 'Segment',
                         'options' => array(
-                            'route'    => '/threaddetails[/:id_thread[/:country[/:company[/:location[/:process_id]]]]]',
+                            'route'    => '/threaddetails[/:mid[/:id_thread[/:country[/:company[/:location[/:process_id]]]]]]',
                             'constraints' => array(
                                 'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',

@@ -264,7 +264,8 @@ var tabpanel<?=$this->threadId; ?> = Ext.create('Ext.tab.Panel', {
                 tools: [{
                     type: 'gear',
                     tooltip: 'Edit Information',
-                    handler: fnChangeInformation
+                    handler: fnChangeInformation,
+                    hidden: <?php echo ($this->user_role=='Admin' OR $this->user_role=='Editor')?'false':'true'; ?>
                 }],
                 items: [{
                     width: '100%',
@@ -279,7 +280,8 @@ var tabpanel<?=$this->threadId; ?> = Ext.create('Ext.tab.Panel', {
                 tools: [{
                     type: 'gear',
                     tooltip: 'Edit Owner',
-                    handler: fnChangeOwner
+                    handler: fnChangeOwner,
+                    hidden: <?php echo ($this->user_role=='Admin' OR $this->user_role=='Editor')?'false':'true'; ?>
                 }],
                 items: [{
                     width: '100%',
@@ -295,7 +297,8 @@ var tabpanel<?=$this->threadId; ?> = Ext.create('Ext.tab.Panel', {
                 tools: [{
                     type: 'gear',
                     tooltip: 'Edit Information',
-                    handler: fnChangeInformation
+                    handler: fnChangeInformation,
+                    hidden: <?php echo ($this->user_role=='Admin' OR $this->user_role=='Editor')?'false':'true'; ?>
                 }],
                 items: [{
                     width: '100%',
