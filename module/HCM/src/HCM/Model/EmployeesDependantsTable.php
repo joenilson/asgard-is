@@ -56,6 +56,16 @@ class EmployeesDependantsTable extends AbstractTableGateway
         return $result;
     }
     
+    public function getNumberDependantsById($id) {
+        $employee_id = (int) $id;
+        $resultSet = $this->select(function (Select $select) use ($employee_id) {
+            $select->columns(array('number' => new Expression('COUNT(*)')));
+            $select->where(array('id'=> (int) $employee_id, 'status' => 'A'));
+        });
+        $result = $resultSet->current();
+        return $result['number'];
+    }
+    
     public function getNextId() {
         $resultSet = $this->select(function (Select $select) {
             $select->columns(array(new Expression('max(id_dependant) AS id_dependant')));

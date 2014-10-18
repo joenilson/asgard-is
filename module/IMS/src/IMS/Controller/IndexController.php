@@ -25,6 +25,7 @@ use IMS\Model\Entity\Organigram;
 use IMS\Model\Entity\Traceability;
 use IMS\Model\Entity\Objectives;
 use IMS\Model\Entity\ProcessOwnerProfile;
+use IMS\Model\Entity\ProcessThreadOwner;
 use IMS\Model\Entity\Communications;
 use IMS\Model\Entity\TrainingPlan;
 use IMS\Model\Entity\InspectionProgram;
@@ -77,6 +78,7 @@ class IndexController extends AbstractActionController
     protected $processownerTable;
     protected $processRelationsTable;
     protected $processThreadTable;
+    protected $processThreadOwnerTable;
     protected $processActivityTable;
     protected $docsLibraryTable;
     protected $docsHelpersTable;
@@ -2445,7 +2447,7 @@ class IndexController extends AbstractActionController
             $dataResult['success']=true;
             $dataResult['results']=$dataAuditPlan;
         }else{
-            $dataResult['success']=false;
+            $dataResult['success']=true;
             $dataResult['results']="";
         }
         return new JsonModel($dataResult);
@@ -2556,7 +2558,7 @@ class IndexController extends AbstractActionController
             $data['success']=true;
             $data['data']=$dataResult;
         }else{
-            $data['success']=false;
+            $data['success']=true;
             $data['data']="";
         }
         
@@ -2591,7 +2593,7 @@ class IndexController extends AbstractActionController
             $dataResult['success']=true;
             $dataResult['images']=$dataPositions;
         }else{
-            $dataResult['success']=false;
+            $dataResult['success']=true;
             $dataResult['images']="";
         }
         return new JsonModel($dataResult);        
@@ -2608,7 +2610,7 @@ class IndexController extends AbstractActionController
             $dataResult['success']=true;
             $dataResult['results']=$dataPositions;
         }else{
-            $dataResult['success']=false;
+            $dataResult['success']=true;
             $dataResult['results']="";
         }
         return new JsonModel($dataResult);
@@ -2779,7 +2781,7 @@ class IndexController extends AbstractActionController
             $dataResult['success']=true;
             $dataResult['results']=$dataProceedings;
         }else{
-            $dataResult['success']=false;
+            $dataResult['success']=true;
             $dataResult['results']="";
         }
         return new JsonModel($dataResult);
@@ -5164,6 +5166,8 @@ class IndexController extends AbstractActionController
         $process_id  = (int) $this->params()->fromRoute('process_id', 0);
         $queryPM = $this->getProcessThreadTable();
         $listDocuments = $queryPM->getThreadInfo($lang,$thread_id);
+        $queryPTO = $this->getProcessThreadOwnerTable();
+        $owner_name = $queryPTO->getOwnerByCCLId($lang,$company,$country,$location,$thread_id);
         //print_r($listDocuments);
         return array(
             'threadId'=>$thread_id,
@@ -5171,8 +5175,57 @@ class IndexController extends AbstractActionController
             'company'=>$company,
             'country'=>$country,
             'location'=>$location,
-            'threadData'=>$listDocuments
+            'threadData'=>$listDocuments,
+            'owner'=>$owner_name[0]['name'],
+            'lang'=>$lang
         );
+    }
+    
+    public function threadinfoeditAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        //$lang = $userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        
+        $module = (string) $request->getPost('module');
+        $process= (int) $request->getPost('process');
+        $thread= (int) $request->getPost('thread');
+        $lang= (string) $request->getPost('lang');
+        $field= (string) $request->getPost('field');
+        $company= (string) $request->getPost('company');
+        $country= (string) $request->getPost('country');
+        $location= (string) $request->getPost('location'); 
+        $valueField= (string) $request->getPost('value');
+        
+        
+        try {
+            if($field == 'mission' OR $field == 'scope'){
+                $conn = $this->getProcessThreadTable();
+                $data['message']=$conn->updateProcessThreadI18n($thread,$lang,$field,$valueField);
+            }elseif($field == 'owner'){
+                
+                $dataOwner = new ProcessThreadOwner;
+                $dataOwner->setType('o');
+                $dataOwner->setId($thread);
+                $dataOwner->setDate_creation(\date('Y-m-d'));
+                $dataOwner->setUser_id($userData->id);
+                $dataOwner->setCountry($country);
+                $dataOwner->setCompany($company);
+                $dataOwner->setLocation($location);
+                $dataOwner->setId_owner($valueField);
+                $conn = $this->getProcessThreadOwnerTable();
+                $conn-> save($dataOwner);
+                $owner_name = $conn->getOwnerByCCLId($lang,$company,$country,$location,$thread);
+                $data['displayvalue'] = $owner_name[0]['name'];
+            }
+            $data['success'] = true;
+        } catch (Exception $ex) {
+            $data['success'] = false;
+            $data['message']= $ex;
+        }
+        return new JsonModel($data);
+        
     }
     
     public function processdocslistAction(){
@@ -6998,6 +7051,15 @@ class IndexController extends AbstractActionController
             $this->processThreadTable = $sm->get('IMS\Model\ProcessThreadTable');
         }
         return $this->processThreadTable;
+    }
+    
+    private function getProcessThreadOwnerTable()
+    {
+    	if (!$this->processThreadOwnerTable) {
+            $sm = $this->getServiceLocator();
+            $this->processThreadOwnerTable = $sm->get('IMS\Model\ProcessThreadOwnerTable');
+    	}
+    	return $this->processThreadOwnerTable;
     }
     
     private function getProcessActivityTable() {

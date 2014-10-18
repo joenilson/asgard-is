@@ -76,6 +76,9 @@ class SoapPlugin  extends AbstractPlugin {
         if($result){
             foreach ($result->ItPernr as $key=>$values){
                 foreach($values as $innerValues){
+                    $numberDependents = 0;
+                    $sqlDependents = $this->getController()->getEmployeesDependantsTable();
+                    $numberDependents = $sqlDependents->getNumberDependantsById($innerValues->Pernr);
                     $moreValues = array(
                         'id'=>$innerValues->Pernr,
                         'surname'=>$innerValues->Nachn,
@@ -84,7 +87,9 @@ class SoapPlugin  extends AbstractPlugin {
                         'position'=>ucfirst(strtolower($innerValues->Plstx)),
                         'work'=>ucfirst(strtolower($innerValues->Orgtx)),
                         'birthday'=>str_replace('.', '-', $innerValues->Nacimiento),
-                        'office'=>$office);
+                        'office'=>$office,
+                        //'processed'=>$numberDependents);
+                        'processed'=>($numberDependents!=0)?true:false);
                     array_push($dataResult, $moreValues);
                 }
             }

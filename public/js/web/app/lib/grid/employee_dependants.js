@@ -181,7 +181,6 @@ Ext.define('Asgard.lib.grid.employee_dependants',{
         // Create a model instance
         
         var gridSM = this.up('panel').getComponent('gridEmployees').getSelectionModel().getSelection()[0];
-        console.log(gridSM.get('id'));
         var rec = new Asgard.model.EmployeesDependants({
             id: gridSM.get('id')
         });
@@ -193,7 +192,8 @@ Ext.define('Asgard.lib.grid.employee_dependants',{
     },
 
     trateDependant: function(sm, rs, id, button, obj, record) {
-        console.log(button.name);
+        //console.log(button.name);
+        var gridEmployees = this.up('panel').getComponent('gridEmployees');
         Ext.Ajax.request({
             url: 'hcm/addemployeesdependants',
             params: {
@@ -212,7 +212,9 @@ Ext.define('Asgard.lib.grid.employee_dependants',{
             scope: this,
             success: function(response){
                 var text = response.responseText;
+                
                 this.getStore().reload();
+                gridEmployees.getStore().reload();
                 // process server response here
             },
             failure: function(response){

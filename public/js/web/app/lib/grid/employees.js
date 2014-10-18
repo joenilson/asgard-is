@@ -42,7 +42,7 @@ Ext.define('Asgard.lib.grid.employees',{
     birthdayText: 'Birthday',
     officeText: 'Office',
     loadingText: 'Searching for data...',
-    toolFormText: 'Save Employee Data',
+    toolFormText: 'Employee without dependents',
     
     maritalStatusText: 'Marital Status',
     statusSingle: 'Single',
@@ -51,23 +51,34 @@ Ext.define('Asgard.lib.grid.employees',{
     statusWidowed: 'Widowed',
     statusSeparated: 'Separated',
 
+    workedText: 'Processed',
+    
+    falseText: 'Pending',
+    trueText: 'Processed',
+    
+    questionTitle: 'No Dependents',
+    questionText: 'Are your mark this employee without dependants?',
+    
     requires: [
         'Ext.selection.CellModel',
         'Ext.grid.*',
         'Ext.data.*',
         'Ext.util.*',
         'Ext.form.*',
-        'Asgard.model.Employees'
+        'Asgard.model.Employees',
+        'Asgard.model.EmployeesDependants'
     ],
     
     initComponent: function(){
         this.title = this.titleText;
+        /*
         this.cellEditing = new Ext.grid.plugin.CellEditing({
             clicksToEdit: 2
         });
         this.plugins = [
             this.cellEditing
         ];
+        */
         this.columns =  {
             plugins: [{
                 ptype: 'gridautoresizer'
@@ -80,38 +91,31 @@ Ext.define('Asgard.lib.grid.employees',{
                 editor: { allowBlank: true }},
                 {text: this.firstnameText, flex: 1, sortable: true, hidden: false, dataIndex: 'firstname', filter: true,
                 editor: { allowBlank: false }},
-                {text: this.positionText, flex: 1,sortable: true, hidden: false, dataIndex: 'position', filter: true},
-                {text: this.organizationText, flex: 1,sortable: true, hidden: false, dataIndex: 'work', filter: true},
+                {text: this.positionText, flex: 1,sortable: true, hidden: false, dataIndex: 'position', filter: 'combo'},
+                {text: this.organizationText, flex: 1,sortable: true, hidden: false, dataIndex: 'work', filter: 'combo'},
                 {text: this.birthdayText, flex: 0.5,sortable: true, hidden: false, dataIndex: 'birthday', filter: true, renderer: Ext.util.Format.dateRenderer('d-m-Y'),
                 editor: { xtype: 'datefield', format: 'd-m-Y' }},
-                {text: this.officeText, flex: 0.5,sortable: true, hidden: false, dataIndex: 'office', filter: true},
-                {text: this.maritalStatusText, flex: 0.5,sortable: true, hidden: false, dataIndex: 'marital_status', filter: true, 
-                editor: new Ext.form.field.ComboBox({
-                    typeAhead: true,
-                    triggerAction: 'all',
-                    store: [
-                        ['single',this.statusSingle],
-                        ['married',this.statusMarried],
-                        ['divorced',this.statusDivorced],
-                        ['widowed',this.statusWidowed],
-                        ['separated',this.statusSeparated]
-                    ]
-                })
-                },
+                {text: this.officeText, flex: 0.5, sortable: true, hidden: false, dataIndex: 'office', filter: true},
+                {text: this.workedText, flex: 0.5, sortable: true, hidden: false, dataIndex: 'processed', filter: 'combo', renderer: this.renderWorked},
                 {
-                xtype: 'actioncolumn',
-                width: 30,
-                sortable: false,
-                menuDisabled: true,
-                items: [{
-                    icon: 'images/default/save.png',
-                    tooltip: this.toolFormText,
-                    scope: this,
-                    handler: function() {
-                        
-                    }
-                }]
-            }
+                    xtype: 'actioncolumn',
+                    width: 30,
+                    sortable: false,
+                    menuDisabled: true,
+                    items: [{
+                        icon: 'images/default/delete.png',
+                        tooltip: this.toolFormText,
+                        scope: this,
+                        handler: function(grid, rowIndex, colIndex) {
+                            Ext.Msg.confirm(this.questionTitle, this.questionText, function (button) {
+                                if (button === 'yes') {
+                                    this.onNoDependent();
+
+                                }
+                            }, this);
+                        }
+                    }]
+                }
             ]
         };
         this.callParent();
@@ -129,6 +133,46 @@ Ext.define('Asgard.lib.grid.employees',{
         //this.on('edit', this.onCellEdit, this);
         var gridEmployeeSM = this.getSelectionModel();
         gridEmployeeSM.on('selectionchange', this.onRowSelect, this);
+    },
+
+    renderWorked: function(value, metaData, record, rowIndex, colIndex, store){
+        var valueReturn = (value === true)?this.trueText:this.falseText;
+        var FieldReturn = (value === true)?'<span style="color:green;">' + valueReturn + '</span>':'<span style="color:red;">' + valueReturn + '</span>';
+        return FieldReturn;
+    },
+    
+    onNoDependent: function(obj, id, component, icon, event, record, other) {
+        var gridSM = this.up('panel').getComponent('gridEmployees').getSelectionModel().getSelection()[0];
+        var rec = new Asgard.model.EmployeesDependants({
+            id: gridSM.get('id')
+        });
+        Ext.Ajax.request({
+            url: 'hcm/addemployeesdependants',
+            params: {
+                action: 'add',
+                id: gridSM.get('id'),
+                id_dependant: 0,
+                surname: 'NONE',
+                lastname: null,
+                firstname: 'NONE',
+                birthday: Ext.util.Format.date(9999-12-31,'Y-m-d'),
+                type: 'none',
+                gender: 'none',
+                user_id: null,
+                date_creation: null
+            },
+            scope: this,
+            success: function(response){
+                var text = response.responseText;
+                this.getStore().reload();
+                // process server response here
+            },
+            failure: function(response){
+                var text = response.responseText;
+                console.log(text);
+                // 
+            }
+        });
     },
     
     onCellEdit: function( editor, e) {

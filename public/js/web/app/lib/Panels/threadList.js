@@ -1,14 +1,3 @@
-/**
- * @class FeedViewer.FeedPanel
- * @extends Ext.panel.Panel
- *
- * Shows a list of available feeds. Also has the ability to add/remove and load feeds.
- *
- * @constructor
- * Create a new Feed Panel
- * @param {Object} config The config object
- */
-
 Ext.define('Asgard.lib.Panels.threadList', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.threadspanel',

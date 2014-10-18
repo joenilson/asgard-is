@@ -193,5 +193,14 @@ class ProcessThreadTable extends AbstractTableGateway {
         $lang = (string) $lang;
         $this->update($data, array('id' => $id, 'lang' => $lang));
     }
+    
+    public function updateProcessThreadI18n($id,$lang,$field,$value)
+    {
+        $idThread = (int) $id;
+        $langThread = (string) $lang;
+        $fieldThread = (string) $field;
+        $this->table = new TableIdentifier($this->table_i18n, $this->schema_name);
+        return $this->update(array($fieldThread=>$value), array('id' => $idThread, 'lang' => $langThread));
+    }
 }
 ?>

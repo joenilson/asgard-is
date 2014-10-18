@@ -58,7 +58,7 @@ Ext.define('Asgard.locales.lib.toolbarEditor', {
 Ext.define('Asgard.locales.lib.toolbarViewer', {
     override: 'Asgard.lib.toolbarViewer',
     searchButtonText: 'Buscar',
-    refreshButtonText: 'Actualizar',
+    refreshButtonText: 'Actualizar'
 });
 
 Ext.define('Asgard.locales.view.window.systemInformation', {
@@ -640,14 +640,22 @@ Ext.define('Asgard.locales.lib.grid.employees',{
     birthdayText: 'Fecha Nacimiento',
     officeText: 'Oficina',
     loadingText: 'Buscando datos...',
-    toolFormText: 'Guardar datos del empleado',
+    toolFormText: 'Empleado sin dependientes',
     
     maritalStatusText: 'Estado Civil',
     statusSingle: 'Soltero/a',
     statusMarried: 'Casado/a',
     statusDivorced: 'Divorciado/a',
     statusWidowed: 'Viudo/a',
-    statusSeparated: 'Divorciado/a'
+    statusSeparated: 'Divorciado/a',
+    
+    workedText: 'Procesado?',
+    
+    falseText: 'Pendiente',
+    trueText: 'Procesado',
+    
+    questionTitle: 'Sin Dependientes',
+    questionText: '¿Desea marcar este empleado sin dependientes?',
 
 });
 

@@ -27,7 +27,7 @@ Ext.define('Asgard.view.Viewport', {
     'Asgard.lib.grid.hira_incidents_type','Asgard.lib.grid.hira_incidents_details',
     'Asgard.store.BrigadePositions','Asgard.store.SimulationsBrigade','Asgard.lib.forms.BrigadePositionsCombo',
     'Asgard.lib.forms.brigadeNewMember','Asgard.lib.dataview.simulationsbrigade',
-    'Asgard.lib.Panels.BrigadePanel',
+    'Asgard.lib.Panels.BrigadePanel','Asgard.lib.Panels.threadDetails',
     'Asgard.store.CommitteePositions','Asgard.store.SafetyCommittee','Asgard.lib.forms.CommitteePositionsCombo',
     'Asgard.lib.forms.committeeNewMember','Asgard.lib.dataview.safetycommittee',
     'Asgard.lib.Panels.CommitteePanel','Asgard.store.Languages','Asgard.lib.forms.LanguageCombo',

@@ -2349,6 +2349,20 @@ return array(
                             ),
                         ),
                     ),
+                    'threadinfoedit' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/threadinfoedit[/:id_thread[/:country[/:company[/:location[/:process_id]]]]]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'threadinfoedit'
+                            ),
+                        ),
+                    ),
                     'docs' => array(
                         'type'    => 'Segment',
                         'options' => array(

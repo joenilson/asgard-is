@@ -30,6 +30,7 @@ Ext.define('Asgard.model.Employees', {
         {name: 'work', type: 'string' },
         {name: 'birthday', type: 'date', dateFormat: 'Y-m-d' },
         {name: 'office', type: 'string' },
-        {name: 'marital_status', type: 'string'}
+        {name: 'marital_status', type: 'string'},
+        {name: 'processed', type: 'boolean'}
     ]
 });
