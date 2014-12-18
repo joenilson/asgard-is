@@ -30,6 +30,8 @@ use AsgardLib\Sources\Soap;
 class SoapPlugin  extends AbstractPlugin {
     
     protected $systemConfig;
+    protected $employeeDependants;
+    protected $messagesTable;
     protected $wsdl = "http://erpapp1.kolareal.com.do:8001/sap/bc/srt/wsdl/bndg_BD75D653BC74CC2DE1000000C0A80374/wsdl11/allinone/standard/document?sap-client=300";
    
     public function connect() {
@@ -87,7 +89,7 @@ class SoapPlugin  extends AbstractPlugin {
                         'position'=>ucfirst(strtolower($innerValues->Plstx)),
                         'work'=>ucfirst(strtolower($innerValues->Orgtx)),
                         'birthday'=>str_replace('.', '-', $innerValues->Nacimiento),
-                        'office'=>$office,
+                        'office'=>$innerValues->Btrtl,
                         //'processed'=>$numberDependents);
                         'processed'=>($numberDependents!=0)?true:false);
                     array_push($dataResult, $moreValues);
@@ -107,6 +109,120 @@ class SoapPlugin  extends AbstractPlugin {
             $dataResult = $this->getemployees($office);
         }
         return $dataResult;
+    }
+    
+    public function getemployeesReport($listOffices){
+        $preResult = $this->getemployeesList($listOffices);
+        $dataResult = array();
+        foreach ($preResult as $value){
+            $dependantsResult = $this->getDependants($value['id']);
+            $dataResult[]= array('id'=>$value['id'],
+            'surname'=>$value['surname'],
+            'lastname'=>$value['lastname'],
+            'firstname'=>$value['firstname'],
+            'position'=>$value['position'],
+            'work'=>$value['work'],
+            'office'=>$value['office'],
+            'birthday'=>$value['birthday'],
+            'processed'=>$dependantsResult['processed'],
+            'age'=>$this->personAge($value['birthday']),
+            'marital_status'=>$dependantsResult['couple'],
+            'children_male'=>$dependantsResult['children_male'],
+            'children_female'=>$dependantsResult['children_female']);
+        }
+        return $dataResult;
+    }
+    
+    public function getemployeesChart($query_type,$listOffices,$lang){
+        $preResult = $this->getemployeesList($listOffices);
+        $dataResult = array();
+        foreach ($preResult as $value){
+            $dataResult[]=$value['id'];
+        }
+        //echo count($dataResult);
+        $result = $this->getResumeChart($query_type,$dataResult,$lang);
+        return $result;
+    }
+    
+    private function getResumeChart($query_type,$ids,$lang){
+        if($query_type!='' and count($ids)!=0){
+            $sql = $this->getEmployeeDependatsTable();
+            $data = $sql->getDependantsGroupedByType($query_type,$ids);
+            $result = $this->processDependantsGroup($query_type,$data,$lang);
+            return $result;
+        }
+    }
+    
+    private function getDependants($id_employee){
+        if($id_employee!==0){
+            $sql = $this->getEmployeeDependatsTable();
+            $data = $sql->getDependantsGroupedById($id_employee);
+            $result = $this->processDependants($data);
+            return $result;
+        }
+    }
+    
+    private function processDependants($dataList){
+        if (count($dataList)!=0){
+            foreach ($dataList as $value){
+                $result['processed']=true;
+                $result['couple']=($value['type']=='none')?'no':'yes';
+                $result['children_male']=($value['type']=='children' AND $value['gender']=='male')?$value['number']:0;
+                $result['children_female']=($value['type']=='children' AND $value['gender']=='female')?$value['number']:0;
+            }
+        }else{
+            $result['processed']=false;
+            $result['couple']='no';
+            $result['children_male']=0;
+            $result['children_female']=0;
+        }
+        return $result;
+    }
+    
+    private function processDependantsGroup($type,$data,$lang){
+        $dataResponse = array();
+        $sql = $this->getMessagesTable();
+        if(count($data)==0){
+            return $dataResponse;
+        }else{
+            if($type!=='type'){
+                foreach($data as $values){
+                    $key = $values['min']." - ".$values['max'];
+                    $dataResponse[]=array('name' => $key,'number' => $values['number']);
+                }
+            }else{
+                foreach($data as $values){
+                    $tipeValue = $sql->getMessage($lang,$values['type']);
+                    $genderValue = $sql->getMessage($lang,$values['gender']);
+                    $key = $tipeValue->value." - ".$genderValue->value;
+                    $dataResponse[]=array('name' => $key,'number' => $values['number']);
+                }
+            }
+            return $dataResponse;
+        }
+    }
+    
+    private function personAge($date){
+        $interval = date_diff(date_create(), date_create($date));
+        $age = $interval->format("%Y, %m");
+        return $age;
+    }
+
+    private function getEmployeeDependatsTable(){
+        if(!$this->employeeDependants) {
+            $sm = $this->getController()->getServiceLocator();
+            $this->employeeDependants = $sm->get('HCM\Model\EmployeesDependantsTable');
+        }
+        return $this->employeeDependants;
+    }
+    
+    public function getMessagesTable()
+    {
+    	if (!$this->messagesTable) {
+            $sm = $this->getController()->getServiceLocator();
+            $this->messagesTable = $sm->get('Application\Model\MessagesTable');
+    	}
+    	return $this->messagesTable;
     }
     
     public function getConfig()

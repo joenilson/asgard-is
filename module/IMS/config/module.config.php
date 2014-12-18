@@ -129,6 +129,48 @@ return array(
                             ),
                         ),
                     ),
+                    'policies' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/policies[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'policies'
+                            ),
+                        ),
+                    ),
+                    'getpolicies' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/getpolicies[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'getpolicies'
+                            ),
+                        ),
+                    ),
+                    'addpolicies' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/addpolicies[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'addpolicies'
+                            ),
+                        ),
+                    ),
                     'securityhandbook' => array(
                         'type'    => 'Segment',
                         'options' => array(
@@ -2374,6 +2416,20 @@ return array(
                             ),
                             'defaults' => array(
                                 'action' => 'docs'
+                            ),
+                        ),
+                    ),
+                    'records' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/records[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'records'
                             ),
                         ),
                     ),

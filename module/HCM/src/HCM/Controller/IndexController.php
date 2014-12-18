@@ -71,6 +71,22 @@ class IndexController extends AbstractActionController {
         );
     }
     
+    public function employeesrAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $routeVlas = explode("-",$this->params()->fromRoute('id', 0));
+        $lang=$userPrefs[0]['lang'];
+        $role = $this->getUserRole($userData->id,$routeVlas[0],$routeVlas[1]);
+        return array(
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'lang'=>$lang,
+            'isAdmin'=>($role=='Admin')?"true":"false",
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
+        );
+    }
+    
     public function getemployeeofficesAction(){
         $soap = $this->SoapHcmPlugin();
         $listDocuments = $soap->getemployeeoffices(1000);
@@ -91,16 +107,38 @@ class IndexController extends AbstractActionController {
         return new JsonModel($result);
     }
     
+    public function getemployeesrAction(){
+        $request = $this->getRequest();
+        $office_list = $request->getQuery('offices');
+        $list = explode(',',$office_list);
+        $soap = $this->SoapHcmPlugin();
+        $listEmployees = $soap->getemployeesReport($list);
+        $result['success']=true;
+        $result['results']=$listEmployees;
+        $result['count']=count($list);
+        return new JsonModel($result);
+    }
+    
+    public function getremployeesgroupedAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang=$userPrefs[0]['lang'];
+        $request = $this->getRequest();
+        $office_list = $request->getQuery('offices');
+        $query_type = $request->getQuery('type');
+        $list = explode(',',$office_list);
+        $soap = $this->SoapHcmPlugin();
+        $listEmployees = $soap->getemployeesChart($query_type,$list,$lang);
+        $result['success']=true;
+        $result['results']=$listEmployees;
+        $result['count']=count($list);
+        return new JsonModel($result);
+    }
+    
     public function getemployeesdependantsAction(){
         $request = $this->getRequest();
         $employee_id = $request->getQuery('uid');
         $conn = $this->getEmployeesDependantsTable();
         $listDependants = $conn->getDependantsById((int) $employee_id);
-        /*
-        $list = explode(',',$office_list);
-        $soap = $this->SoapHcmPlugin();
-        $listEmployees = $soap->getemployeesList($list);
-         * */
         $result['success']=true;
         $result['results']=$listDependants;
         return new JsonModel($result);
@@ -187,6 +225,26 @@ class IndexController extends AbstractActionController {
             $this->employeesDependantsTable = $sm->get('HCM\Model\EmployeesDependantsTable');
     	}
     	return $this->employeesDependantsTable;
+    }
+    
+    private function getUserRole($idUser, $idModule, $idSubmodule){
+        $userGrantedAccess = $this->getAdminUserSubmodulesTable()->getUserSubmodulesAccess($idUser, $idModule, $idSubmodule);
+        $role='Viewer';
+        if(!empty($userGrantedAccess)){
+            $role=($userGrantedAccess[0]['admin']==1)?'Admin':$role;
+            $role=($userGrantedAccess[0]['add']==1)?'Key User':$role;
+            $role=($userGrantedAccess[0]['edit']==1)?'Editor':$role;
+        }
+        return $role;
+    }
+    
+    private function getAdminUserSubmodulesTable()
+    {
+    	if (!$this->adminusersubmodulesTable) {
+            $sm = $this->getServiceLocator();
+            $this->adminusersubmodulesTable = $sm->get('Application\Model\AdminUserSubmodulesTable');
+    	}
+    	return $this->adminusersubmodulesTable;
     }
     
     protected function getViewHelper($helperName)

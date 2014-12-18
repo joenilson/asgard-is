@@ -100,14 +100,56 @@ return array(
                     'employees' => array(
                         'type'    => 'Segment',
                         'options' => array(
-                            'route'    => '/employees[/:society]',
+                            'route'    => '/employees[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id' => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'employees'
+                            ),
+                        ),
+                    ),
+                    'employeesr' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/employeesr[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id' => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'employeesr'
+                            ),
+                        ),
+                    ),
+                    'getemployeesr' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/getemployeesr[/:society]',
                             'constraints' => array(
                                 'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'id_process' => '[0-9_-]*',
                             ),
                             'defaults' => array(
-                                'action' => 'employees'
+                                'action' => 'getemployeesr'
+                            ),
+                        ),
+                    ),
+                    'getremployeesgrouped' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/getremployeesgrouped[/:society]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id_process' => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'getremployeesgrouped'
                             ),
                         ),
                     ),

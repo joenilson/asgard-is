@@ -655,8 +655,7 @@ Ext.define('Asgard.locales.lib.grid.employees',{
     trueText: 'Procesado',
     
     questionTitle: 'Sin Dependientes',
-    questionText: '¿Desea marcar este empleado sin dependientes?',
-
+    questionText: '¿Desea marcar este empleado sin dependientes?'
 });
 
 Ext.define('Asgard.locales.lib.grid.employee_dependants',{
@@ -685,4 +684,67 @@ Ext.define('Asgard.locales.lib.grid.employee_dependants',{
 Ext.define('Asgard.locales.lib.forms.comboOffices',{
     override: 'Asgard.lib.forms.comboOffices',
     textSubmitButton: 'Buscar'
+});
+
+Ext.define('Asgard.locales.lib.grid.employeesr',{
+    override: 'Asgard.lib.grid.employeesr',
+    titleText: 'Reporte de Empleados',
+    idText: 'Id',
+    surnameText: 'Apellido Paterno',
+    lastnameText: 'Apellido Materno',
+    firstnameText: 'Nombres',
+    positionText: 'Cargo',
+    organizationText: 'Area',
+    birthdayText: 'Fecha Nacimiento',
+    ageText: 'Edad Años/Meses',
+    loadingText: 'Buscando datos...',
+    toolFormText: 'Empleado sin dependientes',
+    
+    maritalStatusText: 'Con Pareja',
+    childrenMaleText: 'Qdad Hijos',
+    childrenFemaleText: 'Qdad Hijas',
+    workedText: 'Procesado',
+    yesText: 'Si',
+    noText: 'No',
+    
+    falseText: 'Pendiente',
+    trueText: 'Procesado',
+    
+    textTitle: 'Confirma la Descarga?',
+    textMessage: 'Desea descargar el gráfico como una imágen?',
+    textButtonDownload: 'Guardar Gráfico',
+    textButtonDownloadData: 'Descargar Datos',
+    textButtonResumeDependents: 'Resumen de Dependientes',
+    textButtonCoupleRange: 'Rango de Edades Parejas',
+    textButtonChildrenRange: 'Rango de Edades Hijos'
+
+});
+
+Ext.define('Asgard.locales.lib.dataview.policies',{
+    override: 'Asgard.lib.dataview.policies',
+    emptyTextText: 'No hay un documento para mostrar...'
+});
+
+Ext.define('Asgard.locales.lib.dataview.policies',{
+    override: 'Asgard.lib.forms.policiesNewPolicy',
+    descriptionText: 'Descripcion',
+    fileText: 'Politica en PDF',
+    fileFieldEmptyText: 'Elija un archivo PDF',    
+    textSubmitButton: 'Enviar',
+    textCancelButton: 'Cancelar',
+
+    warningTitle: 'Advertencia',
+    warningText: 'Ya existe una politica!, elimine la anterior para ingresar la nueva',
+    required: '<span style="color:red;font-weight:bold" data-qtip="Obligatorio">*</span>',
+    successText: 'Política actualizada correctamente!',
+    failureText: 'No se completo el proceso correctamente, Por favor intente de nuevo.'
+});
+
+Ext.define('Asgard.locales.lib.dataview.policies',{
+    override: 'Asgard.lib.Panels.PoliciesPanel',
+    barAddText: 'Agregar Política',
+    barRemoveText: 'Eliminar Política',
+    warningTitle: 'Advertencia',
+    warningBody: 'No se pudo procesar su documento, por favor revise si el archivo no es incorrecto.',
+    warningTitleBodyDelete: 'Ha elegido eliminar este archivo. <br />Desea continuar?'
 });

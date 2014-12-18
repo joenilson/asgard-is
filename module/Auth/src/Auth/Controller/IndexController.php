@@ -193,7 +193,11 @@ class IndexController extends AbstractActionController
                             ->setAdmin('f')
                             ->setStatus('A')
                             ->setType('single')
-                            ->setAccount_type('ldap');
+                            ->setAccount_type('ldap')
+                            ->setType_system(null)
+                            ->setId_company(null)
+                            ->setId_location(null)
+                            ->setId_employee(null);
 
                             $newUserId=$UsersTable->save($user);
 
@@ -206,20 +210,21 @@ class IndexController extends AbstractActionController
                             */
                             $userPrefs = new UserPreferences();
                             $userPrefs->setUser_id($newUserId)
-                            ->setLang($userLang)
-                            ->setEmail($userMail)
-                            ->setAlias($resultMessages->givenname)
-                            ->setAvatar(null)
-                            ->setRegional($userTimezone)
-                            ->setVacation_from(null)
-                            ->setVacation_to(null)
-                            ->setVacation_status(null)
-                            ->setOffice_phone(null)
-                            ->setCell_phone(null)
-                            ->setHome_phone(null)
-                            ->setOther_phone(null)
-                            ->setFax_phone(null)
-                            ->setOffice_ext(null);
+                                ->setLang($userLang)
+                                ->setEmail($userMail)
+                                ->setAlias($resultMessages->givenname)
+                                ->setAvatar(null)
+                                ->setRegional($userTimezone)
+                                ->setVacation_from(null)
+                                ->setVacation_to(null)
+                                ->setVacation_status(null)
+                                ->setOffice_phone(null)
+                                ->setCell_phone(null)
+                                ->setHome_phone(null)
+                                ->setOther_phone(null)
+                                ->setFax_phone(null)
+                                ->setOffice_ext(null);
+                            
                             $UserPrefsTable->save($userPrefs);
 
                             /*

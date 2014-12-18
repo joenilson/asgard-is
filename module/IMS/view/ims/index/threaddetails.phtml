@@ -24,7 +24,7 @@
 ?>
 <script>
 var DocsLibraryStore<?=$this->threadId; ?> = Ext.create('Asgard.store.DocsLibrary');
-    DocsLibraryStore<?= $this->threadId; ?>.load({ params: { module: 'master', company: '<?=$this->company;?>', country: '<?=$this->country;?>', location: '<?=$this->location;?>', process: <?=$this->processId;?>, thread: <?=$this->threadId;?>}});
+    DocsLibraryStore<?= $this->threadId; ?>.load({ params: { module: 'master', type: 0, company: '<?=$this->company;?>', country: '<?=$this->country;?>', location: '<?=$this->location;?>', process: <?=$this->processId;?>, thread: <?=$this->threadId;?>}});
 
 var IEEAStore<?=$this->threadId; ?> = Ext.create('Asgard.store.IEEA_Thread');
 IEEAStore<?= $this->threadId; ?>.load({ params: { module: 'master', company: '<?=$this->company;?>', country: '<?=$this->country;?>', location: '<?=$this->location;?>', process: <?=$this->processId;?>, thread: <?=$this->threadId;?>}});
@@ -64,7 +64,6 @@ var HIRAGrid<?=$this->threadId; ?> = Ext.create('Asgard.lib.grid.hira', {
 
 function fnChangeInformation(obj, id, component, tool, event, record){
     var item = component.up('panel').items.getAt(0);
-    console.log();
     var itemValue = Ext.String.htmlDecode(item.value);
     Ext.suspendLayouts();
     component.up('panel').removeAll();
@@ -87,8 +86,6 @@ function fnChangeInformation(obj, id, component, tool, event, record){
                         var displayField = [{
                             width: '100%',
                             itemId: item.itemId,
-                            //height: 45,
-                            //margin: '5 5 5 5',
                             xtype: 'displayfield',
                             value: itemValue
                         }];
@@ -132,7 +129,6 @@ function fnChangeInformation(obj, id, component, tool, event, record){
                                 }
                             },
                             failure: function(response){
-                                console.log(response.status);
                                 if(response.status === 404){
                                     Ext.Msg.alert('Servidor no disponible', 'El servidor no esta disponible en este momento <br> para procesar su solicitud');
                                 }else if(response.status === 500){

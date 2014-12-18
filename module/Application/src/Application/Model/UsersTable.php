@@ -33,7 +33,7 @@ class UsersTable extends AbstractTableGateway {
 
     public function getUsersList() {
         $resultSet = $this->select(function (Select $select) {
-            $select->columns(array('id', 'username', 'realname', 'date_created', 'date_lastlogin', 'admin', 'status', 'role', 'type', 'account_type', 'country', 'company', 'location'));
+            $select->columns(array('id', 'username', 'realname', 'date_created', 'date_lastlogin', 'admin', 'status', 'role', 'type', 'account_type', 'country', 'company', 'location','type_system','id_company','id_location','id_employee'));
             $select->join(
                     array('h1' => new TableIdentifier('companies', $this->schema_name)), new Expression($this->table_name . '.company = h1.id '), array('company_desc' => 'legal_name')
             );
@@ -106,9 +106,13 @@ class UsersTable extends AbstractTableGateway {
             'status' => $user->getStatus(),
             'type' => $user->getType(),
             'account_type' => $user->getAccount_type(),
+            'type_system' => $user->getType_system(),
+            'id_company' => $user->getId_company(),
+            'id_location' => $user->getId_location(),
+            'id_employee' => $user->getId_employee()
         );
 
-        $id = (int) $user->id;
+        $id = (int) $user->getId();
         if ($id == 0) {
             if (!$this->insert($data))
                 return false;
@@ -124,8 +128,8 @@ class UsersTable extends AbstractTableGateway {
     }
 
     public function updateById($id, $data) {
-        $id = (int) $id;
-        $this->update($data, array('id' => $id));
+        $idUser = (int) $id;
+        $this->update($data, array('id' => $idUser));
     }
 
 }

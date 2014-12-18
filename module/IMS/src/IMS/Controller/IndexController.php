@@ -24,6 +24,7 @@ use IMS\Model\Entity\hiraIncidentDetails;
 use IMS\Model\Entity\Organigram;
 use IMS\Model\Entity\Traceability;
 use IMS\Model\Entity\Objectives;
+use IMS\Model\Entity\Policies;
 use IMS\Model\Entity\ProcessOwnerProfile;
 use IMS\Model\Entity\ProcessThreadOwner;
 use IMS\Model\Entity\Communications;
@@ -74,6 +75,7 @@ class IndexController extends AbstractActionController
     protected $hiraIncidentsListTable;
     protected $hiraNonConformityTypeTable;
     protected $processmainView;
+    protected $policiesTable;
     protected $processmainTable;
     protected $processownerTable;
     protected $processRelationsTable;
@@ -675,6 +677,141 @@ class IndexController extends AbstractActionController
         }
         return new JsonModel($dataResult);
     }
+    
+    
+    /*
+     * Policies Begin
+     */
+    public function policiesAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        return array(
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'lang'=>$lang,
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
+        );
+    }
+    
+    public function getpoliciesAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang = $userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $companyParams = $request->getQuery('company');
+        $countryParams = $request->getQuery('country');
+        $locationParams = $request->getQuery('location');
+        
+        $sql = $this->getPoliciesTable();
+        $listDocuments = $sql->getObjectByCCL($companyParams,$countryParams,$locationParams);
+        
+        if(!empty($listDocuments)){
+            $data['success']=true;
+            $data['results']=$listDocuments;
+            $data['msg']="";
+        }else{
+            $data['success']=true;
+            $data['results']="";
+            $data['msg']="Error trying to get the information...";
+        }
+        $result = new JsonModel($data);
+    	return $result;   
+    }
+    
+    public function removepoliciesAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $company = $request->getPost('companiesCombo');
+        $country = $request->getPost('countriesCombo');
+        $location = $request->getPost('locationsCombo');
+        $organigram_id = $request->getPost('id');
+        $dataResult = array();
+        $sql = $this->getPoliciesTable();
+        $organigram = $sql->getObjectByCCLId($company,$country,$location,$organigram_id);
+        if($organigram){
+            $dataU['status']='I';
+            $dataU['user_modification']=$userData->id;
+            $dataU['date_modification']=\date('Y-m-d H:i:s');
+            $dataIdx['company']=$organigram[0]['company'];
+            $dataIdx['country']=$organigram[0]['country'];
+            $dataIdx['location']=$organigram[0]['location'];
+            $dataIdx['id']=$organigram[0]['id'];
+            try {
+                $sql->update($dataU,$dataIdx);
+            } catch (\Exception $ex) {
+                $dataResult['success'] = false; 
+                $dataResult['message'] = $ex->getMessage(); 
+            }
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function addpoliciesAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $company = $request->getPost('companiesCombo');
+        $country = $request->getPost('countriesCombo');
+        $location = $request->getPost('locationsCombo');
+        $description = (string) $request->getPost('description');
+        $files =  $request->getFiles()->toArray();
+        $id = $request->getPost('policy_id');
+        $date_creation = \date('Y-m-d h:i:s');
+
+        $dataResult = array();
+        
+        $sql = $this->getPoliciesTable();
+        $oldObject = $sql->getObjectByCCL($company,$country,$location);
+        if($oldObject){
+            $dataU['status']='I';
+            $dataU['user_modification']=$userData->id;
+            $dataU['date_modification']=\date('Y-m-d H:i:s');
+            $dataIdx['company']=$oldObject[0]['company'];
+            $dataIdx['country']=$oldObject[0]['country'];
+            $dataIdx['location']=$oldObject[0]['location'];
+            $dataIdx['id']=$oldObject[0]['id'];
+            $sql->update($dataU,$dataIdx);
+        }
+        
+        $object = new Policies();
+        $object->setDescription($description)
+                ->setCompany($company)
+                ->setCountry($country)
+                ->setLocation($location)
+                ->setUser_creation($userData->id)
+                ->setStatus('A')
+                ->setDate_creation($date_creation);
+        if($id){
+            $object->setId($id);
+        }
+        $dataResult['success'] = true; 
+        try {
+            $newId = $sql->save($object);
+            
+        } catch (\Exception $ex) {
+            $dataResult['success'] = false; 
+            $dataResult['message'] = $ex->getMessage(); 
+        }
+
+        $valid = new \Zend\Validator\File\UploadFile();
+        
+        if(isset($newId) AND $valid->isValid($files['policy'])){
+            $fileName = "policy_{$company}_{$country}_{$location}_".$newId.".pdf";
+            $this->savefile('library/policies', $files['policy'], $fileName, false, null);
+            $sql->update(array('filename'=>'library/policies/'.$fileName),array('id'=>$newId));
+        }
+        return new JsonModel($dataResult);
+    }    
+    /*
+     * Policies End
+     */
     
     public function securityhandbookAction(){
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
@@ -5248,15 +5385,16 @@ class IndexController extends AbstractActionController
         $location= (string) $request->getQuery('location');
         $process= (int) $request->getQuery('process');
         $thread= (int) $request->getQuery('thread');
+        $typedoc= (int) $request->getQuery('type');
         
         
         if($module){
             $sql = $this->getDocsLibraryTable();
             $status = ($module=='master')?"A":"I";
             if(!empty($process) and !empty($thread)){
-                $listDocuments = $sql->getLibraryByPT($lang,$company,$country,$location,$process,$thread,$status);
+                $listDocuments = $sql->getLibraryByPT($lang,$company,$country,$location,$process,$thread,$status,$typedoc);
             }else{
-                $listDocuments = $sql->getLibrary($lang,$company,$country,$location,$process,$status);
+                $listDocuments = $sql->getLibrary($lang,$company,$country,$location,$process,$status,$typedoc);
             }
             //print_r($listDocuments);
             if(!empty($listDocuments)){
@@ -5354,6 +5492,20 @@ class IndexController extends AbstractActionController
     }
     
     public function docsAction()
+    {
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang = $userPrefs[0]['lang'];
+        return array('userData'=>$userPrefs, 
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0)),
+            'lang'=>$lang,
+        );
+    }
+    
+    public function recordsAction()
     {
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
         $userData = $this->getServiceLocator()->get('userSessionData');
@@ -6561,6 +6713,15 @@ class IndexController extends AbstractActionController
         $imagine->open($file)
                 ->thumbnail(new \Imagine\Image\Box(171,180),$mode)
                 ->save($dst);
+    }
+    
+    private function getPoliciesTable()
+    {
+    	if (!$this->policiesTable) {
+            $sm = $this->getServiceLocator();
+            $this->policiesTable = $sm->get('IMS\Model\PoliciesTable');
+    	}
+    	return $this->policiesTable;
     }
     
     private function getIsoPlanTable()

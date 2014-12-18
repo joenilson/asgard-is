@@ -629,3 +629,31 @@ Ext.define('Asgard.locales.lib.forms.hiraMasterFileUpload',{
     changeText: 'Substituição de Dados'
 });
 
+Ext.define('Asgard.locales.lib.dataview.policies',{
+    override: 'Asgard.lib.dataview.policies',
+    emptyTextText: 'Não há nenhum documento para mostrar...'
+});
+
+Ext.define('Asgard.locales.lib.dataview.policies',{
+    override: 'Asgard.lib.forms.policiesNewPolicy',
+    descriptionText: 'Descrição',
+    fileText: 'Política em PDF',
+    fileFieldEmptyText: 'Escolha um arquivo PDF',    
+    textSubmitButton: 'Enviar',
+    textCancelButton: 'Cancelar',
+
+    warningTitle: 'Advertência',
+    warningText: 'A política já existe!, eliminar antigo para entrar no novo',
+    required: '<span style="color:red;font-weight:bold" data-qtip="Obrigatório">*</span>',
+    successText: 'Política atualizada corretamente!',
+    failureText: 'O processo não está completo corretamente, por favor, tente novamente.'
+});
+
+Ext.define('Asgard.locales.lib.dataview.policies',{
+    override: 'Asgard.lib.Panels.PoliciesPanel',
+    barAddText: 'Adicionar Política',
+    barRemoveText: 'Remover Política',
+    warningTitle: 'Advertência',
+    warningBody: 'Não foi possível processar o seu documento, por favor, verifique se o arquivo não está errado.',
+    warningTitleBodyDelete: 'Você optou por excluir este arquivo. <br />Quer continuar?'
+});

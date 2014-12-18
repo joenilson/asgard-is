@@ -20,6 +20,7 @@ class EmployeesDependantsTable extends AbstractTableGateway
 {
 
     protected $table_name = 'employees_dependants';
+    protected $table_age_intervals = 'age_intervals';
     protected $schema_name = 'hcm';
     
     public function setDbAdapter(Adapter $adapter)
@@ -64,6 +65,50 @@ class EmployeesDependantsTable extends AbstractTableGateway
         });
         $result = $resultSet->current();
         return $result['number'];
+    }
+    
+     public function getDependantsGroupedById($id) {
+        $employee_id = (int) $id;
+        $resultSet = $this->select(function (Select $select) use ($employee_id) {
+            $select->columns(array('type','gender','number' => new Expression('COUNT(*)')));
+            $select->group(array('type','gender'));
+            $select->where(array('id'=> (int) $employee_id, 'status' => 'A'));
+        });
+        $result = $resultSet->toArray();
+        return $result;
+    }
+    
+    public function getDependantsGroupedByType($type,$ids) {
+        $employee_ids = $ids;
+        $resultSet = $this->select(function (Select $select) use ($employee_ids,$type) {
+            if($type=='type'){
+                $select->columns(array('type','gender','number' => new Expression('COUNT(*)')));
+                $select->where(array('id'=> $employee_ids, 'status' => 'A'));
+                $select->group(array('type','gender'));
+            }elseif($type=='couple'){
+                $select->columns(array('number' => new Expression('COUNT(*)')));
+                $select->join(
+                    array('f' => new TableIdentifier($this->table_age_intervals, $this->schema_name)), 
+                        new Expression('(EXTRACT(year from AGE(NOW(), BIRTHDAY))>= f.min and EXTRACT(year from AGE(NOW(), BIRTHDAY)) < f.max)'), 
+                        array('min','max')
+                );
+                $select->where(array($this->table_name.'.id'=> $employee_ids, $this->table_name.'.status' => 'A', $this->table_name.'.type'=>$type, 'f.type'=>$type));
+                $select->group(array('min','max'));
+            }elseif($type=='children'){
+                $select->columns(array('number' => new Expression('COUNT(*)')));
+                $select->join(
+                    array('f' => new TableIdentifier($this->table_age_intervals, $this->schema_name)), 
+                        new Expression('(EXTRACT(year from AGE(NOW(), BIRTHDAY))>= f.min and EXTRACT(year from AGE(NOW(), BIRTHDAY)) < f.max)'), 
+                        array('min','max')
+                );
+                $select->where(array($this->table_name.'.id'=> $employee_ids, $this->table_name.'.status' => 'A', $this->table_name.'.type'=>$type, 'f.type'=>$type));
+                $select->group(array('min','max'));
+            }
+            //echo $select->getSqlString();
+        });
+        
+        $result = $resultSet->toArray();
+        return $result;
     }
     
     public function getNextId() {

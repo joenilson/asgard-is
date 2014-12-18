@@ -2,22 +2,26 @@
 namespace Application\Model\Entity;
 
 class Users {
-    protected $_id;
-    protected $_username;
-    protected $_password;
-    protected $_salt;
-    protected $_realname;
-    protected $_role;
-    protected $_date_created;
-    protected $_date_lastlogin;
-    protected $_country;
-    protected $_company;
-    protected $_location;
-    protected $_admin;
-    protected $_status;
-    protected $_type;
-    protected $_account_type;
-   
+    protected $id;
+    protected $username;
+    protected $password;
+    protected $salt;
+    protected $realname;
+    protected $role;
+    protected $date_created;
+    protected $date_lastlogin;
+    protected $country;
+    protected $company;
+    protected $location;
+    protected $admin;
+    protected $status;
+    protected $type;
+    protected $account_type;
+    protected $type_system;
+    protected $id_company;
+    protected $id_location;
+    protected $id_employee;
+    
     public function __construct(array $options = null)
     {
     	if (is_array($options)) {
@@ -55,170 +59,177 @@ class Users {
     	return $this;
     }
     
-    public function setId($id)
-    {
-    	$this->_id = (int) $id;
-    	return $this;
-    }
-    
-    public function getId()
-    {
-    	return $this->_id;
-    }
-    
-    public function setUsername($username)
-    {
-    	$this->_username = (string) $username;
-    	return $this;
-    }
-    
-    public function getUsername()
-    {
-    	return $this->_username;
-    }
-    
-    public function setPassword($password)
-    {
-    	$this->_password = (string) $password;
-    	return $this;
-    }
-    
-    public function getPassword()
-    {
-    	return $this->_password;
+    function getId() {
+        return $this->id;
     }
 
-    public function setSalt($salt)
-    {
-    	$this->_salt = $salt;
-    	return $this;
-    }
-    
-    public function getSalt()
-    {
-    	return $this->_salt;
-    }
-    
-    public function setRealname($realname)
-    {
-    	$this->_realname = $realname;
-    	return $this;
-    }
-    
-    public function getRealname()
-    {
-    	return $this->_realname;
+    function getUsername() {
+        return $this->username;
     }
 
-    public function setRole($role)
-    {
-    	$this->_role = (int) $role;
-    	return $this;
-    }
-    
-    public function getRole()
-    {
-    	return $this->_role;
+    function getPassword() {
+        return $this->password;
     }
 
-    public function setDate_created($date_created)
-    {
-    	$this->_date_created =  $date_created;
-    	return $this;
-    }
-    
-    public function getDate_created()
-    {
-    	return $this->_date_created;
-    }
-    
-    public function setDate_lastlogin($date_lastlogin)
-    {
-    	$this->_date_lastlogin = $date_lastlogin;
-    	return $this;
-    }
-    
-    public function getDate_lastlogin()
-    {
-    	return $this->_date_lastlogin;
+    function getSalt() {
+        return $this->salt;
     }
 
-    public function setCountry($country)
-    {
-    	$this->_country = (string) $country;
-    	return $this;
-    }
-    
-    public function getCountry()
-    {
-    	return $this->_country;
-    }
-    
-   
-    public function setCompany($company)
-    {
-    	$this->_company = (string) $company;
-    	return $this;
-    }
-    
-    public function getCompany()
-    {
-    	return $this->_company;
+    function getRealname() {
+        return $this->realname;
     }
 
-    public function setLocation($location)
-    {
-    	$this->_location = (string) $location;
-    	return $this;
-    }
-    
-    public function getLocation()
-    {
-    	return $this->_location;
+    function getRole() {
+        return $this->role;
     }
 
-    public function setAdmin($admin)
-    {
-    	$this->_admin = $admin;
-    	return $this;
-    }
-    
-    public function getAdmin()
-    {
-    	return $this->_admin;
+    function getDate_created() {
+        return $this->date_created;
     }
 
-    public function setStatus($status)
-    {
-    	$this->_status = $status;
-    	return $this;
-    }
-    
-    public function getStatus()
-    {
-    	return $this->_status;
+    function getDate_lastlogin() {
+        return $this->date_lastlogin;
     }
 
-    public function setType($type)
-    {
-    	$this->_type = $type;
-    	return $this;
-    }
-    
-    public function getType()
-    {
-    	return $this->_type;
+    function getCountry() {
+        return $this->country;
     }
 
-    public function setAccount_type($account_type)
-    {
-    	$this->_account_type = $account_type;
-    	return $this;
+    function getCompany() {
+        return $this->company;
     }
-    
-    public function getAccount_type()
-    {
-    	return $this->_account_type;
+
+    function getLocation() {
+        return $this->location;
     }
+
+    function getAdmin() {
+        return $this->admin;
+    }
+
+    function getStatus() {
+        return $this->status;
+    }
+
+    function getType() {
+        return $this->type;
+    }
+
+    function getAccount_type() {
+        return $this->account_type;
+    }
+
+    function getType_system() {
+        return $this->type_system;
+    }
+
+    function getId_company() {
+        return $this->id_company;
+    }
+
+    function getId_location() {
+        return $this->id_location;
+    }
+
+    function getId_employee() {
+        return $this->id_employee;
+    }
+
+    function setId($id) {
+        $this->id = $id;
+        return $this;
+    }
+
+    function setUsername($username) {
+        $this->username = $username;
+        return $this;
+    }
+
+    function setPassword($password) {
+        $this->password = $password;
+        return $this;
+    }
+
+    function setSalt($salt) {
+        $this->salt = $salt;
+        return $this;
+    }
+
+    function setRealname($realname) {
+        $this->realname = $realname;
+        return $this;
+    }
+
+    function setRole($role) {
+        $this->role = $role;
+        return $this;
+    }
+
+    function setDate_created($date_created) {
+        $this->date_created = $date_created;
+        return $this;
+    }
+
+    function setDate_lastlogin($date_lastlogin) {
+        $this->date_lastlogin = $date_lastlogin;
+        return $this;
+    }
+
+    function setCountry($country) {
+        $this->country = $country;
+        return $this;
+    }
+
+    function setCompany($company) {
+        $this->company = $company;
+        return $this;
+    }
+
+    function setLocation($location) {
+        $this->location = $location;
+        return $this;
+    }
+
+    function setAdmin($admin) {
+        $this->admin = $admin;
+        return $this;
+    }
+
+    function setStatus($status) {
+        $this->status = $status;
+        return $this;
+    }
+
+    function setType($type) {
+        $this->type = $type;
+        return $this;
+    }
+
+    function setAccount_type($account_type) {
+        $this->account_type = $account_type;
+        return $this;
+    }
+
+    function setType_system($type_system) {
+        $this->type_system = $type_system;
+        return $this;
+    }
+
+    function setId_company($id_company) {
+        $this->id_company = $id_company;
+        return $this;
+    }
+
+    function setId_location($id_location) {
+        $this->id_location = $id_location;
+        return $this;
+    }
+
+    function setId_employee($id_employee) {
+        $this->id_employee = $id_employee;
+        return $this;
+    }
+
+
     
 }
