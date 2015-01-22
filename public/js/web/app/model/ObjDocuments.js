@@ -19,10 +19,24 @@
  * @version 1.0.0 devel
  * @author Joe Nilson <joenilson@gmail.com>
  */
-Ext.define('Asgard.model.EmployeeOffices', {
+Ext.define('Asgard.model.ObjDocuments', {
     extend: 'Ext.data.Model',
     fields: [
-        {name: 'id', type: 'string' }, 
-        {name: 'description', type: 'string' }
+        {name: 'company', type: 'string' }, 
+        {name: 'country', type: 'string' }, 
+        {name: 'location', type: 'string' }, 
+        {name: 'document', type: 'string' }, 
+        {name: 'year', type: 'string' }, 
+        {name: 'month', type: 'int' },
+        {name: 'process', type: 'int' },
+        {name: 'thread', type: 'int' },
+        {name: 'id', type: 'float' }, 
+        {name: 'description', type: 'string' }, 
+        {name: 'filename', type: 'string' }, 
+        {name: 'status', type: 'string' },
+        {name: 'user_creation', type: 'float' },
+        {name: 'date_creation', type: 'date', dateFormat: 'c' },
+        {name: 'user_modification', type: 'float' },
+        {name: 'date_modification', type: 'date', dateFormat: 'c' }
     ]
 });

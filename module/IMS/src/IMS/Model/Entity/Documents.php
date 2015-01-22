@@ -23,14 +23,21 @@ namespace IMS\Model\Entity;
  *
  * @author Joe Nilson <joenilson@grupoism.com.do>
  */
-class BrigadePositions {
+class ObjDocuments {
 
-    protected $lang; 
+    protected $company; 
+    protected $country; 
+    protected $location;
     protected $id;
+    protected $document;
+    protected $process;
+    protected $thread;
+    protected $year;
+    protected $month;
     protected $description;
-    protected $ordering;
+    protected $filename;
     protected $status;
-    protected $user_id;
+    protected $user_creation;
     protected $date_creation;
     protected $user_modification;
     protected $date_modification;
@@ -71,9 +78,17 @@ class BrigadePositions {
     	}
     	return $this;
     }
+    
+    public function getCompany() {
+        return $this->company;
+    }
 
-    public function getLang() {
-        return $this->lang;
+    public function getCountry() {
+        return $this->country;
+    }
+
+    public function getLocation() {
+        return $this->location;
     }
 
     public function getId() {
@@ -84,16 +99,16 @@ class BrigadePositions {
         return $this->description;
     }
 
-    public function getOrdering() {
-        return $this->ordering;
+    public function getFilename() {
+        return $this->filename;
     }
 
     public function getStatus() {
         return $this->status;
     }
 
-    public function getUser_id() {
-        return $this->user_id;
+    public function getUser_creation() {
+        return $this->user_creation;
     }
 
     public function getDate_creation() {
@@ -108,8 +123,18 @@ class BrigadePositions {
         return $this->date_modification;
     }
 
-    public function setLang($lang) {
-        $this->lang = $lang;
+    public function setCompany($company) {
+        $this->company = $company;
+        return $this;
+    }
+
+    public function setCountry($country) {
+        $this->country = $country;
+        return $this;
+    }
+
+    public function setLocation($location) {
+        $this->location = $location;
         return $this;
     }
 
@@ -123,8 +148,8 @@ class BrigadePositions {
         return $this;
     }
 
-    public function setOrdering($ordering) {
-        $this->ordering = $ordering;
+    public function setFilename($filename) {
+        $this->filename = $filename;
         return $this;
     }
 
@@ -133,8 +158,8 @@ class BrigadePositions {
         return $this;
     }
 
-    public function setUser_id($user_id) {
-        $this->user_id = $user_id;
+    public function setUser_creation($user_creation) {
+        $this->user_creation = $user_creation;
         return $this;
     }
 
@@ -152,5 +177,51 @@ class BrigadePositions {
         $this->date_modification = $date_modification;
         return $this;
     }
+
+    function getDocument() {
+        return $this->document;
+    }
+
+    function setDocument($document) {
+        $this->document = $document;
+        return $this;
+    }
+
+    function getYear() {
+        return $this->year;
+    }
+
+    function getMonth() {
+        return $this->month;
+    }
+
+    function setYear($year) {
+        $this->year = $year;
+        return $this;
+    }
+
+    function setMonth($month) {
+        $this->month = $month;
+        return $this;
+    }
+
+    function getProcess() {
+        return $this->process;
+    }
+
+    function getThread() {
+        return $this->thread;
+    }
+
+    function setProcess($process) {
+        $this->process = $process;
+        return $this;
+    }
+
+    function setThread($thread) {
+        $this->thread = $thread;
+        return $this;
+    }
+
 
 }

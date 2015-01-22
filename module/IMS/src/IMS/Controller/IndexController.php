@@ -22,6 +22,7 @@ use IMS\Model\Entity\DocsLibrary;
 use IMS\Model\Entity\Requirements;
 use IMS\Model\Entity\hiraIncidentDetails;
 use IMS\Model\Entity\Organigram;
+use IMS\Model\Entity\ObjDocuments;
 use IMS\Model\Entity\Traceability;
 use IMS\Model\Entity\Objectives;
 use IMS\Model\Entity\Policies;
@@ -113,6 +114,7 @@ class IndexController extends AbstractActionController
     protected $isoplanTable;
     protected $isoplanhelpersTable;
     protected $traceabilityTable;
+    protected $documentsTable;
     
     public function indexAction()
     {
@@ -187,6 +189,185 @@ class IndexController extends AbstractActionController
             'countryId'=>$userData->country,
             'lang'=>$lang,
             'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0)));
+    }
+    
+    public function objdocumentAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        return array(
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'lang'=>$lang,
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
+        );
+    }
+    
+    public function getobjdocumentAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang = $userPrefs[0]['lang'];
+        $request = $this->getRequest();
+        $companyParams = $request->getQuery('company');
+        $countryParams = $request->getQuery('country');
+        $locationParams = $request->getQuery('location');
+        $documentParams = $request->getQuery('document');
+        $yearParams = $request->getQuery('year');
+        $monthParams = $request->getQuery('month');
+        $processParams = $request->getQuery('process');
+        $threadParams = $request->getQuery('thread');
+        $idParams = $request->getQuery('id');
+        
+        $sql = $this->getDocumentsTable();
+        if(!empty($idParams)){
+            $listDocuments = $sql->getObjectByCCLId($companyParams,$countryParams,$locationParams,$idParams,$documentParams);
+        }else{
+            $listDocuments = $sql->getObjectByCCL($companyParams,$countryParams,$locationParams,$documentParams,$yearParams,$monthParams,$processParams,$threadParams);
+        }
+        
+        if(!empty($listDocuments)){
+            $data['success']=true;
+            $data['results']=$listDocuments;
+            $data['msg']="";
+        }else{
+            $data['success']=true;
+            $data['results']="";
+            $data['msg']="Error trying to get the information...";
+        }
+        $result = new JsonModel($data);
+    	return $result;   
+    }
+    
+    public function removeobjdocumentAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $companyParams = $request->getPost('company');
+        $countryParams = $request->getPost('country');
+        $locationParams = $request->getPost('location');
+        $documentParams = $request->getPost('document');
+        $idParams = $request->getPost('id');
+        $dataResult = array();
+        $sql = $this->getDocumentsTable();
+        $dataObject = $sql->getObjectByCCLId($companyParams,$countryParams,$locationParams,$idParams,$documentParams);
+        if($dataObject){
+            $dataU['status']='I';
+            $dataU['user_modification']=$userData->id;
+            $dataU['date_modification']=\date('Y-m-d H:i:s');
+            $dataIdx['company']=$dataObject[0]['company'];
+            $dataIdx['country']=$dataObject[0]['country'];
+            $dataIdx['location']=$dataObject[0]['location'];
+            $dataIdx['document']=$dataObject[0]['document'];
+            $dataIdx['id']=$dataObject[0]['id'];
+            try {
+                $sql->update($dataU,$dataIdx);
+                $dataResult['success'] = true; 
+            } catch (\Exception $ex) {
+                //$error = $ex;
+                $dataResult['success'] = false; 
+                $dataResult['message'] = $ex->getMessage(); 
+            }
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function addobjdocumentAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $company = $request->getPost('companiesCombo');
+        $country = $request->getPost('countriesCombo');
+        $location = $request->getPost('locationsCombo');
+        $document = $request->getPost('documentCombo');
+        $year = $request->getPost('yearCombo');
+        $month = $request->getPost('monthsCombo');
+        $process = $request->getPost('processCombo');
+        $thread = $request->getPost('threadCombo');
+        $description = (string) $request->getPost('description');
+        $files =  $request->getFiles()->toArray();
+        $id = $request->getPost('objdoc_id');
+        $date_creation = \date('Y-m-d h:i:s');
+
+        $dataResult = array();
+        
+        $sql = $this->getDocumentsTable();
+        $object = new ObjDocuments();
+        $object->setDescription($description)
+                ->setCompany($company)
+                ->setCountry($country)
+                ->setLocation($location)
+                ->setDocument($document)
+                ->setYear($year)
+                ->setMonth($month)
+                ->setProcess($process)
+                ->setThread($thread)
+                ->setUser_creation($userData->id)
+                ->setStatus('A')
+                ->setDate_creation($date_creation);
+        if($id){
+            $object->setId($id);
+        }
+        $dataResult['success'] = true; 
+        try {
+            $newId = $sql->save($object);
+            
+        } catch (\Exception $ex) {
+            
+            $dataResult['success'] = false; 
+            $dataResult['message'] = $ex->getMessage(); 
+        }
+
+        $valid = new \Zend\Validator\File\UploadFile();
+        
+        if(isset($newId) AND $valid->isValid($files['document'])){
+            $fileName = "objdoc_{$company}_{$country}_{$location}_".$newId.".pdf";
+            $this->savefile('library/'.$document, $files['document'], $fileName, false, null);
+            $sql->update(array('filename'=>'library/'.$document.'/'.$fileName),array('id'=>$newId));
+        }
+        return new JsonModel($dataResult);
+    }
+    
+    public function formobjdocumentAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+
+        $request = $this->getRequest();
+        $id = $request->getPost('objdoc_id');
+        $company = $request->getPost('company');
+        $country = $request->getPost('country');
+        $location = $request->getPost('location');
+        $document = $request->getPost('document');
+        
+        
+        $sql = $this->getDocumentsTable();
+        $AuditData = $sql->getObjectByCCLId($company,$country,$location,$id, $document);
+        $dataResult = array();
+        foreach($AuditData as $key=>$values){
+            $dataResult['companiesCombo']=$values['company'];
+            $dataResult['countriesCombo']=$values['country'];
+            $dataResult['locationsCombo']=$values['location'];
+            $dataResult['documentCombo']=$values['document'];
+            $dataResult['yearCombo']=$values['year'];
+            $dataResult['monthsCombo']=$values['month'];
+            $dataResult['processCombo']=$values['process'];
+            $dataResult['threadCombo']=$values['thread'];
+            $dataResult['description']=$values['description'];
+        }
+        $data = array();
+        if(count($dataResult>0)){
+            $data['success']=true;
+            $data['data']=$dataResult;
+        }else{
+            $data['success']=false;
+            $data['data']="";
+        }
+        
+        return new JsonModel($data);
     }
     
     public function inspectionprogramAction(){
@@ -7028,6 +7209,15 @@ class IndexController extends AbstractActionController
             $this->docsHelpersTable = $sm->get('IMS\Model\DocsHelpersTable');
     	}
     	return $this->docsHelpersTable;
+    }
+    
+    private function getDocumentsTable()
+    {
+    	if (!$this->documentsTable) {
+            $sm = $this->getServiceLocator();
+            $this->documentsTable = $sm->get('IMS\Model\DocumentsTable');
+    	}
+    	return $this->documentsTable;
     }
     
     private function getDocsLibraryTable()

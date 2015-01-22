@@ -3,12 +3,12 @@
  * @version 1.0.0 devel
  * @author Joe Nilson <joenilson@gmail.com>
  */
-Ext.define('Asgard.store.Policies', {
+Ext.define('Asgard.store.ObjDocuments', {
     extend: 'Ext.data.Store',
-    model: 'Asgard.model.Policies',
+    model: 'Asgard.model.ObjDocuments',
     proxy: {
         type: 'ajax',
-        url: 'ims/getpolicies',
+        url: 'ims/getobjdocument',
         reader: {
             type: 'json',
             root: 'results'

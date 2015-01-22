@@ -87,6 +87,77 @@ return array(
                             ),
                         ),
                     ),
+                    
+                    'objdocument' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/objdocument[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'objdocument'
+                            ),
+                        ),
+                    ),
+                    'getobjdocument' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/getobjdocument[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'getobjdocument'
+                            ),
+                        ),
+                    ),
+                    'addobjdocument' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/addobjdocument[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'addobjdocument'
+                            ),
+                        ),
+                    ),
+                    'removeobjdocument' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/removeobjdocument[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'removeobjdocument'
+                            ),
+                        ),
+                    ),
+                    'formobjdocument' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/formobjdocument[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'formobjdocument'
+                            ),
+                        ),
+                    ),
                     'objectives' => array(
                         'type'    => 'Segment',
                         'options' => array(
