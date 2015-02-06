@@ -12,12 +12,25 @@ use Zend\Db\Sql\TableIdentifier;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Predicate\Expression;
 use IMS\Model\Entity\ObjDocuments;
+use Zend\Db\Adapter\AdapterAwareInterface;
+use Zend\Db\ResultSet\HydratingResultSet;
 
-class DocumentsTable extends AbstractTableGateway {
+class ObjDocumentsTable extends AbstractTableGateway
+    implements AdapterAwareInterface 
+{
 
     protected $table_name = 'documents';
     protected $schema_name = 'ims';
 
+    public function setDbAdapter(Adapter $adapter)
+    {
+        $this->table = new TableIdentifier($this->table_name, $this->schema_name);
+        $this->adapter = $adapter;
+        $this->resultSetPrototype = new HydratingResultSet();
+        
+        $this->initialize();
+    }
+    
     private function processList($value)
     {
         if(is_array($value)){
@@ -33,12 +46,12 @@ class DocumentsTable extends AbstractTableGateway {
         }
         return $var_values;
     }
-    
+    /*
     public function __construct(Adapter $adapter) {
         $this->table = new TableIdentifier($this->table_name, $this->schema_name);
         $this->adapter = $adapter;
     }
-
+    */
     public function fetchAll() {
         $resultSet = $this->select(function (Select $select) {
             $select->where(array('status'=>'A'));

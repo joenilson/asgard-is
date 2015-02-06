@@ -194,13 +194,39 @@ class IndexController extends AbstractActionController
     public function objdocumentAction(){
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
         $userData = $this->getServiceLocator()->get('userSessionData');
+        $typeDoc = $this->params()->fromRoute('type', 0);
         $lang=$userPrefs[0]['lang'];
+        switch ($typeDoc){
+            case "review":
+                $typeDocCombo = 'comboCCLY';
+                $typeDocFunction = 'fnCCLYProcess';
+                break;
+            case "changes":
+                $typeDocCombo = 'comboCCLY';
+                $typeDocFunction = 'fnCCLYProcess';
+                break;
+            case "indicators":
+                $typeDocCombo = 'comboCCLPY';
+                $typeDocFunction = 'fnCCLPYProcess';
+                break;
+            case "csi":
+                $typeDocCombo = 'comboCCLPYM';
+                $typeDocFunction = 'fnCCLPYMProcess';
+                break;
+            default:
+                $typeDocCombo = 'comboCCL';
+                $typeDocFunction = 'fnCCLProcess';
+                break;
+        }
         return array(
             'companyId'=>$userData->company,
             'locationId'=>$userData->location,
             'countryId'=>$userData->country,
             'lang'=>$lang,
-            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0)),
+            'typeDoc'=>$typeDoc,
+            'typeDocCombo'=>$typeDocCombo,
+            'typeDocFunction'=>$typeDocFunction
         );
     }
     
@@ -212,6 +238,7 @@ class IndexController extends AbstractActionController
         $countryParams = $request->getQuery('country');
         $locationParams = $request->getQuery('location');
         $documentParams = $request->getQuery('document');
+        $TypeParams = $request->getQuery('type');
         $yearParams = $request->getQuery('year');
         $monthParams = $request->getQuery('month');
         $processParams = $request->getQuery('process');
@@ -7215,7 +7242,7 @@ class IndexController extends AbstractActionController
     {
     	if (!$this->documentsTable) {
             $sm = $this->getServiceLocator();
-            $this->documentsTable = $sm->get('IMS\Model\DocumentsTable');
+            $this->documentsTable = $sm->get('IMS\Model\ObjDocumentsTable');
     	}
     	return $this->documentsTable;
     }

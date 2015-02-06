@@ -27,78 +27,28 @@ function deployCombos(comboField,comboValue){
     });
 }
 
-function fnCCLPProcess(button, opt, obj) {
+function <?=$this->typeDocFunction;?>(button, opt, obj) {
     var values = button.up('form').getForm().getValues();
     var companies = values['companiesCombo'];
     var countries = values['countriesCombo'];
     var locations = values['locationsCombo'];
-    var process_id = values['processCombo'];
-    panel<?=$this->panelId;?>.removeAll();
-    panelStore.load({params: { company: companies, country: countries, location: locations, process: process_id } });
-    //gridStore<?= $this->panelId; ?>.load({ params: { module: 'master', company: companies, country: countries, location: locations  }});
+    viewStore<?= $this->panelId; ?>.load({ params: { module: 'master', company: companies, country: countries, location: locations  }});
 
 }
+var viewStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.ObjDocuments');
 
+//var form<?=$this->panelId;?> = Ext.create('Asgard.lib.forms.comboCCL', { innerPanel: grid<?=$this->panelId;?> });
 
-var form<?=$this->panelId;?> = Ext.create('Asgard.lib.forms.comboCCLP', { innerPanel: panel<?=$this->panelId;?> });
-//var gridStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.IsoPlan');
-
-
-/*
-var innerpanel<?=$this->panelId;?> = Ext.create('Asgard.lib.Panels.ISOPlanDetailPanel',{
-    title: 'Manual',
-    minHeight: 300,
-    flex: 1
+var view<?=$this->panelId;?> = Ext.create('Asgard.lib.dataview.objdocument', { 
+    store: viewStore<?= $this->panelId; ?>, 
 });
-*/
+
    
-var panelStore = Ext.create('Asgard.store.Process',{ autoLoad: false });
-var panel<?=$this->panelId;?> = Ext.create('Asgard.lib.Panels.ISOPlanPanel',{
-    companiesValue: '<?=$this->companyId;?>',
-    countriesValue: '<?=$this->countryId;?>',
-    locationsValue: '<?=$this->locationId;?>',
-    autoScroll: true,
-    flex: 1,
-    
-    /*
-    items: [{
-        title: 'Inner Panel',
-        flex: 1,
-        autoScroll: true,
-        items: [
-            innerpanel<?=$this->panelId;?>
-        ]        
-    },
-        innerpanel<?=$this->panelId;?>
-    ,{
-        title: 'Inner Panel 2',
-        //flex: 1,
-        minHeight: 300,
-        autoScroll: true,
-        items: [
-            innerpanel<?=$this->panelId;?>
-        ]
-    }]
-    */
+var form<?=$this->panelId;?> = Ext.create('Asgard.lib.forms.<?=$this->typeDocCombo;?>', { innerPanel: view<?=$this->panelId;?> });
+
+var content<?=$this->panelId; ?> = Ext.create('Asgard.lib.Panels.ObjDocumentPanel',{
+    items: view<?=$this->panelId;?>
 });
-panelStore.on('load', function(storeLoaded){
-    //console.log(loading);
-    //panel<?=$this->panelId;?>.store.on('load', function(storeLoaded){
-    var panels = [];
-    storeLoaded.each(function(rec) {
-        var newItem = new Ext.create('Asgard.lib.Panels.ISOPlanDetailPanel',{
-            id: 'isoplan_process_'+rec.data.id,
-            title: rec.data.value,
-            autoScroll: true,
-            process_id: rec.data.id,
-            companiesValue: rec.data.company,
-            countriesValue: rec.data.country,
-            locationsValue: rec.data.location
-        });
-        panels.push(newItem);
-    });
-    panel<?=$this->panelId;?>.add(panels);
-    }, panel<?=$this->panelId;?>);
 
 deployCombos('companiesCombo','<?=$this->companyId;?>');
 deployCombos('countriesCombo','<?=$this->countryId;?>');
@@ -112,7 +62,7 @@ var libraryViewport<?=$this->panelId; ?> = Ext.create('Ext.panel.Panel', {
     },
     items: [
         form<?=$this->panelId; ?>,
-        panel<?=$this->panelId; ?>
+        content<?=$this->panelId; ?>
    ]
 });
 Ext.getCmp('content-panel').getActiveTab().add(libraryViewport<?= $this->panelId; ?>);

@@ -73,7 +73,9 @@ Ext.define('Asgard.view.Viewport', {
     'Asgard.store.EmployeeOffices','Asgard.lib.grid.employees', 'Asgard.lib.grid.employee_dependants',
     'Asgard.store.EmployeesDependants','Asgard.store.Employeesr','Asgard.lib.grid.employeesr','Asgard.lib.charts.Pie',
     'Asgard.store.rEmployeesGrouped','Asgard.lib.Panels.PoliciesPanel','Asgard.lib.dataview.policies',
-    'Asgard.lib.forms.policiesNewPolicy','Asgard.store.Policies'
+    'Asgard.lib.forms.policiesNewPolicy','Asgard.store.Policies','Asgard.lib.forms.comboCCLPY',
+    'Asgard.lib.forms.comboCCLPYM','Asgard.lib.dataview.objdocument','Asgard.lib.Panels.ObjDocumentPanel',
+    'Asgard.store.ObjDocuments','Asgard.lib.forms.objdocumentNewObjDocument'
   ],
   menuTitleText: 'Main Menu',
     defaults: {

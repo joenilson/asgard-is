@@ -91,10 +91,11 @@ return array(
                     'objdocument' => array(
                         'type'    => 'Segment',
                         'options' => array(
-                            'route'    => '/objdocument[/:id]',
+                            'route'    => '/objdocument[/:type][/:id]',
                             'constraints' => array(
                                 'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'type'     => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'id'         => '[0-9_-]*',
                             ),
                             'defaults' => array(
