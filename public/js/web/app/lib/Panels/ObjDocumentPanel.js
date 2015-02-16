@@ -22,7 +22,7 @@ Ext.define('Asgard.lib.Panels.ObjDocumentPanel', {
     warningTitle: 'Warning',
     warningBody: 'Your submit can\'t be process, please review your data',
     warningTitleBodyDelete: 'You are choosing delete this member. <br />Would you like to save your changes?',
-    
+    typeDoc: '',
     initComponent: function(){
         var me = this;
         
@@ -38,7 +38,7 @@ Ext.define('Asgard.lib.Panels.ObjDocumentPanel', {
                     layout: 'fit'
                 });
                 var dv = this.items.getAt(0);
-                var contentWin = Ext.create('Asgard.lib.forms.objdocumentNewObjDocument', { innerPanel: dv });
+                var contentWin = Ext.create('Asgard.lib.forms.objdocumentNewObjDocument', { innerPanel: dv, typeDocument: this.typeDoc });
                 window.items.add(contentWin);
                 window.show();
             }

@@ -98,7 +98,7 @@ Ext.define('Asgard.lib.forms.comboCCLPYM', {
                 name: 'search',
                 type: 'button',
                 scope: this,
-                handler: fnCCLDProcess
+                handler: fnCCLPYMProcess
             }, this.submitButton);
         
         this.items = this.items || [];

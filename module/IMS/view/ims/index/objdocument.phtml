@@ -1,5 +1,4 @@
 <?php
-
 /* 
  * Copyright (C) 2014 Joe Nilson <joenilson at gmail.com>
  *
@@ -16,7 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 ?>
 <script>
 function deployCombos(comboField,comboValue){
@@ -32,22 +30,24 @@ function <?=$this->typeDocFunction;?>(button, opt, obj) {
     var companies = values['companiesCombo'];
     var countries = values['countriesCombo'];
     var locations = values['locationsCombo'];
-    viewStore<?= $this->panelId; ?>.load({ params: { module: 'master', company: companies, country: countries, location: locations  }});
-
+    var process_id = values['processCombo'];
+    var year = values['yearsCombo'];
+    var monthyear = values['monthfield'];
+    
+    viewStore<?=$this->panelId;?>.load({ params: { module: 'master', typedoc: '<?=$this->typeDoc;?>', company: companies, country: countries, location: locations, process: process_id, years: year, month: monthyear }});
 }
+
 var viewStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.ObjDocuments');
 
-//var form<?=$this->panelId;?> = Ext.create('Asgard.lib.forms.comboCCL', { innerPanel: grid<?=$this->panelId;?> });
-
 var view<?=$this->panelId;?> = Ext.create('Asgard.lib.dataview.objdocument', { 
-    store: viewStore<?= $this->panelId; ?>, 
+    store: viewStore<?= $this->panelId; ?>
 });
-
    
 var form<?=$this->panelId;?> = Ext.create('Asgard.lib.forms.<?=$this->typeDocCombo;?>', { innerPanel: view<?=$this->panelId;?> });
 
 var content<?=$this->panelId; ?> = Ext.create('Asgard.lib.Panels.ObjDocumentPanel',{
-    items: view<?=$this->panelId;?>
+    items: view<?=$this->panelId;?>,
+    typeDoc: '<?=$this->typeDoc;?>'
 });
 
 deployCombos('companiesCombo','<?=$this->companyId;?>');

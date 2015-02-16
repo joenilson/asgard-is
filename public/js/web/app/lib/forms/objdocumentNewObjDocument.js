@@ -40,9 +40,13 @@ Ext.define('Asgard.lib.forms.objdocumentNewObjDocument',{
     companiesField: undefined,
     countriesField: undefined,
     locationsField: undefined,
+    processField: undefined,
+    dateField: undefined,
     companiesValue: '',
     countriesValue: '',
     locationsValue: '',
+
+    typeDocument: '',
 
     defaults: {
         labelWidth: 180,
@@ -71,7 +75,7 @@ Ext.define('Asgard.lib.forms.objdocumentNewObjDocument',{
             xtype: 'filefield',
             anchor: '100%',
             emptyText: this.fileFieldEmptyText,
-            name: 'objective',
+            name: 'objdocument',
             listeners:{
                 afterrender:function(cmp){
                     cmp.fileInputEl.set({
@@ -127,7 +131,27 @@ Ext.define('Asgard.lib.forms.objdocumentNewObjDocument',{
             anchor: '100%',
             store: new Ext.create('Asgard.store.Locations')
         }, this.locationsField);
-
+        if(this.typeDocument === 'indicators' || this.typeDocument === 'csi'){
+            this.processField = this.processField || [];
+            this.processField = Ext.Object.merge({
+                xtype: 'processcombo',
+                store: new Ext.create('Asgard.store.Process')
+            }, this.processField);
+        }
+        
+        if(this.typeDocument !== 'indicators' && this.typeDocument !== 'csi'){
+            this.dateField = this.dateField || [];
+            this.dateField = Ext.Object.merge({
+                xtype: 'yearscombo',
+                anchor: '60%'
+            }, this.dateField);
+        }else{
+            this.dateField = this.dateField || [];
+            this.dateField = Ext.Object.merge({
+                xtype: 'vmonthdatefield',
+                anchor: '60%'
+            }, this.dateField);
+        }
         this.submitButton = this.submitButton || []; 
         this.submitButton = Ext.Object.merge({
                 text: this.textSubmitButton,
@@ -153,6 +177,8 @@ Ext.define('Asgard.lib.forms.objdocumentNewObjDocument',{
             this.companiesField,
             this.countriesField,
             this.locationsField,
+            (this.typeDocument === 'indicators' || this.typeDocument === 'csi')?this.processField:null,
+            this.dateField,
             this.descriptionField,
             this.fileField
         ]);
@@ -169,20 +195,29 @@ Ext.define('Asgard.lib.forms.objdocumentNewObjDocument',{
         var companyId = panel.items.getAt(0).getValue();
         var countryId = panel.items.getAt(1).getValue();
         var locationId = panel.items.getAt(2).getValue();
+        var processId = panel.items.getAt(3).getValue();
+        var date = panel.items.getAt(4).getValue();
+        
         var view = panel.innerPanel;
         if(form.isValid()){
             form.submit({
                 params: {
-                    module: 'imsobjectives'
+                    module: 'imsobjectives',
+                    typedoc: me.typeDocument
                 },
                 success: function(fp, o, m, r) {
+                    console.log(fp);
+                    console.log(o);
                     form.reset();
+                    
                     var winActive = Ext.WindowManager.getActive();
                     winActive.hide();
-                    view.getStore().load({params: { company: companyId, country: countryId, location: locationId }});
+                    view.getStore().load({params: { company: companyId, country: countryId, location: locationId, process: processId, year: date }});
                     Ext.Msg.alert('Success', me.successText);
                 },
                 failure: function(fp, o, u){
+                    console.log(fp);
+                    console.log(o);
                     Ext.Msg.alert('Failure', me.failureText);
                 }
             });

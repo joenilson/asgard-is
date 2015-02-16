@@ -206,8 +206,8 @@ class IndexController extends AbstractActionController
                 $typeDocFunction = 'fnCCLYProcess';
                 break;
             case "indicators":
-                $typeDocCombo = 'comboCCLPY';
-                $typeDocFunction = 'fnCCLPYProcess';
+                $typeDocCombo = 'comboCCLPYM';
+                $typeDocFunction = 'fnCCLPYMProcess';
                 break;
             case "csi":
                 $typeDocCombo = 'comboCCLPYM';
@@ -237,13 +237,18 @@ class IndexController extends AbstractActionController
         $companyParams = $request->getQuery('company');
         $countryParams = $request->getQuery('country');
         $locationParams = $request->getQuery('location');
-        $documentParams = $request->getQuery('document');
-        $TypeParams = $request->getQuery('type');
+        $documentParams = $request->getQuery('typedoc');
         $yearParams = $request->getQuery('year');
         $monthParams = $request->getQuery('month');
         $processParams = $request->getQuery('process');
         $threadParams = $request->getQuery('thread');
         $idParams = $request->getQuery('id');
+        
+        if(empty($yearParams) and !empty($monthParams)){
+            $values = explode('-',$monthParams);
+            $yearParams = $values[0];
+            $monthParams = $values[1];
+        }
         
         $sql = $this->getDocumentsTable();
         if(!empty($idParams)){
@@ -309,9 +314,9 @@ class IndexController extends AbstractActionController
         $company = $request->getPost('companiesCombo');
         $country = $request->getPost('countriesCombo');
         $location = $request->getPost('locationsCombo');
-        $document = $request->getPost('documentCombo');
-        $year = $request->getPost('yearCombo');
-        $month = $request->getPost('monthsCombo');
+        $document = $request->getPost('typedoc');
+        $year = $request->getPost('yearsCombo');
+        $month = $request->getPost('monthfield');
         $process = $request->getPost('processCombo');
         $thread = $request->getPost('threadCombo');
         $description = (string) $request->getPost('description');
@@ -319,6 +324,12 @@ class IndexController extends AbstractActionController
         $id = $request->getPost('objdoc_id');
         $date_creation = \date('Y-m-d h:i:s');
 
+        if(empty($year) and !empty($month)){
+            $values = explode('-',$month);
+            $year= $values[0];
+            $month=$values[1];
+        }
+        
         $dataResult = array();
         
         $sql = $this->getDocumentsTable();
@@ -338,6 +349,13 @@ class IndexController extends AbstractActionController
         if($id){
             $object->setId($id);
         }
+        
+        $listDocuments = $sql->getObjectByCCL($company,$country,$location,$document,$year,$month,$process,$thread);
+        if(!empty($listDocuments)){
+            foreach($listDocuments as $values){
+                $sql->update(array('status'=>'X','user_modification'=>$userData->id,'date_modification'=>$date_creation),array('company'=>$values['company'],'country'=>$values['country'],'location'=>$values['location'],'id'=>$values['id']));
+            }
+        }
         $dataResult['success'] = true; 
         try {
             $newId = $sql->save($object);
@@ -350,9 +368,9 @@ class IndexController extends AbstractActionController
 
         $valid = new \Zend\Validator\File\UploadFile();
         
-        if(isset($newId) AND $valid->isValid($files['document'])){
+        if(isset($newId) AND $valid->isValid($files['objdocument'])){
             $fileName = "objdoc_{$company}_{$country}_{$location}_".$newId.".pdf";
-            $this->savefile('library/'.$document, $files['document'], $fileName, false, null);
+            $this->savefile('library/'.$document, $files['objdocument'], $fileName, false, null);
             $sql->update(array('filename'=>'library/'.$document.'/'.$fileName),array('id'=>$newId));
         }
         return new JsonModel($dataResult);

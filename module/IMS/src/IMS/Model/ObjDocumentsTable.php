@@ -67,8 +67,6 @@ class ObjDocumentsTable extends AbstractTableGateway
                                 'country'=>(string) $country,
                                 'location'=>(string) $location,
                                 'document'=>(string) $document,
-                                'year'=>(string) $year,
-                                'month'=>(int) $month,
                                 'status'=>'A'));
             if(!empty($process)){
                 $select->where(array('process'=>$process));
@@ -125,7 +123,7 @@ class ObjDocumentsTable extends AbstractTableGateway
             $select->columns(array(new Expression('max(id) as id')));
         });
         $row = $resultSet->current();
-        $id = $row->id;
+        $id = $row['id'];
         $id++;
         return $id;
     }
