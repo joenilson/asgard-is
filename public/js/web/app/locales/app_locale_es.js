@@ -725,14 +725,13 @@ Ext.define('Asgard.locales.lib.dataview.policies',{
     emptyTextText: 'No hay un documento para mostrar...'
 });
 
-Ext.define('Asgard.locales.lib.dataview.policies',{
+Ext.define('Asgard.locales.lib.forms.policiesNewPolicy',{
     override: 'Asgard.lib.forms.policiesNewPolicy',
     descriptionText: 'Descripcion',
     fileText: 'Politica en PDF',
     fileFieldEmptyText: 'Elija un archivo PDF',    
     textSubmitButton: 'Enviar',
     textCancelButton: 'Cancelar',
-
     warningTitle: 'Advertencia',
     warningText: 'Ya existe una politica!, elimine la anterior para ingresar la nueva',
     required: '<span style="color:red;font-weight:bold" data-qtip="Obligatorio">*</span>',
@@ -740,11 +739,39 @@ Ext.define('Asgard.locales.lib.dataview.policies',{
     failureText: 'No se completo el proceso correctamente, Por favor intente de nuevo.'
 });
 
-Ext.define('Asgard.locales.lib.dataview.policies',{
+Ext.define('Asgard.locales.lib.Panels.PoliciesPanel',{
     override: 'Asgard.lib.Panels.PoliciesPanel',
     barAddText: 'Agregar Política',
     barRemoveText: 'Eliminar Política',
     warningTitle: 'Advertencia',
     warningBody: 'No se pudo procesar su documento, por favor revise si el archivo no es incorrecto.',
     warningTitleBodyDelete: 'Ha elegido eliminar este archivo. <br />Desea continuar?'
+});
+
+Ext.define('Asgard.locales.lib.dataview.objdocument',{
+    override: 'Asgard.lib.dataview.objdocument',
+    emptyTextText: 'No hay un documento para mostrar...'
+});
+
+Ext.define('Asgard.locales.lib.Panels.ObjDocumentPanel',{
+    override: 'Asgard.lib.Panels.ObjDocumentPanel',
+    barAddText: 'Agregar Documento',
+    barRemoveText: 'Eliminar Documento',
+    warningTitle: 'Advertencia',
+    warningBody: 'No se pudo procesar su documento, por favor revise si el archivo no es incorrecto.',
+    warningTitleBodyDelete: 'Ha elegido eliminar este archivo. <br />Desea continuar?'
+});
+
+Ext.define('Asgard.locales.lib.forms.objdocumentNewObjDocument',{
+    override: 'Asgard.lib.forms.objdocumentNewObjDocument',
+    descriptionText: 'Descripcion',
+    fileText: 'Documento en PDF',
+    fileFieldEmptyText: 'Elija un archivo PDF',    
+    textSubmitButton: 'Enviar',
+    textCancelButton: 'Cancelar',
+    warningTitle: 'Advertencia',
+    warningText: 'Ya existe un documento!, elimine el anterior para ingresar el nuevo',
+    required: '<span style="color:red;font-weight:bold" data-qtip="Obligatorio">*</span>',
+    successText: 'Documento actualizado correctamente!',
+    failureText: 'No se completo el proceso correctamente, Por favor intente de nuevo.'
 });

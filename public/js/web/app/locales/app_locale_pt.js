@@ -634,7 +634,7 @@ Ext.define('Asgard.locales.lib.dataview.policies',{
     emptyTextText: 'Não há nenhum documento para mostrar...'
 });
 
-Ext.define('Asgard.locales.lib.dataview.policies',{
+Ext.define('Asgard.locales.lib.forms.policiesNewPolicy',{
     override: 'Asgard.lib.forms.policiesNewPolicy',
     descriptionText: 'Descrição',
     fileText: 'Política em PDF',
@@ -649,10 +649,40 @@ Ext.define('Asgard.locales.lib.dataview.policies',{
     failureText: 'O processo não está completo corretamente, por favor, tente novamente.'
 });
 
-Ext.define('Asgard.locales.lib.dataview.policies',{
+Ext.define('Asgard.locales.lib.Panels.PoliciesPanel',{
     override: 'Asgard.lib.Panels.PoliciesPanel',
     barAddText: 'Adicionar Política',
     barRemoveText: 'Remover Política',
+    warningTitle: 'Advertência',
+    warningBody: 'Não foi possível processar o seu documento, por favor, verifique se o arquivo não está errado.',
+    warningTitleBodyDelete: 'Você optou por excluir este arquivo. <br />Quer continuar?'
+});
+
+
+Ext.define('Asgard.locales.lib.dataview.objdocument',{
+    override: 'Asgard.lib.dataview.objdocument',
+    emptyTextText: 'Não há nenhum documento para mostrar...'
+});
+
+Ext.define('Asgard.locales.lib.forms.objdocumentNewObjDocument',{
+    override: 'Asgard.lib.forms.objdocumentNewObjDocument',
+    descriptionText: 'Descrição',
+    fileText: 'Documento em PDF',
+    fileFieldEmptyText: 'Escolha um arquivo PDF',    
+    textSubmitButton: 'Enviar',
+    textCancelButton: 'Cancelar',
+
+    warningTitle: 'Advertência',
+    warningText: 'A Documento já existe!, eliminar antigo para entrar no novo',
+    required: '<span style="color:red;font-weight:bold" data-qtip="Obrigatório">*</span>',
+    successText: 'Documento atualizado corretamente!',
+    failureText: 'O processo não está completo corretamente, por favor, tente novamente.'
+});
+
+Ext.define('Asgard.locales.lib.Panels.ObjDocumentPanel',{
+    override: 'Asgard.lib.Panels.ObjDocumentPanel',
+    barAddText: 'Adicionar Documento',
+    barRemoveText: 'Remover Documento',
     warningTitle: 'Advertência',
     warningBody: 'Não foi possível processar o seu documento, por favor, verifique se o arquivo não está errado.',
     warningTitleBodyDelete: 'Você optou por excluir este arquivo. <br />Quer continuar?'
