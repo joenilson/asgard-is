@@ -169,7 +169,7 @@ Ext.define('Asgard.lib.grid.employees',{
             },
             failure: function(response){
                 var text = response.responseText;
-                console.log(text);
+                //console.log(text);
                 // 
             }
         });

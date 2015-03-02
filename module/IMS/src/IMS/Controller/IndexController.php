@@ -5315,6 +5315,7 @@ class IndexController extends AbstractActionController
    
     public function processAction()
     {
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
         $id = $this->params()->fromRoute('process_id', 0);
         $company  = $this->params()->fromRoute('company', 0);
         $country  = $this->params()->fromRoute('country', 0);
@@ -5326,6 +5327,7 @@ class IndexController extends AbstractActionController
         $companyRequest = $this->getCompaniesTable()->getCompanyById($company);
         $countryRequest = $this->getCountriesTable()->getCountryById($country);
         $locationRequest = $this->getLocationsTable()->getLocationById($country,$location);
+        $lang = $userPrefs[0]['lang'];
         //print_r($companyRequest);
         return new ViewModel (
                 array(
@@ -5338,7 +5340,8 @@ class IndexController extends AbstractActionController
                     'countryDesc'=>$countryRequest[0]['name'],
                     'location'=>$location,
                     'locationDesc'=>$locationRequest[0]['location_name'],
-                    'module_id'=>$module_id
+                    'module_id'=>$module_id,
+                    'lang'=>$lang
                 )
             );
     }
@@ -5571,7 +5574,7 @@ class IndexController extends AbstractActionController
         
         
         try {
-            if($field == 'mission' OR $field == 'scope'){
+            if($field == 'mission' OR $field == 'scope' OR $field == 'value'){
                 $conn = $this->getProcessThreadTable();
                 $data['message']=$conn->updateProcessThreadI18n($thread,$lang,$field,$valueField);
             }elseif($field == 'owner'){

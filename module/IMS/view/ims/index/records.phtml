@@ -157,7 +157,7 @@ function fnSubmit (button, object)
                 windowDoc.hide();
                 if(button.name==='add'){
                     DocumentsGrid<?=$this->panelId; ?>.suspendEvents();
-                    DocsLibraryStore<?= $this->panelId; ?>.load({ params: { module: 'master', company: companies, country: countries, location: locations}});
+                    DocsLibraryStore<?= $this->panelId; ?>.load({ params: { module: 'master', type: 5, company: companies, country: countries, location: locations}});
                     DocumentsGrid<?=$this->panelId; ?>.reconfigure(DocsLibraryStore<?= $this->panelId; ?>);
                     DocumentsGrid<?=$this->panelId; ?>.resumeEvents();
                 }

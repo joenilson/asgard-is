@@ -35,7 +35,16 @@ Ext.define('Asgard.lib.grid.list',{
         renderHidden: false,
         showShowHideButton: false,
         showClearAllButton: false
-    }],
+    },Ext.create('Ext.grid.plugin.CellEditing', {
+            clicksToEdit: 2
+        })
+    ],
+    
+    company: '',
+    country: '',
+    location: '',
+    thread: '',
+    lang: '',
     initComponent: function(){
         this.callParent();
     }

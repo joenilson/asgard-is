@@ -31,6 +31,7 @@ use IMS\Model\Entity\ProcessRelations;
 class ProcessRelationsTable extends AbstractTableGateway {
 
     protected $table_name = 'process_relations';
+    protected $table_thread_i18n_name = 'process_thread_i18n';
     protected $schema_name = 'ims';
     protected $empty_value = '0000';
 
