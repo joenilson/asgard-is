@@ -28,6 +28,7 @@ use IMS\Model\Entity\Objectives;
 use IMS\Model\Entity\Policies;
 use IMS\Model\Entity\ProcessOwnerProfile;
 use IMS\Model\Entity\ProcessThreadOwner;
+use IMS\Model\Entity\ProcessIo;
 use IMS\Model\Entity\Communications;
 use IMS\Model\Entity\TrainingPlan;
 use IMS\Model\Entity\InspectionProgram;
@@ -115,6 +116,7 @@ class IndexController extends AbstractActionController
     protected $isoplanhelpersTable;
     protected $traceabilityTable;
     protected $documentsTable;
+    protected $processioTable;
     
     public function indexAction()
     {
@@ -189,6 +191,88 @@ class IndexController extends AbstractActionController
             'countryId'=>$userData->country,
             'lang'=>$lang,
             'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0)));
+    }
+    
+    public function getprocessioAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $lang = $userPrefs[0]['lang'];
+        $request = $this->getRequest();
+        $companyParams = $request->getQuery('company');
+        $countryParams = $request->getQuery('country');
+        $locationParams = $request->getQuery('location');
+        $typeParams = $request->getQuery('type');
+        $processParams = $request->getQuery('process');
+        $threadParams = $request->getQuery('thread');
+        $idParams = $request->getQuery('id');
+        
+        $sql = $this->getProcessIOTable();
+        if(!empty($idParams)){
+            $listDocuments = $sql->getObjectByCCLId($companyParams,$countryParams,$locationParams,$idParams);
+        }else{
+            $listDocuments = $sql->getObjectByCCL($companyParams,$countryParams,$locationParams,$processParams,$threadParams,$typeParams);
+        }
+        
+        if(!empty($listDocuments)){
+            $data['success']=true;
+            $data['results']=$listDocuments;
+            $data['msg']="";
+        }else{
+            $data['success']=true;
+            $data['results']="";
+            $data['msg']="Error trying to get the information...";
+        }
+        $result = new JsonModel($data);
+    	return $result;   
+    }
+    
+    public function addprocessioAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        
+        $request = $this->getRequest();
+        $company = $request->getPost('company');
+        $country = $request->getPost('country');
+        $location = $request->getPost('location');
+        $type_io = $request->getPost('type_io');
+        $process = $request->getPost('process');
+        $thread = $request->getPost('thread');
+        $status = $request->getPost('status');
+        $description = (string) $request->getPost('value');
+        $id = $request->getPost('id');
+        $date_creation = \date('Y-m-d h:i:s');
+        
+        $dataResult = array();
+        
+        $sql = $this->getProcessIOTable();
+        $object = new ProcessIo();
+        $object->setDescription($description)
+                ->setCompany($company)
+                ->setCountry($country)
+                ->setLocation($location)
+                ->setProcess($process)
+                ->setThread($thread)
+                ->setType_io($type_io)
+                ->setUser_creation($userData->id)
+                ->setStatus($status)
+                ->setDate_creation($date_creation);
+        if($id AND $id!=0){
+            $object->setId($id);
+        }
+        
+        try {
+            $newId = $sql->save($object);
+            $dataResult['success'] = true;
+            $dataResult['id_io']=$newId;
+            
+        } catch (\Exception $ex) {
+            
+            $dataResult['success'] = false; 
+            $dataResult['id_io']=0;
+            $dataResult['message'] = $ex->getMessage(); 
+        }
+
+        return new JsonModel($dataResult);
     }
     
     public function objdocumentAction(){
@@ -5315,6 +5399,7 @@ class IndexController extends AbstractActionController
    
     public function processAction()
     {
+        $userData = $this->getServiceLocator()->get('userSessionData');
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
         $id = $this->params()->fromRoute('process_id', 0);
         $company  = $this->params()->fromRoute('company', 0);
@@ -5328,6 +5413,10 @@ class IndexController extends AbstractActionController
         $countryRequest = $this->getCountriesTable()->getCountryById($country);
         $locationRequest = $this->getLocationsTable()->getLocationById($country,$location);
         $lang = $userPrefs[0]['lang'];
+        
+        $moduleParams = explode("-",$this->params()->fromRoute('mid', 0));
+        $userRole = $this->getUserRole($userData->id, $moduleParams[0], $moduleParams[1]);
+        
         //print_r($companyRequest);
         return new ViewModel (
                 array(
@@ -5341,7 +5430,8 @@ class IndexController extends AbstractActionController
                     'location'=>$location,
                     'locationDesc'=>$locationRequest[0]['location_name'],
                     'module_id'=>$module_id,
-                    'lang'=>$lang
+                    'lang'=>$lang,
+                    'user_role'=>$userRole
                 )
             );
     }
@@ -5549,6 +5639,8 @@ class IndexController extends AbstractActionController
             'country'=>$country,
             'location'=>$location,
             'threadData'=>$listDocuments,
+            'process_id'=>$process_id,
+            'processId'=>$process_id,
             'owner'=>$owner_name[0]['name'],
             'lang'=>$lang,
             'user_role'=>$userRole
@@ -7475,6 +7567,15 @@ class IndexController extends AbstractActionController
             $this->processActivityTable = $sm->get('IMS\Model\ProcessActivityTable');
         }
         return $this->processActivityTable;
+    }
+    
+    private function getProcessIOTable()
+    {
+    	if (!$this->processioTable) {
+            $sm = $this->getServiceLocator();
+            $this->processioTable = $sm->get('IMS\Model\ProcessIoTable');
+    	}
+    	return $this->processioTable;
     }
     
     public function getMessagesTable()

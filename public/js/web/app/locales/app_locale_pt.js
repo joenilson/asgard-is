@@ -687,3 +687,29 @@ Ext.define('Asgard.locales.lib.Panels.ObjDocumentPanel',{
     warningBody: 'Não foi possível processar o seu documento, por favor, verifique se o arquivo não está errado.',
     warningTitleBodyDelete: 'Você optou por excluir este arquivo. <br />Quer continuar?'
 });
+
+Ext.define('Asgard.locales.lib.grid.io',{
+    override: 'Asgard.lib.grid.io',
+    descriptionText: 'Descrição',
+    idText: 'Id',
+    toolAddText: 'Adicionar',
+    toolRemoveText: 'Remover',
+    toolChangeText: 'Alterar',
+    titleTextInput: 'Entradas',
+    titleAlert: 'Advertência',
+    msgAlert: 'Escolha um dado',
+    emptyText: 'Não há nenhum dado para mostrar...'
+});
+
+Ext.define('Asgard.locales.lib.grid.output',{
+    override: 'Asgard.lib.grid.output',
+    descriptionText: 'Descrição',
+    idText: 'Id',
+    toolAddText: 'Adicionar',
+    toolRemoveText: 'Remover',
+    toolChangeText: 'Alterar',
+    titleTextOutput: 'Saídas',
+    titleAlert: 'Advertência',
+    msgAlert: 'Escolha um dado',
+    emptyText: 'Não há nenhum dado para mostrar...'
+});

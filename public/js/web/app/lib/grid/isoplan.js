@@ -71,16 +71,7 @@ Ext.define('Asgard.lib.grid.isoplan',{
             tooltip: this.toolAddText,
             handler: this.fnLibraryTool,
             scope: this
-        }
-        /*
-        ,{
-            type: 'expand',
-            tooltip: this.toolUploadText,
-            handler: this.fnLibraryTool,
-            scope: this
-        }
-        */
-        ];
+        }];
         
         this.features = [{
             ftype: 'grouping',
@@ -113,7 +104,7 @@ Ext.define('Asgard.lib.grid.isoplan',{
                             scope: this,
                             handler: this.showDocument
                         }]
-                },
+                }
             ]
         };
         

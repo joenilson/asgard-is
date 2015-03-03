@@ -775,3 +775,29 @@ Ext.define('Asgard.locales.lib.forms.objdocumentNewObjDocument',{
     successText: 'Documento actualizado correctamente!',
     failureText: 'No se completo el proceso correctamente, Por favor intente de nuevo.'
 });
+
+Ext.define('Asgard.locales.lib.grid.io',{
+    override: 'Asgard.lib.grid.io',
+    descriptionText: 'Descripcion',
+    idText: 'Id',
+    toolAddText: 'Agregar',
+    toolRemoveText: 'Remover',
+    toolChangeText: 'Cambiar',
+    titleTextInput: 'Entradas',
+    titleAlert: 'Advertencia',
+    msgAlert: 'Escoja un item',
+    emptyText: 'No hay datos para mostrar...'
+});
+
+Ext.define('Asgard.locales.lib.grid.output',{
+    override: 'Asgard.lib.grid.output',
+    descriptionText: 'Descripcion',
+    idText: 'Id',
+    toolAddText: 'Agregar',
+    toolRemoveText: 'Remover',
+    toolChangeText: 'Cambiar',
+    titleTextOutput: 'Salidas',
+    titleAlert: 'Advertencia',
+    msgAlert: 'Escoja un item',
+    emptyText: 'No hay datos para mostrar...'
+});

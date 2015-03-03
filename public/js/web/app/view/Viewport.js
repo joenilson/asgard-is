@@ -75,7 +75,8 @@ Ext.define('Asgard.view.Viewport', {
     'Asgard.store.rEmployeesGrouped','Asgard.lib.Panels.PoliciesPanel','Asgard.lib.dataview.policies',
     'Asgard.lib.forms.policiesNewPolicy','Asgard.store.Policies','Asgard.lib.forms.comboCCLPY',
     'Asgard.lib.forms.comboCCLPYM','Asgard.lib.dataview.objdocument','Asgard.lib.Panels.ObjDocumentPanel',
-    'Asgard.store.ObjDocuments','Asgard.lib.forms.objdocumentNewObjDocument'
+    'Asgard.store.ObjDocuments','Asgard.lib.forms.objdocumentNewObjDocument','Asgard.lib.grid.io','Asgard.store.process_io',
+    'Asgard.lib.grid.output'
   ],
   menuTitleText: 'Main Menu',
     defaults: {
@@ -84,7 +85,7 @@ Ext.define('Asgard.view.Viewport', {
       this.items = [
 	{
 	    region: 'north',
-	    xtype: 'headerbar',
+	    xtype: 'headerbar'
 	}, {
 	    region: 'west',
 	    title: this.menuTitleText,

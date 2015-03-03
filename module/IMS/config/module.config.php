@@ -87,6 +87,77 @@ return array(
                             ),
                         ),
                     ),
+                    'processio' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/processio[/:type][/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'type'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'processio'
+                            ),
+                        ),
+                    ),
+                    'getprocessio' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/getprocessio[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'getprocessio'
+                            ),
+                        ),
+                    ),
+                    'addprocessio' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/addprocessio[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'addprocessio'
+                            ),
+                        ),
+                    ),
+                    'removeprocessio' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/removeprocessio[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'removeprocessio'
+                            ),
+                        ),
+                    ),
+                    'formprocessio' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/formprocessio[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'formprocessio'
+                            ),
+                        ),
+                    ),
                     
                     'objdocument' => array(
                         'type'    => 'Segment',

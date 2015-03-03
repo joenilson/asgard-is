@@ -38,15 +38,18 @@ storeThreadUnassigned<?=$this->panelId; ?>.load({ params: { type: 'U', <?=$threa
 var toolsSubProcess<?=$this->panelId; ?> = [{
     type: 'plus',
     tooltip: 'Add SubProcess',
-    handler: fnThreadTool
+    handler: fnThreadTool,
+    hidden: <?php echo ($this->user_role=='Admin' OR $this->user_role=='Editor')?'false':'true'; ?>
 },{
     type: 'minus',
     tooltip: 'Remove SubProcess',
-    handler: fnThreadTool
+    handler: fnThreadTool,
+    hidden: <?php echo ($this->user_role=='Admin' OR $this->user_role=='Editor')?'false':'true'; ?>
 },{
     type: 'gear',
     tooltip: 'Edit SubProcess',
-    handler: fnThreadTool
+    handler: fnThreadTool,
+    hidden: <?php echo ($this->user_role=='Admin' OR $this->user_role=='Editor')?'false':'true'; ?>
 }];
 
 var toolsThreads = [{
@@ -96,7 +99,7 @@ var panelProcess<?=$this->panelId; ?> = Ext.create('Ext.panel.Panel', {
 
 var threadList<?=$this->panelId; ?> = Ext.create('Asgard.lib.grid.list', {
     selType: 'checkboxmodel',
-    
+    id: 'theadList<?=$this->panelId;?>',
     store: storeThreadAssigned<?=$this->panelId; ?>,
     columns: {
         plugins: [{

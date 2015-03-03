@@ -19,33 +19,21 @@
  * @version 1.0.0 devel
  * @author Joe Nilson <joenilson@gmail.com>
  */
-Ext.define('Asgard.lib.grid.list',{
-    extend: 'Ext.grid.Panel',
-    alias: 'widget.diagramlist',
-    layout: 'fit',
-    border: false,
-    frame: false,
-    columnLines: true,
-    emptyText: 'No content added yet.',
-    viewConfig: {
-          stripeRows: true
-    },
-    plugins: [{
-            ptype: 'filterbar',
-            renderHidden: false,
-            showShowHideButton: false,
-            showClearAllButton: false
-        },
-        Ext.create('Ext.grid.plugin.CellEditing', {
-            clicksToEdit: 2
-        })
-    ],
-    company: '',
-    country: '',
-    location: '',
-    thread: '',
-    lang: '',
-    initComponent: function(){
-        this.callParent();
-    }
+Ext.define('Asgard.model.process_io', {
+    extend: 'Ext.data.Model',
+    fields: [
+        {name: 'company', type: 'string' }, 
+        {name: 'country', type: 'string' }, 
+        {name: 'location', type: 'string' }, 
+        {name: 'process', type: 'int' },
+        {name: 'thread', type: 'int' },
+        {name: 'id', type: 'float' }, 
+        {name: 'description', type: 'string' }, 
+        {name: 'type_io', type: 'string' }, 
+        {name: 'status', type: 'string' },
+        {name: 'user_creation', type: 'float' },
+        {name: 'date_creation', type: 'date', dateFormat: 'c' },
+        {name: 'user_modification', type: 'float' },
+        {name: 'date_modification', type: 'date', dateFormat: 'c' }
+    ]
 });

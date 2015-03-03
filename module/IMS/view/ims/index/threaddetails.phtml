@@ -23,6 +23,11 @@
  */
 ?>
 <script>
+<?php
+$thread_values = "pid: $this->process_id, ";
+
+$values = "company: '".$this->company."', country: '".$this->country."', location: '".$this->location."' ";
+?>
 var DocsLibraryStore<?=$this->threadId; ?> = Ext.create('Asgard.store.DocsLibrary');
     DocsLibraryStore<?= $this->threadId; ?>.load({ params: { module: 'master', type: 0, company: '<?=$this->company;?>', country: '<?=$this->country;?>', location: '<?=$this->location;?>', process: <?=$this->processId;?>, thread: <?=$this->threadId;?>}});
 
@@ -51,6 +56,14 @@ HIRADocsStore<?=$this->threadId; ?>.load({ params: { tid: <?=$this->threadId; ?>
                                                 location: '<?=$this->location; ?>'
                                             }
                                             });
+
+
+var storeThreadInput<?=$this->threadId; ?> = Ext.create('Asgard.store.process_io');
+storeThreadInput<?=$this->threadId; ?>.load({ params: { type: 'input', process: <?=$this->process_id;?>, thread: <?=$this->threadId;?>, <?=$values; ?> } });
+
+var storeThreadOutput<?=$this->threadId; ?> = Ext.create('Asgard.store.process_io');
+storeThreadOutput<?=$this->threadId; ?>.load({ params: { type: 'output', process: <?=$this->process_id;?>, thread: <?=$this->threadId;?>, <?=$values; ?> } });
+
 
 var IEEAGrid<?=$this->threadId; ?> = Ext.create('Asgard.lib.grid.ieea_thread',{
     flex: 1,
@@ -236,11 +249,11 @@ function fnChangeOwner(obj, id, component, tool, event, record){
 
 var tabpanel<?=$this->threadId; ?> = Ext.create('Ext.tab.Panel', {
     layout: 'fit',
-    //autoScroll: true,
+    defaults:{ autoScroll:true },
     items: [
         {
             title: 'Detalles',
-            bodyPadding: 5,
+            bodyPadding: 1,
             layout: {
                 type: 'vbox',
                 pack: 'start',
@@ -248,8 +261,9 @@ var tabpanel<?=$this->threadId; ?> = Ext.create('Ext.tab.Panel', {
             },
             defaults: {
                 frame: false,
-                padding: 2,
-                autoScroll: true
+                padding: 0,
+                autoScroll: true,
+                overflow: true
             },
             items: [{
                 title: 'Misión',
@@ -270,6 +284,7 @@ var tabpanel<?=$this->threadId; ?> = Ext.create('Ext.tab.Panel', {
                 }]
             }, {
                 title: 'Dueño del proceso',
+                minHeight: 135,
                 flex: 1,
                 margin: '0 0 5 0',
                 tools: [{
@@ -301,22 +316,51 @@ var tabpanel<?=$this->threadId; ?> = Ext.create('Ext.tab.Panel', {
                     xtype: 'displayfield',
                     value: '<?=$this->threadData[0]->scope; ?>'
                 }]
-            },{
+            },{                
                 layout: {
                     type: 'hbox',
                     pack: 'start',
                     align: 'stretch'
-                }, 
-                items: [{
-                    title: 'Entradas',
-                    flex: 1,
-                    margin: '0 5 0 0',
-                    html: 'Entradas'
-                },{
-                    title: 'Salidas',
-                    flex: 1,
-                    html: 'Salidas'
-                }]
+                },
+                    defaults: {
+                    frame: false,
+                    padding: 0,
+                    autoScroll: true,
+                    overflow: true,
+                },
+                items: [
+                    Ext.create('Asgard.lib.grid.io',{
+                        company: '<?=$this->company;?>', 
+                        country: '<?=$this->country;?>', 
+                        location: '<?=$this->location;?>', 
+                        process: <?=$this->processId;?>, 
+                        thread: <?=$this->threadId;?>,
+                        type_io: 'input',
+                        margin: '0 5 0 0',
+                        flex: 0.5,
+                        minHeight: 200,
+                        maxHeight: 300,
+                        autoScroll: true,
+                        id: 'iolist-input',
+                        role: '<?=$this->user_role;?>',
+                        store: storeThreadInput<?=$this->threadId; ?>
+                    }),
+                    Ext.create('Asgard.lib.grid.output',{
+                        company: '<?=$this->company;?>', 
+                        country: '<?=$this->country;?>', 
+                        location: '<?=$this->location;?>', 
+                        process: <?=$this->processId;?>, 
+                        thread: <?=$this->threadId;?>,
+                        type_io: 'output',
+                        flex: 0.5,
+                        minHeight: 200,
+                        maxHeight: 300,
+                        autoScroll: true,
+                        id: 'iolist-output',
+                        role: '<?=$this->user_role;?>',
+                        store: storeThreadOutput<?=$this->threadId; ?>
+                    })
+                ]
             }]
         },{
             title: 'Actividades',
