@@ -34,17 +34,6 @@ var DocsLibraryStore<?=$this->threadId; ?> = Ext.create('Asgard.store.DocsLibrar
 var IEEAStore<?=$this->threadId; ?> = Ext.create('Asgard.store.IEEA_Thread');
 IEEAStore<?= $this->threadId; ?>.load({ params: { module: 'master', company: '<?=$this->company;?>', country: '<?=$this->country;?>', location: '<?=$this->location;?>', process: <?=$this->processId;?>, thread: <?=$this->threadId;?>}});
 
-/*
- * Details Information Tab
- * @type type
- */
-/*
-var detailsTab<?=$this->threadId; ?> = Ext.create('Asgard.lib.Panels.threadDetails', {
-    missionValue: '<?=$this->threadData[0]->mission; ?>',
-    threadOwnerValue: '<?=$this->owner; ?>',
-    scopeValue: '<?=$this->threadData[0]->scope; ?>'
-});
-*/
 var DocumentsGrid<?=$this->threadId; ?> = Ext.create('Asgard.lib.grid.thread_documents', {
     store: DocsLibraryStore<?=$this->threadId;?>
 });
