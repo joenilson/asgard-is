@@ -46,7 +46,6 @@ HIRADocsStore<?=$this->threadId; ?>.load({ params: { tid: <?=$this->threadId; ?>
                                             }
                                             });
 
-
 var storeThreadInput<?=$this->threadId; ?> = Ext.create('Asgard.store.process_io');
 storeThreadInput<?=$this->threadId; ?>.load({ params: { type: 'input', process: <?=$this->process_id;?>, thread: <?=$this->threadId;?>, <?=$values; ?> } });
 

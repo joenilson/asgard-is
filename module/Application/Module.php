@@ -34,11 +34,32 @@ class Module
     public $mobileSite;
     public $user;
     
+    public function languageConfig($e){
+        $application   = $e->getApplication();
+        $sm            = $application->getServiceManager();
+        $userSession = $sm->get('Auth\Model\MyAuthStorage')->read();
+        $idUser = $userSession->id;
+        
+        $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+        $tableUserPrefs = new UserPreferencesTable($dbAdapter);
+        $user = $sm->get('Auth\Model\MyAuthStorage')->read();
+        $uPreferences = $tableUserPrefs->getUserPreferences($user->id);
+        
+        $lang = $uPreferences[0]['lang'];
+        $e->getViewModel()->setVariables(array(
+            'language' => $lang,
+            'user_identificator' => $idUser,
+            'lala'=>'lala'
+        ));
+    }
+    
     public function onBootstrap(MvcEvent $e)
     {
         $e->getApplication()->getServiceManager()->get('translator');
-        $eventManager        = $e->getApplication()->getEventManager();
+        $eventManager = $e->getApplication()->getEventManager();
+        $eventManager->attach(\Zend\Mvc\MvcEvent::EVENT_DISPATCH, array($this, 'languageConfig'));
         $eventManager->attach(MvcEvent::EVENT_DISPATCH_ERROR, array($this,'onDispatchError'), 100);
+        
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
         
@@ -65,44 +86,59 @@ class Module
 
         $matchedRoute = $router->match($request);
         if (null !== $matchedRoute) {
-        	$controller = $matchedRoute->getParam('controller');
-        	$action = $matchedRoute->getParam('action');
-        	$id = $matchedRoute->getParam('id');
-        	// check auth...
-        	$response = $e->getResponse();
-        	if (! $sm->get('AuthService')->hasIdentity() && $action != 'login' && $action != 'authenticate'){
-        		$url    = $router->assemble(array(), array('name' => 'auth/login'));
-        		$response->setStatusCode(302);
-        		$response->getHeaders()->addHeaderLine('Location', $url);
-        	}
-        	
-        	
-        	if ($sm->get('AuthService')->hasIdentity() && $action != 'login' && $action != 'authenticate' && $id != 0){
-        	    $userSession = $sm->get('Auth\Model\MyAuthStorage')->read();
-        	    
-        	    $moduleParams = explode('-',$id);
-        	    
-        	    $idUser = $userSession->id;
-        	    $idModule = $moduleParams[0];
-        	    $idSubmodule = (!isset($moduleParams[1]))?'':$moduleParams[1];
-        	    if (!isset($moduleParams[1])){
-        	        $userAccess = new AdminUserModulesTable($sm->get('Zend\Db\Adapter\Adapter'));
-        	        $userAccess = $userAccess->getUserModulesAccess( $idUser, $idModule );
-        	    }else{
-        	        $userAccess = new AdminUserSubmodulesTable($sm->get('Zend\Db\Adapter\Adapter'));
-        	        $userAccess = $userAccess->getUserSubmodulesAccess( $idUser, $idModule, $idSubmodule );
-        	    }
-        	    
-        	    
-        	    if(!$userAccess){
-        	        echo "No access...";
-        	        /*
-        	        $url    = $router->assemble(array(), array('name' => 'forbidden'));
-        	        $response->setStatusCode(302);
-        	        $response->getHeaders()->addHeaderLine('Location', $url);
-        	        */
-        	    }
-        	}
+            $controller = $matchedRoute->getParam('controller');
+            $action = $matchedRoute->getParam('action');
+            $id = $matchedRoute->getParam('id');
+            // check auth...
+            $response = $e->getResponse();
+            if (! $sm->get('AuthService')->hasIdentity() && $action != 'login' && $action != 'authenticate'){
+                    $url    = $router->assemble(array(), array('name' => 'auth/login'));
+                    $response->setStatusCode(302);
+                    $response->getHeaders()->addHeaderLine('Location', $url);
+            }
+
+
+            if ($sm->get('AuthService')->hasIdentity() && $action != 'login' && $action != 'authenticate' && $id != 0){
+                $userSession = $sm->get('Auth\Model\MyAuthStorage')->read();
+                
+                $moduleParams = explode('-',$id);
+
+                $idUser = $userSession->id;
+
+                $idModule = $moduleParams[0];
+                $idSubmodule = (!isset($moduleParams[1]))?'':$moduleParams[1];
+                if (!isset($moduleParams[1])){
+                    $userAccess = new AdminUserModulesTable($sm->get('Zend\Db\Adapter\Adapter'));
+                    $userAccess = $userAccess->getUserModulesAccess( $idUser, $idModule );
+                }else{
+                    $userAccess = new AdminUserSubmodulesTable($sm->get('Zend\Db\Adapter\Adapter'));
+                    $userAccess = $userAccess->getUserSubmodulesAccess( $idUser, $idModule, $idSubmodule );
+                }
+
+               
+                if(!$userAccess){
+                    echo "No access...";
+                    /*
+                    $url    = $router->assemble(array(), array('name' => 'forbidden'));
+                    $response->setStatusCode(302);
+                    $response->getHeaders()->addHeaderLine('Location', $url);
+                    */
+                }
+                
+                /*
+                if(!$e->getApplication()->getRequest()->isXmlHttpRequest() AND !empty($userSession)){
+                    $lang = $userSession->lang;
+                    $e->getViewModel()->setVariables(array(
+                        'language' => $lang,
+                        'user_identificator' => $idUser,
+                        'lala'=>'lala'
+                    ));
+                }
+                */
+                //$eventManager->attach('dispatch', array($this, 'languageConfig' ));
+                
+                
+            }
         }
         
     }

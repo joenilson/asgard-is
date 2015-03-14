@@ -38,24 +38,24 @@ storeThreadUnassigned<?=$this->panelId; ?>.load({ params: { type: 'U', <?=$threa
 var toolsSubProcess<?=$this->panelId; ?> = [{
     type: 'plus',
     tooltip: 'Add SubProcess',
-    handler: fnThreadTool,
+    handler: fnThreadTool<?=$this->panelId; ?>,
     hidden: <?php echo ($this->user_role=='Admin' OR $this->user_role=='Editor')?'false':'true'; ?>
 },{
     type: 'minus',
     tooltip: 'Remove SubProcess',
-    handler: fnThreadTool,
+    handler: fnThreadTool<?=$this->panelId; ?>,
     hidden: <?php echo ($this->user_role=='Admin' OR $this->user_role=='Editor')?'false':'true'; ?>
 },{
     type: 'gear',
     tooltip: 'Edit SubProcess',
-    handler: fnThreadTool,
+    handler: fnThreadTool<?=$this->panelId; ?>,
     hidden: <?php echo ($this->user_role=='Admin' OR $this->user_role=='Editor')?'false':'true'; ?>
 }];
 
 var toolsThreads = [{
     type: 'gear',
     tooltip: 'Config Thread',
-    handler: fnThreadConfig
+    handler: fnThreadConfig<?=$this->panelId; ?>
 }];
 
 var panelThreads<?=$this->panelId; ?> = Ext.create('widget.dataview', {
@@ -65,7 +65,7 @@ var panelThreads<?=$this->panelId; ?> = Ext.create('widget.dataview', {
         mode: 'SINGLE',
         listeners: {
             scope: this,
-            selectionchange: onSelectionChange
+            selectionchange: onSelectionChange<?=$this->panelId; ?>
         }
     },
     trackOver: true,
@@ -99,7 +99,7 @@ var panelProcess<?=$this->panelId; ?> = Ext.create('Ext.panel.Panel', {
 
 var threadList<?=$this->panelId; ?> = Ext.create('Asgard.lib.grid.list', {
     selType: 'checkboxmodel',
-    id: 'theadList<?=$this->panelId;?>',
+    id: 'threadList<?=$this->panelId; ?>',
     store: storeThreadAssigned<?=$this->panelId; ?>,
     columns: {
         plugins: [{
@@ -108,47 +108,43 @@ var threadList<?=$this->panelId; ?> = Ext.create('Asgard.lib.grid.list', {
         items: [
             {text: 'id', flex: 0.25, dataIndex: 'id', sortable: true, filter: true },
             {text: 'description', flex: 0.75, dataIndex: 'value', sortable: true, filter: true, tdCls: 'wrapText'
-            , editor: { xtype: 'textfield', allowBlank: false }
+            , editor: { xtype: 'textfield', allowBlank: false },
+                
             }
         ]
-    }
-});
-
-threadList<?=$this->panelId; ?>.on('edit', function(editor, e){
-    if( e.originalValue !== '' && e.originalValue !== e.value ){
-            var record = this.getStore().getAt(e.rowIdx);
-            var valueUpdated;
-                valueUpdated = e.value;
-            var fieldName = e.field;
-            Ext.Ajax.request({
-            url: 'ims/threadinfoedit',
-            params: {
-                company: '<?=$this->company;?>', 
-                country: '<?=$this->country;?>', 
-                location: '<?=$this->location;?>', 
-                process: <?=$this->process_id;?>, 
-                lang: '<?=$this->lang;?>', 
-                thread: record.data.id,
-                field: 'value',
-                value: e.value
-            },
-            scope: this,
-            success: function(response){
-                var text = response.responseText;
-                this.getStore().reload();
-                // process server response here
-                //console.log(text);
-            },
-            failure: function(response){
-                var text = response.responseText;
-                //console.log(text);
-                // 
+    },
+    listeners: {
+        edit: function (editor, e, eOpts) {
+            var record = e.record;
+            if( e.value !== '' && e.originalValue !== e.value ){
+                var valueUpdated;
+                    valueUpdated = e.value;
+                var fieldName = e.field;
+                Ext.Ajax.request({
+                    url: 'ims/threadinfoedit',
+                    params: {
+                        company: '<?=$this->company;?>', 
+                        country: '<?=$this->country;?>', 
+                        location: '<?=$this->location;?>', 
+                        process: <?=$this->process_id;?>, 
+                        lang: '<?=$this->lang;?>', 
+                        thread: record.data.id,
+                        field: 'value',
+                        value: e.value
+                    },
+                    scope: this,
+                    success: function(response){
+                        var text = response.responseText;
+                        threadList<?=$this->panelId; ?>.getStore().reload();
+                    },
+                    failure: function(response){
+                        var text = response.responseText;
+                    }
+                });
             }
-        });
+        }
     }
 });
-    
-
 
 var threadWindow<?=$this->panelId; ?> = Ext.create('Asgard.lib.window.list', {
     title: 'Thread List',
@@ -156,7 +152,7 @@ var threadWindow<?=$this->panelId; ?> = Ext.create('Asgard.lib.window.list', {
     items: [ threadList<?=$this->panelId; ?> ]
 });
 
-function onSelectionChange(){
+function onSelectionChange<?=$this->panelId; ?>(){
     var selected = panelThreads<?=$this->panelId; ?>.getSelectionModel().getSelection()[0];
     var companyId = '<?=$this->company;?>';
     var countryId = '<?=$this->country;?>';
@@ -185,12 +181,11 @@ function onSelectionChange(){
     }
 }
 
-function fnThreadTool(me, e, object, tool) {
+function fnThreadTool<?=$this->panelId; ?>(me, e, object, tool) {
     var panel = tool.up('panel');
     
     Ext.get('toolType').value=tool.type;
     Ext.get('processType').value=panel.name;
-    //console.log(tool.type);
     threadList<?=$this->panelId; ?>.suspendEvents();
     if(tool.type==='minus' || tool.type==='gear'){
         threadList<?=$this->panelId; ?>.reconfigure(storeThreadAssigned<?=$this->panelId; ?>);
@@ -207,13 +202,13 @@ function fnThreadTool(me, e, object, tool) {
 }
 
 
-function fnThreadConfig(me, e, object, tool) {
+function fnThreadConfig<?=$this->panelId; ?>(me, e, object, tool) {
     var panel = tool.up('panel');
     
     Ext.get('toolType').value=tool.type;
     Ext.get('processType').value=panel.name;
     console.log(tool.type);
-    if(tool.type==='minus'){
+    if(tool.type==='minus' || tool.type==='gear'){
         threadList<?=$this->panelId; ?>.reconfigure(storeThreadAssigned<?=$this->panelId; ?>);  
     }else if(tool.type==='plus'){
         threadList<?=$this->panelId; ?>.reconfigure(storeThreadUnassigned<?=$this->panelId; ?>);  
@@ -227,7 +222,7 @@ function fnThreadConfig(me, e, object, tool) {
 }
 
 
-function fnSubmit (button, object)
+function fnSubmit(button, object)
 {
     var grid = threadList<?=$this->panelId; ?>;
     var sm = grid.getSelectionModel();
@@ -261,7 +256,7 @@ function fnSubmit (button, object)
     });
 }
 
-function fnCancel ()
+function fnCancel()
 {
     threadWindow<?=$this->panelId; ?>.hide();
 }

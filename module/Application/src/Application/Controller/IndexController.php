@@ -46,7 +46,7 @@ class IndexController extends AbstractActionController
         
         //$this->getViewHelper('HeadScript')->appendFile("/js/extjs/src/ux/grid/xFilterRow.js","text/javascript");
         
-        return new ViewModel(array('username'=>$userData->realname));
+        return new ViewModel(array('username'=>$userData->realname, 'userLang'=>$userPrefs[0]['lang']));
     }
     
     public function presentationAction()
