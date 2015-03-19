@@ -195,6 +195,24 @@ Ext.define('Asgard.locales.lib.forms.comboCCL',{
     textSubmitButton: 'Consultar'
 });
 
+Ext.define('Asgard.locales.lib.forms.comboCCLY',{
+    override: 'Asgard.lib.forms.comboCCLY',
+    emptyTextText: 'No hay datos elegidos',
+    textSubmitButton: 'Consultar'
+});
+
+Ext.define('Asgard.locales.lib.forms.comboCCLYM',{
+    override: 'Asgard.lib.forms.comboCCLYM',
+    emptyTextText: 'No hay datos elegidos',
+    textSubmitButton: 'Consultar'
+});
+
+Ext.define('Asgard.locales.lib.forms.comboCCLPYM',{
+    override: 'Asgard.lib.forms.comboCCLPYM',
+    emptyTextText: 'No hay datos elegidos',
+    textSubmitButton: 'Consultar'
+});
+
 Ext.define('Asgard.locales.lib.forms.docsChangeRequest',{
     override: 'Asgard.lib.forms.docsChangeRequest',
     petitionerFieldText: 'Solicitante' ,

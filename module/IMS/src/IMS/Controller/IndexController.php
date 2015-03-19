@@ -294,8 +294,8 @@ class IndexController extends AbstractActionController
                 $typeDocFunction = 'fnCCLPYMProcess';
                 break;
             case "csi":
-                $typeDocCombo = 'comboCCLPYM';
-                $typeDocFunction = 'fnCCLPYMProcess';
+                $typeDocCombo = 'comboCCLYM';
+                $typeDocFunction = 'fnCCLYMProcess';
                 break;
             default:
                 $typeDocCombo = 'comboCCL';

@@ -177,7 +177,7 @@ Ext.define('Asgard.lib.forms.objdocumentNewObjDocument',{
             this.companiesField,
             this.countriesField,
             this.locationsField,
-            (this.typeDocument === 'indicators' || this.typeDocument === 'csi')?this.processField:null,
+            (this.typeDocument === 'indicators')?this.processField:null,
             this.dateField,
             this.descriptionField,
             this.fileField
@@ -206,8 +206,6 @@ Ext.define('Asgard.lib.forms.objdocumentNewObjDocument',{
                     typedoc: me.typeDocument
                 },
                 success: function(fp, o, m, r) {
-                    console.log(fp);
-                    console.log(o);
                     form.reset();
                     
                     var winActive = Ext.WindowManager.getActive();
@@ -216,8 +214,6 @@ Ext.define('Asgard.lib.forms.objdocumentNewObjDocument',{
                     Ext.Msg.alert('Success', me.successText);
                 },
                 failure: function(fp, o, u){
-                    console.log(fp);
-                    console.log(o);
                     Ext.Msg.alert('Failure', me.failureText);
                 }
             });
