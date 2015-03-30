@@ -43,6 +43,7 @@ Ext.define('Asgard.lib.grid.thread_documents',{
     locationText: 'Location',
     originText: 'Origin',
     retentionText: 'Retention Time',
+    typeText: 'Status',
     toolViewDocText: 'View File',
     loadText: 'Loading document... please wait...',
     
@@ -55,20 +56,19 @@ Ext.define('Asgard.lib.grid.thread_documents',{
             items: [
                 {text: this.idText, sortable: false, hidden: true, dataIndex: 'doc_id', filter: false},
                 {text: this.classDocText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'desc_classification', tdCls: 'wrapText'},
-                {text: this.documentText, flex: 3, sortable: true, filter: true, dataIndex: 'doc_desc', tdCls: 'wrapText'},
                 {text: this.recordText, flex: 1.5, sortable: true, filter: true, dataIndex: 'doc_record', tdCls: 'wrapText'},
+                {text: this.documentText, flex: 3, sortable: true, filter: true, dataIndex: 'doc_desc', tdCls: 'wrapText'},
+                {text: this.typeText, flex: 1.5, sortable: true, filter: true, dataIndex: 'desc_type', tdCls: 'wrapText'},
                 {text: this.versionText, flex: 1, sortable: true, filter: true, dataIndex: 'doc_version_number', tdCls: 'wrapText'},
-                {text: this.dateVersionText, flex: 1.5,  sortable: true, filter: true, dataIndex: 'doc_date_creation', tdCls: 'wrapText', 
-                    xtype: 'datecolumn', format:'Y-m-d'
-                },
+                //{text: this.dateVersionText, flex: 1.5,  sortable: true, filter: true, dataIndex: 'doc_date_creation', tdCls: 'wrapText', xtype: 'datecolumn', format:'Y-m-d' },
                 {text: this.dateRevisionText, flex: 1.5,  sortable: true, filter: true, dataIndex: 'doc_date_revision_next', tdCls: 'wrapText', 
                     xtype: 'datecolumn', format:'Y-m-d'
                 },
                 //{text: this.reviewText, flex: 1, sortable: true, filter: true, dataIndex: 'doc_review', tdCls: 'wrapText'},
                 //{text: this.protectionText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'desc_protection', tdCls: 'wrapText'},
-                {text: this.locationText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'desc_location', tdCls: 'wrapText'},
+                //{text: this.locationText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'desc_location', tdCls: 'wrapText'},
                 //{text: this.originText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'desc_origin', tdCls: 'wrapText'},
-                {text: this.retentionText, flex: 1, sortable: true, filter: 'combo', dataIndex: 'desc_retention', tdCls: 'wrapText'},
+                //{text: this.retentionText, flex: 1, sortable: true, filter: 'combo', dataIndex: 'desc_retention', tdCls: 'wrapText'},
                 {xtype: 'actioncolumn', flex: 0.5, sortable: false, menuDisabled: true,
                     items: [
                         {

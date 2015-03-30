@@ -28,7 +28,8 @@ Ext.define('Asgard.lib.grid.documents',{
     frame: false,
     flex: 1,
     layout: 'fit',
-    
+    typeDoc: '',
+    sourceDoc: '',
     petitionerAlias: '',
     petitionerEmail: '',
     historyTitle: 'Document History',
@@ -36,8 +37,10 @@ Ext.define('Asgard.lib.grid.documents',{
     idText: 'Id',
     classDocText: 'Doc Classif',
     documentText: 'Document',
+    threadText: 'Thread',
     recordText: 'Record',
     versionText: 'Version',
+    typeText: 'Status',
     statusText: 'Status',
     dateRevisionText: 'Revision Date',
     dateVersionText: 'Version Date',
@@ -65,7 +68,8 @@ Ext.define('Asgard.lib.grid.documents',{
     emptyCCLText: 'Please fill the Company, Country and Locations items',
     emptyTitleText: 'No data selected',
     emptyMessageText: 'No one items was selected to process, <br />Please select one at last...',
-    
+    finalDisposeText:'Pasive File (PF) / Destruction (D)',
+    minimalTimeText: 'Minimum Additional Conservation',
     toolsEnabled: true,
     
     initComponent: function(){
@@ -106,22 +110,22 @@ Ext.define('Asgard.lib.grid.documents',{
             items: [
                 {text: this.idText, sortable: false, flex: 0.5, hidden: false, dataIndex: 'doc_id', filter: true},
                 {text: this.classDocText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'desc_classification', tdCls: 'wrapText'},
-                {text: this.documentText, flex: 3, sortable: true, filter: true, dataIndex: 'doc_desc', tdCls: 'wrapText'},
+                {text: this.threadText, flex: 1.5, sortable: true, filter: true, dataIndex: 'desc_thread', tdCls: 'wrapText'},
                 {text: this.recordText, flex: 1.5, sortable: true, filter: true, dataIndex: 'doc_record', tdCls: 'wrapText'},
+                {text: this.documentText, flex: 3, sortable: true, filter: true, dataIndex: 'doc_desc', tdCls: 'wrapText'},
+                {text: this.retentionText, flex: 1, sortable: true, filter: 'combo', dataIndex: 'desc_retention', tdCls: 'wrapText', hidden: (this.typeDoc==='REG')?false:true },
+                {text: this.typeText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'desc_type', tdCls: 'wrapText'},
                 {text: this.versionText, flex: 0.5, sortable: true, filter: true, dataIndex: 'doc_version_number', tdCls: 'wrapText'},
-                {text: this.dateVersionText, width: 80,  sortable: true, filter: true, dataIndex: 'doc_date_creation', tdCls: 'wrapText', 
-                    xtype: 'datecolumn', format:'Y-m-d'
-                },
+                //{text: this.dateVersionText, width: 80,  sortable: true, filter: true, dataIndex: 'doc_date_creation', tdCls: 'wrapText', xtype: 'datecolumn', format:'Y-m-d' },
                 //{text: this.statusText, flex: 1, sortable: true, filter: true, dataIndex: 'doc_status_general', tdCls: 'wrapText'},
-                {text: this.dateRevisionText, flex: 1,  sortable: true, filter: true, dataIndex: 'doc_date_revision_next', tdCls: 'wrapText', 
-                    xtype: 'datecolumn', format:'Y-m-d'
-                },
-                {text: this.reviewText, flex: 1, sortable: true, filter: true, dataIndex: 'doc_review', tdCls: 'wrapText'},
-                {text: this.protectionText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'desc_protection', tdCls: 'wrapText'},
-                {text: this.ownerText, flex: 2, sortable: true, filter: 'combo', dataIndex: 'desc_owner', tdCls: 'wrapText'},
-                {text: this.locationText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'desc_location', tdCls: 'wrapText'},
-                {text: this.originText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'desc_origin', tdCls: 'wrapText'},
-                {text: this.retentionText, flex: 1, sortable: true, filter: 'combo', dataIndex: 'desc_retention', tdCls: 'wrapText'},
+                {text: this.dateRevisionText, flex: 1,  sortable: true, filter: true, dataIndex: 'doc_date_revision_next', tdCls: 'wrapText',  xtype: 'datecolumn', format:'Y-m-d' },
+                //{text: this.reviewText, flex: 1, sortable: true, filter: true, dataIndex: 'doc_review', tdCls: 'wrapText'},
+                //{text: this.protectionText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'desc_protection', tdCls: 'wrapText'},
+                //{text: this.ownerText, flex: 2, sortable: true, filter: 'combo', dataIndex: 'desc_owner', tdCls: 'wrapText'},
+                
+                //{text: this.originText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'desc_origin', tdCls: 'wrapText'},
+                {text: this.finalDisposeText, flex: 1,  sortable: true, filter: true, dataIndex: 'doc_final_dispose', tdCls: 'wrapText', hidden: (this.typeDoc==='REG')?false:true },
+                {text: this.minimalTimeText, flex: 1,  sortable: true, filter: true, dataIndex: 'doc_minimal_time', tdCls: 'wrapText', hidden: (this.typeDoc==='REG')?false:true },
                 {xtype: 'actioncolumn', flex: 1, sortable: false, menuDisabled: true,
                     items: [
                         {
@@ -178,7 +182,8 @@ Ext.define('Asgard.lib.grid.documents',{
                 windowDoc.setTitle(this.toolAddText);
                 //windowDoc.setHeight(200);
                 winContent = new Ext.create('Asgard.lib.forms.docsNewDocument',{
-                    companiesValue: companies, countriesValue: countries, locationsValue: locations,
+                    sourceDoc: this.sourceDoc,
+                    company: companies, country: countries, location: locations, 
                     flex: 1,
                     autoScroll: true
                 });

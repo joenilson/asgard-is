@@ -49,6 +49,7 @@ Ext.define('Asgard.lib.forms.docsNewDocument',{
     documentReviewField: undefined,
     documentProtectionField: undefined,
     documentProcessField: undefined,
+    documentThreadFiel: undefined,
     documentOwnerField: undefined,
     documentLocationField: undefined,
     documentOriginField: undefined,
@@ -58,6 +59,12 @@ Ext.define('Asgard.lib.forms.docsNewDocument',{
     documentDVField: undefined,
     documentDRField: undefined,
     documentFileField: undefined,
+    
+    
+    company: '',
+    country: '',
+    location: '',
+    sourceDoc: '',
     
     defaults: {
         labelWidth: 180
@@ -75,7 +82,7 @@ Ext.define('Asgard.lib.forms.docsNewDocument',{
             listeners:{
                 select: function(combo, records, opts) {
                     var panel = combo.up('panel');
-                    var recordField = panel.items.getAt(10).items.getAt(0);
+                    var recordField = panel.getForm().findField('record_0');
                     var comboValue = combo.getValue();
                     var comboRecord = combo.store.data.get(comboValue);
                     var oldValue = recordField.getValue();
@@ -135,7 +142,9 @@ Ext.define('Asgard.lib.forms.docsNewDocument',{
             listeners:{
                 select: function(combo, records, opts) {
                     var panel = combo.up('panel');
-                    var recordField = panel.items.getAt(10).items.getAt(0);
+                    var recordField = panel.getForm().findField('record_0');
+                    var threadCombo = panel.getForm().findField('doc_thread');
+                    threadCombo.store.load({params: { pid: combo.getValue('id'), company: me.company, country: me.country, location: me.location }});
                     var comboValue = combo.getValue();
                     var comboRecord = combo.store.data.get(comboValue);
                     var oldValue = recordField.getValue();
@@ -158,6 +167,13 @@ Ext.define('Asgard.lib.forms.docsNewDocument',{
                 }
             }
         }, this.documentProcessField);
+        
+        this.documentThreadField = this.documentThreadField || [];
+        this.documentThreadField = Ext.Object.merge({
+            xtype: 'threadcombo',
+            name: 'doc_thread',
+            store: new Ext.create('Asgard.store.ProcessThread')
+        }, this.documentThreadField);
         
         this.documentOwnerField = this.documentOwnerField || [];
         this.documentOwnerField = Ext.Object.merge({
@@ -191,7 +207,6 @@ Ext.define('Asgard.lib.forms.docsNewDocument',{
             store: new Ext.create('Asgard.store.DocsHelpers').load({ params: { helper: 'retention' } })
         }, this.documentRetentionField);
 
-        
         this.documentDescField = this.documentDescField || [];
         this.documentDescField = Ext.Object.merge({
             fieldLabel: this.documentDescText,
@@ -281,6 +296,7 @@ Ext.define('Asgard.lib.forms.docsNewDocument',{
         this.innerItems = Ext.Object.merge({
             layout: 'hbox',
             flex: 1,
+            id: 'innerItems',
             anchor: '100%',
             defaults: {
                 labelWidth: 180
@@ -294,17 +310,19 @@ Ext.define('Asgard.lib.forms.docsNewDocument',{
         this.items = this.items || [];
         this.items = this.items.concat([
             this.documentClassField,
-            this.documentTypeField, 
-            this.documentReviewField, 
-            this.documentProtectionField,
+            
+            //this.documentReviewField, 
+            //this.documentProtectionField,
             this.documentProcessField,
+            this.documentThreadField,
             this.documentOwnerField,
-            this.documentLocationField,
-            this.documentOriginField,
-            this.documentRetentionField,
+            this.documentTypeField, 
+            //this.documentLocationField,
+            //this.documentOriginField,
+            //this.documentRetentionField,
             this.documentDescField,
             this.innerItems,
-            this.documentDVField,
+            //this.documentDVField,
             this.documentDRField,
             this.documentFileField 
         ]);

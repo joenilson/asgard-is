@@ -36,6 +36,7 @@ Ext.define('Asgard.model.DocsLibrary', {
         {name: 'desc_protection', type: 'string' },
         {name: 'doc_owner', type: 'float' }, 
         {name: 'desc_owner', type: 'string' }, 
+        {name: 'desc_thread', type: 'string' }, 
         {name: 'doc_location', type: 'float' }, 
         {name: 'desc_location', type: 'string' }, 
         {name: 'doc_origin', type: 'float' },
@@ -58,6 +59,10 @@ Ext.define('Asgard.model.DocsLibrary', {
         {name: 'doc_reference', type: 'float' }, 
         {name: 'country', type: 'string' }, 
         {name: 'company', type: 'string' }, 
-        {name: 'location', type: 'string' }
+        {name: 'location', type: 'string' },
+        {name: 'doc_final_dispose', type: 'string' },
+        {name: 'doc_minimal_time', type: 'string' },
+        {name: 'doc_source', type: 'string' }
+        
     ]
 });

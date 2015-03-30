@@ -135,17 +135,20 @@ Ext.define('Asgard.locales.lib.grid.documents',{
     override: 'Asgard.lib.grid.documents',
     titleText: 'Mestre Lista de Documentos e Registros',
     idText: 'Id',
-    classDocText: 'Doc Classif',
+    classDocText: 'Tipo de Documento',
     documentText: 'Documento',
-    recordText: 'Registro',
-    versionText: 'Versão',
+    threadText: 'Sub Processo',
+    recordText: 'Código',
+    versionText: 'Versão vigente',
     statusText: 'Estado',
+    typeText: 'Estado',
     dateActiveText: 'Data de Revisão',
+    dateRevisionText: 'Data de Revisão',
     dateVersionText: 'Data de Versão',
     reviewText: 'Revisão',
     protectionText: 'Proteção',
     ownerText: 'Proprietário',
-    locationText: 'Localização',
+    locationText: 'Estado',
     originText: 'Origem',
     retentionText: 'Tempo de Retenção',
     toolViewDocText: 'Visualizar o documento',
@@ -168,7 +171,9 @@ Ext.define('Asgard.locales.lib.grid.documents',{
     emptyMessageText: 'Não é selecionado documento, <br />Para continuar selecione primeiro um documento...',
     /* Added 15 - May - 2014 */
     toolHistoryText: 'Ver Histórico do documentos',
-    historyTitle: 'História do Documento'
+    historyTitle: 'História do Documento',
+    finalDisposeText:'Arquivo Pasivo (AP) / Destruição (D)',
+    minimalTimeText: 'Conservação adicional mínimo'
 });
 
 Ext.define('Asgard.locales.lib.forms.CompaniesCombo',{
@@ -228,7 +233,7 @@ Ext.define('Asgard.locales.lib.forms.docsChangeRequest',{
 Ext.define('Asgard.locales.lib.forms.docsNewDocument',{
     override: 'Asgard.lib.forms.docsNewDocument',
 
-    documentClassText: 'Classificação Doc',
+    documentClassText: 'Tipo de Documento',
     documentTypeText: 'Estado',
     documentReviewText: 'Revisão',
     documentProtectionText: 'Proteção',
@@ -247,6 +252,28 @@ Ext.define('Asgard.locales.lib.forms.docsNewDocument',{
     
     textSubmitButton: 'Enviar',
     textCancelButton: 'Cancelar'
+});
+
+Ext.define('Asgard.locales.lib.grid.thread_documents',{
+    override: 'Asgard.lib.grid.thread_documents',
+
+    titleText: 'Documentos Relacionados',
+    idText: 'Id',
+    classDocText: 'Tipo Documento',
+    documentText: 'Documento',
+    recordText: 'Registro',
+    versionText: 'Versión',
+    statusText: 'Estado',
+    typeText: 'Estado',
+    dateRevisionText: 'Data de revisão',
+    dateVersionText: 'Fecha de Versión',
+    reviewText: 'Revisión',
+    protectionText: 'Proteção',
+    locationText: 'Localização',
+    originText: 'Origem',
+    retentionText: 'Tempo de Retenção',
+    toolViewDocText: 'Visualizar Documento',
+    loadText: 'Carregando Documento... por favor aguarde...'
 });
 
 Ext.define('Asgard.locales.lib.forms.DocsHelpers',{
@@ -268,7 +295,7 @@ Ext.define('Asgard.locales.lib.forms.ProcessCombo',{
 
 Ext.define('Asgard.locales.lib.forms.ThreadsCombo',{
     override: 'Asgard.lib.forms.ThreadsCombo',
-    fieldLabelText: 'Fio',
+    fieldLabelText: 'Sub Processo',
     emptyTextText: 'Não há dados neste momento'
 });
 
@@ -502,7 +529,7 @@ Ext.define('Asgard.locales.lib.grid.hira_incidents',{
     descriptionText: 'Descrição',
     authorText: 'Registrant',
     processText: 'Processo',
-    threadText: 'Fio',
+    threadText: 'Sub Processo',
     emailText: 'Email',
     dateText: 'Data',
     statusText: 'Estado',
@@ -535,7 +562,7 @@ Ext.define('Asgard.locales.lib.grid.hira_general',{
     titleText: 'Identificação de Perigos e Avaliação de Riscos :: IPAR',
     idText: 'Id',
     processText: 'Processo',
-    threadText: 'Fio',
+    threadText: 'Sub Processo',
     activityText: 'Atividade',
     dangerText: 'Perigo',
     riskText: 'Risco',
@@ -590,7 +617,7 @@ Ext.define('Asgard.locales.lib.grid.isoplan',{
 
     titleText: 'Plano de Qualidade, Ambiente, Segurança e Saúde Ocupacional',
     processText: 'Processo',
-    threadText: 'Fio',
+    threadText: 'Sub Processo',
     ownerText: 'Proprietário',
     docText: 'Documento',
     indicatorText: 'Indicador',
@@ -616,8 +643,8 @@ Ext.define('Asgard.locales.lib.grid.IPGrid',{
     override: 'Asgard.lib.grid.IPGrid',
     idText: 'Id',
     nameText: 'Descrição',
-    typeText: 'Fio',
-    threadText: 'Fio',
+    typeText: 'Sub Processo',
+    threadText: 'Sub Processo',
     ioText: 'I/O'
 });
 

@@ -47,9 +47,8 @@ var DocumentsGrid<?=$this->panelId; ?> = Ext.create('Asgard.lib.grid.documents',
     store: DocsLibraryStore<?= $this->panelId; ?>,
     petitionerEmail: '<?=$userData[0]['email'];?>',
     petitionerAlias: '<?=$userData[0]['fullname'];?>',
-    typeDoc: 'REG',
+    typeDoc: 'DOC',
     sourceDoc: '<?=$this->source_doc;?>'
-    //tools: toolsLibrary
 });
 
 var libraryViewport<?=$this->panelId; ?> = Ext.create('Ext.panel.Panel', {
@@ -87,7 +86,7 @@ function fnCCLPProcess(button, opt, obj) {
     var locations = values['locationsCombo'];
     var process_id = values['processCombo'];
 
-    DocsLibraryStore<?= $this->panelId; ?>.load({ params: { module: 'master', type: 5, company: companies, country: countries, location: locations, process: process_id}});
+    DocsLibraryStore<?= $this->panelId; ?>.load({ params: { module: 'master', type: 0, company: companies, country: countries, location: locations, process: process_id}});
 
 }
 
@@ -159,7 +158,7 @@ function fnSubmit (button, object)
                 windowDoc.hide();
                 if(button.name==='add'){
                     DocumentsGrid<?=$this->panelId; ?>.suspendEvents();
-                    DocsLibraryStore<?= $this->panelId; ?>.load({ params: { module: 'master', type: 5, company: companies, country: countries, location: locations}});
+                    DocsLibraryStore<?= $this->panelId; ?>.load({ params: { module: 'master', type: 0, company: companies, country: countries, location: locations}});
                     DocumentsGrid<?=$this->panelId; ?>.reconfigure(DocsLibraryStore<?= $this->panelId; ?>);
                     DocumentsGrid<?=$this->panelId; ?>.resumeEvents();
                 }

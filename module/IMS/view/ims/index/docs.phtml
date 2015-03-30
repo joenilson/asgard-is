@@ -46,7 +46,10 @@ var formDataRequest<?=$this->panelId; ?> = Ext.create('Asgard.lib.forms.comboCCL
 var DocumentsGrid<?=$this->panelId; ?> = Ext.create('Asgard.lib.grid.documents',{
     store: DocsLibraryStore<?= $this->panelId; ?>,
     petitionerEmail: '<?=$userData[0]['email'];?>',
-    petitionerAlias: '<?=$userData[0]['fullname'];?>'
+    petitionerAlias: '<?=$userData[0]['fullname'];?>',
+    typeDoc: 'DOC',
+    sourceDoc: '<?=$this->source_doc;?>'
+    
     //tools: toolsLibrary
 });
 
@@ -137,35 +140,38 @@ function fnSubmit (button, object)
     var countries = values['countriesCombo'];
     var locations = values['locationsCombo'];
 
-    console.log(button);
-    console.log(object);
+//    console.log(button);
+//    console.log(object);
     var form = button.up('panel');
     if(form.getForm().isValid()){
+        var processId = form.getForm().findField('doc_process').getValue();
+        //console.log(processId);
         form.submit({
             params: {
                 company: companies, 
                 country: countries, 
-                location: locations
+                location: locations,
+                source_doc: '<?=$this->source_doc;?>'
             },
             waitMsg: 'Uploading your document...',
             success: function(fp, o) {
-                console.log(fp);
-                console.log(o);
+                //console.log(fp);
+                //console.log(o);
                 Ext.Msg.alert('Success', tpl.apply(o.result));
                 win = button.up('panel');
                 win.getForm().reset();
                 windowDoc.hide();
                 if(button.name==='add'){
                     DocumentsGrid<?=$this->panelId; ?>.suspendEvents();
-                    DocsLibraryStore<?= $this->panelId; ?>.load({ params: { module: 'master', type: 0, company: companies, country: countries, location: locations}});
+                    DocsLibraryStore<?= $this->panelId; ?>.load({ params: { module: 'master', type: 0, company: companies, country: countries, location: locations, process: processId }});
                     DocumentsGrid<?=$this->panelId; ?>.reconfigure(DocsLibraryStore<?= $this->panelId; ?>);
                     DocumentsGrid<?=$this->panelId; ?>.resumeEvents();
                 }
             },
             failure: function(fp, o){
+                //console.log(fp);
+                //console.log(o);
                 Ext.Msg.alert('Failure', o.result.message);
-                console.log(fp);
-                console.log(o);
             }
         });
         

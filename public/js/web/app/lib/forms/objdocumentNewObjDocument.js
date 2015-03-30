@@ -120,7 +120,6 @@ Ext.define('Asgard.lib.forms.objdocumentNewObjDocument',{
                     if(me.locationsValue !== ''){
                         locationsCombo.setValue(me.locationsValue);
                     }
-
                 }
             }
         }, this.countriesField);

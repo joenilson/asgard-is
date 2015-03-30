@@ -57,6 +57,9 @@ class DocsLibrary {
     protected $id_process;
     protected $id_thread;
     protected $id_activity;
+    protected $doc_final_dispose;
+    protected $doc_minimal_time;
+    protected $doc_source;
    
     public function __construct(array $options = null)
     {
@@ -383,6 +386,31 @@ class DocsLibrary {
         return $this;
     }
 
+    function getDoc_final_dispose() {
+        return $this->doc_final_dispose;
+    }
 
+    function getDoc_minimal_time() {
+        return $this->doc_minimal_time;
+    }
+
+    function setDoc_final_dispose($doc_final_dispose) {
+        $this->doc_final_dispose = $doc_final_dispose;
+        return $this;
+    }
+
+    function setDoc_minimal_time($doc_minimal_time) {
+        $this->doc_minimal_time = $doc_minimal_time;
+        return $this;
+    }
+
+    function getDoc_source() {
+        return $this->doc_source;
+    }
+
+    function setDoc_source($doc_source) {
+        $this->doc_source = $doc_source;
+        return $this;
+    }
 
 }

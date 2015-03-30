@@ -135,11 +135,13 @@ Ext.define('Asgard.locales.lib.grid.documents',{
     override: 'Asgard.lib.grid.documents',
     titleText: 'Lista Maestra de Documentos y Registros',
     idText: 'Id',
-    classDocText: 'Clase Doc',
+    classDocText: 'Tipo Documento',
     documentText: 'Documento',
+    threadText: 'Subproceso',
     recordText: 'Registro',
-    versionText: 'Version',
+    versionText: 'Version Vigente',
     statusText: 'Estado',
+    typeText: 'Estado',
     dateRevisionText: 'Fecha de Revisión',
     dateVersionText: 'Fecha de Versión',
     reviewText: 'Revision',
@@ -168,7 +170,9 @@ Ext.define('Asgard.locales.lib.grid.documents',{
     emptyMessageText: 'No se ha seleccionado ningún documento, <br />Para continuar primero seleccione un documento...',
     /* Added 15 - May - 2014 */
     toolHistoryText: 'Ver Historial de documentos',
-    historyTitle: 'Historial de Documentos'
+    historyTitle: 'Historial de Documentos',
+    finalDisposeText:'Archivo Pasivo (AP) / Destrucción (D)',
+    minimalTimeText: 'Tiempo mínimo de conservación adicional'
 });
 
 Ext.define('Asgard.locales.lib.forms.CompaniesCombo',{
@@ -228,7 +232,7 @@ Ext.define('Asgard.locales.lib.forms.docsChangeRequest',{
 Ext.define('Asgard.locales.lib.forms.docsNewDocument',{
     override: 'Asgard.lib.forms.docsNewDocument',
 
-    documentClassText: 'Clasificación Doc',
+    documentClassText: 'Tipo Documento',
     documentTypeText: 'Estado',
     documentReviewText: 'Revisión',
     documentProtectionText: 'Protección',
@@ -247,6 +251,28 @@ Ext.define('Asgard.locales.lib.forms.docsNewDocument',{
     
     textSubmitButton: 'Agregar',
     textCancelButton: 'Cancelar'
+});
+
+Ext.define('Asgard.locales.lib.grid.thread_documents',{
+    override: 'Asgard.lib.grid.thread_documents',
+
+    titleText: 'Documentos Relacionados',
+    idText: 'Id',
+    classDocText: 'Tipo Documento',
+    documentText: 'Documento',
+    recordText: 'Código',
+    versionText: 'Versión',
+    statusText: 'Estado',
+    typeText: 'Estado',
+    dateRevisionText: 'Fecha de Revisión',
+    dateVersionText: 'Fecha de Versión',
+    reviewText: 'Revisión',
+    protectionText: 'Protección',
+    locationText: 'Ubicación',
+    originText: 'Origen',
+    retentionText: 'Tiempo de Retención',
+    toolViewDocText: 'Ver Archivo',
+    loadText: 'Cargando documento... por favor espere...'
 });
 
 Ext.define('Asgard.locales.lib.forms.DocsHelpers',{

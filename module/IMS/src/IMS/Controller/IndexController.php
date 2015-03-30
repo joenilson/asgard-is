@@ -5812,6 +5812,21 @@ class IndexController extends AbstractActionController
         //}      
     }
     
+    public function externaldocsAction()
+    {
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang = $userPrefs[0]['lang'];
+        return array('userData'=>$userPrefs, 
+            'companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0)),
+            'lang'=>$lang,
+            'source_doc'=>'external'
+        );
+    }
+    
     public function docsAction()
     {
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
@@ -5823,6 +5838,7 @@ class IndexController extends AbstractActionController
             'countryId'=>$userData->country,
             'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0)),
             'lang'=>$lang,
+            'source_doc'=>'internal'
         );
     }
     
@@ -5837,6 +5853,7 @@ class IndexController extends AbstractActionController
             'countryId'=>$userData->country,
             'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0)),
             'lang'=>$lang,
+            'source_doc'=>'internal'
         );
     }
     
@@ -5879,6 +5896,7 @@ class IndexController extends AbstractActionController
         $company= $request->getPost('company');
         $country= $request->getPost('country');
         $location= $request->getPost('location');
+        $doc_source = $request->getPost('source_doc');
         $files =  $request->getFiles()->toArray();
         if($module==='imsnd'){
             
@@ -5887,6 +5905,7 @@ class IndexController extends AbstractActionController
             $doc_review = (int) $request->getPost('doc_review');
             $doc_protection = (int) $request->getPost('doc_protection');
             $id_process = (int) $request->getPost('doc_process');
+            $id_thread = (int) $request->getPost('doc_thread');
             $doc_owner = (int) $request->getPost('doc_owner');
             $doc_location = (int) $request->getPost('doc_location');
             $doc_origin = (int) $request->getPost('doc_origin');
@@ -5897,7 +5916,13 @@ class IndexController extends AbstractActionController
             $date_version = $request->getPost('date_version');
             $date_revision = $request->getPost('date_revision');
             
-            $doc_record = (empty($record_0))?"":$record_0.'_'.$record_1;
+            $doc_record = (empty($record_0))?"":$record_0.'/'.$record_1;
+            $doc_review = ($doc_review!=0)?$doc_review:1;
+            $doc_protection = ($doc_protection!=0)?$doc_protection:2;
+            $doc_location = ($doc_location!=0)?$doc_location:3;
+            $doc_owner = ($doc_owner!=0)?$doc_owner:50;
+            $doc_origin = ($doc_origin!=0)?$doc_origin:3;
+            $doc_retention = ($doc_retention!=0)?$doc_retention:1;
             
             $tmpFile = $data['fileName']=$files['new_doc']['tmp_name'];
             $typeFile = $data['fileName']=$files['new_doc']['type'];
@@ -5907,7 +5932,7 @@ class IndexController extends AbstractActionController
             $version = (empty($record_0))?$record_1:1;
             
             
-            
+            if(empty($date_version))$date_version= \date('Y-m-d h:i:s');
             $valid = new File\Extension(array('pdf', 'PDF'), true);
             if($valid->isValid($files['new_doc'])){
                 
@@ -5939,7 +5964,9 @@ class IndexController extends AbstractActionController
                         ->setCountry($country)
                         ->setCompany($company)
                         ->setLocation($location)
-                        ->setId_process($id_process);
+                        ->setId_process($id_process)
+                        ->setId_thread($id_thread)
+                        ->setDoc_source($doc_source);
                 
                 if($sqlLib->save($object)){
                     $this->savefile('library/docs', $files['new_doc'], $filename, false,null);
