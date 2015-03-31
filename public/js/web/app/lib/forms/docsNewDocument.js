@@ -38,9 +38,12 @@ Ext.define('Asgard.lib.forms.docsNewDocument',{
     documentDVText: 'Date Version',
     documentDRText: 'Date Revision',
     documentFileText: 'Document',
+    documentRegLocationText: 'Electronic or Physical Location',
+    finalDisposeText:'Pasive File (PF) / Destruction (D)',
+    minimalTimeText: 'Minimum Additional Conservation',
     baseParams: { module: 'imsnd' },
     documentFieldEmptyText: 'Choose a document',
-    
+    regReferenceText: 'Reference Document',
     textSubmitButton: 'Send',
     textCancelButton: 'Cancel',
     
@@ -59,15 +62,18 @@ Ext.define('Asgard.lib.forms.docsNewDocument',{
     documentDVField: undefined,
     documentDRField: undefined,
     documentFileField: undefined,
-    
-    
+    documentRegLocationField: undefined,
+    finalDisposeField: undefined,
+    minimalTimeField: undefined,
+    regReferenceField: undefined,
+    typeDoc: '',
     company: '',
     country: '',
     location: '',
     sourceDoc: '',
-    
+    bodyPadding: '5 5 5 5',
     defaults: {
-        labelWidth: 180
+        labelWidth: 200
     },
     anchor: '100%',
     width: 540,
@@ -80,30 +86,37 @@ Ext.define('Asgard.lib.forms.docsNewDocument',{
             name: 'doc_class',
             store: new Ext.create('Asgard.store.DocsHelpers').load({ params: { helper: 'classification' } }),
             listeners:{
-                select: function(combo, records, opts) {
+                change: function(combo, records, opts) {
                     var panel = combo.up('panel');
                     var recordField = panel.getForm().findField('record_0');
                     var comboValue = combo.getValue();
                     var comboRecord = combo.store.data.get(comboValue);
-                    var oldValue = recordField.getValue();
-                    var newValue = '';
-                    if(oldValue){
-                        if (comboRecord.data.code){
-                            var comboRecordSplit = comboRecord.data.code.split('/');
-                            var partsValue = oldValue.split('/');
-                            partsValue[0]=comboRecordSplit[0];
-                            partsValue[1]=comboRecordSplit[1];
-                            var newValue = "";
-                            for (var i=0;i<partsValue.length;i++)
-                            {
-                                var lastLine = ( i+1 === partsValue.length ? "" : "/" );
-                                newValue = newValue.concat(partsValue[i],lastLine);
+                    if(comboRecord){
+                        var oldValue = recordField.getValue();
+                        var newValue = '';
+                        if(oldValue){
+                            if (comboRecord.data.code){
+                                var comboRecordSplit = comboRecord.data.code.split('/');
+                                var partsValue = oldValue.split('/');
+                                partsValue[0]=comboRecordSplit[0];
+                                partsValue[1]=comboRecordSplit[1];
+                                var newValue = "";
+                                for (var i=0;i<partsValue.length;i++)
+                                {
+                                    var lastLine = ( i+1 === partsValue.length ? "" : "/" );
+                                    newValue = newValue.concat(partsValue[i],lastLine);
+                                }
                             }
+                            recordField.setValue(newValue);
+
+                        }else{
+                            recordField.setValue(comboRecord.data.code);
                         }
-                        recordField.setValue(newValue);
-                        
-                    }else{
-                        recordField.setValue(comboRecord.data.code);
+                    }
+                },
+                render: function(combo) {
+                    if(me.typeDoc === 'REG'){
+                        combo.setValue(5);
                     }
                 }
             }
@@ -132,6 +145,22 @@ Ext.define('Asgard.lib.forms.docsNewDocument',{
             name: 'doc_protection',
             store: new Ext.create('Asgard.store.DocsHelpers').load({ params: { helper: 'protection' } })
         }, this.documentProtectionField);
+
+        this.finalDisposeField = this.finalDisposeField || [];
+        this.finalDisposeField = Ext.Object.merge({
+            fieldLabel: this.finalDisposeText,
+            xtype: 'docshelpers',
+            name: 'doc_final_dispose',
+            store: new Ext.create('Asgard.store.DocsHelpers').load({ params: { helper: 'dispose' } })
+        }, this.finalDisposeField);
+        
+        this.minimalTimeField = this.minimalTimeField || [];
+        this.minimalTimeField = Ext.Object.merge({
+            fieldLabel: this.minimalTimeText,
+            xtype: 'docshelpers',
+            name: 'doc_minimal_time',
+            store: new Ext.create('Asgard.store.DocsHelpers').load({ params: { helper: 'retention' } })
+        }, this.minimalTimeField);
 
         this.documentProcessField = this.documentProcessField || [];
         this.documentProcessField = Ext.Object.merge({
@@ -216,6 +245,28 @@ Ext.define('Asgard.lib.forms.docsNewDocument',{
             allowBlank:false
         }, this.documentDescField);
         
+        this.documentRegLocationField = this.documentRegLocationField || [];
+        this.documentRegLocationField = Ext.Object.merge({
+            fieldLabel: this.documentRegLocationText,
+            xtype: 'textfield',
+            name: 'reg_location',
+            anchor: '100%',
+            allowBlank:false,
+            maxLength: 180,
+            enforceMaxLength: true
+        }, this.documentRegLocationField);
+        
+        this.regReferenceField = this.regReferenceField || [];
+        this.regReferenceField = Ext.Object.merge({
+            fieldLabel: this.regReferenceText,
+            xtype: 'textfield',
+            name: 'reg_reference',
+            anchor: '100%',
+            allowBlank:false,
+            maxLength: 180,
+            enforceMaxLength: true
+        }, this.regReferenceField);
+        
         this.documentRecordDynamic = this.documentRecordDynamic || [];
         this.documentRecordDynamic = Ext.Object.merge({
             fieldLabel: this.documentRecordText,
@@ -296,10 +347,10 @@ Ext.define('Asgard.lib.forms.docsNewDocument',{
         this.innerItems = Ext.Object.merge({
             layout: 'hbox',
             flex: 1,
-            id: 'innerItems',
+            name: 'innerItems',
             anchor: '100%',
             defaults: {
-                labelWidth: 180
+                labelWidth: 200
             },
             items: [
                 this.documentRecordDynamic,
@@ -310,13 +361,12 @@ Ext.define('Asgard.lib.forms.docsNewDocument',{
         this.items = this.items || [];
         this.items = this.items.concat([
             this.documentClassField,
-            
             //this.documentReviewField, 
             //this.documentProtectionField,
             this.documentProcessField,
             this.documentThreadField,
             this.documentOwnerField,
-            this.documentTypeField, 
+            (this.typeDoc === 'DOC')?this.documentTypeField:null, 
             //this.documentLocationField,
             //this.documentOriginField,
             //this.documentRetentionField,
@@ -324,9 +374,14 @@ Ext.define('Asgard.lib.forms.docsNewDocument',{
             this.innerItems,
             //this.documentDVField,
             this.documentDRField,
+            (this.typeDoc === 'REG')?this.regReferenceField:null,
+            (this.typeDoc === 'REG')?this.documentRetentionField:null,
+            (this.typeDoc === 'REG')?this.finalDisposeField:null,
+            (this.typeDoc === 'REG')?this.minimalTimeField:null,
+            (this.typeDoc === 'REG')?this.documentRegLocationField:null,
             this.documentFileField 
         ]);
-        
+
         this.buttons = this.buttons || [];
         this.buttons = this.buttons.concat([ '->', this.submitButton, this.cancelButton ]);
 

@@ -5915,23 +5915,28 @@ class IndexController extends AbstractActionController
             $record_1 = (string) $request->getPost('record_1');
             $date_version = $request->getPost('date_version');
             $date_revision = $request->getPost('date_revision');
-            
+            $doc_final_dispose = (int) $request->getPost('doc_final_dispose');
+            $doc_minimal_time = (int) $request->getPost('doc_minimal_time');
+            $reg_location = (string) $request->getPost('reg_location');
+            $reg_reference = (string) $request->getPost('reg_reference');
             $doc_record = (empty($record_0))?"":$record_0.'/'.$record_1;
+            
             $doc_review = ($doc_review!=0)?$doc_review:1;
             $doc_protection = ($doc_protection!=0)?$doc_protection:2;
             $doc_location = ($doc_location!=0)?$doc_location:3;
+            $doc_final_dispose = ($doc_final_dispose!=0)?$doc_final_dispose:1;
+            $doc_minimal_time = ($doc_minimal_time!=0)?$doc_minimal_time:1;
             $doc_owner = ($doc_owner!=0)?$doc_owner:50;
             $doc_origin = ($doc_origin!=0)?$doc_origin:3;
             $doc_retention = ($doc_retention!=0)?$doc_retention:1;
-            
+            $doc_type = ($doc_type!=0)?$doc_type:3;
             $tmpFile = $data['fileName']=$files['new_doc']['tmp_name'];
             $typeFile = $data['fileName']=$files['new_doc']['type'];
             $sizeFile = $data['fileName']=$files['new_doc']['size'];
             $nameFile = $data['fileName']=$files['new_doc']['name'];
             
             $version = (empty($record_0))?$record_1:1;
-            
-            
+
             if(empty($date_version))$date_version= \date('Y-m-d h:i:s');
             $valid = new File\Extension(array('pdf', 'PDF'), true);
             if($valid->isValid($files['new_doc'])){
@@ -5966,7 +5971,11 @@ class IndexController extends AbstractActionController
                         ->setLocation($location)
                         ->setId_process($id_process)
                         ->setId_thread($id_thread)
-                        ->setDoc_source($doc_source);
+                        ->setDoc_source($doc_source)
+                        ->setDoc_final_dispose($doc_final_dispose)
+                        ->setDoc_minimal_time($doc_minimal_time)
+                        ->setReg_location($reg_location)
+                        ->setReg_reference($reg_reference);
                 
                 if($sqlLib->save($object)){
                     $this->savefile('library/docs', $files['new_doc'], $filename, false,null);

@@ -138,36 +138,32 @@ function fnSubmit (button, object)
     var companies = values['companiesCombo'];
     var countries = values['countriesCombo'];
     var locations = values['locationsCombo'];
-
-    console.log(button);
-    console.log(object);
     var form = button.up('panel');
+    var processId = form.getForm().findField('doc_process').getValue();
     if(form.getForm().isValid()){
         form.submit({
             params: {
                 company: companies, 
                 country: countries, 
-                location: locations
+                location: locations,
+                doc_class: 5,
+                source_doc: '<?=$this->source_doc;?>'
             },
             waitMsg: 'Uploading your document...',
             success: function(fp, o) {
-                console.log(fp);
-                console.log(o);
                 Ext.Msg.alert('Success', tpl.apply(o.result));
-                win = button.up('panel');
-                win.getForm().reset();
-                windowDoc.hide();
+                winpanel = button.up('panel');
+                winpanel.getForm().reset();
+                winpanel.up('panel').hide();
                 if(button.name==='add'){
                     DocumentsGrid<?=$this->panelId; ?>.suspendEvents();
-                    DocsLibraryStore<?= $this->panelId; ?>.load({ params: { module: 'master', type: 5, company: companies, country: countries, location: locations}});
+                    DocsLibraryStore<?= $this->panelId; ?>.load({ params: { module: 'master', type: 5, company: companies, country: countries, location: locations, process: processId }});
                     DocumentsGrid<?=$this->panelId; ?>.reconfigure(DocsLibraryStore<?= $this->panelId; ?>);
                     DocumentsGrid<?=$this->panelId; ?>.resumeEvents();
                 }
             },
             failure: function(fp, o){
                 Ext.Msg.alert('Failure', o.result.message);
-                console.log(fp);
-                console.log(o);
             }
         });
         

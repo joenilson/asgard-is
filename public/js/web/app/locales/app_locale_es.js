@@ -138,7 +138,7 @@ Ext.define('Asgard.locales.lib.grid.documents',{
     classDocText: 'Tipo Documento',
     documentText: 'Documento',
     threadText: 'Subproceso',
-    recordText: 'Registro',
+    recordText: 'Código',
     versionText: 'Version Vigente',
     statusText: 'Estado',
     typeText: 'Estado',
@@ -161,6 +161,7 @@ Ext.define('Asgard.locales.lib.grid.documents',{
     titleEditDocument: 'Editar Documento',
     loadingFileText: 'Cargando Documento.. espere por favor...',
     chooseTitleText: 'Advertencia',
+    regLocationText: 'Ubicación Física o Electrónica',
     emptyFileMessage: 'No existe el archivo asociado a este documento...',
     chooseTitleBodyDelete: 'Va eliminar un documento!. <br />Desea seguir con esta acción?',
     chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?',
@@ -172,7 +173,8 @@ Ext.define('Asgard.locales.lib.grid.documents',{
     toolHistoryText: 'Ver Historial de documentos',
     historyTitle: 'Historial de Documentos',
     finalDisposeText:'Archivo Pasivo (AP) / Destrucción (D)',
-    minimalTimeText: 'Tiempo mínimo de conservación adicional'
+    minimalTimeText: 'Tiempo mínimo de conservación adicional',
+    regReferenceText: 'Documento de Referencia'
 });
 
 Ext.define('Asgard.locales.lib.forms.CompaniesCombo',{
@@ -195,6 +197,12 @@ Ext.define('Asgard.locales.lib.forms.LocationsCombo',{
 
 Ext.define('Asgard.locales.lib.forms.comboCCL',{
     override: 'Asgard.lib.forms.comboCCL',
+    emptyTextText: 'No hay datos elegidos',
+    textSubmitButton: 'Consultar'
+});
+
+Ext.define('Asgard.locales.lib.forms.comboCCLP',{
+    override: 'Asgard.lib.forms.comboCCLP',
     emptyTextText: 'No hay datos elegidos',
     textSubmitButton: 'Consultar'
 });
@@ -242,11 +250,12 @@ Ext.define('Asgard.locales.lib.forms.docsNewDocument',{
     documentOriginText: 'Origen',
     documentRetentionText: 'Tiempo de Retención',
     documentDescText: 'Descripción del Documento',
-    documentRecordText: 'Registro',
+    documentRecordText: 'Código',
+    documentRegLocationText: 'Ubicación Física o Electrónica',
     documentDVText: 'Fecha Inclusión',
     documentDRText: 'Fecha Revisión',
     documentFileText: 'Documento',
-    
+    regReferenceText: 'Documento de Referencia',
     documentFieldEmptyText: 'Escoja un documento',
     
     textSubmitButton: 'Agregar',

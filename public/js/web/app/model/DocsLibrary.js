@@ -60,9 +60,13 @@ Ext.define('Asgard.model.DocsLibrary', {
         {name: 'country', type: 'string' }, 
         {name: 'company', type: 'string' }, 
         {name: 'location', type: 'string' },
-        {name: 'doc_final_dispose', type: 'string' },
-        {name: 'doc_minimal_time', type: 'string' },
-        {name: 'doc_source', type: 'string' }
+        {name: 'doc_final_dispose', type: 'float' },
+        {name: 'doc_minimal_time', type: 'float' },
+        {name: 'doc_source', type: 'string' },
+        {name: 'reg_location', type: 'string' },
+        {name: 'desc_regretention', type: 'string' },
+        {name: 'desc_dispose', type: 'string' },
+        {name: 'reg_reference', type: 'string' }
         
     ]
 });

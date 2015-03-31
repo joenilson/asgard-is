@@ -60,6 +60,8 @@ class DocsLibrary {
     protected $doc_final_dispose;
     protected $doc_minimal_time;
     protected $doc_source;
+    protected $reg_location;
+    protected $reg_reference;
    
     public function __construct(array $options = null)
     {
@@ -410,6 +412,24 @@ class DocsLibrary {
 
     function setDoc_source($doc_source) {
         $this->doc_source = $doc_source;
+        return $this;
+    }
+    
+    function getReg_location() {
+        return $this->reg_location;
+    }
+
+    function setReg_location($reg_location) {
+        $this->reg_location = $reg_location;
+        return $this;
+    }
+
+    function getReg_reference() {
+        return $this->reg_reference;
+    }
+
+    function setReg_reference($reg_reference) {
+        $this->reg_reference = $reg_reference;
         return $this;
     }
 

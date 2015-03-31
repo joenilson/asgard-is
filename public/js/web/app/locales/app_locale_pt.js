@@ -172,8 +172,10 @@ Ext.define('Asgard.locales.lib.grid.documents',{
     /* Added 15 - May - 2014 */
     toolHistoryText: 'Ver Histórico do documentos',
     historyTitle: 'História do Documento',
+    /* Added 27 - Mar - 2015 */
     finalDisposeText:'Arquivo Pasivo (AP) / Destruição (D)',
-    minimalTimeText: 'Conservação adicional mínimo'
+    minimalTimeText: 'Conservação adicional mínimo',
+    regReferenceText: 'Documento de Referência'
 });
 
 Ext.define('Asgard.locales.lib.forms.CompaniesCombo',{
@@ -196,6 +198,12 @@ Ext.define('Asgard.locales.lib.forms.LocationsCombo',{
 
 Ext.define('Asgard.locales.lib.forms.comboCCL',{
     override: 'Asgard.lib.forms.comboCCL',
+    emptyTextText: 'Não há dados neste momento',
+    textSubmitButton: 'Procurar'
+});
+
+Ext.define('Asgard.locales.lib.forms.comboCCLP',{
+    override: 'Asgard.lib.forms.comboCCLP',
     emptyTextText: 'Não há dados neste momento',
     textSubmitButton: 'Procurar'
 });
@@ -247,7 +255,7 @@ Ext.define('Asgard.locales.lib.forms.docsNewDocument',{
     documentDVText: 'Data inclusão',
     documentDRText: 'Data de revisão',
     documentFileText: 'Documento',
-    
+    regReferenceText: 'Documento de Referência',
     documentFieldEmptyText: 'Escolha um documento',
     
     textSubmitButton: 'Enviar',

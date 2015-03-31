@@ -89,7 +89,6 @@ function fnCCLPProcess(button, opt, obj) {
     var process_id = values['processCombo'];
 
     DocsLibraryStore<?= $this->panelId; ?>.load({ params: { module: 'master', type: 0, company: companies, country: countries, location: locations, process: process_id}});
-
 }
 
 function showDocument(obj, id, component, icon, event, record){
