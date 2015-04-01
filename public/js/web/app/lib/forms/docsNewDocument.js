@@ -379,7 +379,7 @@ Ext.define('Asgard.lib.forms.docsNewDocument',{
             (this.typeDoc === 'REG')?this.finalDisposeField:null,
             (this.typeDoc === 'REG')?this.minimalTimeField:null,
             (this.typeDoc === 'REG')?this.documentRegLocationField:null,
-            this.documentFileField 
+            (this.typeDoc === 'DOC')?this.documentFileField:null
         ]);
 
         this.buttons = this.buttons || [];

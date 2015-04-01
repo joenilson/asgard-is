@@ -5938,49 +5938,51 @@ class IndexController extends AbstractActionController
             $version = (empty($record_0))?$record_1:1;
 
             if(empty($date_version))$date_version= \date('Y-m-d h:i:s');
+            
+            $sqlLib = $this->getDocsLibraryTable();
+            $doc_id = $sqlLib->getNextDocId();
+            $doc_file = ($doc_class!=5)?'library/docs/'.$doc_id.'_'.$version.date('Ymdhis').'.pdf':'';
+            
+            $object = new DocsLibrary();
+            $object->setDoc_id($doc_id)
+                ->setLang($lang)
+                ->setDoc_classification($doc_class)
+                ->setDoc_desc($description)
+                ->setDoc_file($doc_file)
+                ->setDoc_type($doc_type)
+                ->setDoc_review($doc_review)
+                ->setDoc_protection($doc_protection)
+                ->setDoc_owner($doc_owner)
+                ->setDoc_location($doc_location)
+                ->setDoc_origin($doc_origin)
+                ->setDoc_retention($doc_retention)
+                ->setDoc_record($doc_record)
+                ->setDoc_version_number($version)
+                ->setDoc_version_label('')
+                ->setDoc_date_creation($date_version)
+                ->setDoc_user_creation($userPrefs[0]['user_id'])
+                ->setDoc_date_revision_next($date_revision)
+                ->setDoc_status_general('A')
+                ->setCountry($country)
+                ->setCompany($company)
+                ->setLocation($location)
+                ->setId_process($id_process)
+                ->setId_thread($id_thread)
+                ->setDoc_source($doc_source)
+                ->setDoc_final_dispose($doc_final_dispose)
+                ->setDoc_minimal_time($doc_minimal_time)
+                ->setReg_location($reg_location)
+                ->setReg_reference($reg_reference);
+            
             $valid = new File\Extension(array('pdf', 'PDF'), true);
             if($valid->isValid($files['new_doc'])){
-                
-                $sqlLib = $this->getDocsLibraryTable();
-                $doc_id = $sqlLib->getNextDocId();
-                
-                $doc_file = 'library/docs/'.$doc_id.'_'.$version.date('Ymdhis').'.pdf';
                 $filename = $doc_id.'_'.$version.date('Ymdhis').'.pdf';
-                $object = new DocsLibrary();
-                $object->setDoc_id($doc_id)
-                        ->setLang($lang)
-                        ->setDoc_classification($doc_class)
-                        ->setDoc_desc($description)
-                        ->setDoc_file($doc_file)
-                        ->setDoc_type($doc_type)
-                        ->setDoc_review($doc_review)
-                        ->setDoc_protection($doc_protection)
-                        ->setDoc_owner($doc_owner)
-                        ->setDoc_location($doc_location)
-                        ->setDoc_origin($doc_origin)
-                        ->setDoc_retention($doc_retention)
-                        ->setDoc_record($doc_record)
-                        ->setDoc_version_number($version)
-                        ->setDoc_version_label('')
-                        ->setDoc_date_creation($date_version)
-                        ->setDoc_user_creation($userPrefs[0]['user_id'])
-                        ->setDoc_date_revision_next($date_revision)
-                        ->setDoc_status_general('A')
-                        ->setCountry($country)
-                        ->setCompany($company)
-                        ->setLocation($location)
-                        ->setId_process($id_process)
-                        ->setId_thread($id_thread)
-                        ->setDoc_source($doc_source)
-                        ->setDoc_final_dispose($doc_final_dispose)
-                        ->setDoc_minimal_time($doc_minimal_time)
-                        ->setReg_location($reg_location)
-                        ->setReg_reference($reg_reference);
-                
-                if($sqlLib->save($object)){
+            }
+            
+            if($sqlLib->save($object)){
+                if($filename){
                     $this->savefile('library/docs', $files['new_doc'], $filename, false,null);
                 }
-                
                 $data["success"]=true;
                 $data["result"]="Archivo Almacenado";
                 $data['fileName']=$files['new_doc']['name'];
