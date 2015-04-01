@@ -121,7 +121,7 @@ Ext.define('Asgard.lib.grid.documents',{
                 {text: this.versionText, flex: 0.5, sortable: true, filter: true, dataIndex: 'doc_version_number', tdCls: 'wrapText', hidden: (this.typeDoc==='DOC')?false:true},
                 //{text: this.dateVersionText, width: 80,  sortable: true, filter: true, dataIndex: 'doc_date_creation', tdCls: 'wrapText', xtype: 'datecolumn', format:'Y-m-d' },
                 //{text: this.statusText, flex: 1, sortable: true, filter: true, dataIndex: 'doc_status_general', tdCls: 'wrapText'},
-                {text: this.dateRevisionText, flex: 1,  sortable: true, filter: true, dataIndex: 'doc_date_revision_next', tdCls: 'wrapText',  xtype: 'datecolumn', format:'Y-m-d' },
+                {text: this.dateRevisionText, flex: 1,  sortable: true, filter: true, dataIndex: 'doc_date_revision_next', tdCls: 'wrapText',  xtype: 'datecolumn', format:'Y-m-d', hidden: (this.typeDoc==='DOC')?false:true },
                 //{text: this.reviewText, flex: 1, sortable: true, filter: true, dataIndex: 'doc_review', tdCls: 'wrapText'},
                 //{text: this.protectionText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'desc_protection', tdCls: 'wrapText'},
                 //{text: this.ownerText, flex: 2, sortable: true, filter: 'combo', dataIndex: 'desc_owner', tdCls: 'wrapText'},

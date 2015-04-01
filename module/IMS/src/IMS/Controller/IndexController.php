@@ -5913,13 +5913,14 @@ class IndexController extends AbstractActionController
             $description = (string) $request->getPost('description');
             $record_0 = (string) $request->getPost('record_0');
             $record_1 = (string) $request->getPost('record_1');
+            $reg_record = (string) $request->getPost('reg_record');
             $date_version = $request->getPost('date_version');
             $date_revision = $request->getPost('date_revision');
             $doc_final_dispose = (int) $request->getPost('doc_final_dispose');
             $doc_minimal_time = (int) $request->getPost('doc_minimal_time');
             $reg_location = (string) $request->getPost('reg_location');
-            $reg_reference = (string) $request->getPost('reg_reference');
-            $doc_record = (empty($record_0))?"":$record_0.'/'.$record_1;
+            $reg_reference = (string) strtoupper($request->getPost('reg_reference'));
+            $doc_record = (empty($record_0))?strtoupper($reg_record):$record_0.'/'.$record_1;
             
             $doc_review = ($doc_review!=0)?$doc_review:1;
             $doc_protection = ($doc_protection!=0)?$doc_protection:2;
@@ -5935,7 +5936,11 @@ class IndexController extends AbstractActionController
             $sizeFile = $data['fileName']=$files['new_doc']['size'];
             $nameFile = $data['fileName']=$files['new_doc']['name'];
             
-            $version = (empty($record_0))?$record_1:1;
+            if($doc_class !== 5){
+                $version = (empty($record_0))?$record_1:1;
+            }else{
+                $version = 0;
+            }
 
             if(empty($date_version))$date_version= \date('Y-m-d h:i:s');
             

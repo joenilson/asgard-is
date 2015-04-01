@@ -66,6 +66,7 @@ Ext.define('Asgard.lib.forms.docsNewDocument',{
     finalDisposeField: undefined,
     minimalTimeField: undefined,
     regReferenceField: undefined,
+    regRecordField: undefined,
     typeDoc: '',
     company: '',
     country: '',
@@ -87,30 +88,32 @@ Ext.define('Asgard.lib.forms.docsNewDocument',{
             store: new Ext.create('Asgard.store.DocsHelpers').load({ params: { helper: 'classification' } }),
             listeners:{
                 change: function(combo, records, opts) {
-                    var panel = combo.up('panel');
-                    var recordField = panel.getForm().findField('record_0');
-                    var comboValue = combo.getValue();
-                    var comboRecord = combo.store.data.get(comboValue);
-                    if(comboRecord){
-                        var oldValue = recordField.getValue();
-                        var newValue = '';
-                        if(oldValue){
-                            if (comboRecord.data.code){
-                                var comboRecordSplit = comboRecord.data.code.split('/');
-                                var partsValue = oldValue.split('/');
-                                partsValue[0]=comboRecordSplit[0];
-                                partsValue[1]=comboRecordSplit[1];
-                                var newValue = "";
-                                for (var i=0;i<partsValue.length;i++)
-                                {
-                                    var lastLine = ( i+1 === partsValue.length ? "" : "/" );
-                                    newValue = newValue.concat(partsValue[i],lastLine);
+                    if(me.typeDoc !== 'REG'){
+                        var panel = combo.up('panel');
+                        var recordField = panel.getForm().findField('record_0');
+                        var comboValue = combo.getValue();
+                        var comboRecord = combo.store.data.get(comboValue);
+                        if(comboRecord){
+                            var oldValue = recordField.getValue();
+                            var newValue = '';
+                            if(oldValue){
+                                if (comboRecord.data.code){
+                                    var comboRecordSplit = comboRecord.data.code.split('/');
+                                    var partsValue = oldValue.split('/');
+                                    partsValue[0]=comboRecordSplit[0];
+                                    partsValue[1]=comboRecordSplit[1];
+                                    var newValue = "";
+                                    for (var i=0;i<partsValue.length;i++)
+                                    {
+                                        var lastLine = ( i+1 === partsValue.length ? "" : "/" );
+                                        newValue = newValue.concat(partsValue[i],lastLine);
+                                    }
                                 }
-                            }
-                            recordField.setValue(newValue);
+                                recordField.setValue(newValue);
 
-                        }else{
-                            recordField.setValue(comboRecord.data.code);
+                            }else{
+                                recordField.setValue(comboRecord.data.code);
+                            }
                         }
                     }
                 },
@@ -171,27 +174,30 @@ Ext.define('Asgard.lib.forms.docsNewDocument',{
             listeners:{
                 select: function(combo, records, opts) {
                     var panel = combo.up('panel');
-                    var recordField = panel.getForm().findField('record_0');
                     var threadCombo = panel.getForm().findField('doc_thread');
                     threadCombo.store.load({params: { pid: combo.getValue('id'), company: me.company, country: me.country, location: me.location }});
-                    var comboValue = combo.getValue();
-                    var comboRecord = combo.store.data.get(comboValue);
-                    var oldValue = recordField.getValue();
-                    var newValue = '';
-                    if(oldValue){
-                        var partsValue = oldValue.split('/');
-                        if (comboRecord.data.code){
-                            partsValue[2]=comboRecord.data.code;
-                        }else{
-                            partsValue.splice(2,1);
+                    if(me.typeDoc !== 'REG'){
+                        
+                        var recordField = panel.getForm().findField('record_0');
+                        var comboValue = combo.getValue();
+                        var comboRecord = combo.store.data.get(comboValue);
+                        var oldValue = recordField.getValue();
+                        var newValue = '';
+                        if(oldValue){
+                            var partsValue = oldValue.split('/');
+                            if (comboRecord.data.code){
+                                partsValue[2]=comboRecord.data.code;
+                            }else{
+                                partsValue.splice(2,1);
+                            }
+                            var newValue = "";
+                            for (var i=0;i<partsValue.length;i++)
+                            {
+                                var lastLine = ( i+1 === partsValue.length ? "" : "/" );
+                                newValue = newValue.concat(partsValue[i],lastLine);
+                            }
+                            recordField.setValue(newValue);
                         }
-                        var newValue = "";
-                        for (var i=0;i<partsValue.length;i++)
-                        {
-                            var lastLine = ( i+1 === partsValue.length ? "" : "/" );
-                            newValue = newValue.concat(partsValue[i],lastLine);
-                        }
-                        recordField.setValue(newValue);
                     }
                 }
             }
@@ -266,6 +272,17 @@ Ext.define('Asgard.lib.forms.docsNewDocument',{
             maxLength: 180,
             enforceMaxLength: true
         }, this.regReferenceField);
+        
+        this.regRecordField = this.regRecordField || [];
+        this.regRecordField = Ext.Object.merge({
+            fieldLabel: this.documentRecordText,
+            xtype: 'textfield',
+            name: 'reg_record',
+            anchor: '100%',
+            allowBlank:false,
+            maxLength: 120,
+            enforceMaxLength: true
+        }, this.regRecordField);
         
         this.documentRecordDynamic = this.documentRecordDynamic || [];
         this.documentRecordDynamic = Ext.Object.merge({
@@ -371,9 +388,9 @@ Ext.define('Asgard.lib.forms.docsNewDocument',{
             //this.documentOriginField,
             //this.documentRetentionField,
             this.documentDescField,
-            this.innerItems,
+            (this.typeDoc === 'DOC')?this.innerItems:this.regRecordField,
             //this.documentDVField,
-            this.documentDRField,
+            (this.typeDoc === 'DOC')?this.documentDRField:null,
             (this.typeDoc === 'REG')?this.regReferenceField:null,
             (this.typeDoc === 'REG')?this.documentRetentionField:null,
             (this.typeDoc === 'REG')?this.finalDisposeField:null,

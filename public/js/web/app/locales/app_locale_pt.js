@@ -174,7 +174,8 @@ Ext.define('Asgard.locales.lib.grid.documents',{
     historyTitle: 'História do Documento',
     /* Added 27 - Mar - 2015 */
     finalDisposeText:'Arquivo Pasivo (AP) / Destruição (D)',
-    minimalTimeText: 'Conservação adicional mínimo',
+    minimalTimeText: 'Tempo mínimo de conservação adicional',
+    regLocationText: 'Localização em físico / eletrónico',
     regReferenceText: 'Documento de Referência'
 });
 
@@ -251,7 +252,7 @@ Ext.define('Asgard.locales.lib.forms.docsNewDocument',{
     documentOriginText: 'Origem',
     documentRetentionText: 'Tempo de Retenção',
     documentDescText: 'Descrição do Documento',
-    documentRecordText: 'Registro',
+    documentRecordText: 'Código',
     documentDVText: 'Data inclusão',
     documentDRText: 'Data de revisão',
     documentFileText: 'Documento',
