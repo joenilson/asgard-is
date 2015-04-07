@@ -165,16 +165,18 @@ class DocsLibraryTable extends AbstractTableGateway {
                 new Expression ( $this->table_name.'.doc_retention = h7.id AND h7.helper=\'retention\' AND h7.lang=\''.$lang.'\''), 
                 array('desc_retention'=>'description')
             );
-            $select->join(
-                array('h8'=>new TableIdentifier($this->table_owners, $this->schema_name)), 
-                new Expression ( $this->table_name.'.doc_owner = h8.id AND h8.lang=\''.$lang.'\''), 
-                array('desc_owner'=>'name'),'left'
-            );
-            $select->join(
-                array('h9'=>new TableIdentifier($this->table_thread_i18n, $this->schema_name)), 
-                new Expression ( $this->table_name.'.id_thread = h9.id AND h9.lang=\''.$lang.'\''), 
-                array('desc_thread'=>'value')
-            );
+            if($type != 9){
+                $select->join(
+                    array('h8'=>new TableIdentifier($this->table_owners, $this->schema_name)), 
+                    new Expression ( $this->table_name.'.doc_owner = h8.id AND h8.lang=\''.$lang.'\''), 
+                    array('desc_owner'=>'name'),'left'
+                );
+                $select->join(
+                    array('h9'=>new TableIdentifier($this->table_thread_i18n, $this->schema_name)), 
+                    new Expression ( $this->table_name.'.id_thread = h9.id AND h9.lang=\''.$lang.'\''), 
+                    array('desc_thread'=>'value')
+                );
+            }
             $select->join(
                 array('h10'=>new TableIdentifier($this->table_helper, $this->schema_name)), 
                 new Expression ( $this->table_name.'.doc_minimal_time = h10.id AND h10.helper=\'retention\' AND h10.lang=\''.$lang.'\''), 
@@ -185,8 +187,14 @@ class DocsLibraryTable extends AbstractTableGateway {
                 new Expression ( $this->table_name.'.doc_final_dispose = h11.id AND h11.helper=\'dispose\' AND h11.lang=\''.$lang.'\''), 
                 array('desc_dispose'=>'description')
             );
-            $typeSqlEqual = ($type==5)?"":"!";
-            $typeSql = ".doc_classification $typeSqlEqual= 5";
+            if($type == 9){
+                $typeSql = ".doc_classification = 9";
+            } elseif ($type == 5) {
+                $typeSql = ".doc_classification = 5";
+            }else {
+                $typeSql = ".doc_classification NOT IN (5,9)";
+            }
+            
             $dataSelect['doc_status_general']=$status;
             $dataSelect['company']=$companies;
             $dataSelect['country']=$countries;

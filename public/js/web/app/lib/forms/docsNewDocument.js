@@ -37,6 +37,7 @@ Ext.define('Asgard.lib.forms.docsNewDocument',{
     documentRecordText: 'Record',
     documentDVText: 'Date Version',
     documentDRText: 'Date Revision',
+    documentDIText: 'Date of Incorporation',
     documentFileText: 'Document',
     documentRegLocationText: 'Electronic or Physical Location',
     finalDisposeText:'Pasive File (PF) / Destruction (D)',
@@ -61,6 +62,7 @@ Ext.define('Asgard.lib.forms.docsNewDocument',{
     documentRecordField: undefined,
     documentDVField: undefined,
     documentDRField: undefined,
+    documentDIField: undefined,
     documentFileField: undefined,
     documentRegLocationField: undefined,
     finalDisposeField: undefined,
@@ -88,7 +90,7 @@ Ext.define('Asgard.lib.forms.docsNewDocument',{
             store: new Ext.create('Asgard.store.DocsHelpers').load({ params: { helper: 'classification' } }),
             listeners:{
                 change: function(combo, records, opts) {
-                    if(me.typeDoc !== 'REG'){
+                    if(me.typeDoc !== 'REG' && me.sourceDoc !== 'external'){
                         var panel = combo.up('panel');
                         var recordField = panel.getForm().findField('record_0');
                         var comboValue = combo.getValue();
@@ -120,6 +122,8 @@ Ext.define('Asgard.lib.forms.docsNewDocument',{
                 render: function(combo) {
                     if(me.typeDoc === 'REG'){
                         combo.setValue(5);
+                    }else if(me.typeDoc === 'DOC' && me.sourceDoc === 'external'){
+                        combo.setValue(9);
                     }
                 }
             }
@@ -174,9 +178,11 @@ Ext.define('Asgard.lib.forms.docsNewDocument',{
             listeners:{
                 select: function(combo, records, opts) {
                     var panel = combo.up('panel');
-                    var threadCombo = panel.getForm().findField('doc_thread');
-                    threadCombo.store.load({params: { pid: combo.getValue('id'), company: me.company, country: me.country, location: me.location }});
-                    if(me.typeDoc !== 'REG'){
+                    if(me.sourceDoc !=='external'){
+                        var threadCombo = panel.getForm().findField('doc_thread');
+                        threadCombo.store.load({params: { pid: combo.getValue('id'), company: me.company, country: me.country, location: me.location }});
+                    }
+                    if(me.typeDoc !== 'REG' && me.sourceDoc !== 'external'){
                         
                         var recordField = panel.getForm().findField('record_0');
                         var comboValue = combo.getValue();
@@ -320,6 +326,15 @@ Ext.define('Asgard.lib.forms.docsNewDocument',{
             allowBlank:true
         }, this.documentDRField);
         
+        this.documentDIField = this.documentDIField || [];
+        this.documentDIField = Ext.Object.merge({
+            fieldLabel: this.documentDIText,
+            xtype: 'vdatefield',
+            name: 'date_incorporation',
+            width: 350,
+            allowBlank:true
+        }, this.documentDIField);
+        
         this.documentFileField = this.documentFileField || [];
         this.documentFileField = Ext.Object.merge({
             fieldLabel: this.documentFileText,
@@ -376,29 +391,39 @@ Ext.define('Asgard.lib.forms.docsNewDocument',{
         },this.innerItems);
         
         this.items = this.items || [];
-        this.items = this.items.concat([
-            this.documentClassField,
-            //this.documentReviewField, 
-            //this.documentProtectionField,
-            this.documentProcessField,
-            this.documentThreadField,
-            this.documentOwnerField,
-            (this.typeDoc === 'DOC')?this.documentTypeField:null, 
-            //this.documentLocationField,
-            //this.documentOriginField,
-            //this.documentRetentionField,
-            this.documentDescField,
-            (this.typeDoc === 'DOC')?this.innerItems:this.regRecordField,
-            //this.documentDVField,
-            (this.typeDoc === 'DOC')?this.documentDRField:null,
-            (this.typeDoc === 'REG')?this.regReferenceField:null,
-            (this.typeDoc === 'REG')?this.documentRetentionField:null,
-            (this.typeDoc === 'REG')?this.finalDisposeField:null,
-            (this.typeDoc === 'REG')?this.minimalTimeField:null,
-            (this.typeDoc === 'REG')?this.documentRegLocationField:null,
-            (this.typeDoc === 'DOC')?this.documentFileField:null
-        ]);
-
+        if(this.sourceDoc === 'internal'){
+            this.items = this.items.concat([
+                this.documentClassField,
+                //this.documentReviewField, 
+                //this.documentProtectionField,
+                this.documentProcessField,
+                this.documentThreadField,
+                this.documentOwnerField,
+                (this.typeDoc === 'DOC')?this.documentTypeField:null, 
+                //this.documentLocationField,
+                //this.documentOriginField,
+                //this.documentRetentionField,
+                this.documentDescField,
+                (this.typeDoc === 'DOC')?this.innerItems:this.regRecordField,
+                //this.documentDVField,
+                (this.typeDoc === 'DOC')?this.documentDRField:null,
+                (this.typeDoc === 'REG')?this.regReferenceField:null,
+                (this.typeDoc === 'REG')?this.documentRetentionField:null,
+                (this.typeDoc === 'REG')?this.finalDisposeField:null,
+                (this.typeDoc === 'REG')?this.minimalTimeField:null,
+                (this.typeDoc === 'REG')?this.documentRegLocationField:null,
+                (this.typeDoc === 'DOC')?this.documentFileField:null
+            ]);
+        }else{
+            this.items = this.items.concat([
+                this.documentClassField,
+                this.documentProcessField,
+                this.documentDescField,
+                this.regRecordField,
+                this.documentDIField
+            ]);
+        }
+        
         this.buttons = this.buttons || [];
         this.buttons = this.buttons.concat([ '->', this.submitButton, this.cancelButton ]);
 

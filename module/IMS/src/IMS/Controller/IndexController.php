@@ -5916,6 +5916,7 @@ class IndexController extends AbstractActionController
             $reg_record = (string) $request->getPost('reg_record');
             $date_version = $request->getPost('date_version');
             $date_revision = $request->getPost('date_revision');
+            $date_incorporation = $request->getPost('date_incorporation');
             $doc_final_dispose = (int) $request->getPost('doc_final_dispose');
             $doc_minimal_time = (int) $request->getPost('doc_minimal_time');
             $reg_location = (string) $request->getPost('reg_location');
@@ -5936,10 +5937,12 @@ class IndexController extends AbstractActionController
             $sizeFile = $data['fileName']=$files['new_doc']['size'];
             $nameFile = $data['fileName']=$files['new_doc']['name'];
             
-            if($doc_class !== 5){
-                $version = (empty($record_0))?$record_1:1;
-            }else{
+            if($doc_class == 5 OR $doc_class == 9){
                 $version = 0;
+                $doc_date_revision_actual = ($doc_class == 5)?$date_revision:$date_incorporation;
+            }else{
+                $version = (empty($record_0))?$record_1:1;
+                $doc_date_revision_actual = $date_revision;
             }
 
             if(empty($date_version))$date_version= \date('Y-m-d h:i:s');
@@ -5966,6 +5969,7 @@ class IndexController extends AbstractActionController
                 ->setDoc_version_label('')
                 ->setDoc_date_creation($date_version)
                 ->setDoc_user_creation($userPrefs[0]['user_id'])
+                ->setDoc_date_revision_actual($doc_date_revision_actual)
                 ->setDoc_date_revision_next($date_revision)
                 ->setDoc_status_general('A')
                 ->setCountry($country)

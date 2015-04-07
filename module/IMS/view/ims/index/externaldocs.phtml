@@ -86,7 +86,7 @@ function fnCCLPProcess(button, opt, obj) {
     var locations = values['locationsCombo'];
     var process_id = values['processCombo'];
 
-    DocsLibraryStore<?= $this->panelId; ?>.load({ params: { module: 'master', type: 0, company: companies, country: countries, location: locations, process: process_id}});
+    DocsLibraryStore<?= $this->panelId; ?>.load({ params: { module: 'master', type: 9, company: companies, country: countries, location: locations, process: process_id}});
 
 }
 
@@ -158,7 +158,7 @@ function fnSubmit (button, object)
                 windowDoc.hide();
                 if(button.name==='add'){
                     DocumentsGrid<?=$this->panelId; ?>.suspendEvents();
-                    DocsLibraryStore<?= $this->panelId; ?>.load({ params: { module: 'master', type: 0, company: companies, country: countries, location: locations}});
+                    DocsLibraryStore<?= $this->panelId; ?>.load({ params: { module: 'master', type: 9, company: companies, country: countries, location: locations}});
                     DocumentsGrid<?=$this->panelId; ?>.reconfigure(DocsLibraryStore<?= $this->panelId; ?>);
                     DocumentsGrid<?=$this->panelId; ?>.resumeEvents();
                 }
