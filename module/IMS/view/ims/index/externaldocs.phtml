@@ -48,7 +48,8 @@ var DocumentsGrid<?=$this->panelId; ?> = Ext.create('Asgard.lib.grid.documents',
     petitionerEmail: '<?=$userData[0]['email'];?>',
     petitionerAlias: '<?=$userData[0]['fullname'];?>',
     typeDoc: 'DOC',
-    sourceDoc: '<?=$this->source_doc;?>'
+    sourceDoc: '<?=$this->source_doc;?>',
+    userRole: '<?=$this->user_role;?>'
 });
 
 var libraryViewport<?=$this->panelId; ?> = Ext.create('Ext.panel.Panel', {
@@ -137,9 +138,6 @@ function fnSubmit (button, object)
     var companies = values['companiesCombo'];
     var countries = values['countriesCombo'];
     var locations = values['locationsCombo'];
-
-    console.log(button);
-    console.log(object);
     var form = button.up('panel');
     if(form.getForm().isValid()){
         form.submit({
@@ -150,12 +148,10 @@ function fnSubmit (button, object)
             },
             waitMsg: 'Uploading your document...',
             success: function(fp, o) {
-                console.log(fp);
-                console.log(o);
                 Ext.Msg.alert('Success', tpl.apply(o.result));
-                win = button.up('panel');
-                win.getForm().reset();
-                windowDoc.hide();
+                winpanel = button.up('panel');
+                winpanel.getForm().reset();
+                winpanel.up('panel').hide();
                 if(button.name==='add'){
                     DocumentsGrid<?=$this->panelId; ?>.suspendEvents();
                     DocsLibraryStore<?= $this->panelId; ?>.load({ params: { module: 'master', type: 9, company: companies, country: countries, location: locations}});
@@ -165,8 +161,6 @@ function fnSubmit (button, object)
             },
             failure: function(fp, o){
                 Ext.Msg.alert('Failure', o.result.message);
-                console.log(fp);
-                console.log(o);
             }
         });
         

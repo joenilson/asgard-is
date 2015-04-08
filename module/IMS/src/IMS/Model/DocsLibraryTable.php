@@ -187,11 +187,12 @@ class DocsLibraryTable extends AbstractTableGateway {
                 new Expression ( $this->table_name.'.doc_final_dispose = h11.id AND h11.helper=\'dispose\' AND h11.lang=\''.$lang.'\''), 
                 array('desc_dispose'=>'description')
             );
+            
             if($type == 9){
                 $typeSql = ".doc_classification = 9";
             } elseif ($type == 5) {
                 $typeSql = ".doc_classification = 5";
-            }else {
+            } else {
                 $typeSql = ".doc_classification NOT IN (5,9)";
             }
             

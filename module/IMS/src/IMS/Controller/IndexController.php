@@ -5817,13 +5817,17 @@ class IndexController extends AbstractActionController
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
         $userData = $this->getServiceLocator()->get('userSessionData');
         $lang = $userPrefs[0]['lang'];
+        $module_id = explode("-",$this->params()->fromRoute('id', 0));
+        $userRole = $this->getUserRole($userData->id, $module_id[0], $module_id[1]);
+        
         return array('userData'=>$userPrefs, 
             'companyId'=>$userData->company,
             'locationId'=>$userData->location,
             'countryId'=>$userData->country,
             'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0)),
             'lang'=>$lang,
-            'source_doc'=>'external'
+            'source_doc'=>'external',
+            'user_role'=>$userRole
         );
     }
     
@@ -5831,6 +5835,9 @@ class IndexController extends AbstractActionController
     {
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
         $userData = $this->getServiceLocator()->get('userSessionData');
+        $module_id = explode("-",$this->params()->fromRoute('id', 0));
+        $userRole = $this->getUserRole($userData->id, $module_id[0], $module_id[1]);
+        
         $lang = $userPrefs[0]['lang'];
         return array('userData'=>$userPrefs, 
             'companyId'=>$userData->company,
@@ -5838,7 +5845,8 @@ class IndexController extends AbstractActionController
             'countryId'=>$userData->country,
             'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0)),
             'lang'=>$lang,
-            'source_doc'=>'internal'
+            'source_doc'=>'internal',
+            'user_role'=>$userRole
         );
     }
     
@@ -5847,13 +5855,17 @@ class IndexController extends AbstractActionController
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
         $userData = $this->getServiceLocator()->get('userSessionData');
         $lang = $userPrefs[0]['lang'];
+        $module_id = explode("-",$this->params()->fromRoute('id', 0));
+        $userRole = $this->getUserRole($userData->id, $module_id[0], $module_id[1]);
+        
         return array('userData'=>$userPrefs, 
             'companyId'=>$userData->company,
             'locationId'=>$userData->location,
             'countryId'=>$userData->country,
             'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0)),
             'lang'=>$lang,
-            'source_doc'=>'internal'
+            'source_doc'=>'internal',
+            'user_role'=>$userRole
         );
     }
     

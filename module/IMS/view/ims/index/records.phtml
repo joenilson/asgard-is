@@ -48,7 +48,8 @@ var DocumentsGrid<?=$this->panelId; ?> = Ext.create('Asgard.lib.grid.documents',
     petitionerEmail: '<?=$userData[0]['email'];?>',
     petitionerAlias: '<?=$userData[0]['fullname'];?>',
     typeDoc: 'REG',
-    sourceDoc: '<?=$this->source_doc;?>'
+    sourceDoc: '<?=$this->source_doc;?>',
+    userRole: '<?=$this->user_role;?>'
     //tools: toolsLibrary
 });
 

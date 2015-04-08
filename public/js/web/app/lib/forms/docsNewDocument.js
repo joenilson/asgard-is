@@ -158,7 +158,21 @@ Ext.define('Asgard.lib.forms.docsNewDocument',{
             fieldLabel: this.finalDisposeText,
             xtype: 'docshelpers',
             name: 'doc_final_dispose',
-            store: new Ext.create('Asgard.store.DocsHelpers').load({ params: { helper: 'dispose' } })
+            store: new Ext.create('Asgard.store.DocsHelpers').load({ params: { helper: 'dispose' } }),
+            listeners:{
+                select: function(combo, records, opts) {
+                    var actualValue = combo.getValue();
+                    var panel = combo.up('panel');
+                    var minimalTime = panel.getForm().findField('doc_minimal_time');
+                    if(actualValue === 2){
+                        minimalTime.setValue(5);
+                        minimalTime.setDisabled(true);
+                    }else{
+                        minimalTime.setDisabled(false);
+                        minimalTime.setValue();
+                    }
+                }
+            }
         }, this.finalDisposeField);
         
         this.minimalTimeField = this.minimalTimeField || [];

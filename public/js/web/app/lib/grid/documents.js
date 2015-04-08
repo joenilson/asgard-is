@@ -30,6 +30,7 @@ Ext.define('Asgard.lib.grid.documents',{
     layout: 'fit',
     typeDoc: '',
     sourceDoc: '',
+    userRole: '',
     petitionerAlias: '',
     petitionerEmail: '',
     historyTitle: 'Document History',
@@ -82,28 +83,32 @@ Ext.define('Asgard.lib.grid.documents',{
                 type: 'history',
                 tooltip: this.toolHistoryText,
                 scope: this,
-
-                handler: this.fnLibraryTool
+                handler: this.fnLibraryTool,
+                hidden: (this.typeDoc==='REG' || this.sourceDoc === 'external' || this.userRole === 'Viewer')?true:false
             },{
                 type: 'minus',
                 tooltip: this.toolRemoveText,
                 scope: this,
-                handler: this.fnLibraryTool
+                handler: this.fnLibraryTool,
+                hidden: (this.userRole === 'Viewer')?true:false
             },{
                 type: 'gear',
                 tooltip: this.toolChangeText,
                 scope: this,
-                handler: this.fnLibraryTool
+                handler: this.fnLibraryTool,
+                hidden: (this.typeDoc==='REG' || this.sourceDoc === 'external' || this.userRole === 'Viewer')?true:false
             },{
                 type: 'plus',
                 tooltip: this.toolAddText,
                 scope: this,
-                handler: this.fnLibraryTool
+                handler: this.fnLibraryTool,
+                hidden: (this.userRole === 'Viewer')?true:false
             },{
                 type: 'expand',
                 tooltip: this.toolMassText,
                 scope: this,
-                handler: this.fnLibraryTool
+                handler: this.fnLibraryTool,
+                hidden: (this.typeDoc==='REG' || this.sourceDoc === 'external' || this.userRole === 'Viewer')?true:false
             }];
         }
         this.columns =  {
