@@ -166,9 +166,9 @@ Ext.define('Asgard.lib.forms.docsNewDocument',{
                     var minimalTime = panel.getForm().findField('doc_minimal_time');
                     if(actualValue === 2){
                         minimalTime.setValue(5);
-                        minimalTime.setDisabled(true);
+                        minimalTime.setReadOnly(true);
                     }else{
-                        minimalTime.setDisabled(false);
+                        minimalTime.setReadOnly(false);
                         minimalTime.setValue();
                     }
                 }
