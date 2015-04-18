@@ -109,23 +109,31 @@ Ext.define('Asgard.lib.grid.documents_upload',{
                 ptype: 'gridautoresizer'
             }],
             items: [
-                {text: this.idText, sortable: true,flex: 0.5, dataIndex: 'doc_id', filter: true},
+                
+                {
+                    text: this.idText, sortable: true,flex: 0.5, dataIndex: 'doc_id', filter: true
+                },
+                
                 {text: this.classDocText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'classification_desc', tdCls: 'wrapText',
                     editor: Ext.create('Asgard.lib.forms.DocsHelpers',{ 
                         store: new Ext.create('Asgard.store.DocsHelpers').load({ params: { helper: 'classification' } })
                     })
                 },
+                
                 {text: this.typeText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'type_desc', tdCls: 'wrapText',
                     editor: Ext.create('Asgard.lib.forms.DocsHelpers',{ 
                         store: new Ext.create('Asgard.store.DocsHelpers').load({ params: { helper: 'type' } })
                     })
                 },
+                
                 {text: this.documentText, flex: 3, sortable: true, filter: true, dataIndex: 'description', tdCls: 'wrapText', 
                     editor: { allowBlank: false }
                 },
+                
                 {text: this.recordText, flex: 1.5, sortable: true, filter: true, dataIndex: 'doc_record', tdCls: 'wrapText',
                     editor: { allowBlank: false }
                 },
+                
                 {text: this.versionText, flex: 0.5, sortable: true, filter: true, dataIndex: 'version_number', tdCls: 'wrapText',
                     editor: {
                         xtype: 'numberfield',
@@ -134,43 +142,21 @@ Ext.define('Asgard.lib.grid.documents_upload',{
                         maxValue: 100000
                     }
                 },
-                {text: this.dateVersionText, flex: 1.5,  sortable: true, filter: true, dataIndex: 'version_date', tdCls: 'wrapText', 
+                { text: this.dateRevisionText, flex: 1.5,  sortable: true, filter: true, dataIndex: 'revision_date', tdCls: 'wrapText', 
                     xtype: 'datecolumn', format:'Y-m-d',
                     editor: {
                         xtype: 'datefield',
                         format: 'Y-m-d'
                     }
                 },
-                {text: this.dateRevisionText, flex: 1.5,  sortable: true, filter: true, dataIndex: 'revision_date', tdCls: 'wrapText', 
-                    xtype: 'datecolumn', format:'Y-m-d',
-                    editor: {
-                        xtype: 'datefield',
-                        format: 'Y-m-d'
-                    }
-                },
-                {text: this.reviewText, flex: 1, sortable: true, filter: true, dataIndex: 'review_desc', tdCls: 'wrapText',
-                    editor: Ext.create('Asgard.lib.forms.DocsHelpers',{ 
-                        store: new Ext.create('Asgard.store.DocsHelpers').load({ params: { helper: 'review' } })
-                    })},
-                {text: this.protectionText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'protection_desc', tdCls: 'wrapText',
-                    editor: Ext.create('Asgard.lib.forms.DocsHelpers',{ 
-                        store: new Ext.create('Asgard.store.DocsHelpers').load({ params: { helper: 'protection' } })
-                    })},
-                {text: this.ownerText, flex: 1, sortable: true, filter: true, dataIndex: 'owner_desc', tdCls: 'wrapText'},
                 {text: this.processText, flex: 1, sortable: true, filter: true, dataIndex: 'process_desc', tdCls: 'wrapText'},
                 {text: this.threadText, flex: 1, sortable: true, filter: true, dataIndex: 'thread_desc', tdCls: 'wrapText'},
-                {text: this.locationText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'location_desc', tdCls: 'wrapText',
-                    editor: Ext.create('Asgard.lib.forms.DocsHelpers',{ 
-                        store: new Ext.create('Asgard.store.DocsHelpers').load({ params: { helper: 'location' } })
-                    })},
-                {text: this.originText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'origin_desc', tdCls: 'wrapText',
-                    editor: Ext.create('Asgard.lib.forms.DocsHelpers',{ 
-                        store: new Ext.create('Asgard.store.DocsHelpers').load({ params: { helper: 'origin' } })
-                    })},
+
                 {text: this.retentionText, flex: 1, sortable: true, filter: 'combo', dataIndex: 'retention_desc', tdCls: 'wrapText',
                     editor: Ext.create('Asgard.lib.forms.DocsHelpers',{ 
                         store: new Ext.create('Asgard.store.DocsHelpers').load({ params: { helper: 'retention' } })
-                    })},
+                    })
+                },
                 {text: this.fileText, flex: 2, sortable: true, filter: true, dataIndex: 'filename', tdCls: 'wrapText'}
             ]
         };

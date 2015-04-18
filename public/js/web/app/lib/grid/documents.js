@@ -108,7 +108,7 @@ Ext.define('Asgard.lib.grid.documents',{
                 tooltip: this.toolMassText,
                 scope: this,
                 handler: this.fnLibraryTool,
-                hidden: (this.typeDoc==='REG' || this.sourceDoc === 'external' || this.userRole === 'Viewer')?true:false
+                hidden: (this.userRole === 'Viewer')?true:false
             }];
         }
         this.columns =  {
@@ -216,7 +216,6 @@ Ext.define('Asgard.lib.grid.documents',{
                 winContent = Ext.create('Ext.Panel', {
                     frame: false,
                     width: 580,
-                    //height: 400,
                     flex: 1,
                     layout: 'border',
                     items: [
@@ -225,7 +224,6 @@ Ext.define('Asgard.lib.grid.documents',{
                 
                 grid.getSelectionModel().on('selectionchange', function(sm, selectedRecord) {
                     if (selectedRecord.length) {
-                        //var detailPanel = Ext.getCmp('detailPanel');
                         detailPanel.update(Ext.htmlDecode(selectedRecord[0].data.desc_request));
                     }
                 });
@@ -235,8 +233,10 @@ Ext.define('Asgard.lib.grid.documents',{
             }else if(tool.type==='expand') {
                 var windowDoc = this.createWindow();
                 windowDoc.setTitle(this.toolMassText);
-                windowDoc.setHeight(250);
-                winContent = Ext.create('Asgard.lib.forms.docsMasterFileUpload');
+                //windowDoc.setHeight(250);
+                console.log(me.typeDoc);
+                console.log(me.sourceDoc);
+                winContent = Ext.create('Asgard.lib.forms.docsMasterFileUpload', { flex: 1, typeDoc: me.typeDoc, sourceDoc: me.sourceDoc });
                 windowDoc.add(winContent);
                 windowDoc.show();
             }else if(tool.type==='minus'){

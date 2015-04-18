@@ -4044,24 +4044,160 @@ class IndexController extends AbstractActionController
         return new JsonModel($dataResult);
     }
     
+    public function massexternaldocsprocessAction(){
+        
+    }
     
+    public function massregprocessAction(){
+        
+    }
+    
+    private function unzipfile($type_docs, $source_docs, $zipfolder, $files){
+        if($type_docs !== 'REG' AND $source_docs!== 'external'){
+            if(!is_dir($zipfolder)){
+                mkdir($zipfolder, 0777);
+            }
+            move_uploaded_file($files['zip_file']['tmp_name'], '/tmp/'.$files['zip_file']['name']);
+            $zip = new \ZipArchive;
+            if ($zip->open('/tmp/'.$files['zip_file']['name']) === TRUE) {
+                $dataResult['numfiles']=$zip->numFiles;
+                $zipList = array();
+                $zipdir = "";
+                for($i = 0; $i < $zip->numFiles; $i++)
+                {  
+                    if(strpos(".",$zip->getNameIndex($i))){
+                        $zipList[]=$zip->getNameIndex($i);
+                    }
+                }
+                $zipFolderParts = explode("/",$zip->getNameIndex(0));
+                $zipdir = $zipfolder.$zipFolderParts[0].'/';
+                $dataResult['unziped']=$zipdir;
+                $zip->extractTo($zipfolder);
+                $zip->close();
+            } else {
+                $dataResult['numfiles']=0;
+                $dataResult['unziped']="ERROR";
+            }
+        }else{
+            $dataResult['numfiles']=0;
+            $dataResult['unziped']="ERROR";
+        }
+        return $dataResult;
+    }
+    
+    private function excelfile($sheetData, $type_docs, $source_docs, $zipdir, $helpers, $date_creation, $userData, $lang_docs, $process, $threads, $owners, $zipfolder, $company, $country, $location){
+        $counter = 1;
+        $arrayMasterData = array();
+        foreach($sheetData as $key=>$content){
+            if($counter != 1 and !empty($content['A'])){
+                /*
+                 * New Template
+                 */
+                $id = $counter;
+                $classification = (string) trim($content['B']);
+                $doc_process = (string) $this->PersonName(trim($content['C']));
+                $doc_thread = (string) $this->PersonName(trim($content['D']));
+                $register = (string) trim($content['E']);
+                $description = (string) trim($content['F']);
+                $type = (string) trim($content['G']);
+                $version_number = (int) trim($content['H']);
+                if(!empty($content['I'])){
+                    $revision_date_dump = (strpos($content['I'], '/') !== false)?explode("/",$content['I']):explode("-",$content['I']);
+                    $dateRevisionDump = (strpos($content['I'], '/') !== false)?$revision_date_dump[2]."-".$revision_date_dump[1]."-".$revision_date_dump[0]:$revision_date_dump[2]."-".$revision_date_dump[0]."-".$revision_date_dump[1];
+                    $revision_date = \date("Y-m-d", strtotime($dateRevisionDump));
+                }else{
+                    $revision_date = '';
+                }
+                
+                $filename = ($type_docs !== 'REG' AND $source_docs!== 'external')?(string) $zipdir.trim($content['J']).'.pdf':'NO_FILE';
+
+                $arrayMasterData[]=array(
+                    'doc_id'=>(int) $id,
+                    'classification'=>(!$helpers['classification'][$classification])?"":$helpers['classification'][$classification]['id'],
+                    'classification_desc'=>(!$helpers['classification'][$classification])?"":$helpers['classification'][$classification]['desc'],
+                    'type'=>(!$helpers['type'][$type])?"":$helpers['type'][$type]['id'],
+                    'type_desc'=>(!$helpers['type'][$type])?"":$helpers['type'][$type]['desc'],
+                    'review'=>1,
+                    'review_desc'=>'',
+                    'protection'=>1,
+                    'protection_desc'=>'',
+                    'location_doc'=>1,
+                    'location_desc'=>'',
+                    'origin'=>1,
+                    'origin_desc'=>'',
+                    'retention'=>1,
+                    'retention_desc'=>'',
+                    'description'=>$description,
+                    'filename'=>(is_file($filename))?$filename:'NO_FILE',
+                    'owner'=>(!$process[$doc_process])?"":$owners[$process[$doc_process]['id']]['id'],
+                    'owner_desc'=>(!$process[$doc_process])?"":$owners[$process[$doc_process]['id']]['desc'],
+                    'process'=>(!$process[$doc_process])?"":$process[$doc_process]['id'],
+                    'process_desc'=>(!$process[$doc_process])?"":$process[$doc_process]['desc'],
+                    'thread'=>(!$threads[$doc_thread])?"":$threads[$doc_thread]['id'],
+                    'thread_desc'=>(!$threads[$doc_thread])?"":$threads[$doc_thread]['desc'],
+                    'doc_record'=>$register,
+                    'version_number'=>$version_number,
+                    'version_date'=>\date('Y-m-d'),
+                    'revision_date'=>$revision_date,
+                    'doc_status_general'=>'U',
+                    'lang'=>$lang_docs,
+                    'company'=>$company,
+                    'country'=>$country,
+                    'location'=>$location,
+                    'date_creation'=>$date_creation,
+                    'user_creation'=>$userData->id
+                );
+            
+            }
+            $counter++;
+            
+        }
+        return $arrayMasterData;
+    }
+    
+    /*
+     * Old Template
+     */
+    /*
+    $id = (int) trim($content['A']);
+    $classification = (string) trim($content['B']);
+    $description = (string) trim($content['C']);
+    $filename = (string) $zipdir.trim($content['D']).'.pdf';
+    $type = (string) trim($content['E']);
+    $review = (string) trim($content['F']);
+    $protection = (string) trim($content['G']);
+    $owner = (string) trim($content['H']);
+    $doclocation = (string) trim($content['I']);
+    $origin = (string) trim($content['J']);
+    $retention = (string) trim($content['K']);
+    $register = (string) trim($content['L']);
+    $version_number = (int) trim($content['M']);
+
+    $version_date_dump = (strpos($content['N'], '/') !== false)?explode("/",$content['N']):explode("-",$content['N']);
+    $revision_date_dump = (strpos($content['O'], '/') !== false)?explode("/",$content['O']):explode("-",$content['O']);
+    $doc_process = (string) $this->PersonName(trim($content['P']));
+    $doc_thread = (string) $this->PersonName(trim($content['Q']));
+
+    $dateVersionDump = (strpos($content['N'], '/') !== false)?$version_date_dump[2]."-".$version_date_dump[1]."-".$version_date_dump[0]:$version_date_dump[2]."-".$version_date_dump[0]."-".$version_date_dump[1];
+    $dateRevisionDump = (strpos($content['O'], '/') !== false)?$revision_date_dump[2]."-".$revision_date_dump[1]."-".$revision_date_dump[0]:$revision_date_dump[2]."-".$revision_date_dump[0]."-".$revision_date_dump[1];
+    $version_date = \date("Y-m-d", strtotime($dateVersionDump));
+    $revision_date = \date("Y-m-d", strtotime($dateRevisionDump));
+    */    
     public function massdocprocessAction(){
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
         $userData = $this->getServiceLocator()->get('userSessionData');
-        $lang=$userPrefs[0]['lang'];
-        
         $request = $this->getRequest();
         $company = $request->getPost('companiesCombo');
         $country = $request->getPost('countriesCombo');
         $location = $request->getPost('locationsCombo');
         $lang_docs = $request->getPost('languageCombo');
+        $type_docs = $request->getPost('type_doc');
+        $source_docs = $request->getPost('source_doc');
         $files =  $request->getFiles()->toArray();
         $date_creation = \date('Y-m-d h:i:s');
         $zipfolder = '/tmp/temp_'.\date('Ymdhis').'/';
         
         $dataResult = array();
-
-        //$sqlMessage = $this->getMessagesTable();
         $sqlProcess = $this->getProcessMainTable();
         $arrayProcess = $sqlProcess->getAllMainProcess($lang_docs,'A',$company,$country,$location);
         $process = array();
@@ -4091,130 +4227,64 @@ class IndexController extends AbstractActionController
         foreach($arrayHelpers as $key=>$values){
             $helpers[$values['helper']][$values['description']]=array('id'=>$values['id'],'desc'=>$values['description']);
         }
-        //$reader = new \PHPExcel();
+
         $reader = new \PHPExcel_Reader_Excel5();
         $worksheetData = $reader->listWorksheetInfo($files['excel_file']['tmp_name']);
         $objPHPExcel = $reader->load($files['excel_file']['tmp_name']);
         $sheetData = $objPHPExcel->getActiveSheet()->toArray(null,true,true,true);
+        $unzipResults = $this->unzipfile($type_docs, $source_docs, $zipfolder, $files);
+        $dataResult['numfiles']=$unzipResults['numfiles'];
+        $dataResult['unziped']=$unzipResults['unziped'];
         
-        if(!is_dir($zipfolder)){
-            mkdir($zipfolder, 0777);
-        }
-        move_uploaded_file($files['zip_file']['tmp_name'], '/tmp/'.$files['zip_file']['name']);
-        $zip = new \ZipArchive;
-        if ($zip->open('/tmp/'.$files['zip_file']['name']) === TRUE) {
-            $dataResult['numfiles']=$zip->numFiles;
-            $zipList = array();
-            $zipdir = "";
-            for($i = 0; $i < $zip->numFiles; $i++)
-            {  
-                if(strpos(".",$zip->getNameIndex($i))){
-                    $zipList[]=$zip->getNameIndex($i);
-                    
-                }
-            }
-            $zipFolderParts = explode("/",$zip->getNameIndex(0));
-            $zipdir = $zipfolder.$zipFolderParts[0].'/';
-            $dataResult['unziped']=$zipdir;
-            $zip->extractTo($zipfolder);
-            $zip->close();
-        } else {
-            $dataResult['unziped']="ERROR";
-        }
+        $arrayMasterData = $this->excelfile($sheetData, $type_docs, $source_docs, $dataResult['unziped'], $helpers, $date_creation, $userData, $lang_docs, $process, $threads, $owners, $zipfolder, $company, $country, $location);
         
-        $arrayMasterData = array();
-        $counter = 1;
-        foreach($sheetData as $key=>$content){
-            if($counter != 1 and !empty($content['A'])){
-            $id = (int) trim($content['A']);
-            $classification = (string) trim($content['B']);
-            $description = (string) trim($content['C']);
-            $filename = (string) $zipdir.trim($content['D']).'.pdf';
-            $type = (string) trim($content['E']);
-            $review = (string) trim($content['F']);
-            $protection = (string) trim($content['G']);
-            $owner = (string) trim($content['H']);
-            $doclocation = (string) trim($content['I']);
-            $origin = (string) trim($content['J']);
-            $retention = (string) trim($content['K']);
-            $register = (string) trim($content['L']);
-            $version_number = (int) trim($content['M']);
-            
-            $version_date_dump = (strpos($content['N'], '/') !== false)?explode("/",$content['N']):explode("-",$content['N']);
-            $revision_date_dump = (strpos($content['O'], '/') !== false)?explode("/",$content['O']):explode("-",$content['O']);
-            //$revision_date_dump = explode("/",$content['O']);
-            $doc_process = (string) $this->PersonName(trim($content['P']));
-            $doc_thread = (string) $this->PersonName(trim($content['Q']));
-
-            $dateVersionDump = (strpos($content['N'], '/') !== false)?$version_date_dump[2]."-".$version_date_dump[1]."-".$version_date_dump[0]:$version_date_dump[2]."-".$version_date_dump[0]."-".$version_date_dump[1];
-            $dateRevisionDump = (strpos($content['O'], '/') !== false)?$revision_date_dump[2]."-".$revision_date_dump[1]."-".$revision_date_dump[0]:$revision_date_dump[2]."-".$revision_date_dump[0]."-".$revision_date_dump[1];
-            
-            //$date['VERSION'] = $content['N'];
-            //$date['REVISION'] = $content['O'];
-            //$version_date = date("Y-m-d", strtotime(str_replace("'","",$content['N'])));
-            //$revision_date = date("Y-m-d", strtotime(str_replace("'","",$content['O'])));
-            //$version_date = \date("Y-m-d", strtotime($version_date_dump));
-            //$revision_date = \date("Y-m-d", strtotime($revision_date_dump));
-            //$version_date_dump[2] = (strlen($version_date_dump[2])==2)?"20".$version_date_dump[2]:$version_date_dump[2];
-            //$revision_date_dump[2] = (strlen($revision_date_dump[2])==2)?"20".$revision_date_dump[2]:$revision_date_dump[2];
-            $version_date = \date("Y-m-d", strtotime($dateVersionDump));
-            $revision_date = \date("Y-m-d", strtotime($dateRevisionDump));
-           $date['VERSION_new'] = $version_date_dump;
-            $date['REVISION_new'] = $revision_date_dump;
-            $arrayMasterData[]=array(
-                'doc_id'=>(int) $id,
-                'classification'=>(!$helpers['classification'][$classification])?"":$helpers['classification'][$classification]['id'],
-                'classification_desc'=>(!$helpers['classification'][$classification])?"":$helpers['classification'][$classification]['desc'],
-                'type'=>(!$helpers['type'][$type])?"":$helpers['type'][$type]['id'],
-                'type_desc'=>(!$helpers['type'][$type])?"":$helpers['type'][$type]['desc'],
-                'review'=>(!$helpers['review'][$review])?"":$helpers['review'][$review]['id'],
-                'review_desc'=>(!$helpers['review'][$review])?"":$helpers['review'][$review]['desc'],
-                'protection'=>(!$helpers['protection'][$protection])?"":$helpers['protection'][$protection]['id'],
-                'protection_desc'=>(!$helpers['protection'][$protection])?"":$helpers['protection'][$protection]['desc'],
-                'location_doc'=>(!$helpers['location'][$doclocation])?"":$helpers['location'][$doclocation]['id'],
-                'location_desc'=>(!$helpers['location'][$doclocation])?"":$helpers['location'][$doclocation]['desc'],
-                'origin'=>(!$helpers['origin'][$origin])?"":$helpers['origin'][$origin]['id'],
-                'origin_desc'=>(!$helpers['origin'][$origin])?"":$helpers['origin'][$origin]['desc'],
-                'retention'=>(!$helpers['retention'][$retention])?"":$helpers['retention'][$retention]['id'],
-                'retention_desc'=>(!$helpers['retention'][$retention])?"":$helpers['retention'][$retention]['desc'],
-                'description'=>$description,
-                'filename'=>(is_file($zipfolder.$filename))?$zipfolder.$filename:$filename,
-                'owner'=>(!$process[$doc_process])?"":$owners[$process[$doc_process]['id']]['id'],
-                'owner_desc'=>(!$process[$doc_process])?"":$owners[$process[$doc_process]['id']]['desc'],
-                'process'=>(!$process[$doc_process])?"":$process[$doc_process]['id'],
-                'process_desc'=>(!$process[$doc_process])?"":$process[$doc_process]['desc'],
-                'thread'=>(!$threads[$doc_thread])?"":$threads[$doc_thread]['id'],
-                'thread_desc'=>(!$threads[$doc_thread])?"":$threads[$doc_thread]['desc'],
-                'doc_record'=>$register,
-                'version_number'=>$version_number,
-                'version_date'=>$version_date,
-                'revision_date'=>$revision_date,
-                'doc_status_general'=>'U',
-                'lang'=>$lang_docs,
-                'company'=>$company,
-                'country'=>$country,
-                'location'=>$location,
-                'date_creation'=>$date_creation,
-                'user_creation'=>$userData->id
-            );
-            
-            }
-            $counter++;
-            
-        }
         foreach($worksheetData as $worksheet){
             $dataResult['worksheetName']=$worksheet['worksheetName'];
             $dataResult['totalRows']=$worksheet['totalRows'];
             $dataResult['totalColumns']=$worksheet['totalColumns'];
             $dataResult['lastColumnLetter']=$worksheet['lastColumnLetter'];
-            //$dataResult['process']=$date;
-            
         }
         $dataResult['file_results']=$arrayMasterData;
         $dataResult['success']=true;
         return new JsonModel($dataResult);    
     }
     
+    
+    /*
+     * Process Document Template and Zip File with the documents in PDF
+     * 
+     * classification 5
+     * classification_desc "Registros"
+     * company "0001"
+     * country "0001"
+     * date_creation 	Date {Sun Apr 20 2014 12:24:20 GMT-0400 (AST)}
+     * description "MOVIMIENTO DE AZUCAR, PREPARACION DE JARABE SIMPLE"
+     * doc_id 32
+     * doc_record "SGI/REG/17/02J-RD"
+     * doc_status_general "U"
+     * filename "/tmp/temp_2014042012242...ON DE JARABE SIMPLE.pdf"
+     * lang "es"
+     * location "0008"
+     * location_desc "Base de datos"
+     * origin 	3
+     * origin_desc "Corporativo"
+     * owner 0
+     * owner_desc ""
+     * protection 2
+     * protection_desc "Backup Sistema"
+     * retention 1
+     * retention_desc "1 Año"
+     * review 2
+     * review_desc "Anual"
+     * revision_date Date {Mon Mar 31 2014 00:00:00 GMT-0400 (AST)}
+     * type 3
+     * type_desc "Electronico"
+     * user_creation 0
+     * version_date Date {Wed Feb 01 2012 00:00:00 GMT-0400 (AST)}
+     * version_label ""
+     * version_number 1
+     * 
+     */
     public function processmassdocsAction(){
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
         $userData = $this->getServiceLocator()->get('userSessionData');
@@ -4222,40 +4292,11 @@ class IndexController extends AbstractActionController
         
         $request = $this->getRequest();
         $dataBulk = $request->getPost('data');
+        $type_doc = $request->getPost('typeDoc');
+        $doc_source = $request->getPost('sourceDoc');
         $data = \json_decode($dataBulk);
         $dataCount = count($data);
-        /*
-        *classification 5
-	*classification_desc "Registros"
-	*company "0001"
-	*country "0001"
-	*date_creation 	Date {Sun Apr 20 2014 12:24:20 GMT-0400 (AST)}
-	*description "MOVIMIENTO DE AZUCAR, PREPARACION DE JARABE SIMPLE"
-	*doc_id 32
-	*doc_record "SGI/REG/17/02J-RD"
-	doc_status_general "U"
-	*filename "/tmp/temp_2014042012242...ON DE JARABE SIMPLE.pdf"
-	*lang "es"
-	*location "0008"
-	*location_desc "Base de datos"
-	*origin 	3
-	*origin_desc "Corporativo"
-	*owner 0
-	*owner_desc ""
-	*protection 2
-	*protection_desc "Backup Sistema"
-	*retention 1
-	*retention_desc "1 Año"
-	*review 2
-	*review_desc "Anual"
-	*revision_date Date {Mon Mar 31 2014 00:00:00 GMT-0400 (AST)}
-	*type 3
-	*type_desc "Electronico"
-	*user_creation 0
-	*version_date Date {Wed Feb 01 2012 00:00:00 GMT-0400 (AST)}
-	*version_label ""
-	*version_number 1
-        */
+
         if(is_array($data)){
             $sqlDocs = $this->getDocsLibraryTable();
             
@@ -4284,6 +4325,10 @@ class IndexController extends AbstractActionController
                 $doc_desc = (!empty($dataContent->description))?trim($dataContent->description):"No description - please fix it";
                 $doc_record = (!empty($dataContent->doc_record))?trim($dataContent->doc_record):"";
                 $doc_file = (!empty($dataContent->filename))?'library/docs/'.$doc_new_id.'_'.$doc_version_number.'_'.date('Ymdhis').'.pdf':"";
+                $doc_final_dispose = (!empty($dataContent->doc_final_dispose))?(int) $dataContent->doc_final_dispose:1;
+                $doc_minimal_time = (!empty($dataContent->doc_minimal_time))?(int) $dataContent->doc_minimal_time:1;
+                $reg_location = (string) $dataContent->reg_location;
+                $reg_reference = (string) strtoupper($dataContent->reg_reference);
                 if(!empty($doc_file)){
                     $this->movefile('library/docs', $dataContent->filename, $doc_new_id.'_'.$doc_version_number.'_'.date('Ymdhis').'.pdf');
                 }
@@ -4312,7 +4357,12 @@ class IndexController extends AbstractActionController
                     ->setDoc_record($doc_record)
                     ->setDoc_status_general('A')
                     ->setId_process($doc_process)
-                    ->setId_thread($doc_thread);
+                    ->setId_thread($doc_thread)
+                    ->setDoc_source($doc_source)
+                    ->setDoc_final_dispose($doc_final_dispose)
+                    ->setDoc_minimal_time($doc_minimal_time)
+                    ->setReg_location($reg_location)
+                    ->setReg_reference($reg_reference);
                 $sqlDocs->save($doc);
             }
             $dataResult['success']=true;

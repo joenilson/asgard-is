@@ -45,7 +45,9 @@ Ext.define('Asgard.lib.forms.docsMasterFileUpload',{
     companiesValue: '',
     countriesValue: '',
     locationsValue: '',
-
+    typeDoc: '',
+    sourceDoc: '',
+    bodyPadding: '5 5 5 5',
     defaults: {
         labelWidth: 180,
         msgTarget: 'qtip'
@@ -175,7 +177,7 @@ Ext.define('Asgard.lib.forms.docsMasterFileUpload',{
             this.locationsField,
             this.languageField,
             this.excelField,
-            this.zipField
+            (this.typeDoc !== 'REG' && this.sourceDoc === 'internal')?this.zipField:null
         ]);
         
         this.buttons = this.buttons || [];
@@ -195,7 +197,9 @@ Ext.define('Asgard.lib.forms.docsMasterFileUpload',{
         if(form.isValid()){
             form.submit({
                 params: {
-                    module: 'imsmassdocsupload'
+                    module: 'imsmassdocsupload',
+                    source_doc: me.sourceDoc,
+                    type_doc: me.typeDoc
                 },
                 success: function(fp, o, m, r) {
                     console.log(fp);

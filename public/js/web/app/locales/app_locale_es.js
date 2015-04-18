@@ -264,6 +264,21 @@ Ext.define('Asgard.locales.lib.forms.docsNewDocument',{
     textCancelButton: 'Cancelar'
 });
 
+Ext.define('Asgard.locales.lib.forms.docsMasterFileUpload',{
+    override: 'Asgard.lib.forms.docsMasterFileUpload',
+    excelFileText: 'Archivo Excel',
+    zipFileText: 'Archivo ZIP',
+    excelFieldEmptyText: 'Escoja su plantilla de Excel',    
+    zipFieldEmptyText: 'Escoja su archivo ZIP',    
+    textSubmitButton: 'Enviar',
+    textCancelButton: 'Cancelar',
+    warningTitle: 'Advertencia',
+    warningText: 'Datos incompletos!, complete todos los datos',
+    required: '<span style="color:red;font-weight:bold" data-qtip="Obligatorio">*</span>',
+    successText: 'Documentos agregados correctamente!',
+    failureText: 'Ocurrió un error, por favor intentelo nuevamente'
+});
+
 Ext.define('Asgard.locales.lib.grid.thread_documents',{
     override: 'Asgard.lib.grid.thread_documents',
 

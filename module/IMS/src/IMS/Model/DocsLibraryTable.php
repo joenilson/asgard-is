@@ -177,18 +177,18 @@ class DocsLibraryTable extends AbstractTableGateway {
                     array('desc_thread'=>'value')
                 );
             }
-            $select->join(
-                array('h10'=>new TableIdentifier($this->table_helper, $this->schema_name)), 
-                new Expression ( $this->table_name.'.doc_minimal_time = h10.id AND h10.helper=\'retention\' AND h10.lang=\''.$lang.'\''), 
-                array('desc_regretention'=>'description')
-            );
-            $select->join(
-                array('h11'=>new TableIdentifier($this->table_helper, $this->schema_name)), 
-                new Expression ( $this->table_name.'.doc_final_dispose = h11.id AND h11.helper=\'dispose\' AND h11.lang=\''.$lang.'\''), 
-                array('desc_dispose'=>'description')
-            );
             
             if($type == 9){
+                $select->join(
+                    array('h10'=>new TableIdentifier($this->table_helper, $this->schema_name)), 
+                    new Expression ( $this->table_name.'.doc_minimal_time = h10.id AND h10.helper=\'retention\' AND h10.lang=\''.$lang.'\''), 
+                    array('desc_regretention'=>'description')
+                );
+                $select->join(
+                    array('h11'=>new TableIdentifier($this->table_helper, $this->schema_name)), 
+                    new Expression ( $this->table_name.'.doc_final_dispose = h11.id AND h11.helper=\'dispose\' AND h11.lang=\''.$lang.'\''), 
+                    array('desc_dispose'=>'description')
+                );                
                 $typeSql = ".doc_classification = 9";
             } elseif ($type == 5) {
                 $typeSql = ".doc_classification = 5";
