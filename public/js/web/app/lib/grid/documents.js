@@ -233,9 +233,8 @@ Ext.define('Asgard.lib.grid.documents',{
             }else if(tool.type==='expand') {
                 var windowDoc = this.createWindow();
                 windowDoc.setTitle(this.toolMassText);
-                //windowDoc.setHeight(250);
-                console.log(me.typeDoc);
-                console.log(me.sourceDoc);
+                //console.log(me.typeDoc);
+                //console.log(me.sourceDoc);
                 winContent = Ext.create('Asgard.lib.forms.docsMasterFileUpload', { flex: 1, typeDoc: me.typeDoc, sourceDoc: me.sourceDoc });
                 windowDoc.add(winContent);
                 windowDoc.show();
