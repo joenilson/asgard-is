@@ -25,7 +25,7 @@ Ext.define('Asgard.lib.grid.hira_general',{
     autoDestroy: true,
     border: false,
     frame: false,
-    flex: 1,
+    width: '100%',
     //layout: 'fit',
     titleText: 'HIRA List',
     hiraGeneralDescription: 'Description of the processes and activities',
@@ -106,32 +106,32 @@ Ext.define('Asgard.lib.grid.hira_general',{
                 { text: this.hiraGeneralDescription, 
                     columns: [
                         {text: this.idText, sortable: false, hidden: true, dataIndex: 'id', filter: false},
-                        {text: this.processText, width: 160, sortable: false, hidden: false, dataIndex: 'process_main_desc', filter: true, tdCls: 'wrapText'},
-                        {text: this.threadText, width: 160,  sortable: false, hidden: false, dataIndex: 'process_thread_desc', filter: true, tdCls: 'wrapText'},
-                        {text: this.activityText, width: 160,  sortable: false, hidden: false, dataIndex: 'activity', filter: true, tdCls: 'wrapText'}                       
+                        {text: this.processText, width: 160, sortable: false, hidden: false, dataIndex: 'process_main_desc', filter: false, tdCls: 'wrapText'},
+                        {text: this.threadText, width: 160,  sortable: false, hidden: false, dataIndex: 'process_thread_desc', filter: false, tdCls: 'wrapText'},
+                        {text: this.activityText, width: 160,  sortable: false, hidden: false, dataIndex: 'activity', filter: false, tdCls: 'wrapText'}                       
                     ]
                 },
                 {
                     text: this.hiraIdentificationRiskFactors,
                     columns: [
-                        {text: this.dangerCodeText, width: 60,  sortable: true, filter: 'combo', dataIndex: 'danger_code' },
-                        {text: this.dangerText, width: 120,  sortable: true, filter: true, dataIndex: 'description_danger', tdCls: 'wrapText'},
-                        {text: this.riskText, width: 120,  sortable: true, filter: true, dataIndex: 'description_risk', tdCls: 'wrapText'},
-                        {text: this.consequenceText, width: 160, sortable: true, filter: true, dataIndex: 'description_consequence', tdCls: 'wrapText'}                       
+                        {text: this.dangerCodeText, width: 60,  sortable: true, filter: false, dataIndex: 'danger_code' },
+                        {text: this.dangerText, width: 120,  sortable: true, filter: false, dataIndex: 'description_danger', tdCls: 'wrapText'},
+                        {text: this.riskText, width: 120,  sortable: true, filter: false, dataIndex: 'description_risk', tdCls: 'wrapText'},
+                        {text: this.consequenceText, width: 160, sortable: true, filter: false, dataIndex: 'description_consequence', tdCls: 'wrapText'}                       
                     ]
                 },
                 {
                     text: this.hiraEvaluationDescription,
                     columns: [
-                        { text: this.freqencyText, width: 60, sortable: true, filter: true, dataIndex: 'danger_frequency' },
-                        { text: this.severityText, width: 60, sortable: true, filter: true, dataIndex: 'danger_severity' },
-                        { text: this.riskAssessmentText, width: 60, sortable: true, filter: true, dataIndex: 'danger_fxs' },
-                        { text: this.classificationText, width: 80, sortable: true, filter: true, dataIndex: 'classification', renderer: this.riskLeveler }
+                        { text: this.freqencyText, width: 60, sortable: true, filter: false, dataIndex: 'danger_frequency' },
+                        { text: this.severityText, width: 60, sortable: true, filter: false, dataIndex: 'danger_severity' },
+                        { text: this.riskAssessmentText, width: 60, sortable: true, filter: false, dataIndex: 'danger_fxs' },
+                        { text: this.classificationText, width: 80, sortable: true, filter: false, dataIndex: 'classification', renderer: this.riskLeveler }
                     ]
                 },
-                { text: this.controlsText, flex:1, sortable: true, filter: true, dataIndex: 'control_measures', tdCls: 'wrapText' },
-                { text: this.tracingText, flex:1, sortable: true, filter: true, dataIndex: 'tracing', tdCls: 'wrapText' },
-                { text: this.measurementText, flex:1, sortable: true, filter: true, dataIndex: 'measurement', tdCls: 'wrapText' }
+                { text: this.controlsText, width: 180, sortable: true, filter: false, dataIndex: 'control_measures', tdCls: 'wrapText' },
+                { text: this.tracingText, width: 180, sortable: true, filter: false, dataIndex: 'tracing', tdCls: 'wrapText' },
+                { text: this.measurementText, width: 180, sortable: true, filter: false, dataIndex: 'measurement', tdCls: 'wrapText' }
             ]
         };
         

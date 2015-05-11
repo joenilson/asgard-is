@@ -75,7 +75,7 @@ function fnCCLPProcess(button, opt, obj) {
     HIRAStore<?= $this->panelId; ?>.load({ params: { module: 'hira', company: companies, country: countries, location: locations, process: process_id }});
 
 }
-
+/*
 var HiraSpecs<?=$this->panelId; ?> = Ext.create('Ext.Panel', {
     collapsible: true,
     frame: false,
@@ -89,12 +89,11 @@ var HiraSpecs<?=$this->panelId; ?> = Ext.create('Ext.Panel', {
         scripts: true
     }
 });
-
+*/
 var <?php echo 'HiraPanel'.$this->panelId; ?> = Ext.create('Ext.Panel', {
     frame: false,
     layout: 'border',
     items: [ 
-        HiraSpecs<?=$this->panelId; ?>,
         formDataRequest<?=$this->panelId; ?>,
         HIRAGridPanel<?=$this->panelId; ?>
     ]
