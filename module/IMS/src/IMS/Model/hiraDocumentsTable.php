@@ -24,8 +24,7 @@ class hiraDocumentsTable extends AbstractTableGateway {
     protected $pti_table_name = 'process_thread_i18n';
     protected $pai_table_name = 'process_activity_i18n';
     
-    protected $hr_table_name = 'hira_risk';
-    protected $hd_table_name = 'hira_danger';
+    protected $hh_table_name = 'hira_helpers';
     
     protected $table_name = 'hira_documents';
     protected $schema_name = 'ims';
@@ -73,6 +72,52 @@ class hiraDocumentsTable extends AbstractTableGateway {
             $select->order('date_creation ASC');
         });
         return $resultSet->toArray();
+    }
+    
+    public function getHiraByProcess($lang,$country,$company,$location,$process_id){
+        $process_main_id = (int) $process_id;
+        $result = $this->select(function (Select $select) use ($lang,$country,$company,$location,$process_main_id){
+            $select->join(
+                array('pmi'=>new TableIdentifier($this->pmi_table_name, $this->schema_name)), 
+                new Expression( $this->table_name.'.process_main_id = pmi.id AND pmi.lang=\''.$lang.'\''), array('process_main_desc'=>'value' )
+            );
+            $select->join(
+                array('pti'=>new TableIdentifier($this->pti_table_name, $this->schema_name)), 
+                new Expression( $this->table_name.'.process_thread_id = pti.id AND pti.lang=\''.$lang.'\''), array('process_thread_desc'=>'value' )
+            );
+            $select->join(
+                array('hh'=>new TableIdentifier($this->hh_table_name, $this->schema_name)), 
+                new Expression( $this->table_name.'.danger_code = hh.id AND hh.helper=\'dangers\' AND hh.lang=\''.$lang.'\''), array('description_danger','description_risk','description_consequence' )
+            );
+            $select->where(
+                array( $this->table_name.'.country'=>(string) $country, 
+                    $this->table_name.'.company'=>(string) $company,
+                    $this->table_name.'.location'=>(string) $location,
+                    $this->table_name.'.status'=>'A' )
+            );
+            if($process_main_id!=0){
+                $select->where(array($this->table_name.'.process_main_id'=>(int) $process_main_id));
+            }
+        });
+        return $result->toArray();
+    }
+    
+    public function getHiraByThread($lang,$country,$company,$location,$thread_id){
+        $process_thread_id = (int) $thread_id;
+        $result = $this->select(function (Select $select) use ($lang,$country,$company,$location,$process_thread_id){
+            $select->join(
+                array('hh'=>new TableIdentifier($this->hh_table_name, $this->schema_name)), 
+                new Expression( $this->table_name.'.danger_code = hh.id AND hh.helper=\'dangers\' AND hh.lang=\''.$lang.'\''), array('description_danger','description_risk','description_consequence' )
+            );
+            $select->where(
+                array( $this->table_name.'.country'=>(string) $country, 
+                    $this->table_name.'.company'=>(string) $company,
+                    $this->table_name.'.location'=>(string) $location,
+                    $this->table_name.'.process_thread_id'=>(int) $process_thread_id,
+                    $this->table_name.'.status'=>'A' )
+            );
+        });
+        return $result->toArray();
     }
     
     public function fetchAllView($lang,$country,$company,$location,$process_id) {
@@ -143,17 +188,17 @@ class hiraDocumentsTable extends AbstractTableGateway {
         
     public function getNextId() {
         $resultSet = $this->select(function (Select $select) {
-            $select->columns(array(new Expression('max(id_danger_risk) as id_danger_risk')));
+            $select->columns(array(new Expression('max(id) as id')));
         });
         $row = $resultSet->current();
-        $id = $row->id_danger_risk;
+        $id = $row->id;
         $id++;
         return $id;
     }
     
     public function getHIRAItem($id)
     {
-        $row = $this->select(array('id_danger_risk'=>(int) $id));
+        $row = $this->select(array('id'=>(int) $id));
         if (!$row)
             return false;
         return $row->toArray();
@@ -177,43 +222,41 @@ class hiraDocumentsTable extends AbstractTableGateway {
     public function save(hiraDocuments $object)
     {
         $data = array(
-            'id_danger' => $object->getId_danger(),
-            'id_risk' => $object->getId_risk(),
-            'id_process_main' => $object->getId_process_main(),
-            'eval_iper_h' => $object->getEval_iper_h(),
-            'eval_iper_m' => $object->getEval_iper_m(),
-            'eval_iper_l' => $object->getEval_iper_l(),
-            'control_measures' => $object->getControl_measures(),
-            'eval_risk_h' => $object->getEval_risk_h(),
-            'eval_risk_m' => $object->getEval_risk_m(),
-            'eval_risk_l' => $object->getEval_risk_l(),
-            'date_creation' => $object->getDate_creation(),
-            'user_creation' => $object->getUser_creation(),
-            'date_modification' => $object->getDate_modification(),
-            'user_modification' => $object->getUser_modification(),
-            'status' => $object->getStatus(),
             'company' => $object->getCompany(),
             'country' => $object->getCountry(),
             'location' => $object->getLocation(),
-            'id_machine' => $object->getId_machine(),
-            'id_activity' => $object->getId_activity()
+            'process_main_id' => $object->getProcess_main_id(),
+            'process_thread_id' => $object->getProcess_thread_id(),
+            'activity' => $object->getActivity(),
+            'danger_code' => $object->getDanger_code(),
+            'danger_frequency' => $object->getDanger_frequency(),
+            'danger_severity' => $object->getDanger_severity(),
+            'danger_fxs' => $object->getDanger_fxs(),
+            'control_measures' => $object->getControl_measures(),
+            'tracing' => $object->getTracing(),
+            'measurement' => $object->getMeasurement(),
+            'status' => $object->getStatus(),
         );
 
-        $id = (int) $object->getId_danger_risk();
+        $id = (int) $object->getId();
         if($id == 0) {
             $id = $this->getNextId();
-            
+            $data['id'] = $id;
         }
+        
         if (!$this->getHIRAItem($id)) {
-            $data['id_danger_risk'] = $id;
+            $data['date_creation']=$object->getDate_creation();
+            $data['user_creation']=$object->getUser_creation();
             if (!$this->insert($data))
                 throw new \Exception('insert statement can\'t be executed');
             return $id;
         } elseif ($this->getHIRAItem($id)) {
-            $this->update( $data, array('id_danger_risk' => $id ) );
+            $data['date_modification'] = $object->getDate_modification();
+            $data['user_modification'] = $object->getUser_modification();
+            $this->update( $data, array('id' => $id ) );
             return true;
         } else {
-            throw new \Exception('id_danger_risk in object hiraDocuments does not exist');
+            throw new \Exception('id in object hiraDocuments does not exist');
         }
     }
 
@@ -221,7 +264,7 @@ class hiraDocumentsTable extends AbstractTableGateway {
     {
         $id = (int) $id;
         if($id!=0){
-            $this->update($data, array('id_danger_risk' => $id));
+            $this->update($data, array('id' => $id));
         }
     }
 }

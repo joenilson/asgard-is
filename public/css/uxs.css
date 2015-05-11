@@ -124,6 +124,12 @@
     font-weight: bold;
 }
 
+.x-grid-row .blue-column { 
+    background-color: blue; 
+    color: white; 
+    font-weight: bold;
+}
+
 .ims-diagram {
     height: 100%;
     width: 100%;

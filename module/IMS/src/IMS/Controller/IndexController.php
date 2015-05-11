@@ -67,6 +67,7 @@ class IndexController extends AbstractActionController
     protected $hiraRLTable;
     protected $hiraRLI18nTable;
     protected $hiraDocumentsTable;
+    protected $hiraHelpersTable;
     protected $ieeaTable;
     protected $ieeaHelperTable;
     protected $messagesTable;
@@ -6726,7 +6727,8 @@ class IndexController extends AbstractActionController
         $process = (int) $request->getQuery('process');
         $hiraDocuments = $this->getHiraDocumentsTable();
         //$listDocuments = $hiraDocuments->fetchAll();
-        $listDocuments = $hiraDocuments->fetchAllView($lang,$country,$company,$location,$process);
+        $listDocuments = $hiraDocuments->getHiraByProcess($lang,$country,$company,$location,$process);
+        //$listDocuments = $hiraDocuments->fetchAllView($lang,$country,$company,$location,$process);
         $data = array();
         if(!empty($listDocuments)){
             $data['success']=true;
@@ -6754,12 +6756,12 @@ class IndexController extends AbstractActionController
         $dataResult = array();
         if(is_array($data)){
             $sqlHIRADocs = $this->getHiraDocumentsTable();
-            foreach($data as $id_danger_risk){
+            foreach($data as $id_hira){
                 $data = array();
                 $data['user_modification'] = $userData->id;
                 $data['date_modification'] = \date('Y-m-d H:i:s');
-                $data['status'] = 0;
-                $sqlHIRADocs->update($data,array('id_danger_risk'=>$id_danger_risk));
+                $data['status'] = 'I';
+                $sqlHIRADocs->update($data,array('id'=>$id_hira));
             }
             $dataResult['success']=true;
             $dataResult['docs_processed']=$dataCount;
@@ -6770,6 +6772,9 @@ class IndexController extends AbstractActionController
         return new JsonModel($dataResult);
     }
     
+    /*
+     * To be completed
+     */
     public function addhiradocsAction() {
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
         $userData = $this->getServiceLocator()->get('userSessionData');
@@ -6788,7 +6793,7 @@ class IndexController extends AbstractActionController
                 $data['user_modification'] = $userData->id;
                 $data['date_modification'] = \date('Y-m-d H:i:s');
                 $data['status'] = 0;
-                $sqlHIRADocs->update($data,array('id_danger_risk'=>$id_danger_risk));
+                $sqlHIRADocs->update($data,array('id'=>$id_danger_risk));
             }
             $dataResult['success']=true;
             $dataResult['docs_processed']=$dataCount;
@@ -6799,10 +6804,24 @@ class IndexController extends AbstractActionController
         return new JsonModel($dataResult);
     }
     
+    private function hiraClassification($val){
+        $classification="";
+        if ($val < 21) {
+            $classification = 'low';
+        } else if ($val < 37 && val > 20) {
+            $classification = 'moderate';
+        } else if ($val < 55 && val > 36) {
+            $classification = 'important';
+        } else if ( $val > 55 ) {
+            $classification = 'critical';
+        }
+        return $classification;
+    }
+    
     public function masshiraprocessAction(){
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
         $userData = $this->getServiceLocator()->get('userSessionData');
-        $lang=$userPrefs[0]['lang'];
+        $lang = $userPrefs[0]['lang'];
         
         $request = $this->getRequest();
         $company = $request->getPost('companiesCombo');
@@ -6814,53 +6833,14 @@ class IndexController extends AbstractActionController
         
         $dataResult = array();
 
-        //$sqlMessage = $this->getMessagesTable();
         $sqlProcess = $this->getProcessMainTable();
-        $arrayProcess = $sqlProcess->getAllMainProcess($lang_docs,'A',$company,$country,$location);
-        $process = array();
-        foreach($arrayProcess as $key=>$process_values){
-            $process[$this->PersonName(trim($process_values['value']))]=array('id'=>$process_values['id'],'desc'=>$process_values['value']);
-        }
+        $arrayProcess = $sqlProcess->getListMainProcess($lang_docs,'A',$company,$country,$location);
         
         $sqlThreads = $this->getProcessThreadTable();
-        $arrayThreads = $sqlThreads->getAllThreads($lang_docs,'A',$company,$country,$location);
-        $threads = array();
-        foreach($arrayThreads as $key=>$thread_values){
-            $threads[$this->PersonName(trim($thread_values['value']))]=array('id'=>$thread_values['id'],'desc'=>$thread_values['value']);
-        }    
+        $arrayThreads = $sqlThreads->getListThreads($lang_docs,'A',$company,$country,$location);
         
-        $sqlActivity = $this->getProcessActivityTable();
-        $arrayActivity = $sqlActivity->getAllActivities($lang_docs,'A',$company,$country,$location);
-        $activities = array();
-        foreach($arrayActivity as $key=>$activity_values){
-            $activities[$this->PersonName(trim($activity_values['value']))]=array('id'=>$activity_values['id'],'desc'=>$activity_values['value']);
-        }
-        
-        $sqlDanger = $this->getHiraDangerTable();
-        $arrayDanger = $sqlDanger->getDangerList($lang_docs);
-        
-        $dangers = array();
-        foreach($arrayDanger as $key=>$obj_values){
-            $dangers[$this->PersonName($obj_values['desc_danger'])]=array('id'=>$obj_values['id_danger'],'desc'=>$obj_values['desc_danger']);
-        }
-        
-        $sqlRisk = $this->getHiraRiskTable();
-        $arrayRisk = $sqlRisk->getRiskList($lang_docs);
-        
-        $risks = array();
-        foreach($arrayRisk as $key=>$obj_values){
-            $risks[$this->PersonName($obj_values['desc_risk'])]=array('id'=>$obj_values['id_risk'],'desc'=>$obj_values['desc_risk']);
-        }
-        //
-        //$reader = new \PHPExcel();
-        //$reader = new \PHPExcel_Reader_Excel2007();
-        
-        /** Identify the type of $inputFileName **/ 
-        //$inputFileType = \PHPExcel_IOFactory::identify($files['excel_file']['tmp_name']); 
-        /** Create a new Reader of the type that has been identified **/ 
-        //$objReader = \PHPExcel_IOFactory::createReader($inputFileType); 
-        /** Load $inputFileName to a PHPExcel Object **/ 
-        //$objPHPExcel = $objReader->load($files['excel_file']['tmp_name']);
+        $sqlHiraHelpers = $this->getHiraHelpersTable();
+        $arrayHiraHelpers = $sqlHiraHelpers->getHelpersByType($lang_docs,'dangers');
         
         $reader = new \PHPExcel_Reader_Excel5();
         $worksheetData = $reader->listWorksheetInfo($files['excel_file']['tmp_name']);
@@ -6872,42 +6852,40 @@ class IndexController extends AbstractActionController
         $filesProcessed = 0;
         
         foreach($sheetData as $key=>$content){
-            if($counter>2){
+            if($counter>2 and !empty($content['A'])){
                 $filesProcessed++;
                 $id = $filesProcessed;
-                //$processType = (int) trim($content['A']);
-                $processMain = (string) $this->PersonName(trim($content['B']));
-                $processThread = (string) $this->PersonName(trim($content['C']));
-                $processActivity = (string) $this->PersonName(trim($content['D']));
-                $documentDanger = (string) $this->PersonName(trim($content['E']));
-                $documentRisk = (string) $this->PersonName(trim($content['F']));
-                $iperHigh = (int) trim($content['G']);
-                $iperMedium = (int) trim($content['H']);
-                $iperLow = (int) trim($content['I']);
-                $controlMeasures = (string) trim($content['J']);
-                $rraHigh = (int) trim($content['K']);
-                $rraMedium = (int) trim($content['L']);
-                $rraLow = (int) trim($content['M']);
-
+                $processId = (int) $content['A'];
+                $processDesc = $arrayProcess[$processId];
+                $threadId = (int) $content['C'];
+                $threadDesc = $arrayThreads[$threadId];
+                $activity = (string) $content['E'];
+                $dangerCode = (string) $content['F'];
+                $frequency = (int) $content['G'];
+                $severity = (int) $content['H'];
+                $fxs = $frequency*$severity;
+                $controlMeasures = (string) $content['I'];
+                $tracing = (string) $content['J'];
+                $measurement = (string) $content['K'];
+                
                 $arrayMasterData[]=array(
-                    'id_danger_risk'=>(int) $id,
-                    'id_danger'=>(!$dangers[$documentDanger])?"":$dangers[$documentDanger]['id'],
-                    'desc_danger'=>(!$dangers[$documentDanger])?"":$dangers[$documentDanger]['desc'],
-                    'id_risk'=>(!$risks[$documentRisk])?"":$risks[$documentRisk]['id'],
-                    'desc_risk'=>(!$risks[$documentRisk])?"":$risks[$documentRisk]['desc'],
-                    'id_activity'=>(!$activities[$processActivity])?"":$activities[$processActivity]['id'],
-                    'eval_iper_h'=>(!$iperHigh)?0:$iperHigh,
-                    'eval_iper_m'=>(!$iperMedium)?0:$iperMedium,
-                    'eval_iper_l'=>(!$iperLow)?0:$iperLow,
-                    'control_measures'=>(!$controlMeasures)?"":$controlMeasures,
-                    'eval_risk_h'=>(!$rraHigh)?0:$rraHigh,
-                    'eval_risk_m'=>(!$rraMedium)?0:$rraMedium,
-                    'eval_risk_l'=>(!$rraLow)?0:$rraLow,
-                    'id_process_main'=>(!$threads[$processThread])?"":$threads[$processThread]['id'],
-                    'process_main_desc'=>(!$threads[$processThread])?"":$threads[$processThread]['desc'],
-                    'process_sup_desc'=>(!$process[$processMain])?"":$process[$processMain]['desc'],
-                    'activity_desc'=>(!$activities[$processActivity])?"":$activities[$processActivity]['desc'],
-                    'status'=>1,
+                    'id'=>(int) $id,
+                    'process_main_id'=>$processId,
+                    'process_main_desc'=>$processDesc,
+                    'process_thread_id'=>$threadId,
+                    'process_thread_desc'=>$threadDesc,
+                    'activity'=>$activity,
+                    'danger_code'=>$dangerCode,
+                    'description_danger'=>$arrayHiraHelpers[$dangerCode]['description_danger'],
+                    'description_risk'=>$arrayHiraHelpers[$dangerCode]['description_risk'],
+                    'description_consequence'=>$arrayHiraHelpers[$dangerCode]['description_consequence'],
+                    'danger_frequency'=>$frequency,
+                    'danger_severity'=>$severity,
+                    'danger_fxs'=>$fxs,
+                    'control_measures'=>$controlMeasures,
+                    'tracing'=>$tracing,
+                    'measurement'=>$measurement,
+                    'status'=>'A',
                     'company'=>$company,
                     'country'=>$country,
                     'location'=>$location,
@@ -6923,8 +6901,6 @@ class IndexController extends AbstractActionController
             $dataResult['totalRows']=$worksheet['totalRows'];
             $dataResult['totalColumns']=$worksheet['totalColumns'];
             $dataResult['lastColumnLetter']=$worksheet['lastColumnLetter'];
-            //$dataResult['process']=$threads;
-            
         }
         $dataResult['file_results']=$arrayMasterData;
         $dataResult['success']=true;
@@ -6941,79 +6917,43 @@ class IndexController extends AbstractActionController
         $data = \json_decode($dataBulk);
         $dataCount = count($data);
         
-//        "id_danger_risk":1,
-//        "id_danger":137,
-//        "desc_danger":"Superf\u00edcie escorregadia, Irregular, Obst\u00e1culos no andar",
-//        "id_risk":41,
-//        "desc_risk":"Queda ao mesmo n\u00edvel",
-//        "id_process_main":0,
-//        "process_main_desc":"Tratamento de \u00e1gua",
-//        "process_sup_desc":"Produ\u00e7\u00e3o",
-//        "type":0,
-//        "type_desc":"",
-//        "eval_iper_h":0,
-//        "eval_iper_m":0,
-//        "eval_iper_l":23,
-//        "control_measures":"Tr\u00e2nsito de pedrestes somente por zonas sinalizadas e/ou seguras",
-//        "eval_risk_h":0,
-//        "eval_risk_m":0,
-//        "eval_risk_l":23,
-//        "date_creation":"2014-04-27T09:57:57",
-//        "user_creation":"2",
-//        "date_modification":null,
-//        "user_modification":"",
-//        "status":1,
-//        "company":"0003",
-//        "country":"0003",
-//        "location":"0001",
-//        "id_machine":0,
-//        "id_activity":105,
-//        "activity_desc":"Revis\u00e3o inicial e rotineira de \u00e1gua em tanques"
-        
         if(is_array($data)){
             $sqlDocs = $this->getHiraDocumentsTable(); 
             
             foreach ($data as $dataContent){
-                //$doc_new_id = $sqlDocs->getNextDocId();
-                $doc_company = (!empty($dataContent->company))?$dataContent->company:$userData->company;
-                $doc_country = (!empty($dataContent->country))?$dataContent->country:$userData->country;
-                $doc_location = (!empty($dataContent->location))?$dataContent->location:$userData->location;
-                $doc_thread = (is_numeric($dataContent->process_main_desc))?$dataContent->process_main_desc:$dataContent->id_process_main;
-                $doc_activity = (is_numeric($dataContent->activity_desc))?$dataContent->activity_desc:$dataContent->id_activity;
-                $doc_id_risk = (!empty($dataContent->id_risk))?$dataContent->id_risk:0;
-                $doc_id_danger = (!empty($dataContent->id_danger))?$dataContent->id_danger:0;
-                $eval_iper_h = (!empty($dataContent->eval_iper_h))?$dataContent->eval_iper_h:0;
-                $eval_iper_m = (!empty($dataContent->eval_iper_m))?$dataContent->eval_iper_m:0;
-                $eval_iper_l = (!empty($dataContent->eval_iper_l))?$dataContent->eval_iper_l:0;
-                $eval_risk_h = (!empty($dataContent->eval_risk_h))?$dataContent->eval_risk_h:0;
-                $eval_risk_m = (!empty($dataContent->eval_risk_m))?$dataContent->eval_risk_m:0;
-                $eval_risk_l = (!empty($dataContent->eval_risk_l))?$dataContent->eval_risk_l:0;
+                $company = (!empty($dataContent->company))?$dataContent->company:$userData->company;
+                $country = (!empty($dataContent->country))?$dataContent->country:$userData->country;
+                $location = (!empty($dataContent->location))?$dataContent->location:$userData->location;
+                $process_main_id = (is_numeric($dataContent->process_main_desc))?$dataContent->process_main_desc:$dataContent->process_main_id;
+                $process_thread_id = (is_numeric($dataContent->process_thread_desc))?$dataContent->process_thread_desc:$dataContent->process_thread_id;
+                $activity = (!empty($dataContent->activity))?$this->cleanTags(trim($dataContent->activity)):"";
+                $danger_code = $dataContent->danger_code;
+                $danger_frequency = $dataContent->danger_frequency;
+                $danger_severity = $dataContent->danger_severity;
+                $danger_fxs = $dataContent->danger_fxs;
                 $control_measures = (!empty($dataContent->control_measures))?$this->cleanTags(trim($dataContent->control_measures)):"";
-                $doc_user_creation = (!empty($dataContent->user_creation))?$dataContent->user_creation:$userData->id;
-                $doc_date_creation = (!empty($dataContent->date_creation))?\date("Y-m-d H:i:s", strtotime($dataContent->date_creation)):\date('Y-m-d H:i:s');
-                
+                $tracing = (!empty($dataContent->tracing))?$this->cleanTags(trim($dataContent->tracing)):"";
+                $measurement = (!empty($dataContent->measurement))?$this->cleanTags(trim($dataContent->measurement)):"";
+                $user_creation = (!empty($dataContent->user_creation))?$dataContent->user_creation:$userData->id;
+                $date_creation = (!empty($dataContent->date_creation))?\date("Y-m-d H:i:s", strtotime($dataContent->date_creation)):\date('Y-m-d H:i:s');
                 
                 $doc = new \IMS\Model\Entity\hiraDocuments();
-                //$doc = new hiraDocuments();
-                $doc->setCompany($doc_company)
-                    ->setCountry($doc_country)
-                    ->setLocation($doc_location)
-                    ->setId_danger_risk(0)
-                    ->setId_danger($doc_id_danger)
-                    ->setId_risk($doc_id_risk)
-                    ->setId_process_main($doc_thread)
+                $doc->setCompany($company)
+                    ->setCountry($country)
+                    ->setLocation($location)
+                    ->setProcess_main_id($process_main_id)
+                    ->setProcess_thread_id($process_thread_id)
+                    ->setActivity($activity)
+                    ->setDanger_code($danger_code)
+                    ->setDanger_frequency($danger_frequency)
+                    ->setDanger_severity($danger_severity)
+                    ->setDanger_fxs($danger_fxs)
                     ->setControl_measures($control_measures)
-                    ->setEval_iper_h($eval_iper_h)
-                    ->setEval_iper_m($eval_iper_m)
-                    ->setEval_iper_l($eval_iper_l)
-                    ->setEval_risk_h($eval_risk_h)
-                    ->setEval_risk_m($eval_risk_m)
-                    ->setEval_risk_l($eval_risk_l)
-                    ->setId_activity($doc_activity)
-                    ->setUser_creation($doc_user_creation)
-                    ->setDate_creation($doc_date_creation)
-                    ->setStatus(1);
-                
+                    ->setTracing($tracing)
+                    ->setMeasurement($measurement)
+                    ->setUser_creation($user_creation)
+                    ->setDate_creation($date_creation)
+                    ->setStatus('A');
                 $sqlDocs->save($doc);
             }
             $dataResult['success']=true;
@@ -7038,7 +6978,7 @@ class IndexController extends AbstractActionController
         $country = $request->getQuery('country');
         $location = $request->getQuery('location');
         $hiraDocuments = $this->getHiraDocumentsTable();
-        $listDocuments = $hiraDocuments->fetchThreadDocuments($lang,$country,$company,$location,$tid);
+        $listDocuments = $hiraDocuments->getHiraByThread($lang,$country,$company,$location,$tid);
         if(!empty($listDocuments)){
             $data['success']=true;
             $data['results']=$listDocuments;
@@ -7618,6 +7558,14 @@ class IndexController extends AbstractActionController
             $this->hiraDocumentsTable = $sm->get('IMS\Model\hiraDocumentsTable');
         }
         return $this->hiraDocumentsTable;
+    }
+    
+    public function getHiraHelpersTable() {
+        if (!$this->hiraHelpersTable) {
+            $sm = $this->getServiceLocator();
+            $this->hiraHelpersTable = $sm->get('IMS\Model\HiraHelpersTable');
+        }
+        return $this->hiraHelpersTable;
     }
     
     public function getProcessMainTable() {

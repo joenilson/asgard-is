@@ -67,7 +67,7 @@ Ext.define('Asgard.locales.view.window.systemInformation', {
     companyNameText: 'Empresa',
     presentationContentReviewText: 'Revisado',
     presentationContentApprovedText: 'Aprobado',
-    defaultModuleText: 'Modulo',
+    defaultModuleText: 'Modulo'
 });
 
 Ext.define('Asgard.locales.lib.versioningContent',{
@@ -194,6 +194,12 @@ Ext.define('Asgard.locales.lib.forms.LocationsCombo',{
     override: 'Asgard.lib.forms.LocationsCombo',
     emptyTextText: 'No hay datos elegidos',
     fieldLabelText: 'Ubicación'
+});
+
+Ext.define('Asgard.locales.lib.forms.LanguageCombo',{
+    override: 'Asgard.lib.forms.LanguageCombo',
+    emptyTextText: 'No hay datos elegidos',
+    fieldLabelText: 'Idioma'
 });
 
 Ext.define('Asgard.locales.lib.forms.comboCCL',{
@@ -507,7 +513,7 @@ Ext.define('Asgard.locales.lib.grid.ohr',{
     chooseTitleText: 'Advertencia',
     emptyFileMessage: 'No se encontro el archivo enlazado al documento...',
     chooseTitleBodyDelete: 'Va eliminar un documento!. <br />Desea seguir con esta acción?',
-    chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?',
+    chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?'
 });
 
 Ext.define('Asgard.locales.lib.grid.simulationsalbums',{
@@ -581,24 +587,52 @@ Ext.define('Asgard.locales.lib.grid.hira_incidents',{
     titleIncident: 'Incidente: '
 });
 
+Ext.define('Asgard.locales.lib.grid.hira',{
+    override: 'Asgard.lib.grid.hira',
+    titleText: 'IPER',
+    idText: 'Id',
+    activityText: 'Actividad',
+    hiraIdentificationRiskFactors: 'Identificación de factores de riesgo',
+    dangerCodeText: 'Código',
+    dangerText: 'Peligro',
+    riskText: 'Riesgo',
+    consequenceText: 'Consecuencia',
+    hiraEvaluationDescription: 'Evaluación de riesgo',
+    freqencyText: 'Frecuencia (A)',
+    severityText: 'Severidad (B)',
+    riskAssessmentText: 'Eval. (AxB)',
+    classificationText: 'Clasificación',
+    controlsText: 'Controles Operacionales',
+    tracingText: 'Seguimiento',
+    measurementText: 'Medición',
+    greenVal: 'Bajo',
+    blueVal: 'Moderado',
+    yellowVal: 'Importante',
+    redVal: 'Critico'
+});
+
 Ext.define('Asgard.locales.lib.grid.hira_general',{
     override: 'Asgard.lib.grid.hira_general',
     titleText: 'Identificacion de Peligros y Evaluación de Riesgos :: IPER',
+    hiraGeneralDescription: 'Descripción de los procesos y actividades',
     idText: 'Id',
     processText: 'Proceso',
     threadText: 'Subproceso',
     activityText: 'Actividad',
+    hiraIdentificationRiskFactors: 'Identificación de factores de riesgo',
+    dangerCodeText: 'Código',
     dangerText: 'Peligro',
     riskText: 'Riesgo',
-    evaluationHiraText: 'Evaluación IPER',
-    evaluationHiraHText: 'A',
-    evaluationHiraMText: 'M',
-    evaluationHiraLText: 'B',
-    controlMeasuresText: 'Medidas a implementar',
-    residualRiskText: 'Evaluación del Riesgo Residual',
-    residualRiskHText: 'A',
-    residualRiskMText: 'M',
-    residualRiskLText: 'B',
+    consequenceText: 'Consecuencia',
+    hiraEvaluationDescription: 'Evaluación de riesgo',
+    freqencyText: 'Frecuencia (A)',
+    severityText: 'Severidad (B)',
+    riskAssessmentText: 'Eval. (AxB)',
+    classificationText: 'Clasificación',
+    controlsText: 'Controles Operacionales',
+    tracingText: 'Seguimiento',
+    measurementText: 'Medición',
+  
     editToolText: 'Editar',
     deleteToolText: 'Eliminar',
     addToolText: 'Agregar',
@@ -613,7 +647,12 @@ Ext.define('Asgard.locales.lib.grid.hira_general',{
     emptyMessageText: 'No se ha seleccionado un item, <br />Por favor seleccione uno para procesar...',
     chooseTitleText: 'Advertencia',
     chooseTitleBodyDelete: 'Va eliminar un item!. <br />Desea seguir con esta acción?',
-    chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?'
+    chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?',
+    uploadMasterFiles: 'Subir plantilla',
+    greenVal: 'Bajo',
+    blueVal: 'Moderado',
+    yellowVal: 'Importante',
+    redVal: 'Critico'
 });
 
 Ext.define('Asgard.locales.lib.grid.mtm',{

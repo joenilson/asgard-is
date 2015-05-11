@@ -30,17 +30,25 @@ Ext.define('Asgard.lib.grid.hira',{
     
     titleText: 'HIRA List',
     idText: 'Id',
+    activityText: 'Activity',
+    hiraIdentificationRiskFactors: 'Identification of risk factors',
+    dangerCodeText: 'Code',
     dangerText: 'Danger',
     riskText: 'Risk',
-    evaluationHiraText: 'HIRA Evaluation',
-    evaluationHiraHText: 'H',
-    evaluationHiraMText: 'M',
-    evaluationHiraLText: 'L',
-    controlMeasuresText: 'Measures to be implemented',
-    residualRiskText: 'Residual Risk Assessment',
-    residualRiskHText: 'H',
-    residualRiskMText: 'M',
-    residualRiskLText: 'L',
+    consequenceText: 'Consequence',
+    hiraEvaluationDescription: 'Risk Assessment',
+    freqencyText: 'Frequency (A)',
+    severityText: 'Severity (B)',
+    riskAssessmentText: 'Eval. (AxB)',
+    classificationText: 'Classification',
+    controlsText: 'Operational Controls',
+    tracingText: 'Tracing',
+    measurementText: 'Measurement',
+    
+    greenVal: 'Low',
+    blueVal: 'Moderate',
+    yellowVal: 'Important',
+    redVal: 'Critical',
     
     initComponent: function(){
         this.title = this.titleText,
@@ -50,87 +58,29 @@ Ext.define('Asgard.lib.grid.hira',{
                 ptype: 'gridautoresizer'
             }],
             items: [
-                {text: this.idText, sortable: false, hidden: true, dataIndex: 'id_danger_risk', filter: false},
-                {text: this.dangerText, flex: 1.5, sortable: true, filter: 'combo', dataIndex: 'desc_danger', tdCls: 'wrapText'},
-                {text: this.riskText, flex: 1.5, sortable: true, filter: true, dataIndex: 'desc_risk', tdCls: 'wrapText'},
-                {text: this.evaluationHiraText,
-                    columns: [{
-                        text     : this.evaluationHiraHText,
-                        width    : 50,
-                        sortable : true,
-                        filter: true,
-                        align: 'center',
-                        dataIndex: 'eval_iper_h',
-                        renderer : this.riskleveler,
-                        editor : { xtype: 'numberfield', allowBlank: false, minValue: 0, maxValue: 25,
-                            hideTrigger: true, keyNavEnabled: false, mouseWheelEnabled: false
-                        }
-                    }, {
-                        text     : this.evaluationHiraMText,
-                        width    : 50,
-                        sortable : true,
-                        filter: true,
-                        align: 'center',
-                        renderer :  this.riskleveler,
-                        dataIndex: 'eval_iper_m',
-                        editor : { xtype: 'numberfield', allowBlank: false, minValue: 0, maxValue: 25,
-                            hideTrigger: true, keyNavEnabled: false, mouseWheelEnabled: false
-                        }
-                    }, {
-                        text     : this.evaluationHiraLText,
-                        width    : 50,
-                        sortable : true, 
-                        filter: true,
-                        align: 'center',
-                        renderer : this.riskleveler,
-                        dataIndex: 'eval_iper_l',
-                        editor : { xtype: 'numberfield', allowBlank: false, minValue: 0, maxValue: 25,
-                            hideTrigger: true, keyNavEnabled: false, mouseWheelEnabled: false
-                        }
-                    }]
+                {text: this.activityText, width: 160,  sortable: false, hidden: false, dataIndex: 'activity', filter: true, tdCls: 'wrapText'},
+                {
+                    text: this.hiraIdentificationRiskFactors,
+                    columns: [
+                        {text: this.dangerCodeText, width: 60,  sortable: true, filter: 'combo', dataIndex: 'danger_code' },
+                        {text: this.dangerText, width: 120,  sortable: true, filter: true, dataIndex: 'description_danger', tdCls: 'wrapText'},
+                        {text: this.riskText, width: 120,  sortable: true, filter: true, dataIndex: 'description_risk', tdCls: 'wrapText'},
+                        {text: this.consequenceText, width: 160, sortable: true, filter: true, dataIndex: 'description_consequence', tdCls: 'wrapText'}                       
+                    ]
                 },
-            {text: this.controlMeasuresText, flex:3, sortable: true, filter: true, dataIndex: 'control_measures', 
-                editor: {
-                    xtype: 'textareafield', allowBlank: false
+                {
+                    text: this.hiraEvaluationDescription,
+                    columns: [
+                        { text: this.freqencyText, width: 60, sortable: true, filter: true, dataIndex: 'danger_frequency' },
+                        { text: this.severityText, width: 60, sortable: true, filter: true, dataIndex: 'danger_severity' },
+                        { text: this.riskAssessmentText, width: 60, sortable: true, filter: true, dataIndex: 'danger_fxs' },
+                        { text: this.classificationText, width: 80, sortable: true, filter: true, dataIndex: 'classification', renderer: this.riskLeveler }
+                    ]
                 },
-                tdCls: 'wrapText'
-            },
-            {text: this.residualRiskText,
-                columns: [{
-                    text     : this.residualRiskHText,
-                    width    : 50,
-                    sortable : true, 
-                    filter: true,
-                    align: 'center',
-                    dataIndex: 'eval_risk_h',
-                    renderer : this.iskleveler,
-                    editor : { xtype: 'numberfield', allowBlank: false, minValue: 0, maxValue: 25,
-                        hideTrigger: true, keyNavEnabled: false, mouseWheelEnabled: false
-                    }
-                }, {
-                    text     : this.residualRiskMText,
-                    width    : 50,
-                    sortable : true, 
-                    filter: true,
-                    align: 'center',
-                    renderer : this.riskleveler,
-                    dataIndex: 'eval_risk_m',
-                    editor : { xtype: 'numberfield', allowBlank: false, minValue: 0, maxValue: 25,
-                        hideTrigger: true, keyNavEnabled: false, mouseWheelEnabled: false
-                    }
-                }, {
-                    text     : this.residualRiskLText,
-                    width    : 50,
-                    sortable : true, 
-                    filter: true,
-                    align: 'center',
-                    renderer : this.riskleveler,
-                    dataIndex: 'eval_risk_l',
-                    editor : { xtype: 'numberfield', allowBlank: false, minValue: 0, maxValue: 25,
-                        hideTrigger: true, keyNavEnabled: false, mouseWheelEnabled: false
-                    }
-                }]
-            }]
+                { text: this.controlsText, flex:1, sortable: true, filter: true, dataIndex: 'control_measures', tdCls: 'wrapText' },
+                { text: this.tracingText, flex:1, sortable: true, filter: true, dataIndex: 'tracing', tdCls: 'wrapText' },
+                { text: this.measurementText, flex:1, sortable: true, filter: true, dataIndex: 'measurement', tdCls: 'wrapText' }
+            ]
         };
         
         this.callParent();
@@ -139,13 +89,24 @@ Ext.define('Asgard.lib.grid.hira',{
     * Custom function used for column renderer
     * @param {Object} val
     */
-    riskleveler: function(val, meta) {
-        if (val < 9 && val > 0) {
-            meta.tdCls = 'red-column';
-        } else if (val < 16 && val > 8) {
-            meta.tdCls = 'yellow-column';
-        } else if (val > 15) {
-            meta.tdCls = 'green-column';
+    riskLeveler: function(val, meta) {
+        switch(val){
+            case 'low':
+                meta.tdCls = 'green-column';
+                val = this.greenVal;
+                break;
+            case 'moderate':
+                meta.tdCls = 'blue-column';
+                val = this.blueVal;
+                break;
+            case 'important':
+                meta.tdCls = 'yellow-column';
+                val = this.yellowVal;
+                break;
+            case 'critical':
+                meta.tdCls = 'red-column';
+                val = this.redVal;
+                break;
         }
         return val;
     }

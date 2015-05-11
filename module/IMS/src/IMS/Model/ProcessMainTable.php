@@ -80,6 +80,38 @@ class ProcessMainTable extends AbstractTableGateway {
         }
         return $listItems;
     }
+  
+    
+    public function getListMainProcess($lang,$assigned,$companies,$countries,$locations) {
+        
+        $companies = $this->processArray($companies);
+        $countries = $this->processArray($countries);
+        $locations = $this->processArray($locations);
+        $contatenation = ($assigned==='U')?" IN ":" IN ";
+        $typeJoin = ($assigned==='U')?'left':'';
+        $row = $this->select(function (Select $select) use ($lang,$contatenation,$companies,$countries,$locations,$typeJoin) {
+            $select->columns(array('id','ordering','status'));
+            $select->join( array('pmi'=>new TableIdentifier($this->table_i18n, $this->schema_name)),
+                $this->table_name.'.id = pmi.id', array('lang', 'value', 'description'));
+            $select->join(
+                array('pr'=>new TableIdentifier($this->table_relations, $this->schema_name)), 
+                new Expression(
+                    $this->table_name.'.id = pr.id AND pr.type=\'p\' and pr.company '.$contatenation.' (\''.$companies.'\')  and pr.country '.$contatenation.' (\''.$countries.'\')  and pr.location '.$contatenation.' (\''.$locations.'\')'), 
+                array('type', 'parent_id', 'company', 'country', 'location'),$typeJoin
+            );
+            $select->where(array('lang' => (string) $lang, 'status'=>'A'))->order('ordering ASC');
+            //echo $select->getSqlString();
+        });
+        if (!$row)
+            return false;
+        $listItems=array();
+        for ($index = 0; $index < $row->count(); $index++) {
+            $data = $row->current();
+            $listItems[$data->id]=$data->value;
+            $row->next();
+        }
+        return $listItems;
+    }
     
     public function getMainProcess($lang,$parent_id,$assigned,$companies,$countries,$locations) {
         

@@ -13,6 +13,27 @@ namespace IMS\Model\Entity;
 
 class hiraDocuments {
     
+    protected $company;
+    protected $country;
+    protected $location;
+    protected $id;
+    protected $process_main_id;
+    protected $process_thread_id;
+    protected $activity;
+    protected $danger_code;
+    protected $danger_frequency;
+    protected $danger_severity;
+    protected $danger_fxs;
+    protected $control_measures;
+    protected $tracing;
+    protected $measurement;
+    protected $status;
+    protected $date_creation;
+    protected $user_creation;
+    protected $date_modification;
+    protected $user_modification;
+    
+    /*
     protected $id_danger_risk;
     protected $id_danger;
     protected $id_risk;
@@ -34,7 +55,8 @@ class hiraDocuments {
     protected $location;
     protected $id_machine;
     protected $id_activity;
-   
+    */
+    
     public function __construct(array $options = null)
     {
     	if (is_array($options)) {
@@ -72,193 +94,176 @@ class hiraDocuments {
     	return $this;
     }
     
-    public function getId_danger_risk() {
-        return $this->id_danger_risk;
-    }
-
-    public function getId_danger() {
-        return $this->id_danger;
-    }
-
-    public function getId_risk() {
-        return $this->id_risk;
-    }
-
-    public function getId_process_main() {
-        return $this->id_process_main;
-    }
-
-    public function getEval_iper_h() {
-        return $this->eval_iper_h;
-    }
-
-    public function getEval_iper_m() {
-        return $this->eval_iper_m;
-    }
-
-    public function getEval_iper_l() {
-        return $this->eval_iper_l;
-    }
-
-    public function getControl_measures() {
-        return $this->control_measures;
-    }
-
-    public function getEval_risk_h() {
-        return $this->eval_risk_h;
-    }
-
-    public function getEval_risk_m() {
-        return $this->eval_risk_m;
-    }
-
-    public function getEval_risk_l() {
-        return $this->eval_risk_l;
-    }
-
-    public function getDate_creation() {
-        return $this->date_creation;
-    }
-
-    public function getUser_creation() {
-        return $this->user_creation;
-    }
-
-    public function getDate_modification() {
-        return $this->date_modification;
-    }
-
-    public function getUser_modification() {
-        return $this->user_modification;
-    }
-
-    public function getStatus() {
-        return $this->status;
-    }
-
-    public function getCompany() {
+    function getCompany() {
         return $this->company;
     }
 
-    public function getCountry() {
+    function getCountry() {
         return $this->country;
     }
 
-    public function getLocation() {
+    function getLocation() {
         return $this->location;
     }
 
-    public function getId_machine() {
-        return $this->id_machine;
+    function getId() {
+        return $this->id;
     }
 
-    public function setId_danger_risk($id_danger_risk) {
-        $this->id_danger_risk = $id_danger_risk;
-        return $this;
+    function getProcess_main_id() {
+        return $this->process_main_id;
     }
 
-    public function setId_danger($id_danger) {
-        $this->id_danger = $id_danger;
-        return $this;
+    function getProcess_thread_id() {
+        return $this->process_thread_id;
     }
 
-    public function setId_risk($id_risk) {
-        $this->id_risk = $id_risk;
-        return $this;
+    function getActivity() {
+        return $this->activity;
     }
 
-    public function setId_process_main($id_process_main) {
-        $this->id_process_main = $id_process_main;
-        return $this;
+    function getDanger_code() {
+        return $this->danger_code;
     }
 
-    public function setEval_iper_h($eval_iper_h) {
-        $this->eval_iper_h = $eval_iper_h;
-        return $this;
+    function getDanger_frequency() {
+        return $this->danger_frequency;
     }
 
-    public function setEval_iper_m($eval_iper_m) {
-        $this->eval_iper_m = $eval_iper_m;
-        return $this;
+    function getDanger_severity() {
+        return $this->danger_severity;
     }
 
-    public function setEval_iper_l($eval_iper_l) {
-        $this->eval_iper_l = $eval_iper_l;
-        return $this;
+    function getDanger_fxs() {
+        return $this->danger_fxs;
     }
 
-    public function setControl_measures($control_measures) {
-        $this->control_measures = $control_measures;
-        return $this;
+    function getControl_measures() {
+        return $this->control_measures;
     }
 
-    public function setEval_risk_h($eval_risk_h) {
-        $this->eval_risk_h = $eval_risk_h;
-        return $this;
+    function getTracing() {
+        return $this->tracing;
     }
 
-    public function setEval_risk_m($eval_risk_m) {
-        $this->eval_risk_m = $eval_risk_m;
-        return $this;
+    function getMeasurement() {
+        return $this->measurement;
     }
 
-    public function setEval_risk_l($eval_risk_l) {
-        $this->eval_risk_l = $eval_risk_l;
-        return $this;
+    function getStatus() {
+        return $this->status;
     }
 
-    public function setDate_creation($date_creation) {
-        $this->date_creation = $date_creation;
-        return $this;
+    function getDate_creation() {
+        return $this->date_creation;
     }
 
-    public function setUser_creation($user_creation) {
-        $this->user_creation = $user_creation;
-        return $this;
+    function getUser_creation() {
+        return $this->user_creation;
     }
 
-    public function setDate_modification($date_modification) {
-        $this->date_modification = $date_modification;
-        return $this;
+    function getDate_modification() {
+        return $this->date_modification;
     }
 
-    public function setUser_modification($user_modification) {
-        $this->user_modification = $user_modification;
-        return $this;
+    function getUser_modification() {
+        return $this->user_modification;
     }
 
-    public function setStatus($status) {
-        $this->status = $status;
-        return $this;
-    }
-
-    public function setCompany($company) {
+    function setCompany($company) {
         $this->company = $company;
         return $this;
     }
 
-    public function setCountry($country) {
+    function setCountry($country) {
         $this->country = $country;
         return $this;
     }
 
-    public function setLocation($location) {
+    function setLocation($location) {
         $this->location = $location;
         return $this;
     }
 
-    public function setId_machine($id_machine) {
-        $this->id_machine = $id_machine;
+    function setId($id) {
+        $this->id = $id;
         return $this;
     }
 
-    public function getId_activity() {
-        return $this->id_activity;
-    }
-
-    public function setId_activity($id_activity) {
-        $this->id_activity = $id_activity;
+    function setProcess_main_id($process_main_id) {
+        $this->process_main_id = $process_main_id;
         return $this;
     }
+
+    function setProcess_thread_id($process_thread_id) {
+        $this->process_thread_id = $process_thread_id;
+        return $this;
+    }
+
+    function setActivity($activity) {
+        $this->activity = $activity;
+        return $this;
+    }
+
+    function setDanger_code($danger_code) {
+        $this->danger_code = $danger_code;
+        return $this;
+    }
+
+    function setDanger_frequency($danger_frequency) {
+        $this->danger_frequency = $danger_frequency;
+        return $this;
+    }
+
+    function setDanger_severity($danger_severity) {
+        $this->danger_severity = $danger_severity;
+        return $this;
+    }
+
+    function setDanger_fxs($danger_fxs) {
+        $this->danger_fxs = $danger_fxs;
+        return $this;
+    }
+
+    function setControl_measures($control_measures) {
+        $this->control_measures = $control_measures;
+        return $this;
+    }
+
+    function setTracing($tracing) {
+        $this->tracing = $tracing;
+        return $this;
+    }
+
+    function setMeasurement($measurement) {
+        $this->measurement = $measurement;
+        return $this;
+    }
+
+    function setStatus($status) {
+        $this->status = $status;
+        return $this;
+    }
+
+    function setDate_creation($date_creation) {
+        $this->date_creation = $date_creation;
+        return $this;
+    }
+
+    function setUser_creation($user_creation) {
+        $this->user_creation = $user_creation;
+        return $this;
+    }
+
+    function setDate_modification($date_modification) {
+        $this->date_modification = $date_modification;
+        return $this;
+    }
+
+    function setUser_modification($user_modification) {
+        $this->user_modification = $user_modification;
+        return $this;
+    }
+
 
 }

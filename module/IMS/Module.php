@@ -15,7 +15,6 @@ use Zend\Mvc\ModuleRouteListener;
 use IMS\Model\ContentTextTable;
 use IMS\Model\DocsLibraryTable;
 use IMS\Model\DocsHelpersTable;
-use IMS\Model\DocsRequestTable;
 use IMS\Model\hiraMatrixTable;
 use IMS\Model\hiraFrequencyTable;
 use IMS\Model\hiraSeverityTable;

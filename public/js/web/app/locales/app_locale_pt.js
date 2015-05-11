@@ -197,6 +197,12 @@ Ext.define('Asgard.locales.lib.forms.LocationsCombo',{
     fieldLabelText: 'Sede'
 });
 
+Ext.define('Asgard.locales.lib.forms.LanguageCombo',{
+    override: 'Asgard.lib.forms.LanguageCombo',
+    emptyTextText: 'Não há dados neste momento',
+    fieldLabelText: 'Idioma'
+});
+
 Ext.define('Asgard.locales.lib.forms.comboCCL',{
     override: 'Asgard.lib.forms.comboCCL',
     emptyTextText: 'Não há dados neste momento',
@@ -546,8 +552,6 @@ Ext.define('Asgard.locales.lib.Panels.drillsPhotosPanel',{
 
 Ext.define('Asgard.locales.lib.grid.hira_incidents',{
     override: 'Asgard.lib.grid.hira_incidents',
-
-
     titleText: 'Lista de Incidentes',
     idText: 'Id',
     nctypeText: 'Não conformidade',
@@ -583,24 +587,52 @@ Ext.define('Asgard.locales.lib.grid.hira_incidents',{
     titleIncident: 'Incidente: '
 });
 
+Ext.define('Asgard.locales.lib.grid.hira',{
+    override: 'Asgard.lib.grid.hira',
+    titleText: 'IPAR',
+    idText: 'Id',
+    activityText: 'Atividade',
+    hiraIdentificationRiskFactors: 'Identificação de fatores de risco',
+    dangerCodeText: 'Código',
+    dangerText: 'Perigo',
+    riskText: 'Risco',
+    consequenceText: 'Conseqüência',
+    hiraEvaluationDescription: 'Avaliação de risco',
+    freqencyText: 'Freqüência (A)',
+    severityText: 'Gravidade (B)',
+    riskAssessmentText: 'Aval. (AxB)',
+    classificationText: 'Classificação',
+    controlsText: 'Controles Operacionais',
+    tracingText: 'Traçado',
+    measurementText: 'Medição',
+    greenVal: 'Baixo',
+    blueVal: 'Moderado',
+    yellowVal: 'Importante',
+    redVal: 'CrÍtico'
+});
+
 Ext.define('Asgard.locales.lib.grid.hira_general',{
     override: 'Asgard.lib.grid.hira_general',
     titleText: 'Identificação de Perigos e Avaliação de Riscos :: IPAR',
+    hiraGeneralDescription: 'Descrição dos processos e actividades',
     idText: 'Id',
     processText: 'Processo',
     threadText: 'Sub Processo',
     activityText: 'Atividade',
+    hiraIdentificationRiskFactors: 'Identificação de fatores de risco',
+    dangerCodeText: 'Código',
     dangerText: 'Perigo',
     riskText: 'Risco',
-    evaluationHiraText: 'Avaliação IPAR',
-    evaluationHiraHText: 'A',
-    evaluationHiraMText: 'M',
-    evaluationHiraLText: 'B',
-    controlMeasuresText: 'Medidas a serem implementadas',
-    residualRiskText: 'Avaliação de Risco Residual',
-    residualRiskHText: 'A',
-    residualRiskMText: 'M',
-    residualRiskLText: 'B',
+    consequenceText: 'Conseqüência',
+    hiraEvaluationDescription: 'Avaliação de risco',
+    freqencyText: 'Freqüência (A)',
+    severityText: 'Gravidade (B)',
+    riskAssessmentText: 'Aval. (AxB)',
+    classificationText: 'Classificação',
+    controlsText: 'Controles Operacionais',
+    tracingText: 'Traçado',
+    measurementText: 'Medição',
+    
     editToolText: 'Editar',
     deleteToolText: 'Remover',
     addToolText: 'Adicionar',
@@ -615,7 +647,12 @@ Ext.define('Asgard.locales.lib.grid.hira_general',{
     emptyMessageText: 'Não é um item selecionado, <br />Por favor, selecione uma para o processamento...',
     chooseTitleText: 'Advertencia',
     chooseTitleBodyDelete: 'Va eliminar un item!. <br />Desea seguir con esta acción?',
-    chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?'
+    chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?',
+    uploadMasterFiles: 'Carregar modelo',
+    greenVal: 'Baixo',
+    blueVal: 'Moderado',
+    yellowVal: 'Importante',
+    redVal: 'CrÍtico'
 });
 
 Ext.define('Asgard.locales.lib.grid.mtm',{

@@ -29,6 +29,8 @@ Ext.define('Asgard.lib.forms.hiraMasterFileUpload',{
     textSubmitButton: 'Send',
     textCancelButton: 'Cancel',
 
+    loadingText: 'Uploading Data',
+    
     warningTitle: 'Warning',
     warningText: 'Data incomplete!, review your data',
     required: '<span style="color:red;font-weight:bold" data-qtip="Required">*</span>',
@@ -46,6 +48,8 @@ Ext.define('Asgard.lib.forms.hiraMasterFileUpload',{
     companiesValue: '',
     countriesValue: '',
     locationsValue: '',
+
+    bodyPadding: 5,
 
     defaults: {
         labelWidth: 180,
@@ -183,6 +187,7 @@ Ext.define('Asgard.lib.forms.hiraMasterFileUpload',{
         var windowDocs = this.createWindow();
         if(form.isValid()){
             form.submit({
+                waitMsg: this.loadingText,
                 params: {
                     module: 'imsmasshiraupload'
                 },
@@ -197,7 +202,7 @@ Ext.define('Asgard.lib.forms.hiraMasterFileUpload',{
                     windowDocs.setWidth(document.documentElement.clientWidth - 50);
                     //width    : document.documentElement.clientWidth - 50,
                     //height   : document.documentElement.clientHeight - 50,
-                    
+                    //console.log(result.file_results);
                     var gridStore = Ext.create('Asgard.store.HiraUpload',{
                        data: result.file_results
                     });
