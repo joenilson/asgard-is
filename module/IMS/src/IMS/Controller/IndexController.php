@@ -6845,6 +6845,7 @@ class IndexController extends AbstractActionController
         $reader = new \PHPExcel_Reader_Excel5();
         $worksheetData = $reader->listWorksheetInfo($files['excel_file']['tmp_name']);
         $objPHPExcel = $reader->load($files['excel_file']['tmp_name']);
+        $objPHPExcel->setActiveSheetIndex(0);
         $sheetData = $objPHPExcel->getActiveSheet()->toArray(null,true,true,true);
         
         $arrayMasterData = array();
