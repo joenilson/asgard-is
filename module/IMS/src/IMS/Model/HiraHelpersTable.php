@@ -80,12 +80,43 @@ class HiraHelpersTable extends AbstractTableGateway
         return $listItems;
     }
     
+    public function getHelpersByTypeRaw($lang,$helper)
+    {
+        $rows = $this->select(function (Select $select) use ($lang,$helper) {
+            $select->join(
+                array('hh'=>new TableIdentifier($this->table_name, $this->schema_name)), 
+                new Expression( $this->table_name.'.id_type = hh.id_type AND hh.helper=\'type_danger\' AND hh.lang=\''.$lang.'\''), array('id_type_desc'=>'description' )
+            );
+            $select->columns(array('helper','id','id_type','lang','description','description_danger','description_risk','description_consequence'));
+            $select->where(array($this->table_name.'.status'=>'A',$this->table_name.'.lang'=>$lang, $this->table_name.'.helper'=>$helper));
+            $select->order(array('helper','id','id_type'));
+            //echo $select->getSqlString();
+        });
+        
+        if (!$rows)
+            return false;
+        return $rows->toArray();
+    }
+    
     public function getHelpersByTypeId($lang,$helper,$id)
     {
         $rows = $this->select(function (Select $select) use ($lang,$helper,$id) {
             $select->columns(array('helper','id','id_type','lang','description','description_danger','description_risk','description_consequence'));
             $select->where(array('status'=>'A','lang'=>$lang, 'helper'=>$helper,'id'=>$id));
             $select->order(array('helper','id','id_type'));
+        });
+        if (!$rows)
+            return false;
+        return $rows->toArray();
+    }
+    
+    public function getHelperIdByName($lang,$helper,$name)
+    {
+        $rows = $this->select(function (Select $select) use ($lang,$helper,$name) {
+            $select->columns(array('helper','id','id_type','lang','description','description_danger','description_risk','description_consequence'));
+            $select->where(array('status'=>'A','lang'=>$lang, 'helper'=>$helper,'description'=>$name));
+            $select->order(array('helper','id','id_type'));
+            //echo $select->getSqlString();
         });
         if (!$rows)
             return false;
@@ -124,15 +155,15 @@ class HiraHelpersTable extends AbstractTableGateway
     public function save(HiraHelpers $object)
     {
         $data = array(
-            'helper' => $object->geHelper(),
+            'helper' => $object->getHelper(),
             'lang' => $object->getLang(),
             'id' => $object->getId(),
             'id_type' => $object->getId_type(),
             'lang'=>$object->getLang(),
             'description' => $object->getDescription(),
-            'description_danger' => $object->getDescription(),
-            'description_risk' => $object->getDescription(),
-            'description_consequence' => $object->getDescription(),
+            'description_danger' => $object->getDescription_danger(),
+            'description_risk' => $object->getDescription_risk(),
+            'description_consequence' => $object->getDescription_consequence(),
             'status' => $object->getStatus(),
             'date_creation'=> $object->getDate_creation(),
             'user_id'=> $object->getUser_id()

@@ -66,6 +66,8 @@ Ext.define('Asgard.lib.grid.hira_general',{
     chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?',
     uploadMasterFiles: 'Upload template',
     
+    dangerCodesText: 'Danger Codes',
+    
     greenVal: 'Low',
     blueVal: 'Moderate',
     yellowVal: 'Important',
@@ -219,34 +221,20 @@ Ext.define('Asgard.lib.grid.hira_general',{
             winAdd.show();
         }else if(button.type==='gear'){
             var gridStore = this.getStore();
-            var selectedItems = this.getSelectionModel().getSelection();
-            if((selectedItems.length > 0) && (selectedItems[0].data.status === 1)){
-                var winAdd = Ext.create('Asgard.lib.window.windowGeneric',{
-                    height: document.documentElement.clientHeight - 50,
-                    //width: document.documentElement.clientWidth - 450,
-                    width: 550,
-                    innerPanel : this
-                });
-                winAdd.setTitle(this.titleCausesTool);
-                winAdd.add(Ext.create('Asgard.lib.forms.hiraIncidentCauses',{
-                    baseParams: { incident_id: selectedItems[0].data.id_incident,
-                                    company: selectedItems[0].data.company,
-                                    country: selectedItems[0].data.country,
-                                    location: selectedItems[0].data.location }
-                }));
-                winAdd.show();
-            }else{
-                if(selectedItems.length > 0){
-                    this.showEmptyMessage();
-                }else if(selectedItems[0].data.status !== 1){
-                    this.showWrongMessage();
-                }
-            }
+            var winAdd = Ext.create('Asgard.lib.window.windowGeneric',{
+                height: document.documentElement.clientHeight - 50,
+                width: document.documentElement.clientWidth - 450,
+                innerPanel : this
+            });
+            winAdd.setTitle(this.dangerCodesText);
+            winContent = Ext.create('Asgard.lib.grid.hira_helpers');
+            winAdd.add(winContent);
+            winAdd.show();
         }else if(button.type==='expand'){
             var windowDoc = this.createWindow();
             windowDoc.setTitle(this.uploadMasterFiles);
             windowDoc.setHeight(250);
-            winContent = Ext.create('Asgard.lib.forms.hiraMasterFileUpload',{companiesValue: companies, countriesValue: countries, locationsValue: locations});
+            winContent = Ext.create('Asgard.lib.forms.hiraMasterFileUpload',{ companiesValue: companies, countriesValue: countries, locationsValue: locations });
             windowDoc.add(winContent);
             windowDoc.show();
         }

@@ -655,6 +655,24 @@ Ext.define('Asgard.locales.lib.grid.hira_general',{
     redVal: 'Critico'
 });
 
+Ext.define('Asgard.locales.lib.grid.hira_helpers',{
+    extend: 'Asgard.lib.grid.hira_helpers',
+    alias: 'widget.hiraHelpers',
+    
+    //titleText: 'Incident Types',
+    
+    idText: 'Id',
+    typeHelperText: 'Tipo',
+    descriptionDangerText: 'Peligro',
+    descriptionRiskText: 'Riesgo',
+    descriptionConsequenceText: 'Consecuencia',
+    getDataList: 'Obtener datos',
+    addNewValue: 'Agregar Código',
+    successText: 'Exito',
+    failureText: 'Fallo',
+    MessageText: { 'update': 'Actualización Correcta' ,  'insert': 'Datos guardados correctamente' }
+});
+
 Ext.define('Asgard.locales.lib.grid.mtm',{
     override: 'Asgard.lib.grid.mtm',
     titleText: 'Monitoreo, Seguimiento y Medición',

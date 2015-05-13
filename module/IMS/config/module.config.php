@@ -2646,6 +2646,34 @@ return array(
                             ),
                         ),
                     ),
+                    'hiraHelpers' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/hiraHelpers[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'hiraHelpers'
+                            ),
+                        ),
+                    ),
+                    'saveHiraHelpers' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/saveHiraHelpers[/:id]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'         => '[0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'action' => 'saveHiraHelpers'
+                            ),
+                        ),
+                    ),
                     'hiraDocs' => array(
                         'type'    => 'Segment',
                         'options' => array(

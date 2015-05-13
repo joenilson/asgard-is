@@ -6715,6 +6715,79 @@ class IndexController extends AbstractActionController
     	return $result;
     }
     
+    public function hiraHelpersAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        //$lang = $userPrefs[0]['lang'];
+        $request = $this->getRequest();
+        $lang = (string) $request->getQuery('lang');
+        $type = (string) $request->getQuery('type');
+        $sqlHiraHelpers = $this->getHiraHelpersTable();
+        $listDocuments = $sqlHiraHelpers->getHelpersByTypeRaw($lang,$type);
+        $data = array();
+        if(!empty($listDocuments)){
+            $data['success']=true;
+            $data['results']=$listDocuments;
+            $data['msg']="";
+        }else{
+            $data['success']=true;
+            $data['msg']="No data found.";
+            $data['results']="";
+        }
+        $result = new JsonModel($data);
+    	return $result;
+    }
+    
+    public function saveHiraHelpersAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $request = $this->getRequest();
+        $dataBulk = $request->getPost('data');
+        $id_helper = $request->getPost('id');
+        $lang_helper = $request->getPost('lang');
+        $helper = $request->getPost('helper');
+        $preData = \json_decode($dataBulk);
+        $sqlHiraHelpers = $this->getHiraHelpersTable();
+        $date_creation= \date('Y-m-d H:i:s');
+        $user_id = $userData->id;
+        if(!empty($id_helper) AND !empty($lang_helper) AND !empty($helper)){
+            $existData = $sqlHiraHelpers->getHelpersByTypeId($lang_helper,$helper,$id_helper);
+            if(count($existData)>0){
+                foreach($preData as $key=>$val){
+                    if($key=='id_type_desc'){
+                        $key='id_type';
+                        $newValue = $sqlHiraHelpers->getHelperIdByName($lang_helper,'type_danger',$val);
+                        $val=$newValue[0]['id_type'];
+                    }
+                    $data[$key]=$val;
+                }
+                $sqlHiraHelpers->update($data,array('helper'=>$helper, 'lang'=>$lang_helper, 'id'=>$id_helper));
+                $resultSQL['message']="update";
+                $resultSQL['success']=true;
+            }else{
+                $object = new \IMS\Model\Entity\HiraHelpers;
+                $object->setHelper($helper)
+                    ->setLang($lang_helper)
+                    ->setId($preData->id)
+                    ->setId_type($sqlHiraHelpers->getHelperIdByName($lang_helper,'type_danger',$preData->id_type_desc)[0]['id_type'])
+                    ->setDescription($preData->description)
+                    ->setDescription_danger($preData->description_danger)
+                    ->setDescription_risk($preData->description_risk)
+                    ->setDescription_consequence($preData->description_consequence)
+                    ->setStatus('A')
+                    ->setDate_creation($date_creation)
+                    ->setUser_id($user_id);
+                $sqlHiraHelpers->save($object);
+                $resultSQL['message']="insert";
+                $resultSQL['success']=true;
+            }
+        }else{
+            $resultSQL['success']=false;
+            $resultSQL['message']="Data Incorrect";
+        }
+        $result = new JsonModel($resultSQL);
+    	return $result;
+    }
+    
     public function hiraDocsAction() {
         
         $userPrefs = $this->getServiceLocator()->get('userPreferences');

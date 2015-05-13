@@ -69,7 +69,7 @@ Ext.define('Asgard.lib.grid.hira_upload',{
         this.cellEditing = new Ext.grid.plugin.CellEditing({
             clicksToEdit: 1
         });
-        this.plugins =  [this.cellEditing],
+        this.plugins =  [ this.cellEditing ],
         this.dockedItems = [{
             xtype: 'toolbar',
             ui: 'footer',
