@@ -72,7 +72,7 @@ Ext.define('Asgard.lib.grid.hira_general',{
     blueVal: 'Moderate',
     yellowVal: 'Important',
     redVal: 'Critical',
-    
+    userRole: '',
     initComponent: function(){
         this.title = this.titleText;
         this.autoScroll = true;
@@ -82,22 +82,26 @@ Ext.define('Asgard.lib.grid.hira_general',{
             type: 'gear',
             tooltip: this.editToolText,
             scope: this,
-            handler: this.fnLibraryTool
+            handler: this.fnLibraryTool,
+            hidden: (this.userRole === 'Viewer')?true:false
         },{
             type: 'minus',
             tooltip: this.deleteToolText,
             scope: this,
-            handler: this.fnLibraryTool
+            handler: this.fnLibraryTool,
+            hidden: (this.userRole === 'Viewer')?true:false
         },{
             type: 'plus',
             tooltip: this.addToolText,
             scope: this,
-            handler: this.fnLibraryTool
+            handler: this.fnLibraryTool,
+            hidden: (this.userRole === 'Viewer')?true:false
         },{
             type: 'expand',
             tooltip: this.uploadToolText,
             scope: this,
-            handler: this.fnLibraryTool
+            handler: this.fnLibraryTool,
+            hidden: (this.userRole === 'Viewer')?true:false
         }];
     
         this.columns =  {

@@ -54,6 +54,7 @@ var formDataRequest<?=$this->panelId; ?> = Ext.create('Asgard.lib.forms.comboCCL
 
 var HIRAGridPanel<?=$this->panelId; ?> = Ext.create('Asgard.lib.grid.hira_general',{
     store: HIRAStore<?=$this->panelId; ?>,
+    userRole: '<?=$this->userRole;?>',
     region: 'center'
 });
 <?php

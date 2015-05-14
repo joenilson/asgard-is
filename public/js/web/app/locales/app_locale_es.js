@@ -282,7 +282,8 @@ Ext.define('Asgard.locales.lib.forms.docsMasterFileUpload',{
     warningText: 'Datos incompletos!, complete todos los datos',
     required: '<span style="color:red;font-weight:bold" data-qtip="Obligatorio">*</span>',
     successText: 'Documentos agregados correctamente!',
-    failureText: 'Ocurrió un error, por favor intentelo nuevamente'
+    failureText: 'Ocurrió un error, por favor intentelo nuevamente',
+    loadingText: 'Subiendo archivos'
 });
 
 Ext.define('Asgard.locales.lib.grid.thread_documents',{
@@ -656,10 +657,7 @@ Ext.define('Asgard.locales.lib.grid.hira_general',{
 });
 
 Ext.define('Asgard.locales.lib.grid.hira_helpers',{
-    extend: 'Asgard.lib.grid.hira_helpers',
-    alias: 'widget.hiraHelpers',
-    
-    //titleText: 'Incident Types',
+    override: 'Asgard.lib.grid.hira_helpers',
     
     idText: 'Id',
     typeHelperText: 'Tipo',

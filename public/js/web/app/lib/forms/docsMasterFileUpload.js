@@ -54,7 +54,7 @@ Ext.define('Asgard.lib.forms.docsMasterFileUpload',{
     },
     anchor: '100%',
     width: 540,
-    
+    loadingText: 'Uploading Data',
     initComponent: function(){
         var me = this;
         
@@ -196,6 +196,7 @@ Ext.define('Asgard.lib.forms.docsMasterFileUpload',{
         var windowDocs = this.createWindow();
         if(form.isValid()){
             form.submit({
+                waitMsg: this.loadingText,
                 params: {
                     module: 'imsmassdocsupload',
                     source_doc: me.sourceDoc,

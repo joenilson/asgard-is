@@ -4096,7 +4096,7 @@ class IndexController extends AbstractActionController
                  */
                 $id = $counter;
                 $classification = (string) trim($content['B']);
-                $doc_process = (string) $this->PersonName(trim($content['C']));
+                $doc_process = (string) trim($content['C']);
                 $doc_thread = (string) $this->PersonName(trim($content['D']));
                 $register = (string) trim($content['E']);
                 $description = (string) trim($content['F']);
@@ -5398,7 +5398,7 @@ class IndexController extends AbstractActionController
         $idSubmodule = $moduleParams[1];
 
         $userGrantedAccess = $this->getAdminUserSubmodulesTable()->getUserSubmodulesAccess($idUser, $idModule, $idSubmodule);
-        
+
         if(!empty($userGrantedAccess)){
             $role='Viewer';
             $role=($userGrantedAccess[0]['admin']==1)?'Admin':$role;
@@ -6798,6 +6798,7 @@ class IndexController extends AbstractActionController
         $country = (string) $request->getQuery('country');
         $location = (string) $request->getQuery('location');
         $process = (int) $request->getQuery('process');
+        
         $hiraDocuments = $this->getHiraDocumentsTable();
         //$listDocuments = $hiraDocuments->fetchAll();
         $listDocuments = $hiraDocuments->getHiraByProcess($lang,$country,$company,$location,$process);
