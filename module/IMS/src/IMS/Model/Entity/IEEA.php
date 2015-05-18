@@ -29,34 +29,24 @@ class IEEA {
     protected $country;
     protected $location;
     protected $id;
-    protected $id_type;
-    protected $id_cycle;
+    protected $eval_time;
+    protected $eval_team;
     protected $id_process;
     protected $id_thread;
-    protected $id_ea;
-    protected $id_ei;
-    protected $quantity;
-    protected $unit_measure;
-    protected $influence;
+    protected $aspect_code;
+    protected $normal_condition;
+    protected $abnormal_condition;
+    protected $emergency_condition;
     protected $magnitude;
-    protected $frequency;
-    protected $e_impact;
-    protected $save;
-    protected $t_normal_c;
-    protected $legal_req;
-    protected $corporative_req;
-    protected $voluntary_req;
-    protected $total_req;
-    protected $abnormal_ha_a;
-    protected $abnormal_ha_b;
-    protected $abnormal_ha_c;
-    protected $abnormal_ha_d;
-    protected $abnormal_im_e;
-    protected $abnormal_im_f;
-    protected $abnormal_su_g;
-    protected $abnormal_factor;
-    protected $abnormal_table;
-    protected $ranking;
+    protected $severity;
+    protected $consequence;
+    protected $probability;
+    protected $significance;
+    protected $significant;
+    protected $legal_requirement;
+    protected $operational_control;
+    protected $goal;
+    protected $emergency_plan;
     protected $status;
     protected $user_creation;
     protected $date_creation;
@@ -116,12 +106,12 @@ class IEEA {
         return $this->id;
     }
 
-    public function getId_type() {
-        return $this->id_type;
+    public function getEval_time() {
+        return $this->eval_time;
     }
 
-    public function getId_cycle() {
-        return $this->id_cycle;
+    public function getEval_team() {
+        return $this->eval_team;
     }
 
     public function getId_process() {
@@ -132,100 +122,60 @@ class IEEA {
         return $this->id_thread;
     }
 
-    public function getId_ea() {
-        return $this->id_ea;
+    public function getAspect_code() {
+        return $this->aspect_code;
     }
 
-    public function getId_ei() {
-        return $this->id_ei;
+    public function getNormal_condition() {
+        return $this->normal_condition;
     }
 
-    public function getQuantity() {
-        return $this->quantity;
+    public function getAbnormal_condition() {
+        return $this->abnormal_condition;
     }
 
-    public function getUnit_measure() {
-        return $this->unit_measure;
-    }
-
-    public function getInfluence() {
-        return $this->influence;
+    public function getEmergency_condition() {
+        return $this->emergency_condition;
     }
 
     public function getMagnitude() {
         return $this->magnitude;
     }
 
-    public function getFrequency() {
-        return $this->frequency;
+    public function getSeverity() {
+        return $this->severity;
     }
 
-    public function getE_impact() {
-        return $this->e_impact;
+    public function getConsequence() {
+        return $this->consequence;
     }
 
-    public function getSave() {
-        return $this->save;
+    public function getProbability() {
+        return $this->probability;
     }
 
-    public function getT_normal_c() {
-        return $this->t_normal_c;
+    public function getSignificance() {
+        return $this->significance;
     }
 
-    public function getLegal_req() {
-        return $this->legal_req;
+    public function getSignificant() {
+        return $this->significant;
     }
 
-    public function getCorporative_req() {
-        return $this->corporative_req;
+    public function getLegal_requirement() {
+        return $this->legal_requirement;
     }
 
-    public function getVoluntary_req() {
-        return $this->voluntary_req;
+    public function getOperational_control() {
+        return $this->operational_control;
     }
 
-    public function getTotal_req() {
-        return $this->total_req;
+    public function getGoal() {
+        return $this->goal;
     }
 
-    public function getAbnormal_ha_a() {
-        return $this->abnormal_ha_a;
-    }
-
-    public function getAbnormal_ha_b() {
-        return $this->abnormal_ha_b;
-    }
-
-    public function getAbnormal_ha_c() {
-        return $this->abnormal_ha_c;
-    }
-
-    public function getAbnormal_ha_d() {
-        return $this->abnormal_ha_d;
-    }
-
-    public function getAbnormal_im_e() {
-        return $this->abnormal_im_e;
-    }
-
-    public function getAbnormal_im_f() {
-        return $this->abnormal_im_f;
-    }
-
-    public function getAbnormal_su_g() {
-        return $this->abnormal_su_g;
-    }
-
-    public function getAbnormal_factor() {
-        return $this->abnormal_factor;
-    }
-
-    public function getAbnormal_table() {
-        return $this->abnormal_table;
-    }
-
-    public function getRanking() {
-        return $this->ranking;
+    public function getEmergency_plan() {
+        return $this->emergency_plan;
     }
 
     public function getStatus() {
@@ -268,13 +218,13 @@ class IEEA {
         return $this;
     }
 
-    public function setId_type($id_type) {
-        $this->id_type = $id_type;
+    public function setEval_time($eval_time) {
+        $this->eval_time = $eval_time;
         return $this;
     }
 
-    public function setId_cycle($id_cycle) {
-        $this->id_cycle = $id_cycle;
+    public function setEval_team($eval_team) {
+        $this->eval_team = $eval_team;
         return $this;
     }
 
@@ -288,28 +238,23 @@ class IEEA {
         return $this;
     }
 
-    public function setId_ea($id_ea) {
-        $this->id_ea = $id_ea;
+    public function setAspect_code($aspect_code) {
+        $this->aspect_code = $aspect_code;
         return $this;
     }
 
-    public function setId_ei($id_ei) {
-        $this->id_ei = $id_ei;
+    public function setNormal_condition($normal_condition) {
+        $this->normal_condition = $normal_condition;
         return $this;
     }
 
-    public function setQuantity($quantity) {
-        $this->quantity = $quantity;
+    public function setAbnormal_condition($abnormal_condition) {
+        $this->abnormal_condition = $abnormal_condition;
         return $this;
     }
 
-    public function setUnit_measure($unit_measure) {
-        $this->unit_measure = $unit_measure;
-        return $this;
-    }
-
-    public function setInfluence($influence) {
-        $this->influence = $influence;
+    public function setEmergency_condition($emergency_condition) {
+        $this->emergency_condition = $emergency_condition;
         return $this;
     }
 
@@ -318,93 +263,48 @@ class IEEA {
         return $this;
     }
 
-    public function setFrequency($frequency) {
-        $this->frequency = $frequency;
+    public function setSeverity($severity) {
+        $this->severity = $severity;
         return $this;
     }
 
-    public function setE_impact($e_impact) {
-        $this->e_impact = $e_impact;
+    public function setConsequence($consequence) {
+        $this->consequence = $consequence;
         return $this;
     }
 
-    public function setSave($save) {
-        $this->save = $save;
+    public function setProbability($probability) {
+        $this->probability = $probability;
         return $this;
     }
 
-    public function setT_normal_c($t_normal_c) {
-        $this->t_normal_c = $t_normal_c;
+    public function setSignificance($significance) {
+        $this->significance = $significance;
         return $this;
     }
 
-    public function setLegal_req($legal_req) {
-        $this->legal_req = $legal_req;
+    public function setSignificant($significant) {
+        $this->significant = $significant;
         return $this;
     }
 
-    public function setCorporative_req($corporative_req) {
-        $this->corporative_req = $corporative_req;
+    public function setLegal_requirement($legal_requirement) {
+        $this->legal_requirement = $legal_requirement;
         return $this;
     }
 
-    public function setVoluntary_req($voluntary_req) {
-        $this->voluntary_req = $voluntary_req;
+    public function setOperational_control($operational_control) {
+        $this->operational_control = $operational_control;
         return $this;
     }
 
-    public function setTotal_req($total_req) {
-        $this->total_req = $total_req;
+    public function setGoal($goal) {
+        $this->goal = $goal;
         return $this;
     }
 
-    public function setAbnormal_ha_a($abnormal_ha_a) {
-        $this->abnormal_ha_a = $abnormal_ha_a;
-        return $this;
-    }
-
-    public function setAbnormal_ha_b($abnormal_ha_b) {
-        $this->abnormal_ha_b = $abnormal_ha_b;
-        return $this;
-    }
-
-    public function setAbnormal_ha_c($abnormal_ha_c) {
-        $this->abnormal_ha_c = $abnormal_ha_c;
-        return $this;
-    }
-
-    public function setAbnormal_ha_d($abnormal_ha_d) {
-        $this->abnormal_ha_d = $abnormal_ha_d;
-        return $this;
-    }
-
-    public function setAbnormal_im_e($abnormal_im_e) {
-        $this->abnormal_im_e = $abnormal_im_e;
-        return $this;
-    }
-
-    public function setAbnormal_im_f($abnormal_im_f) {
-        $this->abnormal_im_f = $abnormal_im_f;
-        return $this;
-    }
-
-    public function setAbnormal_su_g($abnormal_su_g) {
-        $this->abnormal_su_g = $abnormal_su_g;
-        return $this;
-    }
-
-    public function setAbnormal_factor($abnormal_factor) {
-        $this->abnormal_factor = $abnormal_factor;
-        return $this;
-    }
-
-    public function setAbnormal_table($abnormal_table) {
-        $this->abnormal_table = $abnormal_table;
-        return $this;
-    }
-
-    public function setRanking($ranking) {
-        $this->ranking = $ranking;
+    public function setEmergency_plan($emergency_plan) {
+        $this->emergency_plan = $emergency_plan;
         return $this;
     }
 
@@ -432,5 +332,7 @@ class IEEA {
         $this->date_modification = $date_modification;
         return $this;
     }
+
+
 
 }

@@ -41,7 +41,8 @@ var gridStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.IEEA');
 var form<?=$this->panelId;?> = Ext.create('Asgard.lib.forms.comboCCLP', { innerGrid: grid<?=$this->panelId;?> });
 var grid<?=$this->panelId;?> = Ext.create('Asgard.lib.grid.ieea', { 
     store: gridStore<?= $this->panelId; ?>, 
-    id: 'grid<?=$this->panelId;?>'
+    id: 'grid<?=$this->panelId;?>',
+    userRole: '<?=$this->userRole;?>'
 });
 
 deployCombos('companiesCombo','<?=$this->companyId;?>');

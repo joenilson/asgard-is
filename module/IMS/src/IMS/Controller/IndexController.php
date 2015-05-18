@@ -1256,12 +1256,26 @@ class IndexController extends AbstractActionController
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
         $userData = $this->getServiceLocator()->get('userSessionData');
         $lang=$userPrefs[0]['lang'];
+        $idUser = $userPrefs[0]['user_id'];
+        $idModule = $moduleParams[0];
+        $idSubmodule = $moduleParams[1];
+
+        $userGrantedAccess = $this->getAdminUserSubmodulesTable()->getUserSubmodulesAccess($idUser, $idModule, $idSubmodule);
+
+        if(!empty($userGrantedAccess)){
+            $role='Viewer';
+            $role=($userGrantedAccess[0]['admin']==1)?'Admin':$role;
+            $role=($userGrantedAccess[0]['add']==1)?'Key User':$role;
+            $role=($userGrantedAccess[0]['edit']==1)?'Editor':$role;
+        }
+        
         return array(
             'companyId'=>$userData->company,
             'locationId'=>$userData->location,
             'countryId'=>$userData->country,
             'lang'=>$lang,
-            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0)),
+            'userRole'=>$role
         );
     }
     
@@ -1348,30 +1362,20 @@ class IndexController extends AbstractActionController
         $date_creation = \date('Y-m-d h:i:s');
         
         $dataResult = array();
+        
         $sqlProcess = $this->getProcessMainTable();
-        $arrayProcess = $sqlProcess->getAllMainProcess($lang_docs,'A',$company,$country,$location);
-        $process = array();
-        foreach($arrayProcess as $key=>$process_values){
-            $process[$this->PersonName(trim($process_values['value']))]=array('id'=>$process_values['id'],'desc'=>$process_values['value']);
-        }
+        $arrayProcess = $sqlProcess->getListMainProcess($lang_docs,'A',$company,$country,$location);
         
         $sqlThreads = $this->getProcessThreadTable();
-        $arrayThreads = $sqlThreads->getAllThreads($lang_docs,'A',$company,$country,$location);
-        $threads = array();
-        foreach($arrayThreads as $key=>$thread_values){
-            $threads[$this->PersonName(trim($thread_values['value']))]=array('id'=>$thread_values['id'],'desc'=>$thread_values['value']);
-        }    
+        $arrayThreads = $sqlThreads->getListThreads($lang_docs,'A',$company,$country,$location);
         
-        $sqlHelpers = $this->getIEEAHelperTable();
-        $arrayHelpers = $sqlHelpers->getHelpers($lang_docs);
-        $helpers = array();
-        foreach($arrayHelpers as $key=>$values){
-            $helpers[$values['helper']][$values['description']]=array('id'=>$values['id'],'desc'=>$values['description']);
-        }
+        $sqlIeeaHelpers = $this->getIeeaHelpersTable();
+        $arrayIeeaHelpers = $sqlIeeaHelpers->getHelpersByType($lang_docs,'aspect_codes');
         
         $reader = new \PHPExcel_Reader_Excel5();
         $worksheetData = $reader->listWorksheetInfo($files['excel_file']['tmp_name']);
         $objPHPExcel = $reader->load($files['excel_file']['tmp_name']);
+        $objPHPExcel->setActiveSheetIndex(0);
         $sheetData = $objPHPExcel->getActiveSheet()->toArray(null,true,true,true);
         
         $arrayMasterData = array();
@@ -1379,41 +1383,28 @@ class IndexController extends AbstractActionController
         $filesProcessed = 0;
         
         foreach($sheetData as $key=>$content){
-            if($counter>2){
+            if($counter==2){
+                $evalDate = $content['B'];
+            }
+            if($counter==3){
+                $evalTeam = trim($content['B']);
+            }
+            if(($counter>8) and !empty($content['A'])){
                 $filesProcessed++;
                 $id = $filesProcessed;
-                $ieeaType = (string) strtoupper(trim($content['A']));
-                $ieeaCycle = (string) strtoupper(trim($content['B']));
-                $processMain = (string) $this->PersonName(trim($content['C']));
-                $processThread = (string) $this->PersonName(trim($content['D']));
-                $envAspects = (string) strtoupper(trim($content['E']));
-                $envImpact = (string) strtoupper(trim($content['F']));
-                $quantity = (int) trim($content['G']);
-                $unitmeasure = (string) trim($content['H']);
-                $influence = (string) trim($content['I']);
-                $magnitude = (int) trim($content['J']);
-                $frequency = (int) trim($content['K']);
-                $eImpact = (int) trim($content['L']);
-                $savings = (int) trim($content['M']);
-                $totalNormalCondition = ($magnitude+$frequency+$eImpact+$savings);
-                $legalReq = (int) trim($content['O']);
-                $corporativeReq = (int) trim($content['P']);
-                $voluntaryReq = (int) trim($content['Q']);
-                $totalRequirements = ($totalNormalCondition*$legalReq*$corporativeReq*$voluntaryReq);
-                $abnormal_ha_a = trim($content['S']);
-                $abnormal_ha_b = trim($content['T']);
-                $abnormal_ha_c = trim($content['U']);
-                $abnormal_ha_d = trim($content['V']);
-                $abnormal_mi_e = trim($content['W']);
-                $abnormal_mi_f = trim($content['X']);
-                $abnormal_su_g = trim($content['Y']);
-                $abnormalFactors = trim($content['Z']);
-                $abnormalTable = trim($content['AA']);
-                $ranking = trim($content['AB']);
+                $idProcess = $content['A'];
+                $descProcess = $arrayProcess[$content['A']];
+                $idThread = $content['C'];
+                $descThread = $arrayThreads[$content['C']];
+                $aspect_code = $this->PersonName($content['D']);
+                $desription = $arrayIeeaHelpers[$aspect_code]['description'];
+                $desription_aspect = $arrayIeeaHelpers[$aspect_code]['description_aspect'];
+                $aspect_legal_requirement = $arrayIeeaHelpers[$aspect_code]['legal_requirement'];
+                
                 $arrayMasterData[]=array(
                     'id'=>(int) $id,
-                    'id_type'=>(!$helpers['type'][$ieeaType])?"":$helpers['type'][$ieeaType]['id'],
-                    'desc_type'=>(!$helpers['type'][$ieeaType])?"":$helpers['type'][$ieeaType]['desc'],
+                    'eval_date'=>(!$helpers['type'][$ieeaType])?"":$helpers['type'][$ieeaType]['id'],
+                    'eval_team'=>(!$helpers['type'][$ieeaType])?"":$helpers['type'][$ieeaType]['desc'],
                     'id_cycle'=>(!$helpers['cycle'][$ieeaCycle])?"":$helpers['cycle'][$ieeaCycle]['id'],
                     'desc_cycle'=>(!$helpers['cycle'][$ieeaCycle])?"":$helpers['cycle'][$ieeaCycle]['desc'],
                     'id_process'=>(!$process[$processMain])?"":$process[$processMain]['id'],
@@ -7641,6 +7632,14 @@ class IndexController extends AbstractActionController
             $this->hiraHelpersTable = $sm->get('IMS\Model\HiraHelpersTable');
         }
         return $this->hiraHelpersTable;
+    }
+    
+    public function getIeeaHelpersTable() {
+        if (!$this->ieeaHelpersTable) {
+            $sm = $this->getServiceLocator();
+            $this->ieeaHelpersTable = $sm->get('IMS\Model\IeeaHelpersTable');
+        }
+        return $this->ieeaHelpersTable;
     }
     
     public function getProcessMainTable() {

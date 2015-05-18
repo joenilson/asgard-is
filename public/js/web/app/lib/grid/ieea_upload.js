@@ -29,43 +29,36 @@ Ext.define('Asgard.lib.grid.ieea_upload',{
     flex: 1,
     layout: 'fit',
     width: 600,
-    //height: 300,
-    //width: 1700,
     titleText: 'IEEA List',
     idText: 'Id',
-    IdTypeText: 'Type',
-    IdCycleText: 'Cycle',
-    IdProcessText: 'Process',
-    IdThreadText: 'Thread',
-    IdEaText: 'Environmental Aspects',
-    IdEiText: 'Environmental Impact',
-    QuantityText: 'Quantity',
-    UnitMeasureText: 'Unit M',
-    InfluenceText: 'Influence',
-    MagnitudeText: 'Magnitude',
-    FrequencyText: 'Frequency',
-    EImpactText: 'E Impact',
-    SaveText: 'Savings',
-    TNormalCText: 'Total Normal Condition',
-    LegalReqText: 'Legal Requirements',
-    CorporativeReqText: 'Corporative Requirements',
-    VoluntaryReqText: 'Voluntary Requirements',
-    TotalReqText: 'Total Normal Condition',
-    AbnormalHaAText: 'a',
-    AbnormalHaBText: 'b',
-    AbnormalHaCText: 'c',
-    AbnormalHaDText: 'd',
-    AbnormalImEText: 'e',
-    AbnormalImFText: 'f',
-    AbnormalSuGText: 'g',
-    AbnormalConditionsText: 'Abnormal Conditions',
-    AbnormalFactorText: 'Abnormal Factor',
-    AbnormalTableText: 'Abnormal Table',
-    RankingText: 'Ranking',
-    StatusText: 'Status',
-    haText: 'Human Aspects',
-    imText: 'Instructions and Machines',
-    suText: 'Sustance Nature',
+    processText: 'Process',
+    threadText: 'Thread',
+    evalDateText: 'Eval Date',
+    evalTeamText: 'Eval Team',
+    aspectCodeText: 'Aspect Code',
+    enviromentalAspectText: 'Enviromental Aspect',
+    enviromentalImpactText: 'Enviromental Impact',
+    labelConditionText: 'Condition',
+    normalConditionText: 'Normal',
+    abnormalConditionText: 'Abnormal',
+    emergencyConditionText: 'Emergency',
+    labelQuantificationText: 'Quantification',
+    emergencyCondition: 'Emergency',
+    magnitudeText: 'Magnitude',
+    severityText: 'Severity',
+    consequenceText: 'Consequence',
+    probabilityText: 'Probability',
+    significanceText: 'Significance',
+    labelAssessmentText: 'Assessment',
+    significantText: 'Significant',
+    legalRequirementText: 'Legal Requirement',
+    labelControlMeasuresText: 'Control Measures',
+    operationalControlText: 'Operational Control',
+    goalText: 'Goal',
+    emergencyPlan: 'Emergency',
+    tracingText: 'Tracing',
+    measurementText: 'Measurement',
+    
     editToolText: 'Edit',
     deleteToolText: 'Delete',
     addToolText: 'Add',
@@ -139,69 +132,41 @@ Ext.define('Asgard.lib.grid.ieea_upload',{
             }],
             items: [
                 {text: this.idText, sortable: false, hidden: true, dataIndex: 'id', filter: false},
-                {text: this.IdTypeText, width: 150, sortable: false, hidden: false, dataIndex: 'desc_type', filter: true, tdCls: 'wrapText'},
-                {text: this.IdCycleText, width: 150, sortable: false, hidden: false, dataIndex: 'desc_cycle', filter: true, tdCls: 'wrapText'},
-                {text: this.IdProcessText, width: 150, sortable: false, hidden: false, dataIndex: 'desc_process', filter: true, tdCls: 'wrapText'},
-                {text: this.IdThreadText, width: 150, sortable: false, hidden: false, dataIndex: 'desc_thread', filter: true, tdCls: 'wrapText'},
-                {text: this.IdEaText, width: 150, sortable: false, hidden: false, dataIndex: 'desc_ea', filter: true, tdCls: 'wrapText'},
-                {text: this.IdEiText, width: 150, sortable: false, hidden: false, dataIndex: 'desc_ei', filter: true, tdCls: 'wrapText'},
-                {text: this.QuantityText, width: 50, sortable: false, hidden: false, dataIndex: 'quantity', filter: true, tdCls: 'wrapText'},
-                {text: this.UnitMeasureText, width: 50, sortable: false, hidden: false, dataIndex: 'desc_unit_measure', filter: true, tdCls: 'wrapText'},
-                {text: this.InfluenceText, width: 50, sortable: false, hidden: false, dataIndex: 'influence', filter: true, tdCls: 'wrapText'},
-                {text: this.MagnitudeText, width: 50, sortable: false, hidden: false, dataIndex: 'magnitude', filter: true, tdCls: 'wrapText'},
-                {text: this.FrequencyText, width: 50, sortable: false, hidden: false, dataIndex: 'frequency', filter: true, tdCls: 'wrapText'},
-                {text: this.EImpactText, width: 50, sortable: false, hidden: false, dataIndex: 'e_impact', filter: true, tdCls: 'wrapText'},
-                {text: this.SaveText, width: 50, sortable: false, hidden: false, dataIndex: 'save', filter: true, tdCls: 'wrapText'},
-                {text: this.TNormalCText, width: 50, sortable: false, hidden: false, dataIndex: 't_normal_c', filter: true, tdCls: 'wrapText'},
-                {text: this.LegalReqText, width: 50, sortable: false, hidden: false, dataIndex: 'legal_req', filter: true, tdCls: 'wrapText'},
-                {text: this.CorporativeReqText, width: 50, sortable: false, hidden: false, dataIndex: 'corporative_req', filter: true, tdCls: 'wrapText'},
-                {text: this.VoluntaryReqText, width: 50, sortable: false, hidden: false, dataIndex: 'voluntary_req', filter: true, tdCls: 'wrapText'},
-                {text: this.TotalReqText, width: 50, sortable: false, hidden: false, dataIndex: 'total_req', filter: true, tdCls: 'wrapText'},
-                {text: this.AbnormalConditionsText,
+                {text: this.processText, width: 120, sortable: false, hidden: false, dataIndex: 'desc_process', filter: 'combo', tdCls: 'wrapText'},
+                {text: this.threadText, width: 100, sortable: false, hidden: false, dataIndex: 'desc_thread', filter: 'combo', tdCls: 'wrapText'},
+                {text: this.enviromentalAspectText, width: 100, sortable: false, hidden: false, dataIndex: 'description', filter: 'combo', tdCls: 'wrapText'},
+                {text: this.enviromentalImpactText, width: 120, sortable: false, hidden: false, dataIndex: 'description_impact', filter: true, tdCls: 'wrapText'},
+                {text: this.labelConditionText, 
                     columns: [
-                        {
-                            text: this.haText,
-                            columns: [{
-                                text     : this.AbnormalHaAText,
-                                width    : 50, sortable : true, filter: true,
-                                align: 'center', dataIndex: 'abnormal_ha_a'
-                            },{
-                                text     : this.AbnormalHaBText,
-                                width    : 50, sortable : true, filter: true,
-                                align: 'center', dataIndex: 'abnormal_ha_b'
-                            },{
-                                text     : this.AbnormalHaCText,
-                                width    : 50, sortable : true, filter: true,
-                                align: 'center', dataIndex: 'abnormal_ha_c'
-                            },{
-                                text     : this.AbnormalHaDText,
-                                width    : 50, sortable : true, filter: true,
-                                align: 'center', dataIndex: 'abnormal_ha_d'
-                            }]
-                        },{
-                            text: this.imText,
-                            columns: [{
-                                text     : this.AbnormalImEText,
-                                width    : 50, sortable : true, filter: true,
-                                align: 'center', dataIndex: 'abnormal_im_e'
-                            },{
-                                text     : this.AbnormalImFText,
-                                width    : 50, sortable : true, filter: true,
-                                align: 'center', dataIndex: 'abnormal_im_f'
-                            }]
-                        },{
-                            text: this.suText,
-                            columns: [{
-                                text     : this.AbnormalSuGText,
-                                width    : 50, sortable : true, filter: true,
-                                align: 'center', dataIndex: 'abnormal_su_g'
-                            }]
-                        }
+                        {text: this.normalConditionText, flex: 1, sortable: false, hidden: false, dataIndex: 'normal_condition', filter: true},
+                        {text: this.abnormalConditionText, sortable: false, hidden: false, dataIndex: 'abnormal_condition', filter: true},
+                        {text: this.emergencyConditionText, sortable: false, hidden: false, dataIndex: 'emergency_condition', filter: true}
                     ]
                 },
-                {text: this.AbnormalFactorText, width: 50, sortable: true, filter: true, dataIndex: 'abnormal_factor', tdCls: 'wrapText'},
-                {text: this.AbnormalTableText, width: 50, sortable: true, filter: true, dataIndex: 'abnormal_table', tdCls: 'wrapText'},
-                {text: this.RankingText, width: 50, sortable: true, filter: true, dataIndex: 'ranking', tdCls: 'wrapText'}
+                {text: this.labelQuantificationText, 
+                    columns: [
+                        {text: this.magnitudeText, sortable: false, hidden: false, dataIndex: 'magnitude', filter: true},
+                        {text: this.severityText, sortable: false, hidden: false, dataIndex: 'severity', filter: true},
+                        {text: this.consequenceText, sortable: false, hidden: false, dataIndex: 'consequence', filter: true},
+                        {text: this.probabilityText, sortable: false, hidden: false, dataIndex: 'probability', filter: true},
+                        {text: this.significanceText, sortable: false, hidden: false, dataIndex: 'significance', filter: true}
+                    ]
+                },
+                {text: this.labelAssessmentText, 
+                    columns: [
+                        {text: this.significantText, sortable: false, hidden: false, dataIndex: 'significant', filter: true},
+                        {text: this.legalRequirementText, sortable: false, hidden: false, dataIndex: 'legal_requirement', filter: true}
+                    ]
+                },
+                {text: this.labelControlMeasuresText, 
+                    columns: [
+                        {text: this.operationalControlText, sortable: false, hidden: false, dataIndex: 'operational_control', filter: true},
+                        {text: this.goalText, sortable: false, hidden: false, dataIndex: 'goal', filter: true},
+                        {text: this.emergencyPlan, sortable: false, hidden: false, dataIndex: 'emergency_plan', filter: true}
+                    ]
+                },
+                {text: this.tracingText, width: 50, sortable: false, hidden: false, dataIndex: 'tracing', filter: true, tdCls: 'wrapText'},
+                {text: this.measurementText, width: 50, sortable: false, hidden: false, dataIndex: 'measurement', filter: 'combo', tdCls: 'wrapText'}
             ]
         };
         

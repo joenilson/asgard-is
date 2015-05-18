@@ -30,6 +30,10 @@ class IEEAHelper {
     protected $id;
     protected $description;
     protected $ordering;
+    protected $aspect_code;
+    protected $aspect_type;
+    protected $description_impact;
+    protected $legal_requirement;
     protected $status;
     protected $user_creation;
     protected $date_creation;
@@ -162,5 +166,43 @@ class IEEAHelper {
         $this->ordering = $ordering;
         return $this;
     }
+    
+    function getAspect_code() {
+        return $this->aspect_code;
+    }
+
+    function getDescription_impact() {
+        return $this->description_impact;
+    }
+
+    function getLegal_requirement() {
+        return $this->legal_requirement;
+    }
+
+    function setAspect_code($aspect_code) {
+        $this->aspect_code = $aspect_code;
+        return $this;
+    }
+
+    function setDescription_impact($description_impact) {
+        $this->description_impact = $description_impact;
+        return $this;
+    }
+
+    function setLegal_requirement($legal_requirement) {
+        $this->legal_requirement = $legal_requirement;
+        return $this;
+    }
+
+    function getAspect_type() {
+        return $this->aspect_type;
+    }
+
+    function setAspect_type($aspect_type) {
+        $this->aspect_type = $aspect_type;
+        return $this;
+    }
+    
+    
 
 }

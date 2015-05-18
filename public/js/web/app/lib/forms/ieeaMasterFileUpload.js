@@ -170,7 +170,7 @@ Ext.define('Asgard.lib.forms.ieeaMasterFileUpload',{
         if(form.isValid()){
             form.submit({
                 params: {
-                    module: 'imsmasshiraupload'
+                    module: 'imsmassieeaupload'
                 },
                 
                 success: function(fp, o, m, r) {
