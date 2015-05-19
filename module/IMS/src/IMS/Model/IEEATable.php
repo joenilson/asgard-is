@@ -196,15 +196,10 @@ class IEEATable extends AbstractTableGateway {
         return $listItems;
     }
     
-    public function getIEEAById($id) {
+    public function getIEEAById($id,$company,$country,$location) {
         
-        $id = $this->processArray($id);
-        $row = $this->select(function (Select $select) use ($id) {
-            //$select->columns(array('id','ordering','status'));
-            //$select->join( array('pti'=>new TableIdentifier($this->table_i18n, $this->schema_name)),
-            //$this->table_name.'.id = pti.id', array('lang', 'value', 'mission', 'scope', 'rich_content'));
-            $select->where(array('id' => (int) $id));
-            //$select->order('doc_date_creation ASC');
+        $row = $this->select(function (Select $select) use ($id,$company,$country,$location) {
+            $select->where(array('id' => (int) $id, 'company'=> (string) $company, 'country'=> (string) $company, 'location'=> (string) $location));
             //echo $select->getSqlString();
         });
         if (!$row)
@@ -263,28 +258,28 @@ class IEEATable extends AbstractTableGateway {
             $data['id'] = $id;
         }
         
-        if (!$this->getIEEAById($id)) {
+        if (!$this->getIEEAById($id, $company, $country, $location)) {
             $data['user_creation']=$object->getUser_creation();
             $data['date_creation']=$object->getDate_creation();
             if (!$this->insert($data)){
                 throw new \Exception('insert statement can\'t be executed');
             }
             return $data['id'];
-        } elseif ($this->getIEEAById($id)) {
+        } elseif ($this->getIEEAById($id, $company, $country, $location)) {
             $data['date_modification'] = $object->getDate_creation();
             $data['user_modification'] = $object->getUser_creation();
             $this->update( $data, 
-                    array('company'=> $company,'country'=> $country,'location'=>$location,'id' => $id) );
+                    array('company'=> $company, 'country'=> $country,'location'=>$location,'id' => $id) );
             return $data['id'];
         } else {
             throw new \Exception('company or country or location or id in object IEEA does not exist');
         }
     }
 
-    public function updateIEEA($data,$id)
+    public function updateIEEA($data,$id, $company, $country, $location)
     {
         $id = (int) $id;
-        $this->update($data, array('id' => $id));
+        $this->update($data, array('id' => $id, 'company'=> $company, 'country'=> $country,'location'=>$location));
     }
 }
 

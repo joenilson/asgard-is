@@ -1257,6 +1257,7 @@ class IndexController extends AbstractActionController
         $userData = $this->getServiceLocator()->get('userSessionData');
         $lang=$userPrefs[0]['lang'];
         $idUser = $userPrefs[0]['user_id'];
+        $moduleParams = explode('-',$this->params()->fromRoute('id', 0));
         $idModule = $moduleParams[0];
         $idSubmodule = $moduleParams[1];
 
@@ -1351,7 +1352,7 @@ class IndexController extends AbstractActionController
     public function massieeaprocessAction(){
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
         $userData = $this->getServiceLocator()->get('userSessionData');
-        $lang=$userPrefs[0]['lang'];
+        //$lang=$userPrefs[0]['lang'];
         
         $request = $this->getRequest();
         $company = $request->getPost('companiesCombo');
@@ -1389,7 +1390,7 @@ class IndexController extends AbstractActionController
             if($counter==3){
                 $evalTeam = trim($content['B']);
             }
-            if(($counter>8) and !empty($content['A'])){
+            if(($counter>4) and !empty($content['A'])){
                 $filesProcessed++;
                 $id = $filesProcessed;
                 $idProcess = $content['A'];
@@ -1397,47 +1398,52 @@ class IndexController extends AbstractActionController
                 $idThread = $content['C'];
                 $descThread = $arrayThreads[$content['C']];
                 $aspect_code = $this->PersonName($content['D']);
-                $desription = $arrayIeeaHelpers[$aspect_code]['description'];
-                $desription_aspect = $arrayIeeaHelpers[$aspect_code]['description_aspect'];
+                $description = $arrayIeeaHelpers[$aspect_code]['description'];
+                $description_impact = $arrayIeeaHelpers[$aspect_code]['description_impact'];
                 $aspect_legal_requirement = $arrayIeeaHelpers[$aspect_code]['legal_requirement'];
+                $normal_condition = $content['F'];
+                $abnormal_condition = $content['G'];
+                $emergency_condition = $content['H'];
+                $magnitude = $content['I'];
+                $severity = $content['J'];
+                $consequence = $content['I']*$content['J'];
+                $probability = $content['L'];
+                $significance = ($content['I']*$content['J'])*$content['L'];
+                $significant = ((($content['I']*$content['J'])*$content['L'])>600)?false:true;
+                $legal_requirement = (!empty(trim($content['O'])))?true:false;
+                $operational_control = (string) trim($content['P']);
+                $goal = (string) trim($content['Q']);
+                $emergency_plan = (string) trim($content['R']);
+                $tracing = (string) trim($content['S']);
+                $measurement = (string) trim($content['T']);
                 
                 $arrayMasterData[]=array(
                     'id'=>(int) $id,
-                    'eval_date'=>(!$helpers['type'][$ieeaType])?"":$helpers['type'][$ieeaType]['id'],
-                    'eval_team'=>(!$helpers['type'][$ieeaType])?"":$helpers['type'][$ieeaType]['desc'],
-                    'id_cycle'=>(!$helpers['cycle'][$ieeaCycle])?"":$helpers['cycle'][$ieeaCycle]['id'],
-                    'desc_cycle'=>(!$helpers['cycle'][$ieeaCycle])?"":$helpers['cycle'][$ieeaCycle]['desc'],
-                    'id_process'=>(!$process[$processMain])?"":$process[$processMain]['id'],
-                    'desc_process'=>(!$process[$processMain])?"":$process[$processMain]['desc'],
-                    'id_thread'=>(!$threads[$processThread])?"":$threads[$processThread]['id'],
-                    'desc_thread'=>(!$threads[$processThread])?"":$threads[$processThread]['desc'],
-                    'id_ea'=>(!$helpers['ea'][$envAspects])?"":$helpers['ea'][$envAspects]['id'],
-                    'desc_ea'=>(!$helpers['ea'][$envAspects])?"":$helpers['ea'][$envAspects]['desc'],
-                    'id_ei'=>(!$helpers['ei'][$envImpact])?"":$helpers['ei'][$envImpact]['id'],
-                    'desc_ei'=>(!$helpers['ei'][$envImpact])?"":$helpers['ei'][$envImpact]['desc'],
-                    'quantity'=>(!$quantity)?"":$quantity,
-                    'unit_measure'=>(!$helpers['um'][$unitmeasure])?"":$helpers['um'][$unitmeasure]['id'],
-                    'desc_unit_measure'=>(!$helpers['um'][$unitmeasure])?"":$helpers['um'][$unitmeasure]['desc'],
-                    'influence'=>(!$influence)?"":$influence,
-                    'magnitude'=>(!$magnitude)?"":$magnitude,
-                    'frequency'=>(!$frequency)?"":$frequency,
-                    'e_impact'=>(!$eImpact)?"":$eImpact,
-                    'save'=>(!$savings)?"":$savings,
-                    't_normal_c'=>(!$totalNormalCondition)?"":$totalNormalCondition,
-                    'legal_req'=>(!$legalReq)?"":$legalReq,
-                    'corporative_req'=>(!$corporativeReq)?"":$corporativeReq,
-                    'voluntary_req'=>(!$voluntaryReq)?"":$voluntaryReq,
-                    'total_req'=>(!$totalRequirements)?"":$totalRequirements,
-                    'abnormal_ha_a'=>(!$abnormal_ha_a)?"":$abnormal_ha_a,
-                    'abnormal_ha_b'=>(!$abnormal_ha_b)?"":$abnormal_ha_b,
-                    'abnormal_ha_c'=>(!$abnormal_ha_c)?"":$abnormal_ha_c,
-                    'abnormal_ha_d'=>(!$abnormal_ha_d)?"":$abnormal_ha_d,
-                    'abnormal_im_e'=>(!$abnormal_mi_e)?"":$abnormal_mi_e,
-                    'abnormal_im_f'=>(!$abnormal_mi_f)?"":$abnormal_mi_f,
-                    'abnormal_su_g'=>(!$abnormal_su_g)?"":$abnormal_su_g,
-                    'abnormal_factor'=>(!$abnormalFactors)?"":$abnormalFactors,
-                    'abnormal_table'=>(!$abnormalTable)?"":$abnormalTable,
-                    'ranking'=>(!$ranking)?"":$ranking,
+                    'eval_date'=>$evalDate,
+                    'eval_team'=>$evalTeam,
+                    'id_process'=>$idProcess,
+                    'desc_process'=>$descProcess,
+                    'id_thread'=>$idThread,
+                    'desc_thread'=>$descThread,
+                    'aspect_code'=>$aspect_code,
+                    'description'=>$description,
+                    'description_impact'=>$description_impact,
+                    'aspect_legal_requirement'=>$aspect_legal_requirement,
+                    'normal_condition'=>$normal_condition,
+                    'abnormal_condition'=>$abnormal_condition,
+                    'emergency_condition'=>$emergency_condition,
+                    'magnitude'=>$magnitude,
+                    'severity'=>$severity,
+                    'consequence'=>$consequence,
+                    'probability'=>$probability,
+                    'significance'=>$significance,
+                    'significant'=>$significant,
+                    'legal_requirement'=>$legal_requirement,
+                    'operational_control'=>$operational_control,
+                    'goal'=>$goal,
+                    'emergency_plan'=>$emergency_plan,
+                    'tracing'=>$tracing,
+                    'measurement'=>$measurement,
                     'status'=>'A',
                     'company'=>$company,
                     'country'=>$country,
@@ -7637,7 +7643,7 @@ class IndexController extends AbstractActionController
     public function getIeeaHelpersTable() {
         if (!$this->ieeaHelpersTable) {
             $sm = $this->getServiceLocator();
-            $this->ieeaHelpersTable = $sm->get('IMS\Model\IeeaHelpersTable');
+            $this->ieeaHelpersTable = $sm->get('IMS\Model\IeeaHelperTable');
         }
         return $this->ieeaHelpersTable;
     }

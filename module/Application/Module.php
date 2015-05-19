@@ -49,7 +49,6 @@ class Module
         $e->getViewModel()->setVariables(array(
             'language' => $lang,
             'user_identificator' => $idUser,
-            'lala'=>'lala'
         ));
     }
     
