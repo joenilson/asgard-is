@@ -168,14 +168,14 @@ Ext.define('Asgard.lib.forms.ieeaMasterFileUpload',{
         var grid = panel.innerPanel;
         var windowDocs = this.createWindow();
         if(form.isValid()){
-            console.log(form);
+            //console.log(form);
             form.submit({
                 params: {
                     module: 'imsmassieeaupload'
                 },
                 waitMsg: me.loadingText,
                 success: function(fp, o, m, r) {
-                    console.log(fp);
+                    //console.log(fp);
                     //console.log(o.response.responseText);
                     var result = Ext.decode(o.response.responseText);
                     //console.log(result);
@@ -200,7 +200,7 @@ Ext.define('Asgard.lib.forms.ieeaMasterFileUpload',{
                     //Ext.Msg.alert('Success', me.successText);
                 },
                 failure: function(fp, o, u){
-                    console.log(form);
+                    //console.log(form);
                     //console.log(fp);
                     //console.log(o);
                     Ext.Msg.alert('Failure', me.failureText);

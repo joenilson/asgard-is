@@ -719,6 +719,8 @@ Ext.define('Asgard.locales.grid.ieea_upload',{
     tracingText: 'Seguimiento',
     measurementText: 'Medición',
     
+    resultMessageText: 'aspectos procesados.',
+    
     trueText: 'Si',
     falseText: 'No'
 });

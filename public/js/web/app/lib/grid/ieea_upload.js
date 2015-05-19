@@ -68,7 +68,7 @@ Ext.define('Asgard.lib.grid.ieea_upload',{
     uploadToolText: 'Mass Upload',
     emptyTextText: 'No IEEA associated to this Location.',
     resultTitleText: 'Success',
-    resultMessageText: 'incidents processed.',
+    resultMessageText: 'aspects processed.',
     failureTitleText: 'Warning',
     failureMessageText: 'Server dont process the files, <br />please review your items.',
     buttonAcceptText: 'Save Upload',
@@ -184,7 +184,7 @@ Ext.define('Asgard.lib.grid.ieea_upload',{
         }
         return NewVal;
     },
-    yesnoRenderer: function(val){
+    yesnoRenderer: function(val, meta){
         var NewVal;
         if (val){
             NewVal = this.trueText;

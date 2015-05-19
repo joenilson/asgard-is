@@ -144,7 +144,7 @@ Ext.define('Asgard.lib.grid.ieea_thread',{
         }
         return NewVal;
     },
-    yesnoRenderer: function(val){
+    yesnoRenderer: function(val, meta){
         var NewVal;
         if (val){
             NewVal = this.trueText;
