@@ -97,8 +97,6 @@ Ext.define('Asgard.lib.grid.ieea_thread',{
             }],
             items: [
                 {text: this.idText, sortable: false, hidden: true, dataIndex: 'id', filter: false},
-                {text: this.processText, width: 180, dataIndex: 'desc_process', filter: 'combo', tdCls: 'wrapText'},
-                {text: this.threadText, width: 180, dataIndex: 'desc_thread', filter: 'combo', tdCls: 'wrapText'},
                 {text: this.enviromentalAspectText, width: 180, dataIndex: 'description', filter: true, tdCls: 'wrapText'},
                 {text: this.enviromentalImpactText, width: 180, dataIndex: 'description_impact', filter: true, tdCls: 'wrapText'},
                 {text: this.labelConditionText, 
