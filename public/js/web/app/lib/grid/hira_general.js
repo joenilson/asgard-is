@@ -180,7 +180,6 @@ Ext.define('Asgard.lib.grid.hira_general',{
         if(button.type==='minus'){
             var gridStore = this.getStore();
             var selectedItems = this.getSelectionModel().getSelection();
-            
             if(selectedItems.length > 0){
                 Ext.Msg.confirm(this.chooseTitleText,
                 this.chooseTitleBodyDelete,
@@ -190,7 +189,7 @@ Ext.define('Asgard.lib.grid.hira_general',{
                     } else {
                         var sendData = [];
                         for(i=0; i<selectedItems.length; i++){
-                            sendData.push(selectedItems[i].data.id_danger_risk);
+                            sendData.push(selectedItems[i].data.id);
                         }
                         Ext.Ajax.request({
                             url: 'ims/removehiradocs',
