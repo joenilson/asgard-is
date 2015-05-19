@@ -1395,6 +1395,7 @@ class IndexController extends AbstractActionController
                 $evalTeam = trim($content['B']);
             }
             if(($counter>7) and !empty($content['A'])){
+                $pre_legal_content = trim($content['O']);
                 $filesProcessed++;
                 $id = $filesProcessed;
                 $idProcess = $content['A'];
@@ -1414,7 +1415,7 @@ class IndexController extends AbstractActionController
                 $probability = $content['L'];
                 $significance = ($content['I']*$content['J'])*$content['L'];
                 $significant = ((($content['I']*$content['J'])*$content['L'])>600)?true:false;
-                $legal_requirement = (!empty(trim($content['O'])))?true:false;
+                $legal_requirement = (!empty($pre_legal_content))?true:false;
                 $operational_control = (string) trim($content['P']);
                 $goal = (string) trim($content['Q']);
                 $emergency_plan = (string) trim($content['R']);
