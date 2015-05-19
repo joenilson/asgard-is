@@ -1370,14 +1370,18 @@ class IndexController extends AbstractActionController
         $sqlThreads = $this->getProcessThreadTable();
         $arrayThreads = $sqlThreads->getListThreads($lang_docs,'A',$company,$country,$location);
         
-        $sqlIeeaHelpers = $this->getIeeaHelpersTable();
+        $sqlIeeaHelpers = $this->getIEEAHelperTable();
         $arrayIeeaHelpers = $sqlIeeaHelpers->getHelpersByType($lang_docs,'aspect_codes');
         
         $reader = new \PHPExcel_Reader_Excel5();
         $worksheetData = $reader->listWorksheetInfo($files['excel_file']['tmp_name']);
         $objPHPExcel = $reader->load($files['excel_file']['tmp_name']);
         $objPHPExcel->setActiveSheetIndex(0);
-        $sheetData = $objPHPExcel->getActiveSheet()->toArray(null,true,true,true);
+        try {
+            $sheetData = $objPHPExcel->getActiveSheet()->toArray(null,true,true,true);
+        } catch(PHPExcel_Reader_Exception $e) {
+            die('Error loading file: '.$e->getMessage());
+        }
         
         $arrayMasterData = array();
         $counter = 1;
@@ -1390,26 +1394,26 @@ class IndexController extends AbstractActionController
             if($counter==3){
                 $evalTeam = trim($content['B']);
             }
-            if(($counter>4) and !empty($content['A'])){
+            if(($counter>7) and !empty($content['A'])){
                 $filesProcessed++;
                 $id = $filesProcessed;
                 $idProcess = $content['A'];
                 $descProcess = $arrayProcess[$content['A']];
                 $idThread = $content['C'];
                 $descThread = $arrayThreads[$content['C']];
-                $aspect_code = $this->PersonName($content['D']);
+                $aspect_code = $this->PersonName($content['E']);
                 $description = $arrayIeeaHelpers[$aspect_code]['description'];
                 $description_impact = $arrayIeeaHelpers[$aspect_code]['description_impact'];
                 $aspect_legal_requirement = $arrayIeeaHelpers[$aspect_code]['legal_requirement'];
-                $normal_condition = $content['F'];
-                $abnormal_condition = $content['G'];
-                $emergency_condition = $content['H'];
+                $normal_condition = (!empty($content['F']))?true:false;
+                $abnormal_condition = (!empty($content['G']))?true:false;
+                $emergency_condition = (!empty($content['H']))?true:false;
                 $magnitude = $content['I'];
                 $severity = $content['J'];
                 $consequence = $content['I']*$content['J'];
                 $probability = $content['L'];
                 $significance = ($content['I']*$content['J'])*$content['L'];
-                $significant = ((($content['I']*$content['J'])*$content['L'])>600)?false:true;
+                $significant = ((($content['I']*$content['J'])*$content['L'])>600)?true:false;
                 $legal_requirement = (!empty(trim($content['O'])))?true:false;
                 $operational_control = (string) trim($content['P']);
                 $goal = (string) trim($content['Q']);
@@ -1460,8 +1464,6 @@ class IndexController extends AbstractActionController
             $dataResult['totalRows']=$worksheet['totalRows'];
             $dataResult['totalColumns']=$worksheet['totalColumns'];
             $dataResult['lastColumnLetter']=$worksheet['lastColumnLetter'];
-            $dataResult['process']=$process;
-            
         }
         $dataResult['file_results']=$arrayMasterData;
         $dataResult['success']=true;
@@ -1471,7 +1473,6 @@ class IndexController extends AbstractActionController
     public function processmassieeaAction(){
         $userPrefs = $this->getServiceLocator()->get('userPreferences');
         $userData = $this->getServiceLocator()->get('userSessionData');
-        $lang=$userPrefs[0]['lang'];
         
         $request = $this->getRequest();
         $dataBulk = $request->getPost('data');
@@ -1482,77 +1483,61 @@ class IndexController extends AbstractActionController
             $sqlDocs = $this->getIEEATable(); 
             
             foreach ($data as $dataContent){
-                $doc_company = (!empty($dataContent->company))?$dataContent->company:$userData->company;
-                $doc_country = (!empty($dataContent->country))?$dataContent->country:$userData->country;
-                $doc_location = (!empty($dataContent->location))?$dataContent->location:$userData->location;
-                $doc_id_type = (is_numeric($dataContent->desc_type))?$dataContent->desc_type:$dataContent->id_type;
-                $doc_id_cycle = (is_numeric($dataContent->desc_cycle))?$dataContent->desc_cycle:$dataContent->id_cycle;
-                $doc_process = (is_numeric($dataContent->desc_process))?$dataContent->desc_process:$dataContent->id_process;
-                $doc_thread = (is_numeric($dataContent->desc_thread))?$dataContent->desc_thread:$dataContent->id_thread;
-                $doc_ea = (is_numeric($dataContent->desc_ea))?$dataContent->desc_ea:$dataContent->id_ea;
-                $doc_ei = (is_numeric($dataContent->desc_ei))?$dataContent->desc_ei:$dataContent->id_ei;
-                $doc_quantity = (!empty($dataContent->quantity))?$dataContent->quantity:0;
-                $doc_unit_measure = (is_numeric($dataContent->desc_unit_measure))?$dataContent->desc_unit_measure:$dataContent->unit_measure;
-                $doc_influence = (!empty($dataContent->influence))?$dataContent->influence:0;
-                $doc_magnitude = (!empty($dataContent->magnitude))?$dataContent->magnitude:0;
-                $doc_frequency = (!empty($dataContent->frequency))?$dataContent->frequency:0;
-                $doc_e_impact = (!empty($dataContent->e_impact))?$dataContent->e_impact:0;
-                $doc_save = (!empty($dataContent->save))?$dataContent->save:0;
-                $doc_t_normal_c = (!empty($dataContent->t_normal_c))?$dataContent->t_normal_c:0;
-                $doc_legal_req = (!empty($dataContent->legal_req))?$dataContent->legal_req:0;
-                $doc_corporative_req = (!empty($dataContent->corporative_req))?$dataContent->corporative_req:0;
-                $doc_voluntary_req = (!empty($dataContent->voluntary_req))?$dataContent->voluntary_req:0;
-                $doc_total_req = (!empty($dataContent->total_req))?$dataContent->total_req:0;
-                $abnormal_ha_a = (!empty($dataContent->abnormal_ha_a))?$dataContent->abnormal_ha_a:0;
-                $abnormal_ha_b = (!empty($dataContent->abnormal_ha_b))?$dataContent->abnormal_ha_b:0;
-                $abnormal_ha_c = (!empty($dataContent->abnormal_ha_c))?$dataContent->abnormal_ha_c:0;
-                $abnormal_ha_d = (!empty($dataContent->abnormal_ha_d))?$dataContent->abnormal_ha_d:0;
-                $abnormal_im_e = (!empty($dataContent->abnormal_im_e))?$dataContent->abnormal_im_e:0;
-                $abnormal_im_f = (!empty($dataContent->abnormal_im_f))?$dataContent->abnormal_im_f:0;
-                $abnormal_su_g = (!empty($dataContent->abnormal_su_g))?$dataContent->abnormal_su_g:0;
-                $abnormal_factor = (!empty($dataContent->abnormal_factor))?$dataContent->abnormal_factor:0;
-                $abnormal_table = (!empty($dataContent->abnormal_table))?$dataContent->abnormal_table:0;
-                $ranking = (!empty($dataContent->ranking))?$dataContent->ranking:0;
-                $doc_user_creation = (!empty($dataContent->user_creation))?$dataContent->user_creation:$userData->id;
-                $doc_date_creation = (!empty($dataContent->date_creation))?\date("Y-m-d H:i:s", strtotime($dataContent->date_creation)):\date('Y-m-d H:i:s');
+                $country = $dataContent->country;
+                $company = $dataContent->company;
+                $location = $dataContent->location;
+                $eval_date = $dataContent->eval_date;
+                $eval_team = $dataContent->eval_team;
+                $id_process = $dataContent->id_process;
+                $id_thread = $dataContent->id_thread;
+                $aspect_code = $dataContent->aspect_code;
+                $normal_condition = $dataContent->normal_condition;
+                $abnormal_condition = $dataContent->abnormal_condition;
+                $emergency_condition = $dataContent->emergency_condition;
+                $magnitude = $dataContent->magnitude;
+                $severity = $dataContent->severity;
+                $consequence = $dataContent->consequence;
+                $probability = $dataContent->probability;
+                $significance = $dataContent->significance;
+                $significant = $dataContent->significant;
+                $legal_requirement = $dataContent->legal_requirement;
+                $operational_control = $dataContent->operational_control;
+                $goal = $dataContent->goal;
+                $emergency_plan = $dataContent->emergency_plan;
+                $tracing = $dataContent->tracing;
+                $measurement = $dataContent->measurement;
+                $user_creation = $dataContent->user_creation;
+                $date_creation = $dataContent->date_creation;
+                $status = $dataContent->status;
+                $object = new IEEA();
+                $object->setCompany($company)
+                        ->setCountry($country)
+                        ->setLocation($location)
+                        ->setEval_date($eval_date)
+                        ->setEval_team($eval_team)
+                        ->setAspect_code($aspect_code)
+                        ->setId_process($id_process)
+                        ->setId_thread($id_thread)
+                        ->setNormal_condition($normal_condition)
+                        ->setAbnormal_condition($abnormal_condition)
+                        ->setEmergency_condition($emergency_condition)
+                        ->setMagnitude($magnitude)
+                        ->setSeverity($severity)
+                        ->setConsequence($consequence)
+                        ->setProbability($probability)
+                        ->setSignificance($significance)
+                        ->setSignificant($significant)
+                        ->setLegal_requirement($legal_requirement)
+                        ->setOperational_control($operational_control)
+                        ->setGoal($goal)
+                        ->setEmergency_plan($emergency_plan)
+                        ->setTracing($tracing)
+                        ->setMeasurement($measurement)
+                        ->setUser_creation($user_creation)
+                        ->setDate_creation($date_creation)
+                        ->setStatus($status);
                 
-                $doc = new IEEA();
-                $doc->setCompany($doc_company)
-                    ->setCountry($doc_country)
-                    ->setLocation($doc_location)
-                    ->setId_type($doc_id_type)
-                    ->setId_cycle($doc_id_cycle)
-                    ->setId_process($doc_process)
-                    ->setId_thread($doc_thread)
-                    ->setId_ea($doc_ea)
-                    ->setId_ei($doc_ei)
-                    ->setQuantity($doc_quantity)
-                    ->setUnit_measure($doc_unit_measure)
-                    ->setInfluence($doc_influence)
-                    ->setMagnitude($doc_magnitude)
-                    ->setFrequency($doc_frequency)
-                    ->setE_impact($doc_e_impact)
-                    ->setSave($doc_save)
-                    ->setT_normal_c($doc_t_normal_c)
-                    ->setLegal_req($doc_legal_req)
-                    ->setCorporative_req($doc_corporative_req)
-                    ->setVoluntary_req($doc_voluntary_req)
-                    ->setTotal_req($doc_total_req)
-                    ->setAbnormal_ha_a($abnormal_ha_a)
-                    ->setAbnormal_ha_b($abnormal_ha_b)
-                    ->setAbnormal_ha_c($abnormal_ha_c)
-                    ->setAbnormal_ha_d($abnormal_ha_d)
-                    ->setAbnormal_im_e($abnormal_im_e)
-                    ->setAbnormal_im_f($abnormal_im_f)
-                    ->setAbnormal_su_g($abnormal_su_g)
-                    ->setAbnormal_factor($abnormal_factor)
-                    ->setAbnormal_table($abnormal_table)
-                    ->setRanking($ranking)
-                    ->setUser_creation($doc_user_creation)
-                    ->setDate_creation($doc_date_creation)
-                    ->setStatus('A');
-                
-                $sqlDocs->save($doc);
+                $sqlDocs->save($object);
             }
             $dataResult['success']=true;
             $dataResult['message']="$dataCount documents proccessed";
@@ -7643,7 +7628,7 @@ class IndexController extends AbstractActionController
     public function getIeeaHelpersTable() {
         if (!$this->ieeaHelpersTable) {
             $sm = $this->getServiceLocator();
-            $this->ieeaHelpersTable = $sm->get('IMS\Model\IeeaHelperTable');
+            $this->ieeaHelpersTable = $sm->get('IMS\Model\IEEAHelperTable');
         }
         return $this->ieeaHelpersTable;
     }

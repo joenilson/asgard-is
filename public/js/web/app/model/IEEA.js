@@ -10,7 +10,7 @@ Ext.define('Asgard.model.IEEA', {
         { name: 'country', type: 'string' },
         { name: 'location', type: 'string' },
         { name: 'id', type: 'float' },
-        { name: 'eval_date', type: 'date', dateFormat: 'c' },
+        { name: 'eval_date', type: 'string' },
         { name: 'eval_team', type: 'string' },
         { name: 'id_process', type: 'float' },
         { name: 'desc_process', type: 'string' },

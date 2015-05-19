@@ -671,6 +671,117 @@ Ext.define('Asgard.locales.lib.grid.hira_helpers',{
     MessageText: { 'update': 'Atualização bem-sucedida' ,  'insert': 'Os dados salvos corretamente' }
 });
 
+Ext.define('Asgard.locales.grid.ieea',{
+   override: 'Asgard.lib.grid.ieea',
+   titleText: 'Lista de Aspectos Ambientais',
+    
+    idText: 'Id',
+    processText: 'Processo',
+    threadText: 'Sub processo',
+    evalDateText: 'Data de Avaliação',
+    evalTeamText: 'Equipa de Avaliação',
+    aspectCodeText: 'Código',
+    enviromentalAspectText: 'Aspecto Ambiental',
+    enviromentalImpactText: 'Impacto Ambiental',
+    labelConditionText: 'Condição',
+    normalConditionText: 'Normal',
+    abnormalConditionText: 'Anormal',
+    emergencyConditionText: 'Emergência',
+    labelQuantificationText: 'Quantificação',
+    emergencyCondition: 'Emergência',
+    magnitudeText: 'Magnitude',
+    severityText: 'Gravidade',
+    consequenceText: 'Resultado',
+    probabilityText: 'Probabilidade',
+    significanceText: 'Nível de signif.',
+    labelAssessmentText: 'Avaliar a importância',
+    significantText: 'Significativo',
+    legalRequirementText: 'Exigência Legal',
+    labelControlMeasuresText: 'As medidas de controlo',
+    operationalControlText: 'O controle operacional',
+    goalText: 'Objetivo',
+    emergencyPlan: 'Plano de Emergência',
+    tracingText: 'Traçado',
+    measurementText: 'Medição',
+    
+    trueText: 'Sim',
+    falseText: 'Não'
+});
+
+Ext.define('Asgard.locales.grid.ieea_thread',{
+   override: 'Asgard.lib.grid.ieea_thread',
+   titleText: 'Aspectos Ambientais',
+    
+    idText: 'Id',
+    processText: 'Processo',
+    threadText: 'Sub processo',
+    evalDateText: 'Data de Avaliação',
+    evalTeamText: 'Equipa de Avaliação',
+    aspectCodeText: 'Código',
+    enviromentalAspectText: 'Aspecto Ambiental',
+    enviromentalImpactText: 'Impacto Ambiental',
+    labelConditionText: 'Condição',
+    normalConditionText: 'Normal',
+    abnormalConditionText: 'Anormal',
+    emergencyConditionText: 'Emergência',
+    labelQuantificationText: 'Quantificação',
+    emergencyCondition: 'Emergência',
+    magnitudeText: 'Magnitude',
+    severityText: 'Gravidade',
+    consequenceText: 'Resultado',
+    probabilityText: 'Probabilidade',
+    significanceText: 'Nível de signif.',
+    labelAssessmentText: 'Avaliar a importância',
+    significantText: 'Significativo',
+    legalRequirementText: 'Exigência Legal',
+    labelControlMeasuresText: 'As medidas de controlo',
+    operationalControlText: 'O controle operacional',
+    goalText: 'Objetivo',
+    emergencyPlan: 'Plano de Emergência',
+    tracingText: 'Traçado',
+    measurementText: 'Medição',
+    
+    trueText: 'Sim',
+    falseText: 'Não'
+});
+
+Ext.define('Asgard.locales.grid.ieea_upload',{
+   override: 'Asgard.lib.grid.ieea_upload',
+   titleText: 'Lista de Aspectos Ambientais',
+    
+    idText: 'Id',
+    processText: 'Processo',
+    threadText: 'Sub processo',
+    evalDateText: 'Data de Avaliação',
+    evalTeamText: 'Equipa de Avaliação',
+    aspectCodeText: 'Código',
+    enviromentalAspectText: 'Aspecto Ambiental',
+    enviromentalImpactText: 'Impacto Ambiental',
+    labelConditionText: 'Condição',
+    normalConditionText: 'Normal',
+    abnormalConditionText: 'Anormal',
+    emergencyConditionText: 'Emergência',
+    labelQuantificationText: 'Quantificação',
+    emergencyCondition: 'Emergência',
+    magnitudeText: 'Magnitude',
+    severityText: 'Gravidade',
+    consequenceText: 'Resultado',
+    probabilityText: 'Probabilidade',
+    significanceText: 'Nível de signif.',
+    labelAssessmentText: 'Avaliar a importância',
+    significantText: 'Significativo',
+    legalRequirementText: 'Exigência Legal',
+    labelControlMeasuresText: 'As medidas de controlo',
+    operationalControlText: 'O controle operacional',
+    goalText: 'Objetivo',
+    emergencyPlan: 'Plano de Emergência',
+    tracingText: 'Traçado',
+    measurementText: 'Medição',
+    
+    trueText: 'Sim',
+    falseText: 'Não'
+});
+
 Ext.define('Asgard.locales.lib.grid.mtm',{
     override: 'Asgard.lib.grid.mtm',
     titleText: 'Medição e Monitoramento',

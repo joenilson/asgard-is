@@ -612,6 +612,117 @@ Ext.define('Asgard.locales.lib.grid.hira',{
     redVal: 'Critico'
 });
 
+Ext.define('Asgard.locales.grid.ieea',{
+   override: 'Asgard.lib.grid.ieea',
+   titleText: 'Listado de Aspectos Ambientales',
+    
+    idText: 'Id',
+    processText: 'Proceso',
+    threadText: 'Subproceso',
+    evalDateText: 'Fecha de Eval.',
+    evalTeamText: 'Equipo Evaluador',
+    aspectCodeText: 'Código',
+    enviromentalAspectText: 'Aspecto Ambiental',
+    enviromentalImpactText: 'Impacto Ambiental',
+    labelConditionText: 'Condición',
+    normalConditionText: 'Normal',
+    abnormalConditionText: 'Anormal',
+    emergencyConditionText: 'Emergencia',
+    labelQuantificationText: 'Cuantificación',
+    emergencyCondition: 'Emergencia',
+    magnitudeText: 'Magnitud',
+    severityText: 'Severidad',
+    consequenceText: 'Consecuencia',
+    probabilityText: 'Probabilidad',
+    significanceText: 'Nivel Signif.',
+    labelAssessmentText: 'Evaluación',
+    significantText: 'Significativo',
+    legalRequirementText: 'Requisito Legal',
+    labelControlMeasuresText: 'Medidas de Control',
+    operationalControlText: 'Control Operacional',
+    goalText: 'Objetivo',
+    emergencyPlan: 'Plan de Emergencia',
+    tracingText: 'Seguimiento',
+    measurementText: 'Medición',
+    
+    trueText: 'Si',
+    falseText: 'No'
+});
+
+Ext.define('Asgard.locales.grid.ieea_thread',{
+   override: 'Asgard.lib.grid.ieea_thread',
+   titleText: 'Aspectos Ambientales',
+    
+    idText: 'Id',
+    processText: 'Proceso',
+    threadText: 'Subproceso',
+    evalDateText: 'Fecha de Eval.',
+    evalTeamText: 'Equipo Evaluador',
+    aspectCodeText: 'Código',
+    enviromentalAspectText: 'Aspecto Ambiental',
+    enviromentalImpactText: 'Impacto Ambiental',
+    labelConditionText: 'Condición',
+    normalConditionText: 'Normal',
+    abnormalConditionText: 'Anormal',
+    emergencyConditionText: 'Emergencia',
+    labelQuantificationText: 'Cuantificación',
+    emergencyCondition: 'Emergencia',
+    magnitudeText: 'Magnitud',
+    severityText: 'Severidad',
+    consequenceText: 'Consecuencia',
+    probabilityText: 'Probabilidad',
+    significanceText: 'Nivel Signif.',
+    labelAssessmentText: 'Evaluación',
+    significantText: 'Significativo',
+    legalRequirementText: 'Requisito Legal',
+    labelControlMeasuresText: 'Medidas de Control',
+    operationalControlText: 'Control Operacional',
+    goalText: 'Objetivo',
+    emergencyPlan: 'Plan de Emergencia',
+    tracingText: 'Seguimiento',
+    measurementText: 'Medición',
+    
+    trueText: 'Si',
+    falseText: 'No'
+});
+
+Ext.define('Asgard.locales.grid.ieea_upload',{
+   override: 'Asgard.lib.grid.ieea_upload',
+   titleText: 'Listado de Aspectos Ambientales',
+    
+    idText: 'Id',
+    processText: 'Proceso',
+    threadText: 'Subproceso',
+    evalDateText: 'Fecha de Eval.',
+    evalTeamText: 'Equipo Evaluador',
+    aspectCodeText: 'Código',
+    enviromentalAspectText: 'Aspecto Ambiental',
+    enviromentalImpactText: 'Impacto Ambiental',
+    labelConditionText: 'Condición',
+    normalConditionText: 'Normal',
+    abnormalConditionText: 'Anormal',
+    emergencyConditionText: 'Emergencia',
+    labelQuantificationText: 'Cuantificación',
+    emergencyCondition: 'Emergencia',
+    magnitudeText: 'Magnitud',
+    severityText: 'Severidad',
+    consequenceText: 'Consecuencia',
+    probabilityText: 'Probabilidad',
+    significanceText: 'Nivel Signif.',
+    labelAssessmentText: 'Evaluación',
+    significantText: 'Significativo',
+    legalRequirementText: 'Requisito Legal',
+    labelControlMeasuresText: 'Medidas de Control',
+    operationalControlText: 'Control Operacional',
+    goalText: 'Objetivo',
+    emergencyPlan: 'Plan de Emergencia',
+    tracingText: 'Seguimiento',
+    measurementText: 'Medición',
+    
+    trueText: 'Si',
+    falseText: 'No'
+});
+
 Ext.define('Asgard.locales.lib.grid.hira_general',{
     override: 'Asgard.lib.grid.hira_general',
     titleText: 'Identificacion de Peligros y Evaluación de Riesgos :: IPER',

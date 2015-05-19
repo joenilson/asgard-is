@@ -59,6 +59,9 @@ Ext.define('Asgard.lib.grid.ieea_upload',{
     tracingText: 'Tracing',
     measurementText: 'Measurement',
     
+    trueText: 'Yes',
+    falseText: 'No',
+    
     editToolText: 'Edit',
     deleteToolText: 'Delete',
     addToolText: 'Add',
@@ -138,9 +141,9 @@ Ext.define('Asgard.lib.grid.ieea_upload',{
                 {text: this.enviromentalImpactText, width: 120, sortable: false, hidden: false, dataIndex: 'description_impact', filter: true, tdCls: 'wrapText'},
                 {text: this.labelConditionText, 
                     columns: [
-                        {text: this.normalConditionText, flex: 1, sortable: false, hidden: false, dataIndex: 'normal_condition', filter: true},
-                        {text: this.abnormalConditionText, sortable: false, hidden: false, dataIndex: 'abnormal_condition', filter: true},
-                        {text: this.emergencyConditionText, sortable: false, hidden: false, dataIndex: 'emergency_condition', filter: true}
+                        {text: this.normalConditionText, flex: 1, sortable: false, hidden: false, dataIndex: 'normal_condition', filter: true, renderer: this.conditionValue},
+                        {text: this.abnormalConditionText, sortable: false, hidden: false, dataIndex: 'abnormal_condition', filter: true, renderer: this.conditionValue},
+                        {text: this.emergencyConditionText, sortable: false, hidden: false, dataIndex: 'emergency_condition', filter: true, renderer: this.conditionValue}
                     ]
                 },
                 {text: this.labelQuantificationText, 
@@ -154,8 +157,8 @@ Ext.define('Asgard.lib.grid.ieea_upload',{
                 },
                 {text: this.labelAssessmentText, 
                     columns: [
-                        {text: this.significantText, sortable: false, hidden: false, dataIndex: 'significant', filter: true},
-                        {text: this.legalRequirementText, sortable: false, hidden: false, dataIndex: 'legal_requirement', filter: true}
+                        {text: this.significantText, sortable: false, hidden: false, dataIndex: 'significant', filter: true, renderer: this.yesnoRenderer },
+                        {text: this.legalRequirementText, sortable: false, hidden: false, dataIndex: 'legal_requirement', filter: true, renderer: this.yesnoRenderer }
                     ]
                 },
                 {text: this.labelControlMeasuresText, 
@@ -165,12 +168,32 @@ Ext.define('Asgard.lib.grid.ieea_upload',{
                         {text: this.emergencyPlan, sortable: false, hidden: false, dataIndex: 'emergency_plan', filter: true}
                     ]
                 },
-                {text: this.tracingText, width: 50, sortable: false, hidden: false, dataIndex: 'tracing', filter: true, tdCls: 'wrapText'},
-                {text: this.measurementText, width: 50, sortable: false, hidden: false, dataIndex: 'measurement', filter: 'combo', tdCls: 'wrapText'}
+                {text: this.tracingText, flex: 1, sortable: false, hidden: false, dataIndex: 'tracing', filter: true, tdCls: 'wrapText'},
+                {text: this.measurementText, flex: 1, sortable: false, hidden: false, dataIndex: 'measurement', filter: true, tdCls: 'wrapText'}
             ]
         };
         
         this.callParent();
+    },
+    conditionValue: function(val) {
+        var NewVal;
+        if (val){
+            NewVal = 'X';
+        }else {
+            NewVal = '';
+        }
+        return NewVal;
+    },
+    yesnoRenderer: function(val){
+        var NewVal;
+        if (val){
+            NewVal = this.trueText;
+            meta.tdCls = 'red-column';
+        }else {
+            NewVal = this.falseText;
+            meta.tdCls = 'green-column';
+        }
+        return NewVal;
     },
     /**
     * Custom function used for column renderer

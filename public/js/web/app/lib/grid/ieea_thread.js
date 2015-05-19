@@ -33,39 +33,36 @@ Ext.define('Asgard.lib.grid.ieea_thread',{
     //width: 1700,
     titleText: 'IEEA List',
     idText: 'Id',
-    IdTypeText: 'Type',
-    IdCycleText: 'Cycle',
-    IdProcessText: 'Process',
-    IdThreadText: 'Thread',
-    IdEaText: 'Environmental Aspects',
-    IdEiText: 'Environmental Impact',
-    QuantityText: 'Quantity',
-    UnitMeasureText: 'Unit M',
-    InfluenceText: 'Influence',
-    MagnitudeText: 'Magnitude',
-    FrequencyText: 'Frequency',
-    EImpactText: 'E Impact',
-    SaveText: 'Savings',
-    TNormalCText: 'Total Normal Condition',
-    LegalReqText: 'Legal Requirements',
-    CorporativeReqText: 'Corporative Requirements',
-    VoluntaryReqText: 'Voluntary Requirements',
-    TotalReqText: 'Total Normal Condition',
-    AbnormalHaAText: 'a',
-    AbnormalHaBText: 'b',
-    AbnormalHaCText: 'c',
-    AbnormalHaDText: 'd',
-    AbnormalImEText: 'e',
-    AbnormalImFText: 'f',
-    AbnormalSuGText: 'g',
-    AbnormalConditionsText: 'Abnormal Conditions',
-    AbnormalFactorText: 'Abnormal Factor',
-    AbnormalTableText: 'Abnormal Table',
-    RankingText: 'Ranking',
-    StatusText: 'Status',
-    haText: 'Human Aspects',
-    imText: 'Instructions and Machines',
-    suText: 'Sustance Nature',
+    processText: 'Process',
+    threadText: 'Thread',
+    evalDateText: 'Eval Date',
+    evalTeamText: 'Eval Team',
+    aspectCodeText: 'Aspect Code',
+    enviromentalAspectText: 'Enviromental Aspect',
+    enviromentalImpactText: 'Enviromental Impact',
+    labelConditionText: 'Condition',
+    normalConditionText: 'Normal',
+    abnormalConditionText: 'Abnormal',
+    emergencyConditionText: 'Emergency',
+    labelQuantificationText: 'Quantification',
+    emergencyCondition: 'Emergency',
+    magnitudeText: 'Magnitude',
+    severityText: 'Severity',
+    consequenceText: 'Consequence',
+    probabilityText: 'Probability',
+    significanceText: 'Significance',
+    labelAssessmentText: 'Assessment',
+    significantText: 'Significant',
+    legalRequirementText: 'Legal Requirement',
+    labelControlMeasuresText: 'Control Measures',
+    operationalControlText: 'Operational Control',
+    goalText: 'Goal',
+    emergencyPlan: 'Emergency',
+    tracingText: 'Tracing',
+    measurementText: 'Measurement',
+    
+    trueText: 'Yes',
+    falseText: 'No',
     
     editToolText: 'Edit',
     deleteToolText: 'Delete',
@@ -93,29 +90,6 @@ Ext.define('Asgard.lib.grid.ieea_thread',{
         this.autoScroll = true;
         this.emptyText = this.emptyTextText;
         this.selType = 'checkboxmodel';
-        /*
-        this.tools = [{
-            type: 'gear',
-            tooltip: this.editToolText,
-            scope: this,
-            handler: this.fnLibraryTool
-        },{
-            type: 'minus',
-            tooltip: this.deleteToolText,
-            scope: this,
-            handler: this.fnLibraryTool
-        },{
-            type: 'plus',
-            tooltip: this.addToolText,
-            scope: this,
-            handler: this.fnLibraryTool
-        },{
-            type: 'expand',
-            tooltip: this.uploadToolText,
-            scope: this,
-            handler: this.fnLibraryTool
-          }];
-        */
         this.columnLines = true;
         this.columns =  {
             plugins: [{
@@ -123,71 +97,65 @@ Ext.define('Asgard.lib.grid.ieea_thread',{
             }],
             items: [
                 {text: this.idText, sortable: false, hidden: true, dataIndex: 'id', filter: false},
-                {text: this.IdTypeText, width: 80, sortable: false, hidden: false, dataIndex: 'desc_type', filter: 'combo', tdCls: 'wrapText', locked: true},
-                {text: this.IdCycleText, width: 50, sortable: false, hidden: false, dataIndex: 'desc_cycle', filter: 'combo', tdCls: 'wrapText', locked: true},
-                {text: this.IdEaText, width: 100, sortable: false, hidden: false, dataIndex: 'desc_ea', filter: 'combo', tdCls: 'wrapText', locked: true},
-                {text: this.IdEiText, width: 120, sortable: false, hidden: false, dataIndex: 'desc_ei', filter: 'combo', tdCls: 'wrapText', locked: true},
-                {text: this.QuantityText, width: 50, sortable: false, hidden: false, dataIndex: 'quantity', filter: true, tdCls: 'wrapText'},
-                {text: this.UnitMeasureText, width: 50, sortable: false, hidden: false, dataIndex: 'desc_unit_measure', filter: 'combo', tdCls: 'wrapText'},
-                {text: this.InfluenceText, width: 50, sortable: false, hidden: false, dataIndex: 'influence', filter: true, tdCls: 'wrapText'},
-                {text: this.MagnitudeText, width: 50, sortable: false, hidden: false, dataIndex: 'magnitude', filter: true, tdCls: 'wrapText'},
-                {text: this.FrequencyText, width: 50, sortable: false, hidden: false, dataIndex: 'frequency', filter: true, tdCls: 'wrapText'},
-                {text: this.EImpactText, width: 50, sortable: false, hidden: false, dataIndex: 'e_impact', filter: true, tdCls: 'wrapText'},
-                {text: this.SaveText, width: 50, sortable: false, hidden: false, dataIndex: 'save', filter: true, tdCls: 'wrapText'},
-                {text: this.TNormalCText, width: 50, sortable: false, hidden: false, dataIndex: 't_normal_c', filter: true, tdCls: 'wrapText'},
-                {text: this.LegalReqText, width: 50, sortable: false, hidden: false, dataIndex: 'legal_req', filter: true, tdCls: 'wrapText'},
-                {text: this.CorporativeReqText, width: 50, sortable: false, hidden: false, dataIndex: 'corporative_req', filter: true, tdCls: 'wrapText'},
-                {text: this.VoluntaryReqText, width: 50, sortable: false, hidden: false, dataIndex: 'voluntary_req', filter: true, tdCls: 'wrapText'},
-                {text: this.TotalReqText, width: 50, sortable: false, hidden: false, dataIndex: 'total_req', filter: true, tdCls: 'wrapText'},
-                {text: this.AbnormalConditionsText,
+                {text: this.processText, width: 180, dataIndex: 'desc_process', filter: 'combo', tdCls: 'wrapText'},
+                {text: this.threadText, width: 180, dataIndex: 'desc_thread', filter: 'combo', tdCls: 'wrapText'},
+                {text: this.enviromentalAspectText, width: 180, dataIndex: 'description', filter: true, tdCls: 'wrapText'},
+                {text: this.enviromentalImpactText, width: 180, dataIndex: 'description_impact', filter: true, tdCls: 'wrapText'},
+                {text: this.labelConditionText, 
                     columns: [
-                        {
-                            text: this.haText,
-                            columns: [{
-                                text     : this.AbnormalHaAText,
-                                width    : 50, sortable : true, filter: true,
-                                align: 'center', dataIndex: 'abnormal_ha_a'
-                            },{
-                                text     : this.AbnormalHaBText,
-                                width    : 50, sortable : true, filter: true,
-                                align: 'center', dataIndex: 'abnormal_ha_b'
-                            },{
-                                text     : this.AbnormalHaCText,
-                                width    : 50, sortable : true, filter: true,
-                                align: 'center', dataIndex: 'abnormal_ha_c'
-                            },{
-                                text     : this.AbnormalHaDText,
-                                width    : 50, sortable : true, filter: true,
-                                align: 'center', dataIndex: 'abnormal_ha_d'
-                            }]
-                        },{
-                            text: this.imText,
-                            columns: [{
-                                text     : this.AbnormalImEText,
-                                width    : 50, sortable : true, filter: true,
-                                align: 'center', dataIndex: 'abnormal_im_e'
-                            },{
-                                text     : this.AbnormalImFText,
-                                width    : 50, sortable : true, filter: true,
-                                align: 'center', dataIndex: 'abnormal_im_f'
-                            }]
-                        },{
-                            text: this.suText,
-                            columns: [{
-                                text     : this.AbnormalSuGText,
-                                width    : 50, sortable : true, filter: true,
-                                align: 'center', dataIndex: 'abnormal_su_g'
-                            }]
-                        }
+                        { text: this.normalConditionText, flex: 1, dataIndex: 'normal_condition', filter: true, renderer: this.conditionValue },
+                        { text: this.abnormalConditionText, dataIndex: 'abnormal_condition', filter: true, renderer: this.conditionValue },
+                        { text: this.emergencyConditionText, dataIndex: 'emergency_condition', filter: true, renderer: this.conditionValue }
                     ]
                 },
-                {text: this.AbnormalFactorText, width: 50, sortable: true, filter: true, dataIndex: 'abnormal_factor', tdCls: 'wrapText'},
-                {text: this.AbnormalTableText, width: 50, sortable: true, filter: true, dataIndex: 'abnormal_table', tdCls: 'wrapText'},
-                {text: this.RankingText, width: 50, sortable: true, filter: true, dataIndex: 'ranking', tdCls: 'wrapText'}
+                {text: this.labelQuantificationText, 
+                    columns: [
+                        {text: this.magnitudeText, dataIndex: 'magnitude', filter: true},
+                        {text: this.severityText, dataIndex: 'severity', filter: true},
+                        {text: this.consequenceText, dataIndex: 'consequence', filter: true},
+                        {text: this.probabilityText, dataIndex: 'probability', filter: true},
+                        {text: this.significanceText, dataIndex: 'significance', filter: true}
+                    ]
+                },
+                {text: this.labelAssessmentText, 
+                    columns: [
+                        {text: this.significantText, dataIndex: 'significant', filter: true, renderer: this.yesnoRenderer },
+                        {text: this.legalRequirementText, dataIndex: 'legal_requirement', filter: true, renderer: this.yesnoRenderer }
+                    ]
+                },
+                {text: this.labelControlMeasuresText, 
+                    columns: [
+                        {text: this.operationalControlText, dataIndex: 'operational_control', filter: true},
+                        {text: this.goalText, dataIndex: 'goal', filter: true},
+                        {text: this.emergencyPlan, dataIndex: 'emergency_plan', filter: true}
+                    ]
+                },
+                {text: this.tracingText, width: 220, dataIndex: 'tracing', filter: true, tdCls: 'wrapText'},
+                {text: this.measurementText, width: 220, dataIndex: 'measurement', filter: true, tdCls: 'wrapText'}
             ]
         };
         
         this.callParent();
+    },
+    conditionValue: function(val) {
+        var NewVal;
+        if (val){
+            NewVal = 'X';
+        }else {
+            NewVal = '';
+        }
+        return NewVal;
+    },
+    yesnoRenderer: function(val){
+        var NewVal;
+        if (val){
+            NewVal = this.trueText;
+            meta.tdCls = 'red-column';
+        }else {
+            NewVal = this.falseText;
+            meta.tdCls = 'green-column';
+        }
+        return NewVal;
     },
     /**
     * Custom function used for column renderer

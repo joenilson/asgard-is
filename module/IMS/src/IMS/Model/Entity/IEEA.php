@@ -29,7 +29,7 @@ class IEEA {
     protected $country;
     protected $location;
     protected $id;
-    protected $eval_time;
+    protected $eval_date;
     protected $eval_team;
     protected $id_process;
     protected $id_thread;
@@ -47,6 +47,8 @@ class IEEA {
     protected $operational_control;
     protected $goal;
     protected $emergency_plan;
+    protected $tracing;
+    protected $measurement;
     protected $status;
     protected $user_creation;
     protected $date_creation;
@@ -106,8 +108,8 @@ class IEEA {
         return $this->id;
     }
 
-    public function getEval_time() {
-        return $this->eval_time;
+    public function getEval_date() {
+        return $this->eval_date;
     }
 
     public function getEval_team() {
@@ -178,6 +180,14 @@ class IEEA {
         return $this->emergency_plan;
     }
 
+    public function getTracing() {
+        return $this->tracing;
+    }
+
+    public function getMeasurement() {
+        return $this->measurement;
+    }
+
     public function getStatus() {
         return $this->status;
     }
@@ -218,8 +228,8 @@ class IEEA {
         return $this;
     }
 
-    public function setEval_time($eval_time) {
-        $this->eval_time = $eval_time;
+    public function setEval_date($eval_date) {
+        $this->eval_date = $eval_date;
         return $this;
     }
 
@@ -308,6 +318,16 @@ class IEEA {
         return $this;
     }
 
+    public function setTracing($tracing) {
+        $this->tracing = $tracing;
+        return $this;
+    }
+
+    public function setMeasurement($measurement) {
+        $this->measurement = $measurement;
+        return $this;
+    }
+
     public function setStatus($status) {
         $this->status = $status;
         return $this;
@@ -332,7 +352,6 @@ class IEEA {
         $this->date_modification = $date_modification;
         return $this;
     }
-
 
 
 }

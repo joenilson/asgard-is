@@ -26,7 +26,7 @@ Ext.define('Asgard.lib.grid.ieea',{
     border: false,
     frame: false,
     flex: 1,
-    layout: 'auto',
+    layout: 'fit',
     titleText: 'IEEA List',
     
     idText: 'Id',
@@ -57,6 +57,9 @@ Ext.define('Asgard.lib.grid.ieea',{
     emergencyPlan: 'Emergency',
     tracingText: 'Tracing',
     measurementText: 'Measurement',
+    
+    trueText: 'Yes',
+    falseText: 'No',
     
     editToolText: 'Edit',
     deleteToolText: 'Delete',
@@ -118,45 +121,63 @@ Ext.define('Asgard.lib.grid.ieea',{
             }],
             items: [
                 {text: this.idText, sortable: false, hidden: true, dataIndex: 'id', filter: false},
-                {text: this.processText, width: 120, sortable: false, hidden: false, dataIndex: 'desc_process', filter: 'combo', tdCls: 'wrapText'},
-                {text: this.threadText, width: 100, sortable: false, hidden: false, dataIndex: 'desc_thread', filter: 'combo', tdCls: 'wrapText'},
-                {text: this.enviromentalAspectText, width: 100, sortable: false, hidden: false, dataIndex: 'description', filter: 'combo', tdCls: 'wrapText'},
-                {text: this.enviromentalImpactText, width: 120, sortable: false, hidden: false, dataIndex: 'description_impact', filter: true, tdCls: 'wrapText'},
+                {text: this.enviromentalAspectText, width: 180, dataIndex: 'description', filter: true, tdCls: 'wrapText'},
+                {text: this.enviromentalImpactText, width: 180, dataIndex: 'description_impact', filter: true, tdCls: 'wrapText'},
                 {text: this.labelConditionText, 
                     columns: [
-                        {text: this.normalConditionText, flex: 1, sortable: false, hidden: false, dataIndex: 'normal_condition', filter: true},
-                        {text: this.abnormalConditionText, sortable: false, hidden: false, dataIndex: 'abnormal_condition', filter: true},
-                        {text: this.emergencyConditionText, sortable: false, hidden: false, dataIndex: 'emergency_condition', filter: true}
+                        { text: this.normalConditionText, flex: 1, dataIndex: 'normal_condition', filter: true, renderer: this.conditionValue },
+                        { text: this.abnormalConditionText, dataIndex: 'abnormal_condition', filter: true, renderer: this.conditionValue },
+                        { text: this.emergencyConditionText, dataIndex: 'emergency_condition', filter: true, renderer: this.conditionValue }
                     ]
                 },
                 {text: this.labelQuantificationText, 
                     columns: [
-                        {text: this.magnitudeText, sortable: false, hidden: false, dataIndex: 'magnitude', filter: true},
-                        {text: this.severityText, sortable: false, hidden: false, dataIndex: 'severity', filter: true},
-                        {text: this.consequenceText, sortable: false, hidden: false, dataIndex: 'consequence', filter: true},
-                        {text: this.probabilityText, sortable: false, hidden: false, dataIndex: 'probability', filter: true},
-                        {text: this.significanceText, sortable: false, hidden: false, dataIndex: 'significance', filter: true}
+                        { text: this.magnitudeText, dataIndex: 'magnitude', filter: true },
+                        { text: this.severityText, dataIndex: 'severity', filter: true },
+                        { text: this.consequenceText, dataIndex: 'consequence', filter: true },
+                        { text: this.probabilityText, dataIndex: 'probability', filter: true },
+                        { text: this.significanceText, dataIndex: 'significance', filter: true }
                     ]
                 },
                 {text: this.labelAssessmentText, 
                     columns: [
-                        {text: this.significantText, sortable: false, hidden: false, dataIndex: 'significant', filter: true},
-                        {text: this.legalRequirementText, sortable: false, hidden: false, dataIndex: 'legal_requirement', filter: true}
+                        {text: this.significantText, dataIndex: 'significant', filter: true, renderer: this.yesnoRenderer },
+                        {text: this.legalRequirementText, dataIndex: 'legal_requirement', filter: true, renderer: this.yesnoRenderer }
                     ]
                 },
                 {text: this.labelControlMeasuresText, 
                     columns: [
-                        {text: this.operationalControlText, sortable: false, hidden: false, dataIndex: 'operational_control', filter: true},
-                        {text: this.goalText, sortable: false, hidden: false, dataIndex: 'goal', filter: true},
-                        {text: this.emergencyPlan, sortable: false, hidden: false, dataIndex: 'emergency_plan', filter: true}
+                        {text: this.operationalControlText, dataIndex: 'operational_control', filter: true},
+                        {text: this.goalText, dataIndex: 'goal', filter: true},
+                        {text: this.emergencyPlan, dataIndex: 'emergency_plan', filter: true}
                     ]
                 },
-                {text: this.tracingText, width: 50, sortable: false, hidden: false, dataIndex: 'tracing', filter: true, tdCls: 'wrapText'},
-                {text: this.measurementText, width: 50, sortable: false, hidden: false, dataIndex: 'measurement', filter: 'combo', tdCls: 'wrapText'}
+                {text: this.tracingText, width: 220, dataIndex: 'tracing', filter: true, tdCls: 'wrapText'},
+                {text: this.measurementText, width: 220, dataIndex: 'measurement', filter: true, tdCls: 'wrapText'}
             ]
         };
         
         this.callParent();
+    },
+    conditionValue: function(val) {
+        var NewVal;
+        if (val){
+            NewVal = 'X';
+        }else {
+            NewVal = '';
+        }
+        return NewVal;
+    },
+    yesnoRenderer: function(val, meta){
+        var NewVal;
+        if (val){
+            NewVal = this.trueText;
+            meta.tdCls = 'red-column';
+        }else {
+            NewVal = this.falseText;
+            meta.tdCls = 'green-column';
+        }
+        return NewVal;
     },
     /**
     * Custom function used for column renderer
