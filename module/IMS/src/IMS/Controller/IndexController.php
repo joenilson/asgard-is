@@ -1414,7 +1414,10 @@ class IndexController extends AbstractActionController
         
         foreach($sheetData as $key=>$content){
             if($counter==2){
-                $evalDate = $content['B'];
+                $revision_date_dump = (strpos($content['B'], '/') !== false)?explode("/",$content['B']):explode("-",$content['B']);
+                $dateRevisionDump = (strpos($content['B'], '/') !== false)?$revision_date_dump[2]."-".$revision_date_dump[1]."-".$revision_date_dump[0]:$revision_date_dump[2]."-".$revision_date_dump[0]."-".$revision_date_dump[1];
+                $new_date = \date("Y-m-d", strtotime($dateRevisionDump));
+                $evalDate = $new_date;
             }
             if($counter==3){
                 $evalTeam = trim($content['B']);
