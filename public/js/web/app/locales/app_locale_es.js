@@ -646,7 +646,12 @@ Ext.define('Asgard.locales.grid.ieea',{
     measurementText: 'Medición',
     
     trueText: 'Si',
-    falseText: 'No'
+    falseText: 'No',
+    
+    chooseTitleText: 'Advertencia',
+    chooseTitleBodyDelete: 'Va eliminar un item!. <br />Desea seguir con esta acción?',
+    uploadMasterFiles: 'Subir plantilla'
+    
 });
 
 Ext.define('Asgard.locales.grid.ieea_thread',{

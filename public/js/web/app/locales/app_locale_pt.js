@@ -705,7 +705,14 @@ Ext.define('Asgard.locales.grid.ieea',{
     measurementText: 'Medição',
     
     trueText: 'Sim',
-    falseText: 'Não'
+    falseText: 'Não',
+    buttonAcceptText: 'Salvar dados',
+    emptyTitleText: 'Nada é selecionado',
+    emptyMessageText: 'Não é um item selecionado, <br />Por favor, selecione uma para o processamento...',
+    chooseTitleText: 'Advertencia',
+    chooseTitleBodyDelete: 'Va eliminar un item!. <br />Desea seguir con esta acción?',
+    chooseTitleBodyChange: 'You are choosing change this item. <br />Would you like to save your changes?',
+    uploadMasterFiles: 'Carregar modelo'
 });
 
 Ext.define('Asgard.locales.grid.ieea_thread',{
