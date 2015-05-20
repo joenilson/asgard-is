@@ -1442,7 +1442,7 @@ class IndexController extends AbstractActionController
                 $consequence = $content['I']*$content['J'];
                 $probability = $content['L'];
                 $significance = ($content['I']*$content['J'])*$content['L'];
-                $significant = ((($content['I']*$content['J'])*$content['L'])>600)?true:false;
+                $significant = ($significance>599)?true:false;
                 $legal_requirement = (!empty($pre_legal_content))?true:false;
                 $operational_control = (string) trim($content['P']);
                 $goal = (string) trim($content['Q']);
