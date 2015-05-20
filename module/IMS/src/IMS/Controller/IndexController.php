@@ -1342,7 +1342,32 @@ class IndexController extends AbstractActionController
     }
     
     public function removeieeaAction(){
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang = $userPrefs[0]['lang'];
         
+        $request = $this->getRequest();
+        $dataBulk = $request->getPost('data_ids');
+        $data = \json_decode($dataBulk);
+        $dataCount = count($data);
+        
+        $dataResult = array();
+        if(is_array($data)){
+            $sqlHIRADocs = $this->getIEEATable();
+            foreach($data as $id){
+                $data = array();
+                $data['user_modification'] = $userData->id;
+                $data['date_modification'] = \date('Y-m-d H:i:s');
+                $data['status'] = 'I';
+                $sqlHIRADocs->update($data,array('id'=>$id));
+            }
+            $dataResult['success']=true;
+            $dataResult['docs_processed']=$dataCount;
+        }else{
+            $dataResult['success']=false;
+            $dataResult['message']="No data was send";
+        }
+        return new JsonModel($dataResult);
     }
     
     public function formieeaAction(){

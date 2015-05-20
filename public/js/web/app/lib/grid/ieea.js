@@ -211,7 +211,7 @@ Ext.define('Asgard.lib.grid.ieea',{
                     } else {
                         var sendData = [];
                         for(i=0; i<selectedItems.length; i++){
-                            sendData.push(selectedItems[i].data.id_danger_risk);
+                            sendData.push(selectedItems[i].data.id);
                         }
                         Ext.Ajax.request({
                             url: 'ims/removeieea',
