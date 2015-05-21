@@ -130,7 +130,7 @@ Ext.define('Asgard.lib.forms.objdocumentNewObjDocument',{
             anchor: '100%',
             store: new Ext.create('Asgard.store.Locations')
         }, this.locationsField);
-        if(this.typeDocument === 'indicators' || this.typeDocument === 'csi'){
+        if(this.typeDocument === 'indicators' || this.typeDocument === 'ieea' || this.typeDocument === 'csi'){
             this.processField = this.processField || [];
             this.processField = Ext.Object.merge({
                 xtype: 'processcombo',
@@ -176,9 +176,9 @@ Ext.define('Asgard.lib.forms.objdocumentNewObjDocument',{
             this.companiesField,
             this.countriesField,
             this.locationsField,
-            (this.typeDocument === 'indicators')?this.processField:null,
-            this.dateField,
-            this.descriptionField,
+            ((this.typeDocument === 'indicators') || (this.typeDocument === 'ieea'))?this.processField:null,
+            (this.typeDocument !== 'ieea')?this.dateField:null,
+            (this.typeDocument !== 'ieea')?this.descriptionField:null,
             this.fileField
         ]);
         
@@ -201,7 +201,7 @@ Ext.define('Asgard.lib.forms.objdocumentNewObjDocument',{
         if(form.isValid()){
             form.submit({
                 params: {
-                    module: 'imsobjectives',
+                    module: 'imsobjdocument',
                     typedoc: me.typeDocument
                 },
                 success: function(fp, o, m, r) {

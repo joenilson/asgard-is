@@ -298,6 +298,10 @@ class IndexController extends AbstractActionController
                 $typeDocCombo = 'comboCCLYM';
                 $typeDocFunction = 'fnCCLYMProcess';
                 break;
+            case "ieea":
+                $typeDocCombo = 'comboCCLP';
+                $typeDocFunction = 'fnCCLPProcess';
+                break;
             default:
                 $typeDocCombo = 'comboCCL';
                 $typeDocFunction = 'fnCCLProcess';

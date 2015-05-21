@@ -31,9 +31,9 @@ Ext.define('Asgard.lib.Panels.ObjDocumentPanel', {
             scope: me,
             handler: function() {
                 var window = Ext.create('Ext.window.Window',{
-                    //flex: 1,
+                    flex: 1,
                     title: this.barAddText,
-                    width: '40%',
+                    //width: '40%',
                     //height: '310px',
                     layout: 'fit'
                 });
