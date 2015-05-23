@@ -109,23 +109,11 @@ var RequestButton = Ext.create('Ext.Button',{
     width: 120, 
     height: 26, 
     cls: 'rotate270', 
-    text: 'Cliente'
-});
-
-var MeasureButton = Ext.create('Ext.Button',{
-    width: '70%',
-    height: 26,
-    name:  'measure',
-    margin: "10 0 0 0",
-    text: 'Medición de Satisfacción'
-});
-
-var DispatchButton = Ext.create('Ext.Button',{
-    width: '70%',
-    height: 26,
-    name:  'dispatch',
-    margin: "10 0 0 0",
-    text: 'Entrega'
+    text: 'Cliente',
+    type: 'request',
+    path: 'ims/requirements/10-32',
+    alternateText: 'Requisitos',
+    handler: fnButton
 });
 
 var SatisfactionButton = Ext.create('Ext.Button',{
@@ -133,7 +121,11 @@ var SatisfactionButton = Ext.create('Ext.Button',{
     width: 120, 
     height: 26, 
     cls: 'rotate270', 
-    text: 'Cliente'
+    text: 'Cliente',
+    type: 'satisfaction',
+    path: 'ims/objdocument/csi/10-29',
+    alternateText: '<?=($this->lang=='es')?'Indice de Satisfacción al Cliente':'Pontuação do Satisfação do Cliente';?>',
+    handler: fnButton
 });
 
 <? $this->ims_request = 'Requisitos'; ?>
@@ -174,18 +166,6 @@ var satisfactionPanel = Ext.create('Ext.panel.Panel',{
         },
         SatisfactionButton
     ]
-});
-
-var salesPanel = Ext.create('Ext.Container',{
-    name: 'ims-measure-dispatch',
-    border: true,
-    flex:2,
-    layout: {
-        type: 'vbox',
-        align: 'center',
-        pack: 'center'
-    },
-    items: [ MeasureButton,DispatchButton ]
 });
 
 /*
@@ -232,7 +212,6 @@ var diagramViewport<?=$this->panelId; ?> = Ext.create('Ext.panel.Panel', {
             items: [
                 requestPanel,
                 mainProcess,
-                salesPanel,
                 satisfactionPanel
                 
             ]
@@ -267,12 +246,14 @@ function fnButton (button, object)
     var tabsPanel = Ext.getCmp('content-panel'); 
     var itemTab = paths[0]+'-'+paths[1]+'-process';
     var tab = Ext.getCmp(itemTab);
-    
+    var loaderPath, tabTitle;
     var form = <?php echo 'formDataRequest' . $this->panelId; ?>;
     var values = form.getForm().getValues();
     var companies = values['companiesCombo'];
     var countries = values['countriesCombo'];
     var locations = values['locationsCombo'];
+    tabTitle = (button.type === 'button')?button.text:button.alternateText;
+    loaderPath = (button.type === 'button')?'ims/process/<?=$this->module_id;?>/'+companies+'/'+countries+'/'+locations+'/'+button.path:button.path;
     if (tab) {
       tabsPanel.setActiveTab(tab);
     } else {
@@ -280,18 +261,17 @@ function fnButton (button, object)
             xtype: 'panel',
             closable: true,
             id: itemTab,
-            title: button.text,
+            title: tabTitle,
             AutoDestroy: true,
             layout: 'fit',
             loader: {
-                url: 'ims/process/<?=$this->module_id;?>/'+companies+'/'+countries+'/'+locations+'/'+button.path,
+                url: loaderPath,
                 autoLoad: true,
                 scripts: true
             }
       }).show();
       tabsPanel.ownerCt.doLayout();    
     }
-    
 }
 
 function fnSubmit (button, object)
