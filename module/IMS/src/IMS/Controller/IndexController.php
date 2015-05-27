@@ -2549,6 +2549,20 @@ class IndexController extends AbstractActionController
         $imsStrategicProcess = $translator->getTranslationItem($lang,'diagram','ims-strategic-process');
         $imsSupportProcess = $translator->getTranslationItem($lang,'diagram','ims-support-process');
         
+        $moduleParams = explode('-',$this->params()->fromRoute('id', 0));
+        $idUser = $userPrefs[0]['user_id'];
+        $idModule = $moduleParams[0];
+        $idSubmodule = $moduleParams[1];
+
+        $userGrantedAccess = $this->getAdminUserSubmodulesTable()->getUserSubmodulesAccess($idUser, $idModule, $idSubmodule);
+
+        if(!empty($userGrantedAccess)){
+            $role='Viewer';
+            $role=($userGrantedAccess[0]['admin']==1)?'Admin':$role;
+            $role=($userGrantedAccess[0]['add']==1)?'Key User':$role;
+            $role=($userGrantedAccess[0]['edit']==1)?'Editor':$role;
+        }
+        
         return array(
             'ims_main_process'=>$imsMainProcess->value,
             'ims_strategic_process'=>$imsStrategicProcess->value,
@@ -2558,7 +2572,8 @@ class IndexController extends AbstractActionController
             'countryId'=>$userData->country,
             'lang'=>$lang,
             'module_id'=>$this->params()->fromRoute('id', 0),
-            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0)),
+            'userRole'=>$role
         );
     }
     

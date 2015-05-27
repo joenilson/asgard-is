@@ -37,11 +37,13 @@ var mainProcessTpl = Ext.create('Ext.ux.CTemplate',
 var toolsProcess = [{
     type: 'plus',
     tooltip: 'Add Process',
-    handler: fnTool
+    handler: fnTool,
+    hidden: <?=($this->userRole=='Viewer')?'true':'false';?>
 },{
     type: 'minus',
     tooltip: 'Remove Process',
-    handler: fnTool
+    handler: fnTool,
+    hidden: <?=($this->userRole=='Viewer')?'true':'false';?>
 }];
 
 var diagramStrategicView = Ext.create('Asgard.lib.Panels.DiagramView',{
