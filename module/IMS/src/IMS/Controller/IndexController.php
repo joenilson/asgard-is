@@ -2828,10 +2828,8 @@ class IndexController extends AbstractActionController
             $dataRemove['id']=$audit_id;
             $dataUp['status']="I";
             $dataUp['date_modification']=\date('Y-m-d H:i:s');
-            $dataUp['user_modification']=$userData->id;
+            $dataUp['user_mod']=$userData->id;
             $sql->update($dataUp,$dataRemove);
-            //$sql->delete($dataRemove);
-            //$this->removefile($AuditData[0]['audit_file']);
             $dataResult['success'] = true;
         }
         return new JsonModel($dataResult);
