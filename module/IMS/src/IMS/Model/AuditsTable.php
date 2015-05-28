@@ -57,7 +57,8 @@ class AuditsTable extends AbstractTableGateway {
 
             $select->where(array('company'=>(string) $company,
                                 'country'=>(string) $country,
-                                'location'=>(string) $location));
+                                'location'=>(string) $location,
+                                $this->table_name.'.status'=>'A'));
             $select->order('audit_date DESC');
         });
         if (!$row)
