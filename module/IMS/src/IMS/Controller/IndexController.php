@@ -5747,6 +5747,7 @@ class IndexController extends AbstractActionController
         try {
             if($field == 'mission' OR $field == 'scope' OR $field == 'value'){
                 $conn = $this->getProcessThreadTable();
+                $valueField = \preg_replace("/\r\n|\r|\n/",'<br/> ',$valueField);
                 $data['message']=$conn->updateProcessThreadI18n($thread,$lang,$field,$valueField);
             }elseif($field == 'owner'){
                 
