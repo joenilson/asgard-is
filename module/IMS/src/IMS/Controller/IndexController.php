@@ -5750,7 +5750,7 @@ class IndexController extends AbstractActionController
                 $valueField = \preg_replace("/\r\n|\r|\n/",'<br/> ',$valueField);
                 $data['message']=$conn->updateProcessThreadI18n($thread,$lang,$field,$valueField);
             }elseif($field == 'owner'){
-                
+                $valueField = \preg_replace("/\r\n|\r|\n/",' ',$valueField);
                 $dataOwner = new ProcessThreadOwner;
                 $dataOwner->setType('o');
                 $dataOwner->setId($thread);
