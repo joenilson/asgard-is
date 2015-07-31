@@ -111,11 +111,11 @@ class SoapPlugin  extends AbstractPlugin {
         return $dataResult;
     }
     
-    public function getemployeesReport($listOffices){
+    public function getemployeesReport($listOffices,$dependantType,$ageBegin,$ageEnd){
         $preResult = $this->getemployeesList($listOffices);
         $dataResult = array();
         foreach ($preResult as $value){
-            $dependantsResult = $this->getDependants($value['id']);
+            $dependantsResult = $this->getDependants($value['id'],$dependantType,$ageBegin,$ageEnd);
             $dataResult[]= array('id'=>$value['id'],
             'surname'=>$value['surname'],
             'lastname'=>$value['lastname'],
@@ -153,10 +153,16 @@ class SoapPlugin  extends AbstractPlugin {
         }
     }
     
-    private function getDependants($id_employee){
+    private function getDependants($id_employee,$dependantType,$ageBegin,$ageEnd){
         if($id_employee!==0){
             $sql = $this->getEmployeeDependatsTable();
-            $data = $sql->getDependantsGroupedById($id_employee);
+            if(!empty($dependantType) and empty($ageBegin) and empty($ageEnd)){
+                $data = $sql->getDependantsGroupedByTypeId($dependantType,$id_employee);
+            }elseif(!empty($dependantType) and !empty($ageBegin) and !empty($ageEnd)){
+                $data = $sql->getDependantsGroupedByAgeType($ageBegin,$ageEnd,$dependantType,$id_employee);
+            }else{
+                $data = $sql->getDependantsGroupedById($id_employee);
+            }
             $result = $this->processDependants($data);
             return $result;
         }

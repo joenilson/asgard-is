@@ -76,7 +76,8 @@ Ext.define('Asgard.view.Viewport', {
     'Asgard.lib.forms.policiesNewPolicy','Asgard.store.Policies','Asgard.lib.forms.comboCCLPY',
     'Asgard.lib.forms.comboCCLPYM','Asgard.lib.dataview.objdocument','Asgard.lib.Panels.ObjDocumentPanel',
     'Asgard.store.ObjDocuments','Asgard.lib.forms.objdocumentNewObjDocument','Asgard.lib.grid.io','Asgard.store.process_io',
-    'Asgard.lib.grid.output','Asgard.lib.forms.comboCCLYM','Asgard.lib.grid.hira_helpers','Asgard.lib.forms.HiraHelpersCombo'
+    'Asgard.lib.grid.output','Asgard.lib.forms.comboCCLYM','Asgard.lib.grid.hira_helpers','Asgard.lib.forms.HiraHelpersCombo',
+    'Asgard.lib.forms.comboOfficesHR'
   ],
   menuTitleText: 'Main Menu',
     defaults: {

@@ -25,16 +25,18 @@ function deployCombos(comboField,comboValue){
         combo.setValue(comboValue);
     });
 }
-
 function fnOProcess(button, opt, obj) {
     var values = button.up('form').getForm().getValues();
     var offices = values['officesCombo'];
-    gridStore<?= $this->panelId; ?>.load({ params: { module: 'master', offices: offices }});
+    var dependants = values['dependantCombo'];
+    var ageBeginDependant = values['age_begin'];
+    var ageEndDependant = values['age_end'];
+    gridStore<?= $this->panelId; ?>.load({ params: { module: 'master', offices: offices, dependant_type: dependants, age_begin: ageBeginDependant, age_end: ageEndDependant  }});
 
 }
 var gridStore<?= $this->panelId; ?> = new Ext.create('Asgard.store.Employeesr');
 
-var form<?=$this->panelId;?> = Ext.create('Asgard.lib.forms.comboOffices', { innerGrid: grid<?=$this->panelId;?> });
+var form<?=$this->panelId;?> = Ext.create('Asgard.lib.forms.comboOfficesHR', { innerGrid: grid<?=$this->panelId;?> });
 
 var grid<?=$this->panelId;?> = Ext.create('Asgard.lib.grid.employeesr', { 
     store: gridStore<?= $this->panelId; ?>, 

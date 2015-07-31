@@ -111,6 +111,54 @@ class EmployeesDependantsTable extends AbstractTableGateway
         return $result;
     }
     
+    public function getDependantsGroupedByTypeId($type,$ids) {
+        $employee_ids = $ids;
+        $resultSet = $this->select(function (Select $select) use ($employee_ids,$type) {
+            if($type=='type'){
+                $select->columns(array('type','gender','number' => new Expression('COUNT(*)')));
+                $select->where(array('id'=> $employee_ids, 'status' => 'A'));
+                $select->group(array('type','gender'));
+            }elseif($type=='couple'){
+                $select->columns(array('type','gender','number' => new Expression('COUNT(*)')));
+                $select->where(array($this->table_name.'.id'=> $employee_ids, $this->table_name.'.status' => 'A', $this->table_name.'.type'=>$type));
+                $select->group(array('type','gender'));
+            }elseif($type=='children'){
+                $select->columns(array('type','gender','number' => new Expression('COUNT(*)')));
+                $select->where(array($this->table_name.'.id'=> $employee_ids, $this->table_name.'.status' => 'A', $this->table_name.'.type'=>$type));
+                $select->group(array('type','gender'));
+            }
+            //echo $select->getSqlString();
+        });
+        
+        $result = $resultSet->toArray();
+        return $result;
+    }
+    
+    public function getDependantsGroupedByAgeType($age_begin,$age_end,$type,$ids) {
+        $employee_ids = $ids;
+        $resultSet = $this->select(function (Select $select) use ($employee_ids,$type,$age_begin,$age_end) {
+            if($type=='type'){
+                $select->columns(array('type','gender','number' => new Expression('COUNT(*)')));
+                $select->where(array('id'=> $employee_ids, 'status' => 'A'));
+                $select->group(array('type','gender'));
+            }elseif($type=='couple'){
+                $select->columns(array('type','gender','number' => new Expression('COUNT(*)')));
+                $select->where(array($this->table_name.'.id'=> $employee_ids, $this->table_name.'.status' => 'A', $this->table_name.'.type'=>$type,
+                    new Expression('(EXTRACT(year from AGE(NOW(), BIRTHDAY))>= '.$age_begin.' and EXTRACT(year from AGE(NOW(), BIRTHDAY)) <= '.$age_end.')')));
+                $select->group(array('type','gender'));
+            }elseif($type=='children'){
+                $select->columns(array('type','gender','number' => new Expression('COUNT(*)')));
+                $select->where(array($this->table_name.'.id'=> $employee_ids, $this->table_name.'.status' => 'A', $this->table_name.'.type'=>$type,
+                    new Expression('(EXTRACT(year from AGE(NOW(), BIRTHDAY))>= '.$age_begin.' and EXTRACT(year from AGE(NOW(), BIRTHDAY)) <= '.$age_end.')')));
+                $select->group(array('type','gender'));
+            }
+            //echo $select->getSqlString();
+        });
+        
+        $result = $resultSet->toArray();
+        return $result;
+    }
+    
     public function getNextId() {
         $resultSet = $this->select(function (Select $select) {
             $select->columns(array(new Expression('max(id_dependant) AS id_dependant')));

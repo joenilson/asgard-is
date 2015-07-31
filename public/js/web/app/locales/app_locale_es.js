@@ -929,6 +929,17 @@ Ext.define('Asgard.locales.lib.forms.comboOffices',{
     textSubmitButton: 'Buscar'
 });
 
+Ext.define('Asgard.locales.lib.forms.comboOfficesHR',{
+    override: 'Asgard.lib.forms.comboOfficesHR',
+    typeCouple: 'Pareja',
+    typeChildren: 'Hijos',
+    textOfficesField: 'Escoge las oficinas',
+    textDependantField: 'Tipo de Dependiente',
+    textAgeField: 'Rango de edad',
+    textBetweenField: 'y',
+    textSubmitButton: 'Buscar'
+});
+
 Ext.define('Asgard.locales.lib.grid.employeesr',{
     override: 'Asgard.lib.grid.employeesr',
     titleText: 'Reporte de Empleados',

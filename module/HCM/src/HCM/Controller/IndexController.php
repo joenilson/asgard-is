@@ -110,9 +110,12 @@ class IndexController extends AbstractActionController {
     public function getemployeesrAction(){
         $request = $this->getRequest();
         $office_list = $request->getQuery('offices');
+        $dependant_type = $request->getQuery('dependant_type');
+        $age_begin = $request->getQuery('age_begin');
+        $age_end = $request->getQuery('age_end');
         $list = explode(',',$office_list);
         $soap = $this->SoapHcmPlugin();
-        $listEmployees = $soap->getemployeesReport($list);
+        $listEmployees = $soap->getemployeesReport($list,$dependant_type,$age_begin,$age_end);
         $result['success']=true;
         $result['results']=$listEmployees;
         $result['count']=count($list);
