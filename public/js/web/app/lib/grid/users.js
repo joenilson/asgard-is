@@ -45,15 +45,28 @@ Ext.define('Asgard.lib.grid.users',{
     
     toolViewDocText: 'View Profile',
     toolRequestText: 'Modify Profile',
+    
+    msgTitleText: 'Warning! User Status Change',
+    msgTitleBodyDelete: 'Confirm that you will change this user status?',
+    
+    emptyTitleText: 'No data selected',
+    emptyMessageText: 'No one items was selected to process, <br />Please select one at last...',
+    emptyTextText: 'No users found in this location',
+    
     initComponent: function(){
+        this.emptyText = this.emptyTextText;
         this.tbar = [{
             text: 'Cambiar Clave',
+             scope: this,
             handler: this.changePassword
         },{
-            text: 'Eliminar Usuario',
-            handler: function(){
-                
-            }
+            text: 'Desactivar Usuario',
+            scope: this,
+            handler: this.changeStatus
+        },{
+            text: 'Activar Usuario',
+            scope: this,
+            handler: this.changeStatus
         }];
         
         this.title = this.titleText;
@@ -72,7 +85,7 @@ Ext.define('Asgard.lib.grid.users',{
                 {text: this.dateLastLoginText, flex: 1.5,  sortable: true, filter: true, dataIndex: 'date_lastlogin', tdCls: 'wrapText', 
                     xtype: 'datecolumn', format:'Y-m-d'
                 },
-                {text: this.countryText, flex: 3, sortable: true, filter: 'combo', dataIndex: 'country_desc', tdCls: 'wrapText'},
+                {text: this.countryText, flex: 2, sortable: true, filter: 'combo', dataIndex: 'country_desc', tdCls: 'wrapText'},
                 {text: this.companyText, flex: 3,  sortable: true, filter: 'combo', dataIndex: 'company_desc', tdCls: 'wrapText'},
                 {text: this.locationText, flex: 3, sortable: true, filter: 'combo', dataIndex: 'location_desc', tdCls: 'wrapText'},
                 {text: this.adminText, flex: 1, sortable: true, filter: true, dataIndex: 'admin', tdCls: 'wrapText'},
@@ -115,6 +128,50 @@ Ext.define('Asgard.lib.grid.users',{
         });
         win.add(content);
         win.show();
+    },
+    
+     changeStatus: function(button, form, store) {
+        var me = this;
+        var record = button.up('panel').getSelectionModel().getSelection();
+        if(record.length>0){
+            Ext.MessageBox.confirm(me.msgTitleText,
+                me.msgTitleBodyDelete,
+                function(buttonId) {
+                    if (buttonId === 'no') {
+
+                    } else {
+                        Ext.Ajax.request({
+                            url: 'admin/users/change',
+                            params: {
+                                uid: record[0].data.id, 
+                                status: record[0].data.status,
+                                module: 'uadmin'
+                            },
+                            success: function(response){
+                                var text = response.responseText;
+                            }
+                        });
+                        me.getStore().removeAll();
+                        me.getStore().load({ params: { company: record[0].data.company, country: record[0].data.country, location: record[0].data.location }});
+                    }
+                },
+                this
+            );
+        }else{
+            this.showEmptyMessage();
+        }
+    },
+    
+    showEmptyMessage: function(){
+        var emptyMsg = Ext.MessageBox.show({
+           title: this.emptyTitleText,
+           msg: this.emptyMessageText,
+           buttons: Ext.MessageBox.OK,
+           icon: Ext.MessageBox.WARNING
+        });
+       return emptyMsg;
+
     }
+    
     
 });

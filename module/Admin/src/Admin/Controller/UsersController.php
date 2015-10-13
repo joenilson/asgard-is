@@ -30,18 +30,33 @@ class UsersController extends AbstractActionController
     
     public function indexAction()
     {
-        return new ViewModel(array('datos'=>'datos'));
+        $userPrefs = $this->getServiceLocator()->get('userPreferences');
+        $userData = $this->getServiceLocator()->get('userSessionData');
+        $lang=$userPrefs[0]['lang'];
+        return new ViewModel(array('companyId'=>$userData->company,
+            'locationId'=>$userData->location,
+            'countryId'=>$userData->country,
+            'lang'=>$lang,
+            'panelId'=>str_replace("-","",$this->params()->fromRoute('id', 0))
+        ));
     }
     
     public function getusersAction()
     {
         $sql = $this->getUsersTable();
-        $listUsers = $sql->getUsersList();
+        
+        $request = $this->getRequest();
+        $company = (string) $request->getQuery('company');
+        $country = (string) $request->getQuery('country');
+        $location = (string) $request->getQuery('location');
+        
+        $listUsers = $sql->getUsersList($company, $country, $location);
+        
         if($listUsers){
             $data['success']=true;
             $data['results']=$listUsers;
         }else{
-            $data['success']=false;
+            $data['success']=true;
             $data['msg']="No data at this time..";
         }
         return new JsonModel($data);
@@ -57,7 +72,7 @@ class UsersController extends AbstractActionController
             $data['success']=true;
             $data['results']=$listUsers;
         }else{
-            $data['success']=false;
+            $data['success']=true;
             $data['msg']="No data at this time..";
         }
         return new JsonModel($data);
@@ -92,6 +107,35 @@ class UsersController extends AbstractActionController
 
             $data['success']=true;
             $data['msg']="Succesfull pasword changed.";
+        }
+        
+        return new JsonModel($data);
+    }
+    
+    public function changeAction()
+    {
+        if (!$this->getServiceLocator()->get('AuthService')->hasIdentity()){
+            die();
+        }
+        
+        $data['success']= false;
+    	$data['msg']='Wrong data sent';
+        
+    	$request = $this->getRequest();
+        $userId = (int) $request->getPost('uid');
+        $status = (string) $request->getPost('status');
+        
+    	if ($request->isPost() && $request->getPost('module')=='uadmin'){
+            $UsersTable=$this->getUsersTable();
+            
+            $newStatus = ($status == 'A')?"X":"A";
+            
+            $dataValues = array ('status' => $newStatus);
+            
+            $UsersTable->updateById($userId, $dataValues);
+
+            $data['success']=true;
+            $data['msg']="Succesfull user status changed to $newStatus.";
         }
         
         return new JsonModel($data);

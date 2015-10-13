@@ -23,11 +23,28 @@
  */
 ?>
 <script>
+function deployCombos(comboField,comboValue){
+    var combo = formDataRequest<?=$this->panelId;?>.getForm().findField(comboField);
+    var store = combo.store;
+    store.on("load", function(store, records, state, operation, opts) {
+            combo.setValue(comboValue);
+    });
+}
+
+function fnCCLProcess(button, opt, obj) {
+    var values = button.up('form').getForm().getValues();
+    var companies = values['companiesCombo'];
+    var countries = values['countriesCombo'];
+    var locations = values['locationsCombo'];
+    UsersStore<?= $this->panelId; ?>.removeAll();
+    UsersStore<?= $this->panelId; ?>.load({ params: { module: 'master', company: companies, country: countries, location: locations }});
+
+}
 Ext.require('Asgard.store.Users');
 var required = '<span style="color:red;font-weight:bold" data-qtip="Required">*</span>';
 
 var UsersStore<?= $this->panelId; ?> = Ext.create('Asgard.store.Users');
-UsersStore<?= $this->panelId; ?>.load();
+//UsersStore<?= $this->panelId; ?>.load();
 
 var toolsUsers = [{
     type: 'plus',
@@ -67,9 +84,9 @@ var windowUser = Ext.create('Ext.window.Window',{
     layout: 'fit'
 });
 
-function fnCCLProcess(){
-
-}
+deployCombos('companiesCombo','<?=$this->companyId;?>');
+deployCombos('countriesCombo','<?=$this->countryId;?>');
+deployCombos('locationsCombo','<?=$this->locationId;?>');
 
 function fnLibraryTool(me, e, object, tool) {
     var panel = tool.up('panel');

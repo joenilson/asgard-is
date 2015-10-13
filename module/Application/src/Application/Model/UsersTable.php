@@ -31,8 +31,20 @@ class UsersTable extends AbstractTableGateway {
         return $resultSet->toArray();
     }
 
-    public function getUsersList() {
-        $resultSet = $this->select(function (Select $select) {
+    public function getUsersList($company, $country, $location) {
+        $dataSelect = array();
+        if(!empty($company)){
+            $dataSelect['users.company']=$company;
+        }
+        
+        if(!empty($country)){
+            $dataSelect['users.country']=$country;
+        }
+        
+        if(!empty($location)){
+            $dataSelect['users.location']=$location;
+        }
+        $resultSet = $this->select(function (Select $select) use ($dataSelect) {
             $select->columns(array('id', 'username', 'realname', 'date_created', 'date_lastlogin', 'admin', 'status', 'role', 'type', 'account_type', 'country', 'company', 'location','type_system','id_company','id_location','id_employee'));
             $select->join(
                     array('h1' => new TableIdentifier('companies', $this->schema_name)), new Expression($this->table_name . '.company = h1.id '), array('company_desc' => 'legal_name')
@@ -43,12 +55,16 @@ class UsersTable extends AbstractTableGateway {
             $select->join(
                     array('h3' => new TableIdentifier('locations', $this->schema_name)), new Expression($this->table_name . '.location = h3.id AND h3.country_id = h2.id '), array('location_desc' => 'location_name')
             );
+            if(!empty($dataSelect)){
+                $select->where($dataSelect);
+            }
             $select->order('id ASC');
             //echo $select->getSqlString();
         });
-
+        
         return $resultSet->toArray();
     }
+    
 
     public function getUserByIdRaw($user_id) {
         if (is_numeric($user_id)) {
